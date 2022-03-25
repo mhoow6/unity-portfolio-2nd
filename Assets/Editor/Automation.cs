@@ -12,6 +12,9 @@ public static class Automation
     [MenuItem("Automation/Table/Generate Table Class")]
     public static void GenerateTableClass()
     {
+        // 데이터 갯수 (UpdateLoadingValues에 전달해주기 위한 용도)
+        int dataCount = 0;
+
         // 테이블에 따른 구조체 생성
         string data = string.Empty;
         data += $"namespace TableSystem\n{{\n\t";
@@ -30,6 +33,9 @@ public static class Automation
             // 2번째: 설명
             // 3번째: 구분
             // 4번째부터 데이터
+
+            if (lines.Length > 3)
+                dataCount += lines.Length - 4;
 
             // 구조체 선언
             data += $"public struct {asset.name}\n\t{{\n\t\t";
@@ -57,6 +63,12 @@ public static class Automation
 
         WriteFile($"{Application.dataPath}/Scripts/99_Table/TableInfos.cs", data, () => data = string.Empty);
 
+        // 데이터 총 갯수 저장
+        var scriptableObj = Resources.Load<Configuration>("Configuration");
+        if (scriptableObj != null)
+            scriptableObj.DownloadDataCount = dataCount;
+        EditorUtility.SetDirty(scriptableObj);
+
         // --------------------------------------------------------------------------------------------------------------------------------------------
 
         // 테이블매니저에 읽기전용 구조체 리스트 추가
@@ -67,7 +79,8 @@ public static class Automation
                            $"using UnityEngine;\n" +
                            $"namespace TableSystem\n{{\n\t" +
                            $"public class TableManager\n\t{{\n\t\t" +
-                           $"public static TableManager Instance {{ get; private set; }} = new TableManager();\n\t\t";
+                           $"public static TableManager Instance {{ get; private set; }} = new TableManager();\n\t\t" +
+                           $"public int LoadedData {{ get; private set; }} = 0;\n\t\t";
 
             for (int i = 0; i < textassets.Length; i++)
             {
@@ -91,6 +104,7 @@ public static class Automation
                 {0} info;
                 {1}
                 {0}s.Add(info);
+                LoadedData++;
             }}
         ";
             string loadTableInline = string.Empty;
