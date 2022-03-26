@@ -10,6 +10,8 @@ public static class FileHelper
     public static List<string> GetLinesFromTableTextAsset(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
+        if (txtAsset == null)
+            return null;
 
         char[] option = { '\r', '\n' };
         string[] _lines = txtAsset.text.Split(option);

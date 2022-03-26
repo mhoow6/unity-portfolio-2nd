@@ -5,11 +5,12 @@ using UnityEngine;
 public enum UIType
 {
     Lobby,
+    Loading,
 }
 
 public abstract class UI : MonoBehaviour
 {
-    public abstract UIType Type { get; protected set; }
+    public abstract UIType Type { get; }
     public abstract void OnOpened();
     public abstract void OnClosed();
 }

@@ -274,13 +274,13 @@ public static class Automation
         {
             sw.WriteLine("name,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
 
-            GameObject parent = GameObject.FindGameObjectWithTag("Terrain");
+            GameObject parent = GameObject.Find("03_Terrain");
             WriteSceneData(parent, sw);
 
-            parent = GameObject.FindGameObjectWithTag("Character");
+            parent = GameObject.Find("04_Character");
             WriteSceneData(parent, sw);
 
-            parent = GameObject.FindGameObjectWithTag("Interactable");
+            parent = GameObject.Find("05_Interactable");
             WriteSceneData(parent, sw);
 
             sw.Close();

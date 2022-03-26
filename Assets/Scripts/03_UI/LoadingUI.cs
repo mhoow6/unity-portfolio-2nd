@@ -8,34 +8,36 @@ using UnityEngine.SceneManagement;
 
 using Random = UnityEngine.Random;
 
-public class LoadingUI : MonoBehaviour
+public class LoadingUI : UI
 {
-    public GameObject LoadingObject;
-    public Slider LoadingSlider;
-    public Text LoadingPercent;
-    public Text RestTime;
-    public GameObject LoadingCompleteObject;
-    public Animator LoadingCompleteAnimator;
+    [SerializeField] GameObject m_LoadingObject;
+    [SerializeField] Slider m_LoadingSlider;
+    [SerializeField] Text m_LoadingPercent;
+    [SerializeField] Text m_RestTime;
+    [SerializeField] GameObject m_LoadingCompleteObject;
+    [SerializeField] Animator m_LoadingCompleteAnimator;
 
-    public Action OnGameStart;
+    public Action OnLoadComplete { get; set; }
 
     int m_downloadDataPerSecond;
     int m_needToLoadDataCount;
     int m_totalDownloadDataCount;
     int m_predictRestTime;
 
-    public void StartLoading()
-    {
-        LoadingObject.SetActive(true);
-        LoadingCompleteObject.SetActive(false);
+    public override UIType Type { get => UIType.Loading; }
 
-        // 게임매니저 실행
-        var gm = new GameObject("DontDestroyOnLoad").AddComponent<GameManager>();
+    public void LoadingTitle()
+    {
+        m_LoadingObject.SetActive(true);
+        m_LoadingCompleteObject.SetActive(false);
 
         // 다운로드 해야할 데이터 양 가져오기
-        m_needToLoadDataCount = gm.Config.DownloadDataCount;
-        LoadingSlider.maxValue = m_needToLoadDataCount;
+        m_needToLoadDataCount = GameManager.Instance.Config.DownloadDataCount;
+        m_LoadingSlider.maxValue = m_needToLoadDataCount;
 
+        // 이벤트 설정
+        OnLoadComplete = () => { StartCoroutine(WaitForGameStart()); };
+        
         StartCoroutine(FakeLoadingPercent());
         StartCoroutine(FakeRestTime());
     }
@@ -50,7 +52,7 @@ public class LoadingUI : MonoBehaviour
         {
             m_downloadDataPerSecond = Random.Range(minValue, maxValue);
             m_totalDownloadDataCount += m_downloadDataPerSecond;
-            LoadingSlider.value = m_totalDownloadDataCount;
+            m_LoadingSlider.value = m_totalDownloadDataCount;
 
             // 백분율
             float ratio = (float)m_totalDownloadDataCount / m_needToLoadDataCount;
@@ -58,26 +60,28 @@ public class LoadingUI : MonoBehaviour
 
             // 00.00%
             string totalDownloadByteText = string.Format("{0:00.00}", percentage);
-            LoadingPercent.text = totalDownloadByteText;
+            m_LoadingPercent.text = totalDownloadByteText;
 
             yield return tick;
         }
         // 로딩 완료했으니 텍스트 수정
-        LoadingPercent.text = string.Format("{0:00.00}", 100);
-        RestTime.text = "00:00";
+        m_LoadingPercent.text = string.Format("{0:00.00}", 100);
+        m_RestTime.text = "00:00";
 
         // 슬라이더 안 보이게 하기
-        LoadingSlider.gameObject.SetActive(false);
+        m_LoadingSlider.gameObject.SetActive(false);
 
-        // 조금 늦게 "터치하여 게임 시작" 보여주기
+        // 조금 늦게 로딩 완료 시 오브젝트 보여주기
         yield return new WaitForSeconds(0.5f);
-        LoadingObject.SetActive(false);
-        LoadingCompleteObject.SetActive(true);
+        m_LoadingObject.SetActive(false);
+        m_LoadingCompleteObject.SetActive(true);
 
-        // "터치하여 게임 시작" 애니메이션
-        LoadingCompleteAnimator.SetBool("LoadingComplete", true);
+        // 로딩 완료시 출력할 애니메이션이 있으면 보여주자
+        if (m_LoadingCompleteAnimator != null)
+            m_LoadingCompleteAnimator.SetBool("LoadingComplete", true);
 
-        StartCoroutine(WaitForGameStart());
+        OnLoadComplete?.Invoke();
+        OnLoadComplete = null;
     }
 
     IEnumerator FakeRestTime()
@@ -98,12 +102,13 @@ public class LoadingUI : MonoBehaviour
 
                 // 00:00
                 string restTimeFormat = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
-                RestTime.text = restTimeFormat;
+                m_RestTime.text = restTimeFormat;
             }
             yield return tick;
         }
     }
 
+    // 게임 시작 대기
     IEnumerator WaitForGameStart()
     {
         bool ready = false;
@@ -114,54 +119,18 @@ public class LoadingUI : MonoBehaviour
 
             yield return null;
         }
-        LoadingCompleteObject.SetActive(false);
 
-        OnGameStart?.Invoke();
+        m_LoadingCompleteObject.SetActive(false);
+        GameManager.Instance.LoadScene("Village");
     }
 
-    #region TEST
-    IEnumerator LoadingPercentTest()
+    public override void OnOpened()
     {
-        var tick = new WaitForFixedUpdate();
-        while (m_totalDownloadDataCount < m_needToLoadDataCount)
-        {
-            int DOWNLOAD_BYTE = Random.Range(0, 2);
-            m_totalDownloadDataCount += DOWNLOAD_BYTE;
-            LoadingSlider.value = m_totalDownloadDataCount;
-
-            // 00.00%
-            string totalDownloadByteText = string.Format("{0:00.00}", m_totalDownloadDataCount);
-            LoadingPercent.text = totalDownloadByteText;
-
-            yield return tick;
-        }
-        LoadingPercent.text = string.Format("{0:00.00}", m_needToLoadDataCount);
-
-        // 조금 늦게 "터치하여 게임 시작" 보여주기
-        yield return new WaitForSeconds(0.5f);
-        LoadingObject.SetActive(false);
-        LoadingCompleteObject.SetActive(true);
+        
     }
-    IEnumerator RestTimeTest()
+
+    public override void OnClosed()
     {
-        var tick = new WaitForSeconds(1f);
-        int timer = 0;
-        while (true)
-        {
-            timer++;
-            if (m_totalDownloadDataCount > 0)
-            {
-                int downloadByOneSec = m_totalDownloadDataCount / timer;
-                int restDownloadByte = m_needToLoadDataCount - m_totalDownloadDataCount;
-
-                m_predictRestTime = restDownloadByte / downloadByOneSec;
-
-                // 00:00
-                string restTimeFormat = string.Format("{0:00:00}", m_predictRestTime);
-                RestTime.text = restTimeFormat;
-            }
-            yield return tick;
-        }
+        
     }
-    #endregion
 }

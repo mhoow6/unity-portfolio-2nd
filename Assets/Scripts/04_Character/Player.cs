@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test_DynamicSceneLoad : MonoBehaviour
+public class Player : MonoBehaviour
 {
     void Start()
     {
-        GameSceneManager.Instance.LoadScene("Village");
+        GameManager.Instance.Player = this;
     }
 }
