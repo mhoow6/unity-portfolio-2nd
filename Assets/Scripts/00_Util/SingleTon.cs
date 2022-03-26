@@ -7,7 +7,7 @@ public class SingleTon<T> where T : class, new()
 
     }
 
-    public static T instance
+    public static T Instance
     {
         get
         {

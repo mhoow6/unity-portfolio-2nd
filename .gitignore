@@ -11,6 +11,9 @@ UserSettings/
 # Ignore Resources
 Assets/Resources
 Assets/Animation
+Assets/Customizable Skybox
+Assets/PolygonParticleFX
+Assets/SD_Project
 
 # Ignore File
 *.unity

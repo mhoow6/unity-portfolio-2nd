@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 using Random = UnityEngine.Random;
 
-public class UpdateLoadingValues : MonoBehaviour
+public class LoadingUI : MonoBehaviour
 {
     public GameObject LoadingObject;
     public Slider LoadingSlider;
@@ -17,29 +17,24 @@ public class UpdateLoadingValues : MonoBehaviour
     public GameObject LoadingCompleteObject;
     public Animator LoadingCompleteAnimator;
 
+    public Action OnGameStart;
+
     int m_downloadDataPerSecond;
     int m_needToLoadDataCount;
     int m_totalDownloadDataCount;
     int m_predictRestTime;
-
-    void Start()
-    {
-        StartLoading();
-    }
 
     public void StartLoading()
     {
         LoadingObject.SetActive(true);
         LoadingCompleteObject.SetActive(false);
 
-        // 다운로드 해야할 데이터 양 가져오기
-        var config = Resources.Load<Configuration>("Configuration");
-        m_needToLoadDataCount = config.DownloadDataCount;
-        LoadingSlider.maxValue = m_needToLoadDataCount;
-
         // 게임매니저 실행
-        var obj = new GameObject("DontDestroyOnLoad");
-        obj.AddComponent<GameManager>();
+        var gm = new GameObject("DontDestroyOnLoad").AddComponent<GameManager>();
+
+        // 다운로드 해야할 데이터 양 가져오기
+        m_needToLoadDataCount = gm.Config.DownloadDataCount;
+        LoadingSlider.maxValue = m_needToLoadDataCount;
 
         StartCoroutine(FakeLoadingPercent());
         StartCoroutine(FakeRestTime());
@@ -87,7 +82,7 @@ public class UpdateLoadingValues : MonoBehaviour
 
     IEnumerator FakeRestTime()
     {
-        var tick = new WaitForSeconds(1f);
+        var tick = new WaitForSeconds(0.5f);
         int timer = 0;
         while (true)
         {
@@ -121,7 +116,7 @@ public class UpdateLoadingValues : MonoBehaviour
         }
         LoadingCompleteObject.SetActive(false);
 
-        Debug.Log("엘리베이터 문 열림");
+        OnGameStart?.Invoke();
     }
 
     #region TEST

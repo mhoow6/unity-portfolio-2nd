@@ -199,13 +199,13 @@ public static class Automation
         string instancePath; // Temp
 
         FileHelper.DirectoryCheck(
-            $"{Application.dataPath}/Resources/00_MeshCombineObjects",
+            $"{Application.dataPath}/Resources/99_MeshCombineObjects",
             "디렉토리가 없어서 매쉬 컴바인에 생성에 실패했습니다. 디렉토리를 만들었으니 다시 시도해주세요."
         );
 
         for (int i = 0; i < _instanceRoots.Length; i++)
         {
-            string resultPath = Application.dataPath + "/Resources/00_MeshCombineObjects/";
+            string resultPath = $"{Application.dataPath}/Resources/99_MeshCombineObjects";
             string path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", resultPath, _instanceRoots[i].name + "_Mesh", "asset");
 
             if (string.IsNullOrEmpty(path)) return;
@@ -268,7 +268,7 @@ public static class Automation
     public static void SaveScene()
     {
         string filePath = string.Empty;
-        filePath = $"{Application.dataPath}/99_Table/{SceneManager.GetActiveScene().name}.csv";
+        filePath = $"{Application.dataPath}/Resources/99_Table/{SceneManager.GetActiveScene().name}.csv";
 
         using (StreamWriter sw = new StreamWriter(filePath))
         {
@@ -277,23 +277,16 @@ public static class Automation
             GameObject parent = GameObject.FindGameObjectWithTag("Terrain");
             WriteSceneData(parent, sw);
 
-            parent = GameObject.FindGameObjectWithTag("Rocks");
+            parent = GameObject.FindGameObjectWithTag("Character");
             WriteSceneData(parent, sw);
 
-            parent = GameObject.FindGameObjectWithTag("Props");
-            WriteSceneData(parent, sw);
-
-            parent = GameObject.FindGameObjectWithTag("Vegetation");
-            WriteSceneData(parent, sw);
-
-            parent = GameObject.FindGameObjectWithTag("Particle");
-            WriteSceneData(parent, sw);
-
-            parent = GameObject.FindGameObjectWithTag("CombinedObject");
+            parent = GameObject.FindGameObjectWithTag("Interactable");
             WriteSceneData(parent, sw);
 
             sw.Close();
         }
+
+        AssetDatabase.Refresh();
     }
 
     static void WriteFile(string filePath, string content, Action onExceptionCB = null)
