@@ -8,4 +8,9 @@ public class Player : MonoBehaviour
     {
         GameManager.Instance.Player = this;
     }
+
+    void OnDestroy()
+    {
+        GameManager.Instance.Player = null;
+    }
 }

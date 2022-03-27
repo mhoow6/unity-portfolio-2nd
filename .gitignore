@@ -17,6 +17,7 @@ Assets/SD_Project
 Assets/Plugins
 
 # Ignore File
+*.dll
 *.unity
 *.csproj
 *.sln

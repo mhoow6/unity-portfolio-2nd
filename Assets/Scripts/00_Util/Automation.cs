@@ -61,7 +61,7 @@ public static class Automation
             $"{Application.dataPath}/Scripts/99_Table",
             $"{Application.dataPath}/Scripts/99_Table 에 해당하는 경로가 없습니다.");
 
-        WriteFile($"{Application.dataPath}/Scripts/99_Table/TableInfos.cs", data, () => data = string.Empty);
+        FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Table/TableInfos.cs", data, () => data = string.Empty);
 
         // 데이터 총 갯수 저장
         var scriptableObj = Resources.Load<Configuration>("Configuration");
@@ -135,7 +135,7 @@ public static class Automation
 
             //Debug.Log(managerData);
 
-            WriteFile($"{Application.dataPath}/Scripts/99_Table/TableManager.cs", managerData);
+            FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Table/TableManager.cs", managerData);
         }
 
         AssetDatabase.Refresh();
@@ -194,7 +194,6 @@ public static class Automation
             throw new Exception("현재 씬에서 MeshCombine가 부착된 오브젝트를 찾을 수 없습니다.");
         }
 
-        GameObject instanceRoot; // Temp
         Mesh instanceRootMesh; // Temp
         string instancePath; // Temp
 
@@ -207,31 +206,32 @@ public static class Automation
         {
             string resultPath = $"{Application.dataPath}/Resources/99_MeshCombineObjects";
             string path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", resultPath, _instanceRoots[i].name + "_Mesh", "asset");
+            GameObject instanceRoot; // Temp
 
             if (string.IsNullOrEmpty(path)) return;
 
             path = FileUtil.GetProjectRelativePath(path); // For AssetDatabase.CreateAsset
 
-            // 원소의 매쉬 컴바인을 진행한다.
+            // 1. 매쉬 컴바인을 진행한다.
             _instanceRoots[i].MeshCombineObjects();
 
-            // 매쉬 컴바인을 한 게임오브젝트
+            // 2. 매쉬 컴바인을 한 게임오브젝트
             instanceRoot = _instanceRoots[i].gameObject;
 
-            // 매쉬 컴바인을 한 게임오브젝트를 프리팹으로 저장할 때의 이름
-            instancePath = resultPath + _instanceRoots[i].name + ".prefab";
+            // 3. 매쉬 컴바인을 한 게임오브젝트를 프리팹으로 저장할 때의 이름
+            instancePath = $"{resultPath}/{_instanceRoots[i].name}.prefab";
 
-            // 매쉬 컴바인을 한 게임오브젝트의 매쉬를 인스턴싱
-            instanceRootMesh = UnityEngine.Object.Instantiate(_instanceRoots[i].selfMeshFilter.sharedMesh);
+            // 4. 매쉬 컴바인을 한 게임오브젝트의 매쉬를 인스턴싱
+            instanceRootMesh = UnityEngine.Object.Instantiate(_instanceRoots[i].MeshFilter.sharedMesh);
 
             // 인스턴싱된 매쉬를 Asset으로써 저장한다. 실제 매쉬가 없으면 프리팹으로 저장을 할 때 매쉬가 없는 채로 저장됨.
             AssetDatabase.CreateAsset(instanceRootMesh, path);
             AssetDatabase.SaveAssets();
 
-            // 인스턴싱 매쉬를 다시 원소의 sharedMesh에 부여한다. (프리팹에 매쉬 자동 부여용도)
-            _instanceRoots[i].selfMeshFilter.sharedMesh = instanceRootMesh;
+            // 6. 인스턴싱 매쉬를 다시 원소의 sharedMesh에 부여한다. (프리팹에 매쉬 자동 부여용도)
+            _instanceRoots[i].MeshFilter.sharedMesh = instanceRootMesh;
 
-            // 매쉬 컴바인된 게임오브젝트를 프리팹으로써 저장한다.
+            // 7. 매쉬 컴바인된 게임오브젝트를 프리팹으로써 저장한다.
             PrefabUtility.SaveAsPrefabAsset(instanceRoot, instancePath, out bool success);
 
             if (success == true)
@@ -240,6 +240,7 @@ public static class Automation
                 Debug.Log(instanceRoot.name + " 안에 속해있는 오브젝트들의 매쉬 컴바인에 실패하였습니다...");
 
             _instanceRoots[i].Clean();
+
         }
     }
 
@@ -267,64 +268,72 @@ public static class Automation
     [MenuItem("Automation/Table/Save Scene")]
     public static void SaveScene()
     {
-        string filePath = string.Empty;
-        filePath = $"{Application.dataPath}/Resources/99_Table/{SceneManager.GetActiveScene().name}.csv";
+        string sceneName = SceneManager.GetActiveScene().name;
+        string filePath = $"{Application.dataPath}/Resources/99_Table/{sceneName}.csv";
 
         using (StreamWriter sw = new StreamWriter(filePath))
         {
             sw.WriteLine("name,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
 
-            GameObject parent = GameObject.Find("03_Terrain");
-            WriteSceneData(parent, sw);
+            GameObject parent = GameObject.Find("99_MeshCombineObjects");
+            if (parent != null)
+                WriteSceneData(parent, sw);
 
             parent = GameObject.Find("04_Character");
-            WriteSceneData(parent, sw);
-
+            if (parent != null)
+                WriteSceneData(parent, sw);
+        
             parent = GameObject.Find("05_Interactable");
-            WriteSceneData(parent, sw);
+            if (parent != null)
+                WriteSceneData(parent, sw);
+
+            parent = Camera.main.gameObject;
+            if (parent != null)
+                WriteSceneData(parent, sw, false);
 
             sw.Close();
         }
+        Debug.Log($"{sceneName}.csv Save Completed.");
 
         AssetDatabase.Refresh();
     }
 
-    static void WriteFile(string filePath, string content, Action onExceptionCB = null)
+    static void WriteSceneData(GameObject parent, StreamWriter streamWriter, bool hasChild = true)
     {
-        try
+        if (hasChild)
         {
-            FileStream fs = new FileStream(filePath, FileMode.Create);
-            using (StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8))
+            streamWriter.WriteLine(parent.name);
+            for (int i = 0; i < parent.transform.childCount; i++)
             {
-                sw.WriteLine(content);
-                sw.Close();
+                streamWriter.WriteLine(
+                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
+                    parent.transform.GetChild(i).position.x + "," +
+                    parent.transform.GetChild(i).position.y + "," +
+                    parent.transform.GetChild(i).position.z + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
+                    parent.transform.GetChild(i).localScale.x + "," +
+                    parent.transform.GetChild(i).localScale.y + "," +
+                    parent.transform.GetChild(i).localScale.z
+                    );
             }
         }
-        catch (Exception e)
-        {
-            Debug.LogError(e.Message);
-            onExceptionCB?.Invoke();
-        }
-    }
-
-    static void WriteSceneData(GameObject parent, StreamWriter streamWriter)
-    {
-        streamWriter.WriteLine(parent.name);
-        for (int i = 0; i < parent.transform.childCount; i++)
+        else
         {
             streamWriter.WriteLine(
-                EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                parent.transform.GetChild(i).position.x + "," +
-                parent.transform.GetChild(i).position.y + "," +
-                parent.transform.GetChild(i).position.z + "," +
-                parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                parent.transform.GetChild(i).localScale.x + "," +
-                parent.transform.GetChild(i).localScale.y + "," +
-                parent.transform.GetChild(i).localScale.z
-                );
-        }
+                    EraseBracketInName(parent.name) + "," +
+                    parent.transform.position.x + "," +
+                    parent.transform.position.y + "," +
+                    parent.transform.position.z + "," +
+                    parent.transform.rotation.eulerAngles.x + "," +
+                    parent.transform.rotation.eulerAngles.y + "," +
+                    parent.transform.rotation.eulerAngles.z + "," +
+                    parent.transform.localScale.x + "," +
+                    parent.transform.localScale.y + "," +
+                    parent.transform.localScale.z
+                    );
+        } 
     }
 
     static string EraseBracketInName(string mobName)

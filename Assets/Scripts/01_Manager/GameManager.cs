@@ -7,12 +7,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public Configuration Config { get; private set; }
-
     [ReadOnly]
     public Player Player;
+    public Camera MainCam;
+    public Light DirectLight;
 
-
+    // System
     public UISystem UISystem;
+    // --
+
+    [Header("# 개발자 옵션")]
+    public bool TitleLoadingSkip;
 
     private void Awake()
     {
@@ -22,18 +27,27 @@ public class GameManager : MonoBehaviour
 
         // Init
         TableManager.Instance.LoadTable();
-        UISystem.Init();
+        if (UISystem != null)
+            UISystem.Init();
+        // ---
+
+        // Setting
+        Application.targetFrameRate = 60;
         // ---
     }
 
     void Start()
     {
-        // UI 상에서도 게임 가짜 로딩 시작
-        var ui = UISystem.OpenWindow<LoadingUI>(UIType.Loading);
-        ui.LoadingTitle();
+        // UI 상에서 게임 로딩 시작
+        if (UISystem != null)
+        {
+            var ui = UISystem.OpenWindow<LoadingUI>(UIType.Loading);
+            ui.LoadingTitle(TitleLoadingSkip);
+        }
+        
     }
 
-    #region 씬
+    #region 씬 로딩
     List<GameObject> m_roots = new List<GameObject>();
     public void LoadScene(string sceneName)
     {
@@ -46,7 +60,7 @@ public class GameManager : MonoBehaviour
         for (int i = 1; i < texts.Count; i++)
         {
             var split = texts[i].Split(',');
-            // xpos부터 아무 값이 저장이 안 되어 있으면 씬을 저장할 때 부모 오브젝트로 저장한 것이다.
+            // xpos부터 아무 값이 저장이 안 되어 있으면 부모 오브젝트
             if (split.Length == 1)
             {
                 go = new GameObject(split[0]);
@@ -54,12 +68,19 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            var prefab = Resources.Load<GameObject>($"{go.name}/{split[0]}");
+            GameObject prefab = null;
+            if (split[0].Equals("Main Camera"))
+                prefab = Camera.main.gameObject;
+            else
+                prefab = Resources.Load<GameObject>($"{go.name}/{split[0]}");
 
             prefab.transform.position = new Vector3(float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));
             prefab.transform.rotation = Quaternion.Euler(new Vector3(float.Parse(split[4]), float.Parse(split[5]), float.Parse(split[6])));
 
-            Object.Instantiate(prefab, go.transform, true);
+
+            // 부모의 자식으로 해놓아 에디터에서 관리하기 편하게 함
+            if (!split[0].Equals("Main Camera"))
+                Object.Instantiate(prefab, go.transform, true);
         }
     }
 

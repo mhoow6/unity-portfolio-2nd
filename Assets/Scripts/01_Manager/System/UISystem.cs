@@ -55,7 +55,7 @@ public class UISystem : GameSystem
     }
 
     [ContextMenu("Get All Windows")]
-    public void GetAllWindows()
+    void GetAllWindows()
     {
         Windows.Clear();
         var canvasObj = GameObject.Find("Canvas");

@@ -66,6 +66,24 @@ public static class FileHelper
         return lines;
     }
 
+    public static void WriteFile(string filePath, string content, Action onExceptionCB = null)
+    {
+        try
+        {
+            FileStream fs = new FileStream(filePath, FileMode.Create);
+            using (StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8))
+            {
+                sw.WriteLine(content);
+                sw.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+            onExceptionCB?.Invoke();
+        }
+    }
+
     public static bool MakeDirectory(string directory)
     {
         if (!Directory.Exists(directory))

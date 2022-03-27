@@ -26,7 +26,7 @@ public class LoadingUI : UI
 
     public override UIType Type { get => UIType.Loading; }
 
-    public void LoadingTitle()
+    public void LoadingTitle(bool quickMode = false)
     {
         m_LoadingObject.SetActive(true);
         m_LoadingCompleteObject.SetActive(false);
@@ -37,9 +37,37 @@ public class LoadingUI : UI
 
         // 이벤트 설정
         OnLoadComplete = () => { StartCoroutine(WaitForGameStart()); };
+
+        if (quickMode)
+            StartCoroutine(LoadComplete());
+        else
+        {
+            StartCoroutine(FakeLoadingPercent());
+            StartCoroutine(FakeRestTime());
+        }
         
-        StartCoroutine(FakeLoadingPercent());
-        StartCoroutine(FakeRestTime());
+    }
+
+    IEnumerator LoadComplete()
+    {
+        // 로딩 완료했으니 텍스트 수정
+        m_LoadingPercent.text = string.Format("{0:00.00}", 100);
+        m_RestTime.text = "00:00";
+
+        // 슬라이더 안 보이게 하기
+        m_LoadingSlider.gameObject.SetActive(false);
+
+        // 조금 늦게 로딩 완료 시 오브젝트 보여주기
+        yield return new WaitForSeconds(0.5f);
+        m_LoadingObject.SetActive(false);
+        m_LoadingCompleteObject.SetActive(true);
+
+        // 로딩 완료시 출력할 애니메이션이 있으면 보여주자
+        if (m_LoadingCompleteAnimator != null)
+            m_LoadingCompleteAnimator.SetBool("LoadingComplete", true);
+
+        OnLoadComplete?.Invoke();
+        OnLoadComplete = null;
     }
 
     IEnumerator FakeLoadingPercent()
@@ -64,24 +92,7 @@ public class LoadingUI : UI
 
             yield return tick;
         }
-        // 로딩 완료했으니 텍스트 수정
-        m_LoadingPercent.text = string.Format("{0:00.00}", 100);
-        m_RestTime.text = "00:00";
-
-        // 슬라이더 안 보이게 하기
-        m_LoadingSlider.gameObject.SetActive(false);
-
-        // 조금 늦게 로딩 완료 시 오브젝트 보여주기
-        yield return new WaitForSeconds(0.5f);
-        m_LoadingObject.SetActive(false);
-        m_LoadingCompleteObject.SetActive(true);
-
-        // 로딩 완료시 출력할 애니메이션이 있으면 보여주자
-        if (m_LoadingCompleteAnimator != null)
-            m_LoadingCompleteAnimator.SetBool("LoadingComplete", true);
-
-        OnLoadComplete?.Invoke();
-        OnLoadComplete = null;
+        yield return StartCoroutine(LoadComplete());
     }
 
     IEnumerator FakeRestTime()
@@ -121,7 +132,7 @@ public class LoadingUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        GameManager.Instance.LoadScene("Village");
+        GameManager.Instance.LoadScene("MainMenu");
     }
 
     public override void OnOpened()
