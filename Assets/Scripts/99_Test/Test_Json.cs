@@ -3,24 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test_Json : MonoBehaviour
+namespace Test
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Test_Json : MonoBehaviour
     {
-        JTestClass test = new JTestClass(true);
-        string str = ObjectToJson(test);
-        Debug.Log(str);
+        // Start is called before the first frame update
+        void Start()
+        {
+            
+        }
 
-    }
+        string ObjectToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
 
-    string ObjectToJson(object obj)
-    {
-        return JsonConvert.SerializeObject(obj);
-    }
-
-    T JsonToObject<T>(string jsonData)
-    {
-        return JsonConvert.DeserializeObject<T>(jsonData);
+        T JsonToObject<T>(string jsonData)
+        {
+            return JsonConvert.DeserializeObject<T>(jsonData);
+        }
     }
 }
+

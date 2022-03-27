@@ -8,11 +8,24 @@ public class UISystem : GameSystem
     public List<UI> Windows = new List<UI>();
     Stack<UI> m_windowStack = new Stack<UI>();
 
+    public UI NoneCloseableWindow;
+
     public override void Init()
     {
         m_windowStack.Clear();
         foreach (var window in Windows)
             window.gameObject.SetActive(false);
+    }
+
+    public override void Tick()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (m_windowStack.Peek().Type != UIType.MainMenu)
+                CloseWindow();
+            else
+                OpenWindow<AskForQuitUI>(UIType.AskForQuit);
+        }
     }
 
     public void OpenWindow(UIType type)
@@ -22,6 +35,8 @@ public class UISystem : GameSystem
             if (window.Type == type)
             {
                 window.gameObject.SetActive(true);
+                window.transform.SetAsFirstSibling();
+
                 window.OnOpened();
 
                 m_windowStack.Push(window);
@@ -37,6 +52,8 @@ public class UISystem : GameSystem
             if (window.Type == type)
             {
                 window.gameObject.SetActive(true);
+                window.transform.SetAsFirstSibling();
+
                 window.OnOpened();
 
                 result = window as T;
@@ -49,12 +66,17 @@ public class UISystem : GameSystem
 
     public void CloseWindow()
     {
-        var window = m_windowStack.Pop();
+        var window = m_windowStack.Peek();
+
+        if (window.Equals(NoneCloseableWindow))
+            return;
+
+        window = m_windowStack.Pop();
         window.gameObject.SetActive(false);
         window.OnClosed();
     }
 
-    [ContextMenu("Get All Windows")]
+    [ContextMenu("# Get All Windows")]
     void GetAllWindows()
     {
         Windows.Clear();
@@ -70,6 +92,4 @@ public class UISystem : GameSystem
             }
         }
     }
-
-    
 }

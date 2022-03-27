@@ -275,21 +275,27 @@ public static class Automation
         {
             sw.WriteLine("name,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
 
-            GameObject parent = GameObject.Find("99_MeshCombineObjects");
+            GameObject parent = null;
+
+            parent = GameObject.Find("03_Terrain");
             if (parent != null)
-                WriteSceneData(parent, sw);
+                FileHelper.WriteSceneData(parent, sw);
+
+            parent = GameObject.Find("99_MeshCombineObjects");
+            if (parent != null)
+                FileHelper.WriteSceneData(parent, sw);
 
             parent = GameObject.Find("04_Character");
             if (parent != null)
-                WriteSceneData(parent, sw);
+                FileHelper.WriteSceneData(parent, sw);
         
             parent = GameObject.Find("05_Interactable");
             if (parent != null)
-                WriteSceneData(parent, sw);
+                FileHelper.WriteSceneData(parent, sw);
 
-            parent = Camera.main.gameObject;
+            parent = GameObject.Find("09_Atmosphere");
             if (parent != null)
-                WriteSceneData(parent, sw, false);
+                FileHelper.WriteSceneData(parent, sw);
 
             sw.Close();
         }
@@ -298,53 +304,5 @@ public static class Automation
         AssetDatabase.Refresh();
     }
 
-    static void WriteSceneData(GameObject parent, StreamWriter streamWriter, bool hasChild = true)
-    {
-        if (hasChild)
-        {
-            streamWriter.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                streamWriter.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
-        }
-        else
-        {
-            streamWriter.WriteLine(
-                    EraseBracketInName(parent.name) + "," +
-                    parent.transform.position.x + "," +
-                    parent.transform.position.y + "," +
-                    parent.transform.position.z + "," +
-                    parent.transform.rotation.eulerAngles.x + "," +
-                    parent.transform.rotation.eulerAngles.y + "," +
-                    parent.transform.rotation.eulerAngles.z + "," +
-                    parent.transform.localScale.x + "," +
-                    parent.transform.localScale.y + "," +
-                    parent.transform.localScale.z
-                    );
-        } 
-    }
-
-    static string EraseBracketInName(string mobName)
-    {
-        string mobNameWithNoSpace = mobName.Replace(" ", "");
-        int index = mobNameWithNoSpace.IndexOf('(');
-
-        if (index == -1)
-            return mobName;
-
-        return mobNameWithNoSpace.Remove(index);
-    }
 }
 #endif

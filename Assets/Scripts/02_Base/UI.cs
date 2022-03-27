@@ -4,8 +4,10 @@ using UnityEngine;
 
 public enum UIType
 {
-    Lobby,
+    MainMenu,
     Loading,
+    Adventure,
+    AskForQuit
 }
 
 public abstract class UI : MonoBehaviour

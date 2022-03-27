@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public static class FileHelper
 {
@@ -84,6 +85,44 @@ public static class FileHelper
         }
     }
 
+    public static void WriteSceneData(GameObject parent, StreamWriter streamWriter, bool hasChild = true)
+    {
+        if (hasChild)
+        {
+            streamWriter.WriteLine(parent.name);
+            for (int i = 0; i < parent.transform.childCount; i++)
+            {
+                streamWriter.WriteLine(
+                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
+                    parent.transform.GetChild(i).position.x + "," +
+                    parent.transform.GetChild(i).position.y + "," +
+                    parent.transform.GetChild(i).position.z + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
+                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
+                    parent.transform.GetChild(i).localScale.x + "," +
+                    parent.transform.GetChild(i).localScale.y + "," +
+                    parent.transform.GetChild(i).localScale.z
+                    );
+            }
+        }
+        else
+        {
+            streamWriter.WriteLine(
+                    EraseBracketInName(parent.name) + "," +
+                    parent.transform.position.x + "," +
+                    parent.transform.position.y + "," +
+                    parent.transform.position.z + "," +
+                    parent.transform.rotation.eulerAngles.x + "," +
+                    parent.transform.rotation.eulerAngles.y + "," +
+                    parent.transform.rotation.eulerAngles.z + "," +
+                    parent.transform.localScale.x + "," +
+                    parent.transform.localScale.y + "," +
+                    parent.transform.localScale.z
+                    );
+        }
+    }
+
     public static bool MakeDirectory(string directory)
     {
         if (!Directory.Exists(directory))
@@ -103,4 +142,16 @@ public static class FileHelper
             throw new DirectoryNotFoundException(notFoundMessage);
         }
     }
+
+    public static string EraseBracketInName(string mobName)
+    {
+        string mobNameWithNoSpace = mobName.Replace(" ", "");
+        int index = mobNameWithNoSpace.IndexOf('(');
+
+        if (index == -1)
+            return mobName;
+
+        return mobNameWithNoSpace.Remove(index);
+    }
 }
+

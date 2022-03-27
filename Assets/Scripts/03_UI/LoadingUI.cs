@@ -28,6 +28,8 @@ public class LoadingUI : UI
 
     public void LoadingTitle(bool quickMode = false)
     {
+        GameManager.Instance.LoadScene("LoadingTitle");
+
         m_LoadingObject.SetActive(true);
         m_LoadingCompleteObject.SetActive(false);
 
@@ -119,7 +121,7 @@ public class LoadingUI : UI
         }
     }
 
-    // 게임 시작 대기
+    // 로딩 완료 후 게임 시작 대기
     IEnumerator WaitForGameStart()
     {
         bool ready = false;
@@ -133,6 +135,8 @@ public class LoadingUI : UI
 
         m_LoadingCompleteObject.SetActive(false);
         GameManager.Instance.LoadScene("MainMenu");
+        GameManager.Instance.UISystem.CloseWindow();
+        GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
     }
 
     public override void OnOpened()

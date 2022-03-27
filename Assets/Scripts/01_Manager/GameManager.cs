@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TableSystem;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class GameManager : MonoBehaviour
     // System
     public UISystem UISystem;
     // --
+
+    // Update Handler
+    Action m_fixedUpdate;
+    // ---
 
     [Header("# 개발자 옵션")]
     public bool TitleLoadingSkip;
@@ -34,6 +39,11 @@ public class GameManager : MonoBehaviour
         // Setting
         Application.targetFrameRate = 60;
         // ---
+
+        // FixedUpdate
+        if (UISystem != null)
+            m_fixedUpdate += UISystem.Tick;
+        // ---
     }
 
     void Start()
@@ -44,13 +54,24 @@ public class GameManager : MonoBehaviour
             var ui = UISystem.OpenWindow<LoadingUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
-        
+    }
+
+    void FixedUpdate()
+    {
+        m_fixedUpdate?.Invoke();
     }
 
     #region 씬 로딩
     List<GameObject> m_roots = new List<GameObject>();
+    bool m_IsSceneLoaded => m_roots.Count > 0;
     public void LoadScene(string sceneName)
     {
+        if (m_IsSceneLoaded)
+            UnloadScene();
+
+        var prevCam = MainCam;
+        var prevLight = DirectLight;
+
         // name, xpos, ypos, zpos, xrot, yrot, zrot
         var texts = FileHelper.GetLinesFromTableTextAsset($"99_Table/{sceneName}");
         if (texts == null)
@@ -69,19 +90,19 @@ public class GameManager : MonoBehaviour
             }
 
             GameObject prefab = null;
-            if (split[0].Equals("Main Camera"))
-                prefab = Camera.main.gameObject;
-            else
-                prefab = Resources.Load<GameObject>($"{go.name}/{split[0]}");
+            prefab = Resources.Load<GameObject>($"{go.name}/{split[0]}");
 
             prefab.transform.position = new Vector3(float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));
             prefab.transform.rotation = Quaternion.Euler(new Vector3(float.Parse(split[4]), float.Parse(split[5]), float.Parse(split[6])));
-
+            prefab.transform.localScale = new Vector3(float.Parse(split[7]), float.Parse(split[8]), float.Parse(split[9]));
 
             // 부모의 자식으로 해놓아 에디터에서 관리하기 편하게 함
-            if (!split[0].Equals("Main Camera"))
-                Object.Instantiate(prefab, go.transform, true);
+            UnityEngine.Object.Instantiate(prefab, go.transform, true);
         }
+
+        // 기존 씬에 있던 카메라와 direcitonal light은 삭제
+        Destroy(prevCam.gameObject);
+        Destroy(prevLight.gameObject);
     }
 
     public void UnloadScene()
@@ -90,12 +111,10 @@ public class GameManager : MonoBehaviour
         {
             // 자식들 삭제
             for (int i = 0; i < root.transform.childCount; i++)
-            {
-                Object.Destroy(root.transform.GetChild(i).gameObject);
-            }
+                UnityEngine.Object.Destroy(root.transform.GetChild(i).gameObject);
 
             // 루트 삭제
-            Object.Destroy(root.transform);
+            UnityEngine.Object.Destroy(root.transform);
         }
 
         // 리스트 클리어
