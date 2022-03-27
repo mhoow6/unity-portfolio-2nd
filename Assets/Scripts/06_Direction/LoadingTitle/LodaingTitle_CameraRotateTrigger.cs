@@ -13,7 +13,7 @@ public class LodaingTitle_CameraRotateTrigger : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (CollideHelper.TrySphereCollide(gameObject, m_mainCamera, 1))
+        if (CollideHelper.TrySphereCollide(gameObject, m_mainCamera, 3))
             m_mainCamera.transform.Rotate(Vector3.up, 180);
     }
 }
