@@ -101,8 +101,11 @@ public class GameManager : MonoBehaviour
         }
 
         // 기존 씬에 있던 카메라와 direcitonal light은 삭제
-        Destroy(prevCam.gameObject);
-        Destroy(prevLight.gameObject);
+        if (prevCam && prevLight)
+        {
+            Destroy(prevCam.gameObject);
+            Destroy(prevLight.gameObject);
+        }
     }
 
     public void UnloadScene()
@@ -114,11 +117,13 @@ public class GameManager : MonoBehaviour
                 UnityEngine.Object.Destroy(root.transform.GetChild(i).gameObject);
 
             // 루트 삭제
-            UnityEngine.Object.Destroy(root.transform);
+            UnityEngine.Object.Destroy(root);
         }
 
-        // 리스트 클리어
+        // 클리어
         m_roots.Clear();
+        MainCam = null;
+        DirectLight = null;
     }
     #endregion
 }
