@@ -9,12 +9,15 @@ public class UISystem : GameSystem
     Stack<UI> m_windowStack = new Stack<UI>();
 
     public UI NoneCloseableWindow;
+    public Canvas Canvas;
 
     public override void Init()
     {
         m_windowStack.Clear();
         foreach (var window in Windows)
             window.gameObject.SetActive(false);
+
+        DontDestroyOnLoad(Canvas);
     }
 
     public override void Tick()

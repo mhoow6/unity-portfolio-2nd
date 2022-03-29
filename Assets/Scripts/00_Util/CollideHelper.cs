@@ -98,11 +98,32 @@ public static class CollideHelper
     /// <param name="lhsBounds"></param>
     /// <param name="rhsBounds"></param>
     /// <returns></returns>
-    public static bool TryAABB(ref Bounds lhsBounds, ref Bounds rhsBounds)
+    public static bool TryAABB(this ref Bounds lhsBounds, ref Bounds rhsBounds)
     {
         if (lhsBounds.Intersects(rhsBounds))
             return true;
 
         return false;
+    }
+
+    /// <summary>
+    /// 3D 공간에서 오브젝트가 카메라 안에 있는지 확인합니다.
+    /// </summary>
+    /// <param name="obj">확인할 오브젝트</param>
+    /// <param name="cam">오브젝트를 감시할 카메라</param>
+    /// <returns></returns>
+    public static bool IsInCamera(this GameObject obj, Camera cam)
+    {
+        Vector3 screenPoint = cam.WorldToViewportPoint(obj.transform.position);
+
+        // 뷰포트 안에 있는지 확인
+        return
+            screenPoint.z > 0 &&
+            screenPoint.x > 0 &&
+            screenPoint.x < 1 &&
+            screenPoint.y > 0 &&
+            screenPoint.y < 1 &&
+            // FarPlane보다 가까이 있는지 확인
+            obj.TrySphereCollide(cam.gameObject, cam.farClipPlane);
     }
 }

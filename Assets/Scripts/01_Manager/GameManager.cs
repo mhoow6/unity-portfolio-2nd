@@ -61,12 +61,12 @@ public class GameManager : MonoBehaviour
         m_fixedUpdate?.Invoke();
     }
 
-    #region ¾À ·Îµù
+    #region ¾À ¼öµ¿ ·Îµù
     List<GameObject> m_roots = new List<GameObject>();
-    bool m_IsSceneLoaded => m_roots.Count > 0;
+    bool m_isSceneLoaded => m_roots.Count > 0;
     public void LoadScene(string sceneName)
     {
-        if (m_IsSceneLoaded)
+        if (m_isSceneLoaded)
             UnloadScene();
 
         var prevCam = MainCam;
