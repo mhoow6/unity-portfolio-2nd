@@ -25,14 +25,16 @@ public class LoadingUI : UI
     int m_totalDownloadDataCount;
     int m_predictRestTime;
 
+    const int DATA_DOWNLOAD_MAXIMUM_SPEED = 40;
+
     public override UIType Type { get => UIType.Loading; }
 
     IEnumerator FakeLoadingWithProgress()
     {
         var tick = new WaitForFixedUpdate();
         // 로딩 연출을 위한 랜덤 최소값, 랜덤 최대값
-        int minValue = m_needToLoadDataCount > 20 ? 19 : m_needToLoadDataCount - 1;
-        int maxValue = m_needToLoadDataCount > 20 ? 20 : m_needToLoadDataCount;
+        int minValue = m_needToLoadDataCount > DATA_DOWNLOAD_MAXIMUM_SPEED ? DATA_DOWNLOAD_MAXIMUM_SPEED - 1 : m_needToLoadDataCount - 1;
+        int maxValue = m_needToLoadDataCount > DATA_DOWNLOAD_MAXIMUM_SPEED ? DATA_DOWNLOAD_MAXIMUM_SPEED : m_needToLoadDataCount;
         while (m_totalDownloadDataCount < m_needToLoadDataCount)
         {
             m_downloadDataPerSecond = Random.Range(minValue, maxValue);

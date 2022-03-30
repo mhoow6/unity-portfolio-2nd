@@ -6,9 +6,6 @@ using System.Linq;
 public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
 {
     public List<LoadingTitle_Road> Roads = new List<LoadingTitle_Road>();
-    const float RoadMoveSpeed = 2.0f;
-    LoadingUI m_LoadingUI;
-
     public LoadingTitle_Road LastRoad
     {
         get
@@ -17,6 +14,10 @@ public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
             return sortedList.Last();
         }
     }
+
+    LoadingUI m_LoadingUI;
+
+    const float ROAD_MOVE_SPEED = 2.0f;
 
     public void StartDirecting(LoadingUI ui)
     {
@@ -32,7 +33,7 @@ public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
             if (Roads.Count > 0)
             {
                 foreach (var road in Roads)
-                    road.transform.position += -road.transform.forward * Time.deltaTime * RoadMoveSpeed;
+                    road.transform.position += -road.transform.forward * Time.deltaTime * ROAD_MOVE_SPEED;
             }
 
             yield return null;
@@ -42,8 +43,19 @@ public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
 
     IEnumerator SmoothlyStop()
     {
-        while (true)
+        float moveSpeed = ROAD_MOVE_SPEED;
+        float timer = 0f;
+        while (moveSpeed > 0.05f)
         {
+            timer += Time.deltaTime;
+            moveSpeed = Mathf.Lerp(moveSpeed, 0, timer);
+            Debug.Log($"MoveSpeed: {moveSpeed}");
+
+            if (Roads.Count > 0)
+            {
+                foreach (var road in Roads)
+                    road.transform.position += -road.transform.forward * Time.deltaTime * moveSpeed;
+            }
             yield return null;
         }
     }
