@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
     #region ¾À ¼öµ¿ ·Îµù
     List<GameObject> m_roots = new List<GameObject>();
     bool m_isSceneLoaded => m_roots.Count > 0;
-    public void LoadScene(string sceneName)
+     void LoadScene(string sceneName)
     {
         if (m_isSceneLoaded)
             UnloadScene();
@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UnloadScene()
+     void UnloadScene()
     {
         foreach (var root in m_roots)
         {

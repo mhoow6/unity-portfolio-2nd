@@ -10,6 +10,7 @@ public class LoadingTitle_Road : MonoBehaviour
     private void Start()
     {
         Radius = BoxCollider.bounds.size.z;
+        //Radius = 7.6f;
     }
 
     public void Attach(GameObject obj)

@@ -10,6 +10,7 @@ public class UISystem : GameSystem
 
     public UI NoneCloseableWindow;
     public Canvas Canvas;
+    public UI CurrentWindow => m_windowStack.Peek();
 
     public override void Init()
     {
