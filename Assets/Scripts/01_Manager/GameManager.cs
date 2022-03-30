@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
         // UI 상에서 게임 로딩 시작
         if (UISystem != null)
         {
-            var ui = UISystem.OpenWindow<LoadingUI>(UIType.Loading);
+            var ui = UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
     }

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 using Random = UnityEngine.Random;
 
-public class LoadingUI : UI
+public class LoadingTitleUI : UI
 {
     [SerializeField] GameObject m_LoadingObject;
     [SerializeField] Slider m_LoadingSlider;
@@ -17,7 +17,7 @@ public class LoadingUI : UI
     [SerializeField] GameObject m_LoadingCompleteObject;
     [SerializeField] Animator m_LoadingCompleteAnimator;
 
-    public bool IsLoadingComplete;
+    [ReadOnly] public bool IsLoadingComplete;
     public Action OnLoadComplete { get; set; }
 
     int m_downloadDataPerSecond;
@@ -143,9 +143,10 @@ public class LoadingUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        //GameManager.Instance.LoadScene("MainMenu");
         GameManager.Instance.UISystem.CloseWindow();
-        GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
+
+        // 섬 근처로 카메라가 이동하는 연출 시작
+        MainMenu_Manager.Instance.StartDirecting();
     }
     #endregion
 
@@ -156,6 +157,13 @@ public class LoadingUI : UI
 
     public override void OnClosed()
     {
-        
+        m_downloadDataPerSecond = 0;
+        m_needToLoadDataCount = 0;
+        m_totalDownloadDataCount = 0;
+        m_predictRestTime = 0;
+        m_LoadingPercent.text = string.Format("{0:00.00}", 0);
+        m_RestTime.text = "00:00";
+        m_LoadingSlider.value = 0;
+        IsLoadingComplete = false;
     }
 }

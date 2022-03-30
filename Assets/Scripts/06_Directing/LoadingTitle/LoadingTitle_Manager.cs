@@ -15,18 +15,18 @@ public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
         }
     }
 
-    LoadingUI m_LoadingUI;
+    LoadingTitleUI m_LoadingUI;
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
-    public void StartDirecting(LoadingUI ui)
+    public void StartDirecting(LoadingTitleUI ui)
     {
         m_LoadingUI = ui;
 
-        StartCoroutine(KeepMovingToCamera());
+        StartCoroutine(KeepRoadsMovingToCamera());
     }
 
-    IEnumerator KeepMovingToCamera()
+    IEnumerator KeepRoadsMovingToCamera()
     {
         while (!m_LoadingUI.IsLoadingComplete)
         {
@@ -38,18 +38,20 @@ public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
 
             yield return null;
         }
-        StartCoroutine(SmoothlyStop());
+        StartCoroutine(MakeRoadsSmoothlyStop());
     }
 
-    IEnumerator SmoothlyStop()
+    IEnumerator MakeRoadsSmoothlyStop()
     {
         float moveSpeed = ROAD_MOVE_SPEED;
         float timer = 0f;
+        float sensitivity = 0f;
         while (moveSpeed > 0.05f)
         {
             timer += Time.deltaTime;
-            moveSpeed = Mathf.Lerp(moveSpeed, 0, timer);
-            Debug.Log($"MoveSpeed: {moveSpeed}");
+            sensitivity += timer * 0.01f;
+            moveSpeed = Mathf.Lerp(moveSpeed, 0, sensitivity);
+            //Debug.Log($"MoveSpeed: {moveSpeed}");
 
             if (Roads.Count > 0)
             {
