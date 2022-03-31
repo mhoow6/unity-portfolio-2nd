@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class LoadingTitle_Manager : MonoSingleton<LoadingTitle_Manager>
+public class LoadingTitle_Director : MonoSingleton<LoadingTitle_Director>
 {
     public List<LoadingTitle_Road> Roads = new List<LoadingTitle_Road>();
     public LoadingTitle_Road LastRoad

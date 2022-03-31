@@ -6,4 +6,5 @@ using UnityEngine;
 public class Configuration : ScriptableObject
 {
     public int DownloadDataCount;
+    public string SaveFilePath;
 }

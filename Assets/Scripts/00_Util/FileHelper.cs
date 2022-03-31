@@ -8,7 +8,9 @@ using Newtonsoft.Json;
 
 public static class FileHelper
 {
-    public static List<string> GetLinesFromTableTextAsset(string filePath)
+    
+
+    public static List<string> GetLinesFromTextAsset(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
         if (txtAsset == null)
@@ -29,7 +31,7 @@ public static class FileHelper
         return lines;
     }
 
-    public static List<string> GetLinesFromTableFileStream(string filePath)
+    public static List<string> GetLinesFromFileStream(string filePath)
     {
         string line = string.Empty;
         List<string> lines = new List<string>();
@@ -48,20 +50,27 @@ public static class FileHelper
         return lines;
     }
 
-    public static string GetLinesWithFileStream(string filePath)
+    public static string GetStringFromFileStream(string filePath)
     {
         string line = string.Empty;
         string lines = string.Empty;
 
-        using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        try
         {
-            using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
+            using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                while ((line = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
                 {
-                    lines += line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        lines += line;
+                    }
                 }
             }
+        }
+        catch (FileNotFoundException)
+        {
+            Debug.LogError($"{filePath}을 찾을 수 없습니다.");
         }
 
         return lines;
@@ -83,6 +92,11 @@ public static class FileHelper
             Debug.LogError(e.Message);
             onExceptionCB?.Invoke();
         }
+    }
+
+    public static void DeleteFile(string filePath)
+    {
+        File.Delete(filePath);
     }
 
     public static void WriteSceneData(GameObject parent, StreamWriter streamWriter, bool hasChild = true)
@@ -143,13 +157,13 @@ public static class FileHelper
         }
     }
 
-    public static string EraseBracketInName(string mobName)
+    public static string EraseBracketInName(string name)
     {
-        string mobNameWithNoSpace = mobName.Replace(" ", "");
+        string mobNameWithNoSpace = name.Replace(" ", "");
         int index = mobNameWithNoSpace.IndexOf('(');
 
         if (index == -1)
-            return mobName;
+            return name;
 
         return mobNameWithNoSpace.Remove(index);
     }

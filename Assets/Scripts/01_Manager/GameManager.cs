@@ -8,10 +8,14 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public Configuration Config { get; private set; }
+    public PlayerData PlayerData { get; private set; }
+
+    // InGame
     [ReadOnly]
     public Player Player;
     public Camera MainCam;
     public Light DirectLight;
+    // ---
 
     // System
     public UISystem UISystem;
@@ -28,15 +32,21 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Instance = this;
-        Config = Resources.Load<Configuration>("Configuration");
 
-        // Init
+        // Data
+        Config = Resources.Load<Configuration>("Configuration");
+        Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
+
+        PlayerData = PlayerData.GetData(Config.SaveFilePath);
+        // ---
+
+        // Manager Init
         TableManager.Instance.LoadTable();
         if (UISystem != null)
             UISystem.Init();
         // ---
 
-        // Setting
+        // Game Setting
         Application.targetFrameRate = 60;
         // ---
 
@@ -73,7 +83,7 @@ public class GameManager : MonoBehaviour
         var prevLight = DirectLight;
 
         // name, xpos, ypos, zpos, xrot, yrot, zrot
-        var texts = FileHelper.GetLinesFromTableTextAsset($"99_Table/{sceneName}");
+        var texts = FileHelper.GetLinesFromTextAsset($"99_Table/{sceneName}");
         if (texts == null)
             return;
 

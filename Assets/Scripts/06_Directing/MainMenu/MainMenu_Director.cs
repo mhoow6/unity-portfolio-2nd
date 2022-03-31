@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenu_Manager : MonoSingleton<MainMenu_Manager>
+public class MainMenu_Director : MonoSingleton<MainMenu_Director>
 {
     public Transform CameraPosition;
 
