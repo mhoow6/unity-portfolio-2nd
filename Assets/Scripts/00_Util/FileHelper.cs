@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using Newtonsoft.Json;
 
 public static class FileHelper
 {
-    
-
-    public static List<string> GetLinesFromTextAsset(string filePath)
+    public static List<string> GetStringsFromByCSVFormat(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
         if (txtAsset == null)
@@ -31,7 +28,7 @@ public static class FileHelper
         return lines;
     }
 
-    public static List<string> GetLinesFromFileStream(string filePath)
+    public static List<string> GetStringsFrom(string filePath)
     {
         string line = string.Empty;
         List<string> lines = new List<string>();
@@ -50,7 +47,7 @@ public static class FileHelper
         return lines;
     }
 
-    public static string GetStringFromFileStream(string filePath)
+    public static string GetStringFrom(string filePath)
     {
         string line = string.Empty;
         string lines = string.Empty;
@@ -147,14 +144,16 @@ public static class FileHelper
         return false;
     }
 
-    public static void DirectoryCheck(string directory, string notFoundMessage)
+    public static bool DirectoryCheck(string directory, string notFoundMessage)
     {
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
             AssetDatabase.Refresh();
-            throw new DirectoryNotFoundException(notFoundMessage);
+            Debug.LogError($"{notFoundMessage}");
+            return false;
         }
+        return true;
     }
 
     public static string EraseBracketInName(string name)

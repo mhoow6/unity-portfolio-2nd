@@ -7,7 +7,8 @@ public enum UIType
     MainMenu,
     Loading,
     Adventure,
-    AskForQuit
+    AskForQuit,
+    NickNameInput
 }
 
 public abstract class UI : MonoBehaviour

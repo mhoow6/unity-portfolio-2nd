@@ -8,9 +8,41 @@ using Newtonsoft.Json;
 public class PlayerData
 {
     public Guid Guid;
-    public string NickName;
-    public int Level;
-    public int Experience;
+    [JsonIgnore] public string NickName
+    {
+        get => m_NickName;
+        set
+        {
+            m_NickName = value;
+            OnNickNameUpdate?.Invoke(value);
+        }
+    }
+    [JsonProperty] string m_NickName;
+    [JsonIgnore] public Action<string> OnNickNameUpdate;
+
+    [JsonIgnore] public int Level
+    {
+        get => m_Level;
+        set
+        {
+            m_Level = value;
+            OnLevelUpdate?.Invoke(value);
+        }
+    }
+    [JsonProperty] int m_Level;
+    [JsonIgnore] public Action<int> OnLevelUpdate;
+
+    [JsonIgnore] public int Experience
+    {
+        get => m_Experience;
+        set
+        {
+            m_Experience = value;
+            OnExperienceUpdate?.Invoke(value);
+        }
+    }
+    [JsonProperty] int m_Experience;
+    [JsonIgnore] public Action<int> OnExperienceUpdate;
 
     [JsonIgnore] static string m_FilePath;
 
@@ -25,7 +57,7 @@ public class PlayerData
     public static PlayerData GetData(string saveFilePath)
     {
         m_FilePath = saveFilePath;
-        string result = FileHelper.GetStringFromFileStream(saveFilePath);
+        string result = FileHelper.GetStringFrom(saveFilePath);
 
         if (!string.IsNullOrEmpty(result))
             return JsonConvert.DeserializeObject<PlayerData>(result);

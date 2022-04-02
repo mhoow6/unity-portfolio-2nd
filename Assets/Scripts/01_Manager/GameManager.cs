@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     // --
 
     // Update Handler
-    Action m_fixedUpdate;
+    Action m_Update;
     // ---
 
     [Header("# 개발자 옵션")]
@@ -50,9 +50,9 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         // ---
 
-        // FixedUpdate
+        // Update
         if (UISystem != null)
-            m_fixedUpdate += UISystem.Tick;
+            m_Update += UISystem.Tick;
         // ---
     }
 
@@ -66,9 +66,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void Update()
     {
-        m_fixedUpdate?.Invoke();
+        m_Update?.Invoke();
     }
 
     #region 씬 수동 로딩
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
         var prevLight = DirectLight;
 
         // name, xpos, ypos, zpos, xrot, yrot, zrot
-        var texts = FileHelper.GetLinesFromTextAsset($"99_Table/{sceneName}");
+        var texts = FileHelper.GetStringsFromByCSVFormat($"99_Table/{sceneName}");
         if (texts == null)
             return;
 

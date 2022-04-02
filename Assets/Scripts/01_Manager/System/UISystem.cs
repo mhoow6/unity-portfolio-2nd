@@ -34,18 +34,7 @@ public class UISystem : GameSystem
 
     public void OpenWindow(UIType type)
     {
-        foreach (var window in Windows)
-        {
-            if (window.Type == type)
-            {
-                window.gameObject.SetActive(true);
-                window.transform.SetAsFirstSibling();
-
-                window.OnOpened();
-
-                m_windowStack.Push(window);
-            }
-        }
+        OpenWindow<UI>(type);
     }
 
     public T OpenWindow<T>(UIType type) where T : UI
@@ -57,14 +46,16 @@ public class UISystem : GameSystem
             {
                 window.gameObject.SetActive(true);
                 window.transform.SetAsFirstSibling();
-
-                window.OnOpened();
-
                 result = window as T;
-
                 m_windowStack.Push(window);
+
+                window.OnOpened();                
             }
         }
+
+        if (!result)
+            Debug.LogError($"{type}에 해당하는 창이 시스템에 등록이 안 되어 있습니다.");
+
         return result;
     }
 

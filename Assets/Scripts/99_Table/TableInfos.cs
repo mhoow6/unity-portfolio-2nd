@@ -1,23 +1,11 @@
 ﻿namespace TableSystem
 {
-	public struct Test2Info
+	public struct PlayerLevelExperienceTable
 	{
-		/// <summary> 인덱스 </summary> ///
-		public int index;
-		/// <summary> 이름 </summary> ///
-		public string name;
-		/// <summary> 속도 </summary> ///
-		public float speed;
-	}
-
-	public struct TestInfo
-	{
-		/// <summary> 인덱스 </summary> ///
-		public int index;
-		/// <summary> 이름 </summary> ///
-		public string name;
-		/// <summary> 속도 </summary> ///
-		public float speed;
+		/// <summary> 레벨 </summary> ///
+		public int Level;
+		/// <summary> 최대 경험치 </summary> ///
+		public int MaxExperience;
 	}
 
 }
