@@ -19,11 +19,12 @@ public class GameManager : MonoBehaviour
 
     // System
     public UISystem UISystem;
-    public EnergyRecoverySystem EnergySystem;
+    public EnergyRecoverySystem EnergyRecoverySystem { get; private set; }
     // --
 
     // Update Handler
     Action m_Update;
+    Action m_FixedUpdate;
     // ---
 
     [Header("# 개발자 옵션")]
@@ -46,8 +47,8 @@ public class GameManager : MonoBehaviour
         TableManager.Instance.LoadTable();
         if (UISystem != null)
             UISystem.Init();
-        EnergySystem = new EnergyRecoverySystem();
-        EnergySystem.Init();
+        EnergyRecoverySystem = new EnergyRecoverySystem();
+        EnergyRecoverySystem.Init();
         // ---
 
         // Game Setting
@@ -57,8 +58,10 @@ public class GameManager : MonoBehaviour
         // Update
         if (UISystem != null)
             m_Update += UISystem.Tick;
-        m_Update += EnergySystem.Tick;
+        // ---
 
+        // FixedUpdate
+        m_FixedUpdate += EnergyRecoverySystem.Tick;
         // ---
     }
 
@@ -70,6 +73,11 @@ public class GameManager : MonoBehaviour
             var ui = UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        m_FixedUpdate?.Invoke();
     }
 
     private void Update()

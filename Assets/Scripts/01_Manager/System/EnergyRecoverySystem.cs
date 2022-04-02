@@ -17,8 +17,8 @@ public class EnergyRecoverySystem : GameSystem
 
     public void Tick()
     {
-        int maxEnergy = TableManager.Instance.PlayerLevelExperienceTables.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
-        if (m_PlayerData.Energy == maxEnergy)
+        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTables.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
+        if (m_PlayerData.Energy >= maxEnergy)
             return;
 
         TimeSpan interval = DateTime.Now - m_PlayerData.LastEnergyUpdateTime;

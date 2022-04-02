@@ -9,12 +9,20 @@ public class MainMenuUI : UI
 {
     public Text LevelNickName;
     public Slider ExperienceSlider;
+    
     public Text Energy;
+    public Image EnergyBackground;
+    public Text EnergyMax;
+
     public Text Gold;
 
     PlayerData m_PlayerData;
     bool m_Init;
     Vector3 m_OriginNickNameAnchoredPosition;
+    const float ENERGY_ALPHA = 0.31f;
+    const float ENERGY_MAX_ALPHA = 0.5f;
+    const int TWEEN_DELTA = 50;
+    const float TWEEN_DURATION = 0.5f;
 
     public override UIType Type => UIType.MainMenu;
 
@@ -80,13 +88,28 @@ public class MainMenuUI : UI
         // ---
 
         // Æ®À§´×
-        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + 50, 0.5f);
-        ExperienceSlider.DOValue(m_PlayerData.Experience, 0.5f);
+        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + TWEEN_DELTA, TWEEN_DURATION);
+        ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
     }
 
     void EnergyTextUpdate(int energy)
     {
         int maxEnergy = TableManager.Instance.PlayerLevelEnergyTables.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
         Energy.text = $"{energy}/{maxEnergy}";
+
+        if (energy >= maxEnergy)
+        {
+            if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
+            {
+                EnergyBackground.color = new Vector4(color.r, color.g, color.b, ENERGY_MAX_ALPHA);
+            }
+                
+            EnergyMax.gameObject.SetActive(true);
+        }
+        else
+        {
+            EnergyBackground.color = new Vector4(0, 0, 0, ENERGY_ALPHA);
+            EnergyMax.gameObject.SetActive(false);
+        }
     }
 }
