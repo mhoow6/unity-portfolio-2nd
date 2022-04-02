@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GameSystem : MonoBehaviour
+public interface GameSystem
 {
-    public abstract void Init();
-    public abstract void Tick();
+    public void Init();
+    public void Tick();
 }

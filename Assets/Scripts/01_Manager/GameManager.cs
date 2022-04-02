@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     // System
     public UISystem UISystem;
+    public EnergyRecoverySystem EnergySystem;
     // --
 
     // Update Handler
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Instance = this;
+        m_Update = null;
 
         // Data
         Config = Resources.Load<Configuration>("Configuration");
@@ -44,6 +46,8 @@ public class GameManager : MonoBehaviour
         TableManager.Instance.LoadTable();
         if (UISystem != null)
             UISystem.Init();
+        EnergySystem = new EnergyRecoverySystem();
+        EnergySystem.Init();
         // ---
 
         // Game Setting
@@ -53,6 +57,8 @@ public class GameManager : MonoBehaviour
         // Update
         if (UISystem != null)
             m_Update += UISystem.Tick;
+        m_Update += EnergySystem.Tick;
+
         // ---
     }
 

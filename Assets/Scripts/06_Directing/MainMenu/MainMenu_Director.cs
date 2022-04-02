@@ -5,6 +5,7 @@ using UnityEngine;
 public class MainMenu_Director : MonoSingleton<MainMenu_Director>
 {
     public Transform CameraPosition;
+    public bool CameraInPosiiton { get; private set; }
 
     const float CAMERA_MOVE_SPEED = 0.5F;
 
@@ -28,5 +29,6 @@ public class MainMenu_Director : MonoSingleton<MainMenu_Director>
             yield return null;
         }
         GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
+        CameraInPosiiton = true;
     }
 }

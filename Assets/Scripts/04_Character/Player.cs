@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    void Start()
+    protected virtual void Start()
     {
         GameManager.Instance.Player = this;
     }
 
-    void OnDestroy()
+    protected virtual void OnDestroy()
     {
         GameManager.Instance.Player = null;
     }

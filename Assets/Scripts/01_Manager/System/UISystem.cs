@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UISystem : GameSystem
+public class UISystem : MonoBehaviour, GameSystem
 {
     [ReadOnly]
     public List<UI> Windows = new List<UI>();
@@ -12,7 +12,7 @@ public class UISystem : GameSystem
     public Canvas Canvas;
     public UI CurrentWindow => m_windowStack.Peek();
 
-    public override void Init()
+    public void Init()
     {
         m_windowStack.Clear();
         foreach (var window in Windows)
@@ -21,7 +21,7 @@ public class UISystem : GameSystem
         DontDestroyOnLoad(Canvas);
     }
 
-    public override void Tick()
+    public void Tick()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
