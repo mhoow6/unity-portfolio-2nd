@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 namespace TableSystem
 {
 	public class TableManager
 	{
 		public static TableManager Instance { get; private set; } = new TableManager();
 		public int LoadedData { get; private set; } = 0;
-		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTables = new List<PlayerLevelEnergyTable>();
-		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTables = new List<PlayerLevelExperienceTable>();
+		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
+		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
+		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
@@ -20,7 +22,7 @@ namespace TableSystem
                 info.Level = int.Parse(datas[0]);
 				info.MaxEnergy = int.Parse(datas[1]);
 				
-                PlayerLevelEnergyTables.Add(info);
+                PlayerLevelEnergyTable.Add(info);
                 LoadedData++;
             }
         
@@ -33,7 +35,20 @@ namespace TableSystem
                 info.Level = int.Parse(datas[0]);
 				info.MaxExperience = int.Parse(datas[1]);
 				
-                PlayerLevelExperienceTables.Add(info);
+                PlayerLevelExperienceTable.Add(info);
+                LoadedData++;
+            }
+        
+            var SparcherAniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/SparcherAniTypeDialogueTable");
+            string[] SparcherAniTypeDialogueTableLines = SparcherAniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < SparcherAniTypeDialogueTableLines.Length; i++)
+            {
+                string[] datas = SparcherAniTypeDialogueTableLines[i].Split(',');
+                SparcherAniTypeDialogueTable info;
+                info.AniType = (AniType)Enum.Parse(typeof(AniType),datas[0]);
+				info.Dialog = datas[1];
+				
+                SparcherAniTypeDialogueTable.Add(info);
                 LoadedData++;
             }
         }

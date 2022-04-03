@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadingTitle_Exit : MonoBehaviour
+public class LoadingTitleExit : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        LoadingTitle_Director.Instance.LastRoad.Attach(other.gameObject);
+        GameManager.Instance.Mechanism_LoadingTitle.LastRoad.Attach(other.gameObject);
     }
 }

@@ -7,25 +7,25 @@ using System;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    // Global Data
     public Configuration Config { get; private set; }
     public PlayerData PlayerData { get; private set; }
-
-    // InGame
-    [ReadOnly]
-    public Player Player;
+    [ReadOnly] public Player Player;
     public Camera MainCam;
     public Light DirectLight;
-    // ---
 
-    // System
-    public UISystem UISystem;
-    public EnergyRecoverySystem EnergyRecoverySystem { get; private set; }
-    // --
+    // Game System
+    public UISystem System_UI;
+    public EnergyRecoverySystem System_EnergyRecovery { get; private set; }
+
+    // Mechanism
+    [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
+    [ReadOnly] public MainMenuMechanism Mechanism_MainMenu;
 
     // Update Handler
     Action m_Update;
     Action m_FixedUpdate;
-    // ---
 
     [Header("# 개발자 옵션")]
     public bool TitleLoadingSkip;
@@ -45,10 +45,10 @@ public class GameManager : MonoBehaviour
 
         // Manager Init
         TableManager.Instance.LoadTable();
-        if (UISystem != null)
-            UISystem.Init();
-        EnergyRecoverySystem = new EnergyRecoverySystem();
-        EnergyRecoverySystem.Init();
+        if (System_UI != null)
+            System_UI.Init();
+        System_EnergyRecovery = new EnergyRecoverySystem();
+        System_EnergyRecovery.Init();
         // ---
 
         // Game Setting
@@ -56,21 +56,21 @@ public class GameManager : MonoBehaviour
         // ---
 
         // Update
-        if (UISystem != null)
-            m_Update += UISystem.Tick;
+        if (System_UI != null)
+            m_Update += System_UI.Tick;
         // ---
 
         // FixedUpdate
-        m_FixedUpdate += EnergyRecoverySystem.Tick;
+        m_FixedUpdate += System_EnergyRecovery.Tick;
         // ---
     }
 
     void Start()
     {
         // UI 상에서 게임 로딩 시작
-        if (UISystem != null)
+        if (System_UI != null)
         {
-            var ui = UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
+            var ui = System_UI.OpenWindow<LoadingTitleUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
     }

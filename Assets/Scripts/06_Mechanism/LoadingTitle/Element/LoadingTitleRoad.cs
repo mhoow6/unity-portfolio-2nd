@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadingTitle_Road : MonoBehaviour
+public class LoadingTitleRoad : MonoBehaviour
 {
     float Radius;
     public Collider BoxCollider;

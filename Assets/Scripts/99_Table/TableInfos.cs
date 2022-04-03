@@ -16,4 +16,12 @@
 		public int MaxExperience;
 	}
 
+	public struct SparcherAniTypeDialogueTable
+	{
+		/// <summary> 애니메이션 종류 </summary> ///
+		public AniType AniType;
+		/// <summary> 클릭 시 대화내용 </summary> ///
+		public string Dialog;
+	}
+
 }

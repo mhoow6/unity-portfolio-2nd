@@ -118,7 +118,7 @@ public class LoadingTitleUI : UI
         OnLoadComplete += () => { StartCoroutine(WaitForGameStart()); };
 
         // 로딩타이틀 연출시작
-        LoadingTitle_Director.Instance.StartDirecting(this);
+        GameManager.Instance.Mechanism_LoadingTitle.StartDirecting(this);
 
         if (quickMode)
             StartCoroutine(LoadComplete());
@@ -143,10 +143,10 @@ public class LoadingTitleUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        GameManager.Instance.UISystem.CloseWindow();
+        GameManager.Instance.System_UI.CloseWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
-        MainMenu_Director.Instance.StartDirecting();
+        GameManager.Instance.Mechanism_MainMenu.StartDirecting();
     }
     #endregion
 

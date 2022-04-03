@@ -16,12 +16,17 @@ public class MainMenuUI : UI
 
     public Text Gold;
 
+    public Text CharacterDialog;
+
     PlayerData m_PlayerData;
     bool m_Init;
     Vector3 m_OriginNickNameAnchoredPosition;
+
     const float ENERGY_ALPHA = 0.31f;
     const float ENERGY_MAX_ALPHA = 0.5f;
-    const int TWEEN_DELTA = 50;
+
+    // 이 값을 수정할 경우 LevelNickName의 rectTransform도 수정해야함.
+    const int LEVELNICKNAME_TWEEN_DELTA = 50;
     const float TWEEN_DURATION = 0.5f;
 
     public override UIType Type => UIType.MainMenu;
@@ -68,16 +73,14 @@ public class MainMenuUI : UI
 
             m_Init = true;
         }
-        // ---
 
         // 이벤트 등록 
         m_PlayerData.OnEnergyUpdate += EnergyTextUpdate;
-        // ---
 
         // UI
         LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{m_PlayerData.NickName}</size>";
 
-        int maxExperience = TableManager.Instance.PlayerLevelExperienceTables.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
         ExperienceSlider.maxValue = maxExperience;
         //ExperienceSlider.value = m_PlayerData.Experience;
 
@@ -85,25 +88,21 @@ public class MainMenuUI : UI
 
         EnergyTextUpdate(m_PlayerData.Energy);
 
-        // ---
-
         // 트위닝
-        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + TWEEN_DELTA, TWEEN_DURATION);
+        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, TWEEN_DURATION);
         ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
     }
 
     void EnergyTextUpdate(int energy)
     {
-        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTables.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
+        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTable.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
         Energy.text = $"{energy}/{maxEnergy}";
 
         if (energy >= maxEnergy)
         {
             if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
-            {
                 EnergyBackground.color = new Vector4(color.r, color.g, color.b, ENERGY_MAX_ALPHA);
-            }
-                
+
             EnergyMax.gameObject.SetActive(true);
         }
         else

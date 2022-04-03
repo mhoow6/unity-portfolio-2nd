@@ -10,5 +10,10 @@ public class MonoSingleton<T> : MonoBehaviour where T : class
     {
         Instance = this as T;
     }
+
+    protected void OnDestroy()
+    {
+        Instance = null;
+    }
 }
 

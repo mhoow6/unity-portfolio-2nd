@@ -77,6 +77,7 @@ public static class Automation
             string managerData = string.Empty;
             managerData += $"using System.Collections.Generic;\n" +
                            $"using UnityEngine;\n" +
+                           $"using System;\n" +
                            $"namespace TableSystem\n{{\n\t" +
                            $"public class TableManager\n\t{{\n\t\t" +
                            $"public static TableManager Instance {{ get; private set; }} = new TableManager();\n\t\t" +
@@ -85,7 +86,7 @@ public static class Automation
             for (int i = 0; i < textassets.Length; i++)
             {
                 var asset = textassets[i];
-                managerData += $"public List<{asset.name}> {asset.name}s = new List<{asset.name}>();\n\t\t";
+                managerData += $"public List<{asset.name}> {asset.name} = new List<{asset.name}>();\n\t\t";
             }
 
             managerData +=
@@ -103,7 +104,7 @@ public static class Automation
                 string[] datas = {0}Lines[i].Split(',');
                 {0} info;
                 {1}
-                {0}s.Add(info);
+                {0}.Add(info);
                 LoadedData++;
             }}
         ";
@@ -116,12 +117,32 @@ public static class Automation
                 string[] fieldNames = lines[1].Split(',');
 
                 string inline = string.Empty;
+
+                string[] types = new string[] { "char", "int", "long", "double", "string", "ushort" };
+
                 for (int j = 0; j < fieldTypes.Length; j++)
                 {
                     if (fieldTypes[j].Equals("string"))
                         inline += $"info.{fieldNames[j]} = datas[{j}];\n\t\t\t\t";
                     else
-                        inline += $"info.{fieldNames[j]} = {fieldTypes[j]}.Parse(datas[{j}]);\n\t\t\t\t";
+                    {
+                        // 열거형 타입인지 확인
+                        bool isEnum = true;
+                        for (int k = 0; k < types.Length; k++)
+                        {
+                            if (fieldTypes[j].Equals(types[k]))
+                            {
+                                isEnum = false;
+                                break;
+                            }    
+                        }
+
+                        if (!isEnum)
+                            inline += $"info.{fieldNames[j]} = {fieldTypes[j]}.Parse(datas[{j}]);\n\t\t\t\t";
+                        else
+                            inline += $"info.{fieldNames[j]} = ({fieldTypes[j]})Enum.Parse(typeof({fieldTypes[j]}),datas[{j}]);\n\t\t\t\t";
+                    }
+                        
 
                 }
 
