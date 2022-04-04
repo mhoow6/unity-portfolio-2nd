@@ -6,15 +6,15 @@ public class UISystem : MonoBehaviour, GameSystem
 {
     [ReadOnly]
     public List<UI> Windows = new List<UI>();
-    Stack<UI> m_windowStack = new Stack<UI>();
+    Stack<UI> m_WindowStack = new Stack<UI>();
 
     public UI NoneCloseableWindow;
     public Canvas Canvas;
-    public UI CurrentWindow => m_windowStack.Peek();
+    public UI CurrentWindow => m_WindowStack.Peek();
 
     public void Init()
     {
-        m_windowStack.Clear();
+        m_WindowStack.Clear();
         foreach (var window in Windows)
             window.gameObject.SetActive(false);
 
@@ -25,7 +25,7 @@ public class UISystem : MonoBehaviour, GameSystem
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (m_windowStack.Peek().Type != UIType.MainMenu)
+            if (m_WindowStack.Peek().Type != UIType.MainMenu)
                 CloseWindow();
             else
                 OpenWindow<AskForQuitUI>(UIType.AskForQuit);
@@ -47,7 +47,7 @@ public class UISystem : MonoBehaviour, GameSystem
                 window.gameObject.SetActive(true);
                 window.transform.SetAsFirstSibling();
                 result = window as T;
-                m_windowStack.Push(window);
+                m_WindowStack.Push(window);
 
                 window.OnOpened();                
             }
@@ -61,12 +61,12 @@ public class UISystem : MonoBehaviour, GameSystem
 
     public void CloseWindow()
     {
-        var window = m_windowStack.Peek();
+        var window = m_WindowStack.Peek();
 
         if (window.Equals(NoneCloseableWindow))
             return;
 
-        window = m_windowStack.Pop();
+        window = m_WindowStack.Pop();
         window.gameObject.SetActive(false);
         window.OnClosed();
     }

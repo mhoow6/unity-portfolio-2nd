@@ -71,6 +71,8 @@ public class PlayerData
 
     [JsonIgnore] static string m_FilePath;
 
+    public bool AskForNickName;
+
     public PlayerData()
     {
         Guid = Guid.NewGuid();
@@ -78,6 +80,8 @@ public class PlayerData
         Level = 1;
         Experience = 0;
         Energy = 0;
+        Gold = 0;
+        AskForNickName = false;
     }
 
     public static PlayerData GetData(string saveFilePath)

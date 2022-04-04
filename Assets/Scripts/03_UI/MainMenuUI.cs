@@ -71,6 +71,12 @@ public class MainMenuUI : UI
             m_PlayerData = gm.PlayerData;
             m_OriginNickNameAnchoredPosition = LevelNickName.rectTransform.anchoredPosition;
 
+            if (m_PlayerData.AskForNickName == false)
+            {
+                GameManager.Instance.System_UI.OpenWindow(UIType.NickNameInput);
+                m_PlayerData.AskForNickName = true;
+            }
+
             m_Init = true;
         }
 
@@ -82,7 +88,6 @@ public class MainMenuUI : UI
 
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
         ExperienceSlider.maxValue = maxExperience;
-        //ExperienceSlider.value = m_PlayerData.Experience;
 
         Gold.text = $"{m_PlayerData.Gold}";
 

@@ -6,6 +6,11 @@ public class NickNameInputUI : UI
 {
     public override UIType Type => UIType.NickNameInput;
 
+    public void OnNickNameInputBtnClick()
+    {
+        
+    }
+
     public override void OnClosed()
     {
         

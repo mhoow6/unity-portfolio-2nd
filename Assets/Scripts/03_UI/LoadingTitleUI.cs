@@ -20,12 +20,13 @@ public class LoadingTitleUI : UI
     [ReadOnly] public bool IsLoadingComplete;
     public Action OnLoadComplete { get; set; }
 
-    int m_downloadDataPerSecond;
-    int m_needToLoadDataCount;
-    int m_totalDownloadDataCount;
-    int m_predictRestTime;
+    int m_DownloadDataPerSecond;
+    int m_NeedToLoadDataCount;
+    int m_TotalDownloadDataCount;
+    int m_PredictRestTime;
 
-    const int DATA_DOWNLOAD_MAXIMUM_SPEED = 40;
+    int m_FakeDataDownloadPerSecond;
+    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
 
     public override UIType Type { get => UIType.Loading; }
 
@@ -33,16 +34,22 @@ public class LoadingTitleUI : UI
     {
         var tick = new WaitForFixedUpdate();
         // 로딩 연출을 위한 랜덤 최소값, 랜덤 최대값
-        int minValue = m_needToLoadDataCount > DATA_DOWNLOAD_MAXIMUM_SPEED ? DATA_DOWNLOAD_MAXIMUM_SPEED - 1 : m_needToLoadDataCount - 1;
-        int maxValue = m_needToLoadDataCount > DATA_DOWNLOAD_MAXIMUM_SPEED ? DATA_DOWNLOAD_MAXIMUM_SPEED : m_needToLoadDataCount;
-        while (m_totalDownloadDataCount < m_needToLoadDataCount)
+        m_FakeDataDownloadPerSecond = (int)(m_NeedToLoadDataCount * 0.01f) == 0 ? 1 : (int)(m_NeedToLoadDataCount * 0.01f);
+        //Debug.Log($"초당 데이터 다운로드 수: {m_FakeDataDownloadPerSecond}");
+
+        int minValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
+        int maxValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
+        //Debug.Log($"최소 데이터 다운로드: {minValue}");
+        //Debug.Log($"최소 데이터 다운로드: {maxValue}");
+
+        while (m_TotalDownloadDataCount < m_NeedToLoadDataCount)
         {
-            m_downloadDataPerSecond = Random.Range(minValue, maxValue);
-            m_totalDownloadDataCount += m_downloadDataPerSecond;
-            m_LoadingSlider.value = m_totalDownloadDataCount;
+            m_DownloadDataPerSecond = Random.Range(minValue, maxValue);
+            m_TotalDownloadDataCount += m_DownloadDataPerSecond;
+            m_LoadingSlider.value = m_TotalDownloadDataCount;
 
             // 백분율
-            float ratio = (float)m_totalDownloadDataCount / m_needToLoadDataCount;
+            float ratio = (float)m_TotalDownloadDataCount / m_NeedToLoadDataCount;
             float percentage = ratio * 100;
 
             // 00.00%
@@ -61,13 +68,13 @@ public class LoadingTitleUI : UI
         while (true)
         {
             timer++;
-            if (m_totalDownloadDataCount > 0)
+            if (m_TotalDownloadDataCount > 0)
             {
-                int restDownloadByte = m_needToLoadDataCount - m_totalDownloadDataCount;
+                int restDownloadByte = m_NeedToLoadDataCount - m_TotalDownloadDataCount;
                 // Debug.Log($"남은 다운로드 용량: {restDownloadByte}");
 
-                m_predictRestTime = restDownloadByte / m_downloadDataPerSecond;
-                TimeSpan t = TimeSpan.FromSeconds(m_predictRestTime);
+                m_PredictRestTime = restDownloadByte / m_DownloadDataPerSecond;
+                TimeSpan t = TimeSpan.FromSeconds(m_PredictRestTime);
                 // Debug.Log($"{t.Hours}, {t.Minutes}, {t.Seconds}");
 
                 // 00:00
@@ -111,8 +118,8 @@ public class LoadingTitleUI : UI
         m_LoadingCompleteObject.SetActive(false);
 
         // 다운로드 해야할 데이터 양 가져오기
-        m_needToLoadDataCount = GameManager.Instance.Config.DownloadDataCount;
-        m_LoadingSlider.maxValue = m_needToLoadDataCount;
+        m_NeedToLoadDataCount = GameManager.Instance.Config.DownloadDataCount;
+        m_LoadingSlider.maxValue = m_NeedToLoadDataCount;
 
         // 이벤트 설정
         OnLoadComplete += () => { StartCoroutine(WaitForGameStart()); };
@@ -157,10 +164,10 @@ public class LoadingTitleUI : UI
 
     public override void OnClosed()
     {
-        m_downloadDataPerSecond = 0;
-        m_needToLoadDataCount = 0;
-        m_totalDownloadDataCount = 0;
-        m_predictRestTime = 0;
+        m_DownloadDataPerSecond = 0;
+        m_NeedToLoadDataCount = 0;
+        m_TotalDownloadDataCount = 0;
+        m_PredictRestTime = 0;
         m_LoadingPercent.text = string.Format("{0:00.00}", 0);
         m_RestTime.text = "00:00";
         m_LoadingSlider.value = 0;

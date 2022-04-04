@@ -31,11 +31,11 @@ public class Character : MonoBehaviour
     // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
     public List<AniType> AnimationsWhenUserClick { get; private set; } = new List<AniType>();
     protected Dictionary<AniType, string> m_AnimationDialogueMap = new Dictionary<AniType, string>();
-    public bool GetDialogue;
+    bool m_GetDialogue;
 
     public void GetDialogueUsedInMainMenu()
     {
-        if (GetDialogue)
+        if (m_GetDialogue)
             return;
 
         // TODO: 리팩토링
@@ -48,7 +48,7 @@ public class Character : MonoBehaviour
                 m_AnimationDialogueMap.Add(row.AniType, row.Dialog);
             }
         }
-        GetDialogue = true;
+        m_GetDialogue = true;
     }
 
     public void SpeakDialogueAtMainMenu(AniType type)
