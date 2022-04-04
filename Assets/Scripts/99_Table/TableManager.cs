@@ -10,6 +10,7 @@ namespace TableSystem
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
 		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
+		public List<StageQuestTable> StageQuestTable = new List<StageQuestTable>();
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
@@ -49,6 +50,21 @@ namespace TableSystem
 				info.Dialog = datas[1];
 				
                 SparcherAniTypeDialogueTable.Add(info);
+                LoadedData++;
+            }
+        
+            var StageQuestTableTextasset = Resources.Load<TextAsset>("99_Table/Table/StageQuestTable");
+            string[] StageQuestTableLines = StageQuestTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < StageQuestTableLines.Length; i++)
+            {
+                string[] datas = StageQuestTableLines[i].Split(',');
+                StageQuestTable info;
+                info.WorldIdx = int.Parse(datas[0]);
+				info.StageIdx = int.Parse(datas[1]);
+				info.QuestType = (QuestType)Enum.Parse(typeof(QuestType),datas[2]);
+				info.PurposeCount = int.Parse(datas[3]);
+				
+                StageQuestTable.Add(info);
                 LoadedData++;
             }
         }

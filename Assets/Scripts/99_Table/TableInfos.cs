@@ -24,4 +24,16 @@
 		public string Dialog;
 	}
 
+	public struct StageQuestTable
+	{
+		/// <summary> ���� IDX </summary> ///
+		public int WorldIdx;
+		/// <summary> �������� IDX </summary> ///
+		public int StageIdx;
+		/// <summary> ����Ʈ ���� </summary> ///
+		public QuestType QuestType;
+		/// <summary> ��ǥ Ƚ�� </summary> ///
+		public int PurposeCount;
+	}
+
 }
