@@ -73,6 +73,8 @@ public class PlayerData
 
     public bool AskForNickName;
 
+    public List<StageRecordData> StageRecords = new List<StageRecordData>();
+
     public PlayerData()
     {
         Guid = Guid.NewGuid();

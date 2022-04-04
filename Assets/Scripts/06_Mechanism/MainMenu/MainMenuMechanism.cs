@@ -38,7 +38,7 @@ public class MainMenuMechanism : Register
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * CAMERA_MOVE_SPEED);
             yield return null;
         }
-        GameManager.Instance.System_UI.OpenWindow(UIType.MainMenu);
+        GameManager.Instance.UI.OpenWindow(UIType.MainMenu);
         StartCoroutine(CheckingUserClickCharacter());
     }
 
@@ -47,8 +47,7 @@ public class MainMenuMechanism : Register
         while (true)
         {
             // ¿ÞÂÊ Å¬¸¯½Ã
-            //  && EventSystem.current.IsPointerOverGameObject() == false
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
             {
                 RaycastHit hitInfo;
                 Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);

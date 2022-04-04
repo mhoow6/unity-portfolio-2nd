@@ -13,7 +13,7 @@ namespace TableSystem
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
-            var PlayerLevelEnergyTableTextasset = Resources.Load<TextAsset>("99_Table/PlayerLevelEnergyTable");
+            var PlayerLevelEnergyTableTextasset = Resources.Load<TextAsset>("99_Table/Table/PlayerLevelEnergyTable");
             string[] PlayerLevelEnergyTableLines = PlayerLevelEnergyTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < PlayerLevelEnergyTableLines.Length; i++)
             {
@@ -26,7 +26,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var PlayerLevelExperienceTableTextasset = Resources.Load<TextAsset>("99_Table/PlayerLevelExperienceTable");
+            var PlayerLevelExperienceTableTextasset = Resources.Load<TextAsset>("99_Table/Table/PlayerLevelExperienceTable");
             string[] PlayerLevelExperienceTableLines = PlayerLevelExperienceTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < PlayerLevelExperienceTableLines.Length; i++)
             {
@@ -39,7 +39,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var SparcherAniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/SparcherAniTypeDialogueTable");
+            var SparcherAniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/SparcherAniTypeDialogueTable");
             string[] SparcherAniTypeDialogueTableLines = SparcherAniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < SparcherAniTypeDialogueTableLines.Length; i++)
             {

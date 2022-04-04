@@ -9,10 +9,125 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 public static class Automation
 {
+    [MenuItem("Automation/Table/Generate Game Enum")]
+    public static void GenerateGameEnum()
+    {
+        string result = string.Empty;
+
+        string datas = string.Empty;
+
+        string dataStruct =
+@"
+{0}
+";
+        string enums = string.Empty;
+
+        string enumStruct =
+@"
+    public enum {0}
+    {{
+        {1}
+    }}
+";
+        string enumValues = string.Empty;
+
+        string enumValueStruct =
+@"
+        {2}
+        {0} = {1},
+";
+
+        string[] separatingStrings = { "\r\n" };
+        var textasset = Resources.Load<TextAsset>("99_Table/Enum/GameEnum");
+        string[] lines = textasset.text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
+
+        bool enumStart = false;
+        bool dataParsing = false;
+        string enumType = string.Empty;
+        string enumName = string.Empty;
+        string enumValue = string.Empty;
+        string enumDesc = string.Empty;
+        
+
+        foreach (var line in lines)
+        {
+            // Enum::****
+            // @
+            // IDLE,0,설명
+            // @
+            // ,,,
+            // Enum::****
+            string[] words = line.Split(',');
+
+            // 열거형 타입 얻어내기
+            if (!enumStart)
+            {
+                foreach (var word in words)
+                {
+                    enumStart = word.StartsWith("Enum::");
+                    if (enumStart)
+                    {
+                        enumType = word.Replace("Enum::", "");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // 데이터 파싱 시작/끝 여부
+                if (line.StartsWith("@"))
+                {
+                    dataParsing = !dataParsing;
+                }
+                else
+                {
+                    if (dataParsing)
+                    {
+                        // 0번째: 열거형 이름
+                        // 1번째: 열거형 숫자
+                        // 2번째: 열거형 설명
+                        enumName = words[0];
+                        enumValue = words[1];
+                        enumDesc = $"/// <summary> {words[2]} </summary> ///";
+
+                        string s = string.Format(enumValueStruct, enumName, enumValue, enumDesc);
+                        enumValues += s;
+                    }
+
+                    bool allEmpty = true;
+                    foreach (var word in words)
+                    {
+                        //Debug.Log($"{word} 는 빈문자? {string.IsNullOrEmpty(word)}");
+                        allEmpty &= string.IsNullOrEmpty(word);
+                    }
+
+                    if (allEmpty)
+                    {
+                        enumStart = false;
+                        enums += string.Format(enumStruct, enumType, enumValues);
+
+                        // 최종적으로 만들어진 Enum을 datas에 집어넣는다.
+                        datas += enums;
+
+                        // 다음 Enum을 위해 클리어해줄 변수
+                        enumValues = string.Empty;
+                        enums = string.Empty;
+                    }
+                }
+            }
+        }
+
+        result = string.Format(dataStruct, datas);
+        //Debug.Log(result);
+        FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Table/GameEnum.cs", result);
+        AssetDatabase.Refresh();
+        
+    }
+
     [MenuItem("Automation/Table/Generate Table Class")]
     public static void GenerateTableClass()
     {
-        // 데이터 갯수 (UpdateLoadingValues에 전달해주기 위한 용도)
+        // 데이터 갯수
         int dataCount = 0;
 
         // 테이블에 따른 구조체 생성
@@ -20,7 +135,7 @@ public static class Automation
         data += $"namespace TableSystem\n{{\n\t";
 
         string[] separatingStrings = { "\r\n" };
-        var textassets = Resources.LoadAll<TextAsset>("99_Table");
+        var textassets = Resources.LoadAll<TextAsset>("99_Table/Table");
         for (int i = 0; i < textassets.Length; i++)
         {
             var asset = textassets[i];
@@ -97,7 +212,7 @@ public static class Automation
             string loadTable = string.Empty;
             loadTable =
          @"
-            var {0}Textasset = Resources.Load<TextAsset>(""99_Table/{0}"");
+            var {0}Textasset = Resources.Load<TextAsset>(""99_Table/Table/{0}"");
             string[] {0}Lines = {0}Textasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < {0}Lines.Length; i++)
             {{

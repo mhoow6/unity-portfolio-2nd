@@ -45,7 +45,7 @@ public class UISystem : MonoBehaviour, GameSystem
             if (window.Type == type)
             {
                 window.gameObject.SetActive(true);
-                window.transform.SetAsFirstSibling();
+                window.transform.SetAsLastSibling();
                 result = window as T;
                 m_WindowStack.Push(window);
 

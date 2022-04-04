@@ -2,17 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AniType
-{
-    IDLE,
-    RUN,
-    DEAD_1,
-    DEAD_2,
-    DEAD_3,
-    ATTACK,
-    JUMP,
-}
-
 public class Character : MonoBehaviour
 {
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
@@ -53,7 +42,7 @@ public class Character : MonoBehaviour
 
     public void SpeakDialogueAtMainMenu(AniType type)
     {
-        var ui = GameManager.Instance.System_UI.CurrentWindow as MainMenuUI;
+        var ui = GameManager.Instance.UI.CurrentWindow as MainMenuUI;
         if (ui != null && m_AnimationDialogueMap.TryGetValue(type, out string dialogue))
             ui.CharacterDialog.text = $"{dialogue}";
     }

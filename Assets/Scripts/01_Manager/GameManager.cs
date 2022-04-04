@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     public Light DirectLight;
 
     // Game System
-    public UISystem System_UI;
-    public EnergyRecoverySystem System_EnergyRecovery { get; private set; }
+    public UISystem UI;
+    EnergyRecoverySystem EnergyRecovery;
 
     // Mechanism
     [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     [Header("# 개발자 옵션")]
     public bool TitleLoadingSkip;
+    public bool AskForNickNameSkip;
 
     private void Awake()
     {
@@ -45,10 +46,10 @@ public class GameManager : MonoBehaviour
 
         // Manager Init
         TableManager.Instance.LoadTable();
-        if (System_UI != null)
-            System_UI.Init();
-        System_EnergyRecovery = new EnergyRecoverySystem();
-        System_EnergyRecovery.Init();
+        if (UI != null)
+            UI.Init();
+        EnergyRecovery = new EnergyRecoverySystem();
+        EnergyRecovery.Init();
         // ---
 
         // Game Setting
@@ -56,21 +57,21 @@ public class GameManager : MonoBehaviour
         // ---
 
         // Update
-        if (System_UI != null)
-            m_Update += System_UI.Tick;
+        if (UI != null)
+            m_Update += UI.Tick;
         // ---
 
         // FixedUpdate
-        m_FixedUpdate += System_EnergyRecovery.Tick;
+        m_FixedUpdate += EnergyRecovery.Tick;
         // ---
     }
 
     void Start()
     {
         // UI 상에서 게임 로딩 시작
-        if (System_UI != null)
+        if (UI != null)
         {
-            var ui = System_UI.OpenWindow<LoadingTitleUI>(UIType.Loading);
+            var ui = UI.OpenWindow<LoadingTitleUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
     }
