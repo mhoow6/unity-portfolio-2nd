@@ -9,6 +9,7 @@ namespace TableSystem
 		public int LoadedData { get; private set; } = 0;
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
+		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
 		public List<StageQuestTable> StageQuestTable = new List<StageQuestTable>();
 		public void LoadTable()
@@ -40,6 +41,20 @@ namespace TableSystem
                 LoadedData++;
             }
         
+            var QuestTableTextasset = Resources.Load<TextAsset>("99_Table/Table/QuestTable");
+            string[] QuestTableLines = QuestTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < QuestTableLines.Length; i++)
+            {
+                string[] datas = QuestTableLines[i].Split(',');
+                QuestTable info;
+                info.Index = int.Parse(datas[0]);
+				info.Type = (QuestType)Enum.Parse(typeof(QuestType),datas[1]);
+				info.PurposeCount = int.Parse(datas[2]);
+				
+                QuestTable.Add(info);
+                LoadedData++;
+            }
+        
             var SparcherAniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/SparcherAniTypeDialogueTable");
             string[] SparcherAniTypeDialogueTableLines = SparcherAniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < SparcherAniTypeDialogueTableLines.Length; i++)
@@ -61,8 +76,9 @@ namespace TableSystem
                 StageQuestTable info;
                 info.WorldIdx = int.Parse(datas[0]);
 				info.StageIdx = int.Parse(datas[1]);
-				info.QuestType = (QuestType)Enum.Parse(typeof(QuestType),datas[2]);
-				info.PurposeCount = int.Parse(datas[3]);
+				info.Quest1Idx = int.Parse(datas[2]);
+				info.Quest2Idx = int.Parse(datas[3]);
+				info.Quest3Idx = int.Parse(datas[4]);
 				
                 StageQuestTable.Add(info);
                 LoadedData++;

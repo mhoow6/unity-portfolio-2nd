@@ -10,11 +10,12 @@ public class StageRecordData
     public int WorldIdx;
     public int StageIdx;
     public bool StageClear;
-    public List<StageQuestRecordData> QuestRecords = new List<StageQuestRecordData>();
 }
 
-public class StageQuestRecordData
+[Serializable]
+public class QuestRecordData
 {
-    public int Index;
+    public int QuestIdx;
+    public int SuccessCount;
     public bool Clear;
 }

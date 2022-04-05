@@ -150,7 +150,7 @@ public class LoadingTitleUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        GameManager.Instance.UI.CloseWindow();
+        GameManager.Instance.UISystem.CloseWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
         GameManager.Instance.Mechanism_MainMenu.StartDirecting();

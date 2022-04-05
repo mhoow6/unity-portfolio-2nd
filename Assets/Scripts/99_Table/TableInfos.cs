@@ -16,6 +16,16 @@
 		public int MaxExperience;
 	}
 
+	public struct QuestTable
+	{
+		/// <summary> 퀘스트IDX </summary> ///
+		public int Index;
+		/// <summary> 퀘스트 타입 </summary> ///
+		public QuestType Type;
+		/// <summary> 목표 횟수 </summary> ///
+		public int PurposeCount;
+	}
+
 	public struct SparcherAniTypeDialogueTable
 	{
 		/// <summary> 애니메이션 종류 </summary> ///
@@ -26,14 +36,16 @@
 
 	public struct StageQuestTable
 	{
-		/// <summary> ���� IDX </summary> ///
+		/// <summary> 월드 IDX </summary> ///
 		public int WorldIdx;
-		/// <summary> �������� IDX </summary> ///
+		/// <summary> 스테이지 IDX </summary> ///
 		public int StageIdx;
-		/// <summary> ����Ʈ ���� </summary> ///
-		public QuestType QuestType;
-		/// <summary> ��ǥ Ƚ�� </summary> ///
-		public int PurposeCount;
+		/// <summary> 퀘스트1 IDX </summary> ///
+		public int Quest1Idx;
+		/// <summary> 퀘스트2 IDX </summary> ///
+		public int Quest2Idx;
+		/// <summary> 퀘스트3 IDX </summary> ///
+		public int Quest3Idx;
 	}
 
 }

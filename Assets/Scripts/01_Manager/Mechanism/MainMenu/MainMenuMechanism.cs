@@ -38,7 +38,7 @@ public class MainMenuMechanism : Register
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * CAMERA_MOVE_SPEED);
             yield return null;
         }
-        GameManager.Instance.UI.OpenWindow(UIType.MainMenu);
+        GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
         StartCoroutine(CheckingUserClickCharacter());
     }
 

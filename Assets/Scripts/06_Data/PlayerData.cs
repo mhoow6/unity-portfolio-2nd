@@ -74,6 +74,7 @@ public class PlayerData
     public bool AskForNickName;
 
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
+    public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
 
     public PlayerData()
     {
@@ -94,6 +95,31 @@ public class PlayerData
         if (!string.IsNullOrEmpty(result))
             return JsonConvert.DeserializeObject<PlayerData>(result);
         return new PlayerData();
+    }
+
+    public void ReceiveDataFrom(QuestSystem questSystem)
+    {
+        var indices = questSystem.GetRegisterdQuestIndices();
+        foreach (var index in indices)
+        {
+            // 플레이어 데이터에 존재하는 기록 찾아서 있으면 값 갱신
+            var record = QuestRecords.Find(qr => qr.QuestIdx == index);
+            if (record != null)
+            {
+                record.SuccessCount = questSystem.QuestSuccessCount(index);
+                record.Clear = questSystem.QuestClearFlag(index);
+            }
+            // 없으면 새로 추가
+            else
+            {
+                QuestRecords.Add(new QuestRecordData()
+                {
+                    QuestIdx = index,
+                    SuccessCount = questSystem.QuestSuccessCount(index),
+                    Clear = questSystem.QuestClearFlag(index)
+                });
+            }
+        }
     }
 
     public void Save()

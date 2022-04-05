@@ -26,12 +26,12 @@ public class MainMenuUI : UI
 
     public void OnAdventureBtnClick()
     {
-        GameManager.Instance.UI.OpenWindow<AdventureUI>(UIType.Adventure);
+        GameManager.Instance.UISystem.OpenWindow<AdventureUI>(UIType.Adventure);
     }
 
     public void OnEquipmentBtnClick()
     {
-
+        
     }
 
     public void OnShopBtnClick()
@@ -60,7 +60,7 @@ public class MainMenuUI : UI
 
             if (m_PlayerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
             {
-                GameManager.Instance.UI.OpenWindow(UIType.NickNameInput);
+                GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput);
                 m_PlayerData.AskForNickName = true;
             }
 

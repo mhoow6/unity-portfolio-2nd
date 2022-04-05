@@ -15,9 +15,11 @@ public class GameManager : MonoBehaviour
     public Camera MainCam;
     public Light DirectLight;
 
+
     // Game System
-    public UISystem UI;
-    EnergyRecoverySystem EnergyRecovery;
+    public UISystem UISystem;
+    EnergyRecoverySystem EnergyRecoverySystem;
+    public QuestSystem QuestSystem { get; private set; }
 
     // Mechanism
     [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
         Instance = this;
         m_Update = null;
+        m_FixedUpdate = null;
 
         // Data
         Config = Resources.Load<Configuration>("Configuration");
@@ -44,12 +47,14 @@ public class GameManager : MonoBehaviour
         PlayerData = PlayerData.GetData(Config.SaveFilePath);
         // ---
 
-        // Manager Init
+        // System Init
         TableManager.Instance.LoadTable();
-        if (UI != null)
-            UI.Init();
-        EnergyRecovery = new EnergyRecoverySystem();
-        EnergyRecovery.Init();
+        if (UISystem != null)
+            UISystem.Init();
+        EnergyRecoverySystem = new EnergyRecoverySystem();
+        EnergyRecoverySystem.Init();
+        QuestSystem = new QuestSystem();
+        QuestSystem.Init();
         // ---
 
         // Game Setting
@@ -57,21 +62,21 @@ public class GameManager : MonoBehaviour
         // ---
 
         // Update
-        if (UI != null)
-            m_Update += UI.Tick;
+        if (UISystem != null)
+            m_Update += UISystem.Tick;
         // ---
 
         // FixedUpdate
-        m_FixedUpdate += EnergyRecovery.Tick;
+        m_FixedUpdate += EnergyRecoverySystem.Tick;
         // ---
     }
 
     void Start()
     {
         // UI 상에서 게임 로딩 시작
-        if (UI != null)
+        if (UISystem != null)
         {
-            var ui = UI.OpenWindow<LoadingTitleUI>(UIType.Loading);
+            var ui = UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
             ui.LoadingTitle(TitleLoadingSkip);
         }
     }
@@ -151,4 +156,12 @@ public class GameManager : MonoBehaviour
         DirectLight = null;
     }
     #endregion
+
+    [ContextMenu("# Get Attached System")]
+    void GetAttachedSystem()
+    {
+        // UI System
+        var obj = GameObject.FindObjectOfType<UISystem>();
+        UISystem = obj;
+    }
 }

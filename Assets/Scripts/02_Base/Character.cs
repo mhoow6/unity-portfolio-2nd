@@ -42,7 +42,7 @@ public class Character : MonoBehaviour
 
     public void SpeakDialogueAtMainMenu(AniType type)
     {
-        var ui = GameManager.Instance.UI.CurrentWindow as MainMenuUI;
+        var ui = GameManager.Instance.UISystem.CurrentWindow as MainMenuUI;
         if (ui != null && m_AnimationDialogueMap.TryGetValue(type, out string dialogue))
             ui.CharacterDialog.text = $"{dialogue}";
     }
