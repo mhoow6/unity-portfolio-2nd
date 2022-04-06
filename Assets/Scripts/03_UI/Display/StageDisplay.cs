@@ -19,7 +19,8 @@ public class StageDisplay : Display
 
     public void OnVeilBtnClick()
     {
-        Debug.Log($"조건:{m_WorldIdx}-{m_StageIdx - 1} 클리어");
+        var warning = GameManager.Instance.UISystem.OpenWindow<WarningUI>(UIType.Warning);
+        warning.SetData($"조건:{m_WorldIdx}-{m_StageIdx - 1} 클리어");
     }
 
     public void OnStageEnterBtnClick()

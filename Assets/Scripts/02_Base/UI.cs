@@ -11,8 +11,9 @@ public enum UIType
     Equipment, // 미구현
     Shop, // 미구현
     Quest, // 미구현
-    Warning, // 미구현
+    Warning,
     Setting, // 미구현
+    Confirm, // 미구현
 }
 
 public abstract class UI : MonoBehaviour

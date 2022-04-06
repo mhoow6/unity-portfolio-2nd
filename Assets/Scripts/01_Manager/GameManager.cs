@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     [Header("# 개발자 옵션")]
     public bool TitleLoadingSkip;
     public bool AskForNickNameSkip;
+    public bool NoAutoSavePlayerData;
 
     private void Awake()
     {
@@ -62,12 +63,13 @@ public class GameManager : MonoBehaviour
         // ---
 
         // Update
-        if (UISystem != null)
-            m_Update += UISystem.Tick;
+        
         // ---
 
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
+        if (UISystem != null)
+            m_FixedUpdate += UISystem.Tick;
         // ---
     }
 
@@ -89,6 +91,12 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         m_Update?.Invoke();
+    }
+
+    void OnApplicationQuit()
+    {
+        if (NoAutoSavePlayerData)
+            PlayerData.Save();
     }
 
     #region 씬 수동 로딩

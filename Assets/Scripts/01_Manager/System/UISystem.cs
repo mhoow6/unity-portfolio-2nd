@@ -28,7 +28,11 @@ public class UISystem : MonoBehaviour, GameSystem
             if (m_WindowStack.Peek().Type != UIType.MainMenu)
                 CloseWindow();
             else
-                OpenWindow<WarningUI>(UIType.Warning);
+            {
+                var confirm = OpenWindow<ConfirmUI>(UIType.Confirm);
+                confirm.SetData("게임을 종료하시겠습니까?", Application.Quit);
+            }
+                
         }
     }
 
