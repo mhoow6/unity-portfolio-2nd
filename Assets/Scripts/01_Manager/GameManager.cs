@@ -63,13 +63,13 @@ public class GameManager : MonoBehaviour
         // ---
 
         // Update
-        
+        if (UISystem != null)
+            m_Update += UISystem.Tick;
         // ---
 
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
-        if (UISystem != null)
-            m_FixedUpdate += UISystem.Tick;
+        
         // ---
     }
 

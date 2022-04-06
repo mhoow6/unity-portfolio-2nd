@@ -83,11 +83,21 @@ public class StageDisplay : Display
             int prevStageIdx = stageIdx - 1;
             var prevStageRecord = m_PlayerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == prevStageIdx);
             if (prevStageRecord == null)
+                StageClearAction(false);
+            else
             {
-                StageImage.gameObject.SetActive(false);
-                Veil.gameObject.SetActive(true);
-                VeilText.gameObject.SetActive(true);
+                if (prevStageRecord.Clear)
+                    StageClearAction(true);
+                else
+                    StageClearAction(false);
             }
         }
+    }
+
+    void StageClearAction(bool clear)
+    {
+        StageImage.gameObject.SetActive(!clear);
+        Veil.gameObject.SetActive(clear);
+        VeilText.gameObject.SetActive(clear);
     }
 }
