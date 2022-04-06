@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainMenu_Character_Dead : MainMenu_Character_StateMachineBehaviour
 {
-    protected override AniType m_type => AniType.DEAD;
+    protected override AniType m_Type => AniType.DEAD;
 }

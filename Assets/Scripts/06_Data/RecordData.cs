@@ -9,7 +9,7 @@ public class StageRecordData
 {
     public int WorldIdx;
     public int StageIdx;
-    public bool StageClear;
+    public bool Clear;
 }
 
 [Serializable]

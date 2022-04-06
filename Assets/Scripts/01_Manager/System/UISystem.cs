@@ -28,7 +28,7 @@ public class UISystem : MonoBehaviour, GameSystem
             if (m_WindowStack.Peek().Type != UIType.MainMenu)
                 CloseWindow();
             else
-                OpenWindow<AskForQuitUI>(UIType.AskForQuit);
+                OpenWindow<WarningUI>(UIType.Warning);
         }
     }
 

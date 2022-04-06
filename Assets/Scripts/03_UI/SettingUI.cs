@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AskForQuitUI : UI
+public class SettingUI : UI
 {
-    public override UIType Type => UIType.AskForQuit;
+    public override UIType Type => UIType.Setting;
 
     public override void OnClosed()
     {

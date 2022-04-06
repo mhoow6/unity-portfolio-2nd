@@ -12,7 +12,7 @@ public class MainMenuUI : UI
 
     public StatusDisplay StatusDisplay;
 
-    public Text CharacterDialog;
+    //public Text CharacterDialog;
 
     PlayerData m_PlayerData;
     bool m_Init;
@@ -44,9 +44,14 @@ public class MainMenuUI : UI
 
     }
 
+    public void OnSettingBtnClick()
+    {
+
+    }
+
     public override void OnClosed()
     {
-        LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
+        
     }
 
     public override void OnOpened()
@@ -75,8 +80,13 @@ public class MainMenuUI : UI
 
         StatusDisplay.SetData();
 
+        //CharacterDialog.gameObject.SetActive(false);
+
         // Æ®À§´×
+        LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
         LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, TWEEN_DURATION);
+
+        ExperienceSlider.value = 0;
         ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
     }
 }

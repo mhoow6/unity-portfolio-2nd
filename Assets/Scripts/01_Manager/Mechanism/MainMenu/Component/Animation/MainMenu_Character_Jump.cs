@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainMenu_Character_Jump: MainMenu_Character_StateMachineBehaviour
 {
-    protected override AniType m_type => AniType.JUMP;
+    protected override AniType m_Type => AniType.JUMP;
 }
