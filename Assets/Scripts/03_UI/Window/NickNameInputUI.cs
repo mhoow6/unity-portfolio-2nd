@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TableSystem;
 using System.Text.RegularExpressions;
+using System.Text;
 
 public class NickNameInputUI : ConfirmUI
 {
     public InputField InputField;
     public override UIType Type => UIType.NickNameInput;
+
+    const int MAXIMUM_NICKNAME_BYTE = 16;
 
     public void OnXBtnClick()
     {
@@ -42,8 +45,9 @@ public class NickNameInputUI : ConfirmUI
 
     bool IsVaildNickName(string nickname)
     {
-        // 자릿 수 검사
-        if (nickname.Length < 1 || nickname.Length > 8)
+        // 최소 최대 자릿 수 검사
+        int byteCount = Encoding.UTF8.GetBytes(nickname).Length;
+        if (byteCount < 1 || byteCount > MAXIMUM_NICKNAME_BYTE)
         {
             Debug.Log("닉네임이 1글자보다 적거나 8글자보다 많습니다.");
             InputField.text = string.Empty;

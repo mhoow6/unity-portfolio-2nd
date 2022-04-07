@@ -24,7 +24,7 @@ public class WarningUI : UI
 
     public override void OnOpened()
     {
-        m_TweeningSpeed = GameManager.Instance.Config.UIScaleTweeningSpeed;
+        m_TweeningSpeed = GameManager.Instance.UISystem.ScaleTweeningSpeed;
         RectTransform.localScale = new Vector3(1, 0, 1);
         RectTransform.DOScaleY(1f, m_TweeningSpeed);
         Invoke("AutoClose", 3f);

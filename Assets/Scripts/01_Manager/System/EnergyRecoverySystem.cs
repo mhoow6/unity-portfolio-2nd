@@ -7,12 +7,11 @@ using UnityEngine;
 public class EnergyRecoverySystem : GameSystem
 {
     PlayerData m_PlayerData;
-    int m_RecoveryMinute;
+    const int RECOVERY_MINUTE = 10;
 
     public void Init()
     {
         m_PlayerData = GameManager.Instance.PlayerData;
-        m_RecoveryMinute = GameManager.Instance.Config.EnergyRecoveryMinute;
     }
 
     public void Tick()
@@ -22,7 +21,7 @@ public class EnergyRecoverySystem : GameSystem
             return;
 
         TimeSpan interval = DateTime.Now - m_PlayerData.LastEnergyUpdateTime;
-        if (interval.Minutes >= m_RecoveryMinute)
+        if (interval.Minutes >= RECOVERY_MINUTE)
         {
             m_PlayerData.Energy++;
             m_PlayerData.LastEnergyUpdateTime = DateTime.Now;

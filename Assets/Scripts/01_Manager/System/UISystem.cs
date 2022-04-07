@@ -12,6 +12,8 @@ public class UISystem : MonoBehaviour, GameSystem
     public Canvas Canvas;
     public UI CurrentWindow => m_WindowStack.Peek();
 
+    public readonly float ScaleTweeningSpeed = 0.2f;
+
     public void Init()
     {
         m_WindowStack.Clear();
