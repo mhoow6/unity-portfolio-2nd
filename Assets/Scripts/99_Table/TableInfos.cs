@@ -26,6 +26,18 @@
 		public int PurposeCount;
 	}
 
+	public struct RandomNicknameTable
+	{
+		/// <summary> 닉네임 공백 시 랜덤 닉네임 </summary> ///
+		public string RandomNickname;
+	}
+
+	public struct SlangTable
+	{
+		/// <summary> 비속어 단어 </summary> ///
+		public string SlangWord;
+	}
+
 	public struct SparcherAniTypeDialogueTable
 	{
 		/// <summary> 애니메이션 종류 </summary> ///

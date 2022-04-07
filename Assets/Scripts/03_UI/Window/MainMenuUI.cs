@@ -51,7 +51,7 @@ public class MainMenuUI : UI
 
     public override void OnClosed()
     {
-        
+        GameManager.Instance.PlayerData.OnNickNameUpdate -= (nickname) => { LevelNicknameUpdate(nickname); };
     }
 
     public override void OnOpened()
@@ -69,11 +69,13 @@ public class MainMenuUI : UI
                 m_PlayerData.AskForNickName = true;
             }
 
+            GameManager.Instance.PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
+
             m_Init = true;
         }
 
         // UI
-        LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{m_PlayerData.NickName}</size>";
+        LevelNicknameUpdate(m_PlayerData.NickName);
 
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
         ExperienceSlider.maxValue = maxExperience;
@@ -88,5 +90,10 @@ public class MainMenuUI : UI
 
         ExperienceSlider.value = 0;
         ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
+    }
+
+    void LevelNicknameUpdate(string nickname)
+    {
+        LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{nickname}</size>";
     }
 }

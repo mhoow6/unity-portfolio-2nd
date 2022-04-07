@@ -10,6 +10,8 @@ namespace TableSystem
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
+		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
+		public List<SlangTable> SlangTable = new List<SlangTable>();
 		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
 		public List<StageQuestTable> StageQuestTable = new List<StageQuestTable>();
 		public void LoadTable()
@@ -52,6 +54,30 @@ namespace TableSystem
 				info.PurposeCount = int.Parse(datas[2]);
 				
                 QuestTable.Add(info);
+                LoadedData++;
+            }
+        
+            var RandomNicknameTableTextasset = Resources.Load<TextAsset>("99_Table/Table/RandomNicknameTable");
+            string[] RandomNicknameTableLines = RandomNicknameTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < RandomNicknameTableLines.Length; i++)
+            {
+                string[] datas = RandomNicknameTableLines[i].Split(',');
+                RandomNicknameTable info;
+                info.RandomNickname = datas[0];
+				
+                RandomNicknameTable.Add(info);
+                LoadedData++;
+            }
+        
+            var SlangTableTextasset = Resources.Load<TextAsset>("99_Table/Table/SlangTable");
+            string[] SlangTableLines = SlangTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < SlangTableLines.Length; i++)
+            {
+                string[] datas = SlangTableLines[i].Split(',');
+                SlangTable info;
+                info.SlangWord = datas[0];
+				
+                SlangTable.Add(info);
                 LoadedData++;
             }
         
