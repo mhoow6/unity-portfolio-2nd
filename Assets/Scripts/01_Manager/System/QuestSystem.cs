@@ -5,91 +5,83 @@ using TableSystem;
 
 public class QuestSystem : GameSystem
 {
-    // QuestIdx: Clear
-    Dictionary<int, bool> m_QuestIdxClearDic = new Dictionary<int, bool>();
-
-    // QuestIdx: SuccssCount
-    Dictionary<int, int> m_QuestIdxSuccessCountDic = new Dictionary<int, int>();
-
     // QuestIdx: PurposeCount
     Dictionary<int, int> m_QuestIdxPurposeCountDic = new Dictionary<int, int>();
+	
+	// QuestIdx: RecordData
+	Dictionary<int, QuestRecordData> QuestRecords = new Dictionary<int, QuestRecordData>();
+
+	public List<int> QuestIndices
+    {
+		get
+        {
+			List<int> results = new List<int>();
+            foreach (var key in QuestRecords.Keys)
+				results.Add(key);
+			return results;
+		}
+    }
 
     PlayerData m_playerData;
     List<QuestTable> m_QuestTable = new List<QuestTable>();
 
-    public List<int> GetRegisterdQuestIndices()
-    {
-        List<int> result = new List<int>();
-        foreach (var questIdx in m_QuestIdxPurposeCountDic.Keys)
-            result.Add(questIdx);
-        return result;
-    }
+	/// <summary> 스테이지 시작시 도전 목표 등록 용도 </summary>
+	public void RegisterStageQuests(List<int> questIndices)
+	{
+		foreach (int index in questIndices)
+		{
+			var row = m_QuestTable.Find(q => q.Index == index);
+			
+			bool initFlag = row.Positive ? false : true;
+			int purposeCount = row.PurposeCount;
+			
+			if (QuestRecords.TryGetValue(index, out var record))
+				continue;
+			else
+			{
+				var newRecord = new QuestRecordData()
+				{
+					QuestIdx = index,
+					SuccessCount = 0,
+					Clear = initFlag,
+				};
+				QuestRecords.Add(index, newRecord);
+				}
+				m_QuestIdxPurposeCountDic.Add(index, purposeCount);
+			}
+		}
 
-    public List<int> GetSuccessQuestIndices()
-    {
-        List<int> result = new List<int>();
-        foreach (var kvp in m_QuestIdxClearDic)
-        {
-            int index = kvp.Key;
-            bool success = kvp.Value;
-
-            if (success)
-                result.Add(index);
-        }
-        return result;
-    }
-
-    public bool QuestClearFlag(int questIdx)
-    {
-        if (m_QuestIdxClearDic.TryGetValue(questIdx, out bool clear))
-            return clear;
-        return false;
-    }
-
-    public int QuestSuccessCount(int questIdx)
-    {
-        if (m_QuestIdxSuccessCountDic.TryGetValue(questIdx, out int count))
-            return count;
-        return 0;
-    }
-
-    public void ResetQuest(int questIdx)
+	/// <summary> 스테이지 게임오버 시 퀘스트 카운트 초기화 용도 </summary>
+	public void ResetQuest(int questIdx)
     {
         var quests = TableManager.Instance.QuestTable;
+		var row = m_QuestTable.Find(q => q.Index == questIdx);
 
-        if (m_QuestIdxSuccessCountDic.TryGetValue(questIdx, out _))
+		if (QuestRecords.TryGetValue(questIdx, out var record))
         {
-            m_QuestIdxSuccessCountDic[questIdx] = 0;
-            m_QuestIdxClearDic[questIdx] = quests.Find(q => q.Index == questIdx).Positive ? false : true;
-        }
-
-        // �÷��̾� �����Ϳ� ����
-        m_playerData.ReceiveDataFrom(this);
+			record.SuccessCount = 0;
+			record.Clear = row.Positive ? false : true;
+		}
     }
 
-    public void Report(int questIdx, int addCount = 1)
+	/// <summary> 게임중 퀘스트 시스템에게 해당 퀘스트의 목표를 달성했다는 보고 용도 </summary>
+	public void Report(int questIdx, int addCount = 1)
     {
-        if (m_QuestIdxSuccessCountDic.TryGetValue(questIdx, out int successCount))
-        {
-            successCount += addCount;
-            int purposeCount = m_QuestIdxPurposeCountDic[questIdx];
-
-            // POSITIVE_ -> ���� NEGATIVE_ -> ����
-            if (successCount > purposeCount)
-            {
-                // ����Ƚ���� ��ǥȽ���� ���� �� ����.
-                successCount = purposeCount;
-                m_QuestIdxClearDic[questIdx] = !m_QuestIdxClearDic[questIdx];
-            }
-
-            m_QuestIdxSuccessCountDic[questIdx] = successCount;
-        }
-
-        // �÷��̾� �����Ϳ� ����
-        m_playerData.ReceiveDataFrom(this);
+        if (QuestRecords.TryGetValue(questIdx, out var record))
+		{
+			var row = m_QuestTable.Find(q => q.Index == questIdx);
+			
+			record.SuccessCount += addCount;
+			if (record.SuccessCount >= row.PurposeCount)
+			{
+				record.SuccessCount = row.PurposeCount;
+				record.Clear = row.Positive ? true : false;
+			}
+		}
     }
 
-    public void ReportAll(QuestType type, int addCount = 1)
+	/// <summary> 게임중 퀘스트 시스템에게 해당 퀘스트 타입의 목표를 달성했다는 보고 용도 </summary>
+	public void ReportAll(QuestType type, int addCount = 1)
     {
         foreach (var q in m_QuestTable)
         {
@@ -98,30 +90,28 @@ public class QuestSystem : GameSystem
         }
     }
 
+	/// <summary> 스테이지 클리어시 퀘스트 기록을 데이터에 저장하는 용도 </summary>
+	public void UpdatePlayerQuestRecords()
+    {
+        foreach (var record in QuestRecords.Values)
+        {
+			var exist = m_playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+			if (exist == null)
+				m_playerData.QuestRecords.Add(record);
+			else
+            {
+				exist.SuccessCount = record.SuccessCount;
+				exist.Clear = record.Clear;
+			}
+		}
+	}
+
     public void Init()
     {
         m_QuestTable = TableManager.Instance.QuestTable;
-
         m_playerData = GameManager.Instance.PlayerData;
-        List<QuestRecordData> playerQuestRecordDatas = m_playerData.QuestRecords;
 
-        foreach (var q in m_QuestTable)
-        {
-            bool playerQuestClear = q.Positive;
-
-            int playerQuestSuccessCount = 0;
-            var playerQuestRecord = playerQuestRecordDatas.Find(pqr => pqr.QuestIdx == q.Index);
-            if (playerQuestRecord != null)
-            {
-                playerQuestSuccessCount = playerQuestRecord.SuccessCount;
-                playerQuestClear = playerQuestRecord.Clear;
-            }
-
-            m_QuestIdxClearDic.Add(q.Index, playerQuestClear);
-            m_QuestIdxSuccessCountDic.Add(q.Index, playerQuestSuccessCount);
-            m_QuestIdxPurposeCountDic.Add(q.Index, q.PurposeCount);
-        }
-            
+		
     }
 
     public void Tick()
