@@ -18,11 +18,13 @@
 
 	public struct QuestTable
 	{
-		/// <summary> 퀘스트IDX </summary> ///
+		/// <summary> 퀘스트 인덱스 </summary> ///
 		public int Index;
-		/// <summary> 퀘스트 타입 </summary> ///
+		/// <summary> 카운트 도달 시 퀘스트 성공여부 </summary> ///
+		public bool Positive;
+		/// <summary> 퀘스트 종류 </summary> ///
 		public QuestType Type;
-		/// <summary> 목표 횟수 </summary> ///
+		/// <summary> 목표 카운트 </summary> ///
 		public int PurposeCount;
 	}
 

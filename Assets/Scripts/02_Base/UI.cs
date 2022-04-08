@@ -7,13 +7,14 @@ public enum UIType
     MainMenu,
     Loading,
     Adventure,
-    NickNameInput, // 미구현
+    NickNameInput,
     Equipment, // 미구현
     Shop, // 미구현
     Quest, // 미구현
     Warning,
     Setting, // 미구현
-    Confirm, // 미구현
+    Confirm,
+    ReadyForBattle
 }
 
 public abstract class UI : MonoBehaviour

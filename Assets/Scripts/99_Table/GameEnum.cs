@@ -24,13 +24,13 @@
     {
         
         /// <summary> 적 처치 횟수 </summary> ///
-        POSITIVE_KILL_ENEMY = 0,
+        KILL_ENEMY = 0,
 
         /// <summary> 피격 횟수 n회 이하 </summary> ///
-        NEGATIVE_GET_DAMAGED = 1,
+        GET_DAMAGED = 1,
 
         /// <summary> 전투 불능 횟수 n회 이하 </summary> ///
-        NEGATIVE_INCAPCITATED = 2,
+        INCAPCITATED = 2,
 
     }
 

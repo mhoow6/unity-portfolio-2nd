@@ -50,8 +50,9 @@ namespace TableSystem
                 string[] datas = QuestTableLines[i].Split(',');
                 QuestTable info;
                 info.Index = int.Parse(datas[0]);
-				info.Type = (QuestType)Enum.Parse(typeof(QuestType),datas[1]);
-				info.PurposeCount = int.Parse(datas[2]);
+				info.Positive = bool.Parse(datas[1]);
+				info.Type = (QuestType)Enum.Parse(typeof(QuestType),datas[2]);
+				info.PurposeCount = int.Parse(datas[3]);
 				
                 QuestTable.Add(info);
                 LoadedData++;

@@ -15,12 +15,27 @@ public class QuestSystem : GameSystem
     Dictionary<int, int> m_QuestIdxPurposeCountDic = new Dictionary<int, int>();
 
     PlayerData m_playerData;
+    List<QuestTable> m_QuestTable = new List<QuestTable>();
 
     public List<int> GetRegisterdQuestIndices()
     {
         List<int> result = new List<int>();
         foreach (var questIdx in m_QuestIdxPurposeCountDic.Keys)
             result.Add(questIdx);
+        return result;
+    }
+
+    public List<int> GetSuccessQuestIndices()
+    {
+        List<int> result = new List<int>();
+        foreach (var kvp in m_QuestIdxClearDic)
+        {
+            int index = kvp.Key;
+            bool success = kvp.Value;
+
+            if (success)
+                result.Add(index);
+        }
         return result;
     }
 
@@ -45,7 +60,7 @@ public class QuestSystem : GameSystem
         if (m_QuestIdxSuccessCountDic.TryGetValue(questIdx, out _))
         {
             m_QuestIdxSuccessCountDic[questIdx] = 0;
-            m_QuestIdxClearDic[questIdx] = quests.Find(q => q.Index == questIdx).Type.ToString().StartsWith("POSITIVE_") ? false : true;
+            m_QuestIdxClearDic[questIdx] = quests.Find(q => q.Index == questIdx).Positive ? false : true;
         }
 
         // 플레이어 데이터에 갱신
@@ -74,16 +89,25 @@ public class QuestSystem : GameSystem
         m_playerData.ReceiveDataFrom(this);
     }
 
+    public void ReportAll(QuestType type, int addCount = 1)
+    {
+        foreach (var q in m_QuestTable)
+        {
+            if (q.Type == type)
+                Report(q.Index, addCount);
+        }
+    }
+
     public void Init()
     {
-        var quests = TableManager.Instance.QuestTable;
+        m_QuestTable = TableManager.Instance.QuestTable;
 
         m_playerData = GameManager.Instance.PlayerData;
         List<QuestRecordData> playerQuestRecordDatas = m_playerData.QuestRecords;
 
-        foreach (var q in quests)
+        foreach (var q in m_QuestTable)
         {
-            bool playerQuestClear = q.Type.ToString().StartsWith("POSITIVE_") ? false : true;
+            bool playerQuestClear = q.Positive;
 
             int playerQuestSuccessCount = 0;
             var playerQuestRecord = playerQuestRecordDatas.Find(pqr => pqr.QuestIdx == q.Index);

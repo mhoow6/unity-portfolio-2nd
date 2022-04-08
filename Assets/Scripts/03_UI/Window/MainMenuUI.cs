@@ -74,10 +74,11 @@ public class MainMenuUI : UI
                 m_PlayerData.AskForNickName = true;
             }
 
-            m_PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
-
             m_Init = true;
         }
+
+        // ÀÌº¥Æ®
+        m_PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
 
         // UI
         LevelNicknameUpdate(m_PlayerData.NickName);
