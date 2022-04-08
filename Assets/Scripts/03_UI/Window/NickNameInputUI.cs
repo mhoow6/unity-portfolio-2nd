@@ -26,6 +26,7 @@ public class NickNameInputUI : ConfirmUI
             int randomIndx = Random.Range(0, table.Count);
             GameManager.Instance.PlayerData.NickName = table[randomIndx].RandomNickname;
         }
+        InputField.text = string.Empty;
     }
 
     public override void OnOpened()

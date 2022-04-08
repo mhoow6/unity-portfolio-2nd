@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if (NoAutoSavePlayerData)
+        if (!NoAutoSavePlayerData)
             PlayerData.Save();
     }
 

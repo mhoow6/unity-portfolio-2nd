@@ -49,9 +49,14 @@ public class MainMenuUI : UI
 
     }
 
+    public void OnNickNameBtnClick()
+    {
+        GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput);
+    }
+
     public override void OnClosed()
     {
-        GameManager.Instance.PlayerData.OnNickNameUpdate -= (nickname) => { LevelNicknameUpdate(nickname); };
+        m_PlayerData.OnNickNameUpdate -= (nickname) => { LevelNicknameUpdate(nickname); };
     }
 
     public override void OnOpened()
@@ -69,7 +74,7 @@ public class MainMenuUI : UI
                 m_PlayerData.AskForNickName = true;
             }
 
-            GameManager.Instance.PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
+            m_PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
 
             m_Init = true;
         }
