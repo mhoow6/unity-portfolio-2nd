@@ -13,7 +13,7 @@ namespace TableSystem
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
 		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
-		public List<StageQuestTable> StageQuestTable = new List<StageQuestTable>();
+		public List<StageTable> StageTable = new List<StageTable>();
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
@@ -95,19 +95,22 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var StageQuestTableTextasset = Resources.Load<TextAsset>("99_Table/Table/StageQuestTable");
-            string[] StageQuestTableLines = StageQuestTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 4; i < StageQuestTableLines.Length; i++)
+            var StageTableTextasset = Resources.Load<TextAsset>("99_Table/Table/StageTable");
+            string[] StageTableLines = StageTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < StageTableLines.Length; i++)
             {
-                string[] datas = StageQuestTableLines[i].Split(',');
-                StageQuestTable info;
+                string[] datas = StageTableLines[i].Split(',');
+                StageTable info;
                 info.WorldIdx = int.Parse(datas[0]);
 				info.StageIdx = int.Parse(datas[1]);
-				info.Quest1Idx = int.Parse(datas[2]);
-				info.Quest2Idx = int.Parse(datas[3]);
-				info.Quest3Idx = int.Parse(datas[4]);
+				info.StageName = datas[2];
+				info.StageDescription = datas[3];
+				info.Quest1Idx = int.Parse(datas[4]);
+				info.Quest2Idx = int.Parse(datas[5]);
+				info.Quest3Idx = int.Parse(datas[6]);
+				info.EnergyCost = int.Parse(datas[7]);
 				
-                StageQuestTable.Add(info);
+                StageTable.Add(info);
                 LoadedData++;
             }
         }

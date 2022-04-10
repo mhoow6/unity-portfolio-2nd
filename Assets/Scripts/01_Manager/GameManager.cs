@@ -15,13 +15,12 @@ public class GameManager : MonoBehaviour
     public Camera MainCam;
     public Light DirectLight;
 
-
     // Game System
     public UISystem UISystem;
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
 
-    // Mechanism
+    // Mechanism Manager
     [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
     [ReadOnly] public MainMenuMechanism Mechanism_MainMenu;
 
@@ -30,6 +29,7 @@ public class GameManager : MonoBehaviour
     Action m_FixedUpdate;
 
     [Header("# 개발자 옵션")]
+    [ReadOnly] public float GameVerison;
     public bool TitleLoadingSkip;
     public bool AskForNickNameSkip;
     public bool NoAutoSavePlayerData;
@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
         Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
 
         PlayerData = PlayerData.GetData(Config.SaveFilePath);
+        GameVerison = Config.GameVerison;
         // ---
 
         // System Init

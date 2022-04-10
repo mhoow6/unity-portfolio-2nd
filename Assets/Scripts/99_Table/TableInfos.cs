@@ -48,18 +48,24 @@
 		public string Dialog;
 	}
 
-	public struct StageQuestTable
+	public struct StageTable
 	{
 		/// <summary> 월드 IDX </summary> ///
 		public int WorldIdx;
 		/// <summary> 스테이지 IDX </summary> ///
 		public int StageIdx;
-		/// <summary> 퀘스트1 IDX </summary> ///
+		/// <summary> 스테이지 이름 </summary> ///
+		public string StageName;
+		/// <summary> 스테이지 설명 </summary> ///
+		public string StageDescription;
+		/// <summary> 첫번째 목표 IDX </summary> ///
 		public int Quest1Idx;
-		/// <summary> 퀘스트2 IDX </summary> ///
+		/// <summary> 두번째 목표 IDX </summary> ///
 		public int Quest2Idx;
-		/// <summary> 퀘스트3 IDX </summary> ///
+		/// <summary> 세번째 목표 IDX </summary> ///
 		public int Quest3Idx;
+		/// <summary> 스테이지 진입 시 드는 에너지 비용 </summary> ///
+		public int EnergyCost;
 	}
 
 }

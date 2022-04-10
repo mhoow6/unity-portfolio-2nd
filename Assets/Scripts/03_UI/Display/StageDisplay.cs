@@ -25,7 +25,8 @@ public class StageDisplay : Display
 
     public void OnStageEnterBtnClick()
     {
-        Debug.Log("스테이지 진입");
+        var battle = GameManager.Instance.UISystem.OpenWindow<ReadyForBattleUI>(UIType.ReadyForBattle);
+        battle.SetData(m_WorldIdx, m_StageIdx);
     }
 
     public void SetData(int worldIdx, int stageIdx)
@@ -34,7 +35,7 @@ public class StageDisplay : Display
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
 
-        var stageQuestData = TableManager.Instance.StageQuestTable.Find(q => q.WorldIdx == worldIdx && q.StageIdx == stageIdx);
+        var stageQuestData = TableManager.Instance.StageTable.Find(q => q.WorldIdx == worldIdx && q.StageIdx == stageIdx);
         var stageRecord = m_PlayerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == stageIdx);
 
         StageText.text = $"{worldIdx}-{stageIdx}";
@@ -96,8 +97,8 @@ public class StageDisplay : Display
 
     void StageClearAction(bool clear)
     {
-        StageImage.gameObject.SetActive(!clear);
-        Veil.gameObject.SetActive(clear);
-        VeilText.gameObject.SetActive(clear);
+        StageImage.gameObject.SetActive(clear);
+        Veil.gameObject.SetActive(!clear);
+        VeilText.gameObject.SetActive(!clear);
     }
 }
