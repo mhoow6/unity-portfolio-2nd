@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Character CurrentCharacter { get; protected set; }
-    protected Character[] m_CurrentCharacters;
+    [ReadOnly] public Character CurrentCharacter;
+    protected List<Character> m_CurrentCharacters = new List<Character>();
 
-    protected virtual void Start()
+    void Start()
     {
         GameManager.Instance.Player = this;
 
@@ -15,14 +15,18 @@ public class Player : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             var child = transform.GetChild(i);
+            var cha = child.GetComponent<Character>();
+
             if (child.gameObject.activeSelf)
-                CurrentCharacter = child.GetComponent<Character>();
+                CurrentCharacter = cha;
             else
                 child.gameObject.SetActive(false);
+
+            m_CurrentCharacters.Add(cha);
         }
     }
 
-    protected virtual void OnDestroy()
+    void OnDestroy()
     {
         GameManager.Instance.Player = null;
     }

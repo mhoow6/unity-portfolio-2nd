@@ -75,6 +75,7 @@ public class PlayerData
 
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
     public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
+    public List<CharacterData> CharacterDatas = new List<CharacterData>();
 
     public PlayerData()
     {

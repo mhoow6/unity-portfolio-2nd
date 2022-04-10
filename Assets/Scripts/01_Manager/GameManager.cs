@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public UISystem UISystem;
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
+    public CharacterSystem CharacterSystem { get; private set; }
 
     // Mechanism Manager
     [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
     Action m_FixedUpdate;
 
     [Header("# 개발자 옵션")]
-    [ReadOnly] public float GameVerison;
+    [ReadOnly] public string GameVerison;
     public bool TitleLoadingSkip;
     public bool AskForNickNameSkip;
     public bool NoAutoSavePlayerData;
@@ -57,6 +58,8 @@ public class GameManager : MonoBehaviour
         EnergyRecoverySystem.Init();
         QuestSystem = new QuestSystem();
         QuestSystem.Init();
+        CharacterSystem = new CharacterSystem();
+        CharacterSystem.Init();
         // ---
 
         // Game Setting

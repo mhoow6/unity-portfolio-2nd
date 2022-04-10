@@ -34,4 +34,37 @@
 
     }
 
+    public enum CharacterType
+    {
+        
+        /// <summary> 생물 </summary> ///
+        Biology = 0,
+
+        /// <summary> 기계 </summary> ///
+        Machine = 1,
+
+        /// <summary> 이능 </summary> ///
+        Supernatural = 2,
+
+    }
+
+    public enum CharacterCode
+    {
+        
+        /// <summary> 링크 </summary> ///
+        Sparcher = 0,
+
+        /// <summary> 거미 </summary> ///
+        Spider = 1,
+
+    }
+
+    public enum WeaponCode
+    {
+        
+        /// <summary> 미구현 데이터 </summary> ///
+        Dummy = 0,
+
+    }
+
 

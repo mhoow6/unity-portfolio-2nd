@@ -12,15 +12,23 @@ public class StageDisplay : Display
     public Text StageText;
     public GameObject Veil;
     public Text VeilText;
+    public GameObject ContentLock;
 
-    PlayerData m_PlayerData;
     int m_WorldIdx;
     int m_StageIdx;
+    bool m_IsStageLocked => ContentLock.gameObject.activeSelf;
 
     public void OnVeilBtnClick()
     {
         var warning = GameManager.Instance.UISystem.OpenWindow<WarningUI>(UIType.Warning);
-        warning.SetData($"조건:{m_WorldIdx}-{m_StageIdx - 1} 클리어");
+        string message = string.Empty;
+
+        if (m_IsStageLocked)
+            message = $"Coming Soon..";
+        else
+            message = $"조건:{m_WorldIdx}-{m_StageIdx - 1} 클리어";
+
+        warning.SetData(message);
     }
 
     public void OnStageEnterBtnClick()
@@ -31,17 +39,18 @@ public class StageDisplay : Display
 
     public void SetData(int worldIdx, int stageIdx)
     {
-        m_PlayerData = GameManager.Instance.PlayerData;
+        var playerData = GameManager.Instance.PlayerData;
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
 
-        var stageQuestData = TableManager.Instance.StageTable.Find(q => q.WorldIdx == worldIdx && q.StageIdx == stageIdx);
-        var stageRecord = m_PlayerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == stageIdx);
+        var stageData = TableManager.Instance.StageTable.Find(q => q.WorldIdx == worldIdx && q.StageIdx == stageIdx);
+        var stageRecord = playerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == stageIdx);
 
         StageText.text = $"{worldIdx}-{stageIdx}";
         VeilText.text = $"{worldIdx}-{stageIdx}";
         Veil.gameObject.SetActive(false);
         VeilText.gameObject.SetActive(false);
+        ContentLock.SetActive(false);
 
         for (int i = 0; i < Medals.Length; i++)
         {
@@ -49,7 +58,7 @@ public class StageDisplay : Display
             medal.gameObject.SetActive(false);
         }
 
-        if (m_PlayerData != null)
+        if (playerData != null)
         {
             // 메달 갯수와 퀘스트의 갯수는 같다.
             for (int i = 0; i < Medals.Length; i++)
@@ -59,16 +68,16 @@ public class StageDisplay : Display
                 switch (i)
                 {
                     case 0:
-                        int quest1Idx = stageQuestData.Quest1Idx;
-                        record = m_PlayerData.QuestRecords.Find(q => q.QuestIdx == quest1Idx);
+                        int quest1Idx = stageData.Quest1Idx;
+                        record = playerData.QuestRecords.Find(q => q.QuestIdx == quest1Idx);
                         break;
                     case 1:
-                        int quest2Idx = stageQuestData.Quest2Idx;
-                        record = m_PlayerData.QuestRecords.Find(q => q.QuestIdx == quest2Idx);
+                        int quest2Idx = stageData.Quest2Idx;
+                        record = playerData.QuestRecords.Find(q => q.QuestIdx == quest2Idx);
                         break;
                     case 2:
-                        int quest3Idx = stageQuestData.Quest3Idx;
-                        record = m_PlayerData.QuestRecords.Find(q => q.QuestIdx == quest3Idx);
+                        int quest3Idx = stageData.Quest3Idx;
+                        record = playerData.QuestRecords.Find(q => q.QuestIdx == quest3Idx);
                         break;
                 }
 
@@ -82,7 +91,7 @@ public class StageDisplay : Display
         if (stageIdx > 1)
         {
             int prevStageIdx = stageIdx - 1;
-            var prevStageRecord = m_PlayerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == prevStageIdx);
+            var prevStageRecord = playerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == prevStageIdx);
             if (prevStageRecord == null)
                 StageClearAction(false);
             else
@@ -92,6 +101,13 @@ public class StageDisplay : Display
                 else
                     StageClearAction(false);
             }
+        }
+
+        // 컨텐츠 개방여부
+        if (stageData.LockContent)
+        {
+            StageClearAction(false);
+            ContentLock.SetActive(true);
         }
     }
 

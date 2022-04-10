@@ -49,6 +49,11 @@ public class MainMenuUI : UI
 
     }
 
+    public void OnCharacterBtnClick()
+    {
+
+    }
+
     public void OnNickNameBtnClick()
     {
         GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput);

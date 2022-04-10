@@ -1,23 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TableSystem;
 
 public class Sparcher : Character
 {
-    // TODO: юс╫ц
-    private void Start()
-    {
-        OnSpawn();
-    }
-
-    protected override void OnDead()
-    {
-        base.OnDead();
-    }
+    public override CharacterCode Code => CharacterCode.Sparcher;
 
     protected override void OnSpawn()
     {
-        base.OnSpawn();
-
+        
     }
 }

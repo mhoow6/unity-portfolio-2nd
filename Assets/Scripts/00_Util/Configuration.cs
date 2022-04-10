@@ -7,5 +7,5 @@ public class Configuration : ScriptableObject
 {
     public int DownloadDataCount;
     public string SaveFilePath;
-    public float GameVerison;
+    public string GameVerison;
 }

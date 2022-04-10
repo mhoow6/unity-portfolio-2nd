@@ -1,5 +1,45 @@
 ﻿namespace TableSystem
 {
+	public struct AniTypeDialogueTable
+	{
+		/// <summary> ������Ʈ �ڵ� </summary> ///
+		public CharacterCode ObjectCode;
+		/// <summary> �ִϸ��̼� ���� </summary> ///
+		public AniType AniType;
+		/// <summary> Ŭ�� �� ��ȭ���� </summary> ///
+		public string Dialog;
+	}
+
+	public struct CharacterTable
+	{
+		/// <summary> 오브젝트 코드 </summary> ///
+		public CharacterCode Code;
+		/// <summary> 캐릭터 속성 </summary> ///
+		public CharacterType Type;
+		/// <summary> 게임 내에서 사용되는 이름 </summary> ///
+		public string Name;
+		/// <summary> 레벨 1일때 기본 Hp </summary> ///
+		public float BaseHp;
+		/// <summary> 레벨업시 Hp 증가율 </summary> ///
+		public float HpIncreaseRatioByLevelUp;
+		/// <summary> 레벨 1일때 기본 Sp </summary> ///
+		public float BaseSp;
+		/// <summary> 레벨업시 Sp 증가율 </summary> ///
+		public float SpIncreaseRatioByLevelUp;
+		/// <summary> 레벨 1일때 기본 공격력 </summary> ///
+		public float BaseDamage;
+		/// <summary> 레벨업시 공격력 증가율 </summary> ///
+		public float DamageIncreaseRatioByLevelUp;
+		/// <summary> 레벨 1일때 기본 방어력 </summary> ///
+		public float BaseDefense;
+		/// <summary> 레벨업시 방어력 증가율 </summary> ///
+		public float DefenseIncreaseRatioByLevelUp;
+		/// <summary> 레벨 1일때 기본 치명타 확률 </summary> ///
+		public float BaseCritical;
+		/// <summary> 레벨업시 치명타확률 증가율 </summary> ///
+		public float CriticalIncreaseRatioByLevelUp;
+	}
+
 	public struct PlayerLevelEnergyTable
 	{
 		/// <summary> 레벨 </summary> ///
@@ -40,14 +80,6 @@
 		public string SlangWord;
 	}
 
-	public struct SparcherAniTypeDialogueTable
-	{
-		/// <summary> 애니메이션 종류 </summary> ///
-		public AniType AniType;
-		/// <summary> 클릭 시 대화내용 </summary> ///
-		public string Dialog;
-	}
-
 	public struct StageTable
 	{
 		/// <summary> 월드 IDX </summary> ///
@@ -66,6 +98,8 @@
 		public int Quest3Idx;
 		/// <summary> 스테이지 진입 시 드는 에너지 비용 </summary> ///
 		public int EnergyCost;
+		/// <summary> 컨텐츠 잠금여부 </summary> ///
+		public bool LockContent;
 	}
 
 }

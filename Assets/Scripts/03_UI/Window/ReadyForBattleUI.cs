@@ -102,7 +102,7 @@ public class ReadyForBattleUI : UI
                 result = $"{row.PurposeCount}기 이상의 적을 처치한다.";
                 break;
             case QuestType.GET_DAMAGED:
-                result = $"피격횟수가 {row.PurposeCount}를 넘지 않을 것";
+                result = $"피격횟수가 {row.PurposeCount}번을 넘지 않을 것";
                 break;
             case QuestType.INCAPCITATED:
                 result = $"전투 불능이 된 캐릭터 {row.PurposeCount}명 이하";

@@ -1,54 +1,70 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TableSystem;
 
 public class Character : MonoBehaviour
 {
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
-    public Animator Animator { get; protected set; }
+    public Animator Animator { get; private set; }
 
-    
-    protected virtual void OnSpawn()
+    public virtual CharacterCode Code { get; }
+    public CharacterType Type { get; private set; }
+    public string Name { get; private set; }
+
+    public CharacterData Data;
+
+    protected void Start()
     {
-        Animator = GetComponent<Animator>();
-        GetAnimationsWhenUserClick();
+        // 컴포넌트 붙이기
+        if (!Animator)
+            Animator = GetComponent<Animator>();
+        // ---
+
+        SetMainMenuAnimations();
+        SetPropertiesFromTable();      
+
+        OnSpawn();
     }
+
+    protected void OnDestroy()
+    {
+        OnDead();
+    }
+
+    protected virtual void OnSpawn() { }
 
     protected virtual void OnDead() { }
 
-    #region 메인메뉴 매커니즘
+    #region 메인메뉴
     // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
-    public List<AniType> AnimationsWhenUserClick { get; private set; } = new List<AniType>();
-    //protected Dictionary<AniType, string> m_AnimationDialogueMap = new Dictionary<AniType, string>();
+    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
     bool m_IsAnimationAndDialogSet;
 
-    public void GetAnimationsWhenUserClick()
+    void SetMainMenuAnimations()
     {
         if (m_IsAnimationAndDialogSet)
             return;
 
-        // TODO: 리팩토링
-        if (this is Sparcher)
-        {
-            var table = TableSystem.TableManager.Instance.SparcherAniTypeDialogueTable;
-            foreach (var row in table)
-            {
-                AnimationsWhenUserClick.Add(row.AniType);
-                //m_AnimationDialogueMap.Add(row.AniType, row.Dialog);
-            }
-        }
+        var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
+        foreach (var row in table)
+            AnimationsWhenUserClick.Add(row.AniType);
+
         m_IsAnimationAndDialogSet = true;
     }
 
-    //public void SpeakDialogueAtMainMenu(AniType type)
-    //{
-    //    var ui = GameManager.Instance.UISystem.CurrentWindow as MainMenuUI;
-    //    if (ui != null && m_AnimationDialogueMap.TryGetValue(type, out string dialogue))
-    //    {
-    //        ui.CharacterDialog.gameObject.SetActive(true);
-    //        ui.CharacterDialog.text = $"{dialogue}";
-    //    }
-    //}
+    void SetPropertiesFromTable()
+    {
+        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
+        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
 
+        Name = table.Name;
+        Type = table.Type;
+
+        if (record != null)
+            Data = record;
+        else
+            Data = GameManager.Instance.CharacterSystem.GetData(Code);
+    }
     #endregion
 }

@@ -233,7 +233,7 @@ public static class Automation
 
                 string inline = string.Empty;
 
-                string[] types = new string[] { "char", "int", "long", "double", "string", "ushort", "bool" };
+                string[] types = new string[] { "char", "int", "long", "double", "string", "ushort", "bool", "float" };
 
                 for (int j = 0; j < fieldTypes.Length; j++)
                 {

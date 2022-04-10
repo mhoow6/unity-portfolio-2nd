@@ -7,16 +7,55 @@ namespace TableSystem
 	{
 		public static TableManager Instance { get; private set; } = new TableManager();
 		public int LoadedData { get; private set; } = 0;
+		public List<AniTypeDialogueTable> AniTypeDialogueTable = new List<AniTypeDialogueTable>();
+		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
-		public List<SparcherAniTypeDialogueTable> SparcherAniTypeDialogueTable = new List<SparcherAniTypeDialogueTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
+            var AniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/AniTypeDialogueTable");
+            string[] AniTypeDialogueTableLines = AniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < AniTypeDialogueTableLines.Length; i++)
+            {
+                string[] datas = AniTypeDialogueTableLines[i].Split(',');
+                AniTypeDialogueTable info;
+                info.ObjectCode = (CharacterCode)Enum.Parse(typeof(CharacterCode),datas[0]);
+				info.AniType = (AniType)Enum.Parse(typeof(AniType),datas[1]);
+				info.Dialog = datas[2];
+				
+                AniTypeDialogueTable.Add(info);
+                LoadedData++;
+            }
+        
+            var CharacterTableTextasset = Resources.Load<TextAsset>("99_Table/Table/CharacterTable");
+            string[] CharacterTableLines = CharacterTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < CharacterTableLines.Length; i++)
+            {
+                string[] datas = CharacterTableLines[i].Split(',');
+                CharacterTable info;
+                info.Code = (CharacterCode)Enum.Parse(typeof(CharacterCode),datas[0]);
+				info.Type = (CharacterType)Enum.Parse(typeof(CharacterType),datas[1]);
+				info.Name = datas[2];
+				info.BaseHp = float.Parse(datas[3]);
+				info.HpIncreaseRatioByLevelUp = float.Parse(datas[4]);
+				info.BaseSp = float.Parse(datas[5]);
+				info.SpIncreaseRatioByLevelUp = float.Parse(datas[6]);
+				info.BaseDamage = float.Parse(datas[7]);
+				info.DamageIncreaseRatioByLevelUp = float.Parse(datas[8]);
+				info.BaseDefense = float.Parse(datas[9]);
+				info.DefenseIncreaseRatioByLevelUp = float.Parse(datas[10]);
+				info.BaseCritical = float.Parse(datas[11]);
+				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[12]);
+				
+                CharacterTable.Add(info);
+                LoadedData++;
+            }
+        
             var PlayerLevelEnergyTableTextasset = Resources.Load<TextAsset>("99_Table/Table/PlayerLevelEnergyTable");
             string[] PlayerLevelEnergyTableLines = PlayerLevelEnergyTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < PlayerLevelEnergyTableLines.Length; i++)
@@ -82,19 +121,6 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var SparcherAniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/SparcherAniTypeDialogueTable");
-            string[] SparcherAniTypeDialogueTableLines = SparcherAniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 4; i < SparcherAniTypeDialogueTableLines.Length; i++)
-            {
-                string[] datas = SparcherAniTypeDialogueTableLines[i].Split(',');
-                SparcherAniTypeDialogueTable info;
-                info.AniType = (AniType)Enum.Parse(typeof(AniType),datas[0]);
-				info.Dialog = datas[1];
-				
-                SparcherAniTypeDialogueTable.Add(info);
-                LoadedData++;
-            }
-        
             var StageTableTextasset = Resources.Load<TextAsset>("99_Table/Table/StageTable");
             string[] StageTableLines = StageTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < StageTableLines.Length; i++)
@@ -109,6 +135,7 @@ namespace TableSystem
 				info.Quest2Idx = int.Parse(datas[5]);
 				info.Quest3Idx = int.Parse(datas[6]);
 				info.EnergyCost = int.Parse(datas[7]);
+				info.LockContent = bool.Parse(datas[8]);
 				
                 StageTable.Add(info);
                 LoadedData++;

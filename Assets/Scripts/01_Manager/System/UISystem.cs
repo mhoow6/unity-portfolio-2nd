@@ -31,6 +31,8 @@ public class UISystem : MonoBehaviour, GameSystem
         foreach (var window in Windows)
             window.gameObject.SetActive(false);
 
+        m_BlockWindow.gameObject.SetActive(false);
+
         DontDestroyOnLoad(Canvas);
     }
 
