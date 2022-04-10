@@ -46,25 +46,29 @@ public class MainMenuMechanism : Register
     {
         while (true)
         {
-            // ¿ÞÂÊ Å¬¸¯½Ã
-            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+            if (GameManager.Instance.UISystem.CurrentWindow.Type == UIType.MainMenu)
             {
-                RaycastHit hitInfo;
-                Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+                // ¿ÞÂÊ Å¬¸¯½Ã
+                if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
                 {
-                    var player = GameManager.Instance.Player;
-                    var character = player.CurrentCharacter;
-                    if (hitInfo.collider.gameObject.Equals(character.gameObject))
-                    {
-                        int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
-                        AniType randomAni = character.AnimationsWhenUserClick[random];
+                    RaycastHit hitInfo;
+                    Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
 
-                        character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
+                    if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+                    {
+                        var player = GameManager.Instance.Player;
+                        var character = player.CurrentCharacter;
+                        if (hitInfo.collider.gameObject.Equals(character.gameObject))
+                        {
+                            int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
+                            AniType randomAni = character.AnimationsWhenUserClick[random];
+
+                            character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
+                        }
                     }
                 }
             }
+            
             yield return null;
         }
         

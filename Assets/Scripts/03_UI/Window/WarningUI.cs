@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 public class WarningUI : UI
 {
@@ -10,7 +11,6 @@ public class WarningUI : UI
     public RectTransform RectTransform;
 
     public override UIType Type => UIType.Warning;
-    float m_TweeningSpeed = 0;
         
     public void SetData(string message)
     {
@@ -19,24 +19,28 @@ public class WarningUI : UI
 
     public override void OnClosed()
     {
-        
+        var sys = GameManager.Instance.UISystem;
+        sys.BlockRaycast = false;
     }
 
     public override void OnOpened()
     {
-        m_TweeningSpeed = GameManager.Instance.UISystem.ScaleTweeningSpeed;
+        var sys = GameManager.Instance.UISystem;
+        sys.BlockRaycast = true;
+
         RectTransform.localScale = new Vector3(1, 0, 1);
-        RectTransform.DOScaleY(1f, m_TweeningSpeed);
+        RectTransform.DOScaleY(1f, sys.ScaleTweeningSpeed);
         Invoke("AutoClose", 3f);
     }
 
     void AutoClose()
     {
-        if (gameObject.activeSelf)
+        var sys = GameManager.Instance.UISystem;
+        if (sys.CurrentWindow.Type == UIType.Warning)
         {
-            RectTransform.DOScaleY(0f, m_TweeningSpeed).OnComplete(() =>
+            RectTransform.DOScaleY(0f, sys.ScaleTweeningSpeed).OnComplete(() =>
             {
-                GameManager.Instance.UISystem.CloseWindow();
+                sys.CloseWindow();
             });
         }
     }

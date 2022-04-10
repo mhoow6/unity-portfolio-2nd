@@ -13,6 +13,16 @@ public class UISystem : MonoBehaviour, GameSystem
     public Canvas Canvas;
     public UI CurrentWindow => m_WindowStack.Peek();
 
+    public bool BlockRaycast
+    {
+        set
+        {
+            m_BlockWindow.SetActive(value);
+        }
+    }
+
+    [SerializeField] GameObject m_BlockWindow;
+
     public readonly float ScaleTweeningSpeed = 0.2f;
 
     public void Init()
@@ -51,6 +61,7 @@ public class UISystem : MonoBehaviour, GameSystem
         {
             if (window.Type == type)
             {
+                // 현재 열고 싶은 창을 연다.
                 window.gameObject.SetActive(true);
                 window.transform.SetAsLastSibling();
                 result = window as T;
@@ -64,6 +75,14 @@ public class UISystem : MonoBehaviour, GameSystem
             Debug.LogError($"{type}에 해당하는 창이 시스템에 등록이 안 되어 있습니다.");
 
         return result;
+    }
+
+    public void CloseAllWindow()
+    {
+        while (m_WindowStack.Count != 1)
+        {
+            CloseWindow();
+        }
     }
 
     public void CloseWindow()

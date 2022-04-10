@@ -14,7 +14,7 @@ public enum UIType
     Warning,
     Setting, // ¹Ì±¸Çö
     Confirm,
-    ReadyForBattle
+    ReadyForBattle,
 }
 
 public abstract class UI : MonoBehaviour
