@@ -5,9 +5,14 @@ using TableSystem;
 
 public class Sparcher : Character
 {
-    public override CharacterCode Code => CharacterCode.Sparcher;
+    public override ObjectCode Code => ObjectCode.CHAR_Sparcher;
 
     protected override void OnSpawn()
+    {
+        
+    }
+
+    protected override void OnDead()
     {
         
     }

@@ -3,21 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MainMenuMechanism : Register
+public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
 {
     public Transform CameraPosition;
 
     const float CAMERA_MOVE_SPEED = 0.5F;
-
-    public override void RegisterToGameManager()
-    {
-        GameManager.Instance.Mechanism_MainMenu = this;
-    }
-
-    public override void ReleaseToGameManager()
-    {
-        GameManager.Instance.Mechanism_MainMenu = null;
-    }
 
     public void StartDirecting()
     {
@@ -39,38 +29,5 @@ public class MainMenuMechanism : Register
             yield return null;
         }
         GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
-        StartCoroutine(CheckingUserClickCharacter());
-    }
-
-    IEnumerator CheckingUserClickCharacter()
-    {
-        while (true)
-        {
-            if (GameManager.Instance.UISystem.CurrentWindow.Type == UIType.MainMenu)
-            {
-                // ¿ÞÂÊ Å¬¸¯½Ã
-                if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
-                {
-                    RaycastHit hitInfo;
-                    Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
-
-                    if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
-                    {
-                        var player = GameManager.Instance.Player;
-                        var character = player.CurrentCharacter;
-                        if (hitInfo.collider.gameObject.Equals(character.gameObject))
-                        {
-                            int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
-                            AniType randomAni = character.AnimationsWhenUserClick[random];
-
-                            character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
-                        }
-                    }
-                }
-            }
-            
-            yield return null;
-        }
-        
     }
 }

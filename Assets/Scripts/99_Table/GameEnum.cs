@@ -48,22 +48,17 @@
 
     }
 
-    public enum CharacterCode
+    public enum ObjectCode
     {
         
-        /// <summary> 링크 </summary> ///
-        Sparcher = 0,
+        /// <summary> 궁수 캐릭터 </summary> ///
+        CHAR_Sparcher = 0,
 
-        /// <summary> 거미 </summary> ///
-        Spider = 1,
+        /// <summary> 생물속성 거미 </summary> ///
+        CHAR_GreenSpider = 1,
 
-    }
-
-    public enum WeaponCode
-    {
-        
-        /// <summary> 미구현 데이터 </summary> ///
-        Dummy = 0,
+        /// <summary> 이능속성 거미 </summary> ///
+        CHAR_PurpleSpider = 1,
 
     }
 

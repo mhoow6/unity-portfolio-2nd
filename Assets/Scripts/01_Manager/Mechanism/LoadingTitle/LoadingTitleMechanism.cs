@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class LoadingTitleMechanism : Register
+public class LoadingTitleMechanism : MonoSingleton<LoadingTitleMechanism>
 {
     public List<LoadingTitleRoad> Roads = new List<LoadingTitleRoad>();
     public LoadingTitleRoad LastRoad
@@ -18,16 +18,6 @@ public class LoadingTitleMechanism : Register
     LoadingTitleUI m_LoadingUI;
 
     const float ROAD_MOVE_SPEED = 2.0f;
-
-    public override void RegisterToGameManager()
-    {
-        GameManager.Instance.Mechanism_LoadingTitle = this;
-    }
-
-    public override void ReleaseToGameManager()
-    {
-        GameManager.Instance.Mechanism_LoadingTitle = null;
-    }
 
     public void StartDirecting(LoadingTitleUI ui)
     {

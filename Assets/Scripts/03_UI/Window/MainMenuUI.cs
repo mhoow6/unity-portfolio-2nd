@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TableSystem;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 public class MainMenuUI : UI
 {
@@ -62,6 +63,8 @@ public class MainMenuUI : UI
     public override void OnClosed()
     {
         m_PlayerData.OnNickNameUpdate -= (nickname) => { LevelNicknameUpdate(nickname); };
+
+        StopAllCoroutines();
     }
 
     public override void OnOpened()
@@ -101,10 +104,42 @@ public class MainMenuUI : UI
 
         ExperienceSlider.value = 0;
         ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
+
+        // 메인메뉴에서 캐릭터 클릭 시 랜덤 애니메이션
+        StartCoroutine(CheckingUserClickCharacter());
     }
 
     void LevelNicknameUpdate(string nickname)
     {
         LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{nickname}</size>";
+    }
+
+    IEnumerator CheckingUserClickCharacter()
+    {
+        while (true)
+        {
+            // 왼쪽 클릭시
+            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
+            {
+                RaycastHit hitInfo;
+                Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+                {
+                    var player = GameManager.Instance.Player;
+                    var character = player.CurrentCharacter;
+                    if (hitInfo.collider.gameObject.Equals(character.gameObject))
+                    {
+                        int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
+                        AniType randomAni = character.AnimationsWhenUserClick[random];
+
+                        character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
     }
 }

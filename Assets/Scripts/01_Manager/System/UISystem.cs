@@ -103,7 +103,7 @@ public class UISystem : MonoBehaviour, GameSystem
     void GetAllWindows()
     {
         Windows.Clear();
-        var canvasObj = GameObject.Find("Canvas");
+        var canvasObj = GameObject.Find("Canvas_Windows");
         if (canvasObj != null)
         {
             for (int i = 0; i < canvasObj.transform.childCount; i++)

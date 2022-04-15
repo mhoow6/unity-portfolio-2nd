@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [ReadOnly] public Character CurrentCharacter;
-    protected List<Character> m_CurrentCharacters = new List<Character>();
+    [ReadOnly] public List<Character> Characters = new List<Character>();
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
             else
                 child.gameObject.SetActive(false);
 
-            m_CurrentCharacters.Add(cha);
+            Characters.Add(cha);
         }
     }
 

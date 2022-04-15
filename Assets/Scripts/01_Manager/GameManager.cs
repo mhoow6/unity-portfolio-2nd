@@ -19,11 +19,6 @@ public class GameManager : MonoBehaviour
     public UISystem UISystem;
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
-    public CharacterSystem CharacterSystem { get; private set; }
-
-    // Mechanism Manager
-    [ReadOnly] public LoadingTitleMechanism Mechanism_LoadingTitle;
-    [ReadOnly] public MainMenuMechanism Mechanism_MainMenu;
 
     // Update Handler
     Action m_Update;
@@ -31,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [Header("# 개발자 옵션")]
     [ReadOnly] public string GameVerison;
-    public bool TitleLoadingSkip;
+    public bool TitleLoadingDirectingSkip;
     public bool AskForNickNameSkip;
     public bool NoAutoSavePlayerData;
 
@@ -58,8 +53,6 @@ public class GameManager : MonoBehaviour
         EnergyRecoverySystem.Init();
         QuestSystem = new QuestSystem();
         QuestSystem.Init();
-        CharacterSystem = new CharacterSystem();
-        CharacterSystem.Init();
         // ---
 
         // Game Setting
@@ -80,10 +73,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // UI 상에서 게임 로딩 시작
-        if (UISystem != null)
+        if (UISystem != null && !TitleLoadingDirectingSkip)
         {
             var ui = UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
-            ui.LoadingTitle(TitleLoadingSkip);
+            ui.LoadingTitle();
         }
     }
 

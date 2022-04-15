@@ -19,7 +19,7 @@ public class QuestRecordData
 [Serializable]
 public class CharacterData
 {
-    public CharacterCode Code;
+    public ObjectCode Code;
     public int Level;
     public float Hp;
     public float Sp;
@@ -33,8 +33,7 @@ public class CharacterData
 [Serializable]
 public class WeaponData
 {
-    public WeaponCode Code;
-    public int ReinforceLevel;
+    public ObjectCode Code;
     public float Damage;
     public float Critical;
 }

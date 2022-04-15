@@ -3,7 +3,7 @@
 	public struct AniTypeDialogueTable
 	{
 		/// <summary> ������Ʈ �ڵ� </summary> ///
-		public CharacterCode ObjectCode;
+		public ObjectCode ObjectCode;
 		/// <summary> �ִϸ��̼� ���� </summary> ///
 		public AniType AniType;
 		/// <summary> Ŭ�� �� ��ȭ���� </summary> ///
@@ -13,7 +13,7 @@
 	public struct CharacterTable
 	{
 		/// <summary> 오브젝트 코드 </summary> ///
-		public CharacterCode Code;
+		public ObjectCode Code;
 		/// <summary> 캐릭터 속성 </summary> ///
 		public CharacterType Type;
 		/// <summary> 게임 내에서 사용되는 이름 </summary> ///

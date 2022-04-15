@@ -24,7 +24,7 @@ namespace TableSystem
             {
                 string[] datas = AniTypeDialogueTableLines[i].Split(',');
                 AniTypeDialogueTable info;
-                info.ObjectCode = (CharacterCode)Enum.Parse(typeof(CharacterCode),datas[0]);
+                info.ObjectCode = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[0]);
 				info.AniType = (AniType)Enum.Parse(typeof(AniType),datas[1]);
 				info.Dialog = datas[2];
 				
@@ -38,7 +38,7 @@ namespace TableSystem
             {
                 string[] datas = CharacterTableLines[i].Split(',');
                 CharacterTable info;
-                info.Code = (CharacterCode)Enum.Parse(typeof(CharacterCode),datas[0]);
+                info.Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[0]);
 				info.Type = (CharacterType)Enum.Parse(typeof(CharacterType),datas[1]);
 				info.Name = datas[2];
 				info.BaseHp = float.Parse(datas[3]);

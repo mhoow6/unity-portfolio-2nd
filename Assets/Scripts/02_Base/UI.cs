@@ -15,6 +15,7 @@ public enum UIType
     Setting, // ¹Ì±¸Çö
     Confirm,
     ReadyForBattle,
+    InGame,
 }
 
 public abstract class UI : MonoBehaviour
