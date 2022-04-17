@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public UISystem UISystem;
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
+    public InputSystem InputSystem { get; private set; }
 
     // Update Handler
     Action m_Update;
@@ -43,31 +44,31 @@ public class GameManager : MonoBehaviour
 
         PlayerData = PlayerData.GetData(Config.SaveFilePath);
         GameVerison = Config.GameVerison;
-        // ---
 
         // System Init
         TableManager.Instance.LoadTable();
         if (UISystem != null)
             UISystem.Init();
+
         EnergyRecoverySystem = new EnergyRecoverySystem();
         EnergyRecoverySystem.Init();
+
         QuestSystem = new QuestSystem();
         QuestSystem.Init();
-        // ---
+
+        InputSystem = new InputSystem();
+        InputSystem.Init();
 
         // Game Setting
         Application.targetFrameRate = 60;
-        // ---
 
         // Update
         if (UISystem != null)
             m_Update += UISystem.Tick;
-        // ---
 
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
         
-        // ---
     }
 
     void Start()

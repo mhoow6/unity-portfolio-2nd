@@ -58,7 +58,10 @@
         CHAR_GreenSpider = 1,
 
         /// <summary> 이능속성 거미 </summary> ///
-        CHAR_PurpleSpider = 1,
+        CHAR_PurpleSpider = 2,
+
+        /// <summary> 테스트용 캐릭터 </summary> ///
+        CHAR_Dummy = 3,
 
     }
 

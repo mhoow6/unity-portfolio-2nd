@@ -6,6 +6,9 @@ public class InGameUI : UI
 {
     public override UIType Type => UIType.InGame;
 
+    [SerializeField] VirtualJoystick Joystick;
+
+
     public override void OnClosed()
     {
         
@@ -13,6 +16,6 @@ public class InGameUI : UI
 
     public override void OnOpened()
     {
-        
+        GameManager.Instance.InputSystem.InputAxis = Joystick;
     }
 }

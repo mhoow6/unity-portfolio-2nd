@@ -26,6 +26,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // 임시
+        if (Input.GetKeyDown(KeyCode.A))
+            GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
+
+        // 캐릭터 움직이기
+        var inputAxis = GameManager.Instance.InputSystem.InputAxis;
+        if (inputAxis != null)
+        {
+            // 이동
+            
+        }
+    }
+
     void OnDestroy()
     {
         GameManager.Instance.Player = null;

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using TableSystem;
 
-public class Character : MonoBehaviour
+public class Character : BaseObject
 {
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
-
-    public virtual ObjectCode Code { get; }
     public CharacterType Type { get; private set; }
     public string Name { get; private set; }
 
@@ -27,6 +25,11 @@ public class Character : MonoBehaviour
         OnSpawn();
     }
 
+    protected void Update()
+    {
+        OnLive();
+    }
+
     protected void OnDestroy()
     {
         OnDead();
@@ -35,6 +38,7 @@ public class Character : MonoBehaviour
     protected virtual void OnSpawn() { }
 
     protected virtual void OnDead() { }
+    protected virtual void OnLive() { }
 
     #region 메인메뉴
     // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
@@ -72,7 +76,7 @@ public class Character : MonoBehaviour
     /// <summary>
     /// 플레이어의 캐릭터 데이터를 업데이트 합니다.
     /// </summary>
-    void UpdatePlayerData()
+    public void UpdatePlayerData()
     {
         var player = GameManager.Instance.Player;
         foreach (var cha in player.Characters)
@@ -89,7 +93,7 @@ public class Character : MonoBehaviour
     /// <summary>
     /// 테이블로부터 캐릭터 데이터를 가져옵니다.
     /// </summary>
-    public CharacterData GetData(ObjectCode code)
+    CharacterData GetData(ObjectCode code)
     {
         CharacterData result = null;
         var row = TableManager.Instance.CharacterTable.Find(c => c.Code == code);
@@ -117,7 +121,7 @@ public class Character : MonoBehaviour
     /// <param name="lhs">자신</param>
     /// <param name="rhs">상대방</param>
     /// <returns></returns>
-    public float CalcuateDamage(Character lhs, Character rhs)
+    protected float CalcuateDamage(Character lhs, Character rhs)
     {
         float result = 0;
         result = CalculateTypeDamage(lhs, rhs);
