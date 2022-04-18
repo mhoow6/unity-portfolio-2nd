@@ -28,16 +28,21 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        // 임시
-        if (Input.GetKeyDown(KeyCode.A))
-            GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
-
         // 캐릭터 움직이기
         var inputAxis = GameManager.Instance.InputSystem.InputAxis;
-        if (inputAxis != null)
+        var cam = GameManager.Instance.MainCam;
+        if (inputAxis != null && cam != null)
         {
+            Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
+            Vector3 cameraRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
+            Vector3 moveVector = cameraForward * inputAxis.Input.y + cameraRight * inputAxis.Input.x;
+
+            // 회전
+            if (moveVector.magnitude != 0)
+                CurrentCharacter.transform.forward = moveVector.normalized;
+
             // 이동
-            
+            CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Data.Speed;
         }
     }
 

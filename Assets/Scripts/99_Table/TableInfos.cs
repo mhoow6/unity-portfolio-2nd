@@ -2,42 +2,44 @@
 {
 	public struct AniTypeDialogueTable
 	{
-		/// <summary> ������Ʈ �ڵ� </summary> ///
+		/// <summary> 오브젝트 코드 </summary> ///
 		public ObjectCode ObjectCode;
-		/// <summary> �ִϸ��̼� ���� </summary> ///
+		/// <summary> 애니메이션 종류 </summary> ///
 		public AniType AniType;
-		/// <summary> Ŭ�� �� ��ȭ���� </summary> ///
+		/// <summary> 클릭 시 대화내용 </summary> ///
 		public string Dialog;
 	}
 
 	public struct CharacterTable
 	{
-		/// <summary> 오브젝트 코드 </summary> ///
+		/// <summary> ������Ʈ �ڵ� </summary> ///
 		public ObjectCode Code;
-		/// <summary> 캐릭터 속성 </summary> ///
+		/// <summary> ĳ���� �Ӽ� </summary> ///
 		public CharacterType Type;
-		/// <summary> 게임 내에서 사용되는 이름 </summary> ///
+		/// <summary> ���� ������ ���Ǵ� �̸� </summary> ///
 		public string Name;
-		/// <summary> 레벨 1일때 기본 Hp </summary> ///
+		/// <summary> ���� 1�϶� �⺻ Hp </summary> ///
 		public float BaseHp;
-		/// <summary> 레벨업시 Hp 증가율 </summary> ///
+		/// <summary> �������� Hp ������ </summary> ///
 		public float HpIncreaseRatioByLevelUp;
-		/// <summary> 레벨 1일때 기본 Sp </summary> ///
+		/// <summary> ���� 1�϶� �⺻ Sp </summary> ///
 		public float BaseSp;
-		/// <summary> 레벨업시 Sp 증가율 </summary> ///
+		/// <summary> �������� Sp ������ </summary> ///
 		public float SpIncreaseRatioByLevelUp;
-		/// <summary> 레벨 1일때 기본 공격력 </summary> ///
+		/// <summary> ���� 1�϶� �⺻ ���ݷ� </summary> ///
 		public float BaseDamage;
-		/// <summary> 레벨업시 공격력 증가율 </summary> ///
+		/// <summary> �������� ���ݷ� ������ </summary> ///
 		public float DamageIncreaseRatioByLevelUp;
-		/// <summary> 레벨 1일때 기본 방어력 </summary> ///
+		/// <summary> ���� 1�϶� �⺻ ���� </summary> ///
 		public float BaseDefense;
-		/// <summary> 레벨업시 방어력 증가율 </summary> ///
+		/// <summary> �������� ���� ������ </summary> ///
 		public float DefenseIncreaseRatioByLevelUp;
-		/// <summary> 레벨 1일때 기본 치명타 확률 </summary> ///
+		/// <summary> ���� 1�϶� �⺻ ġ��Ÿ Ȯ�� </summary> ///
 		public float BaseCritical;
-		/// <summary> 레벨업시 치명타확률 증가율 </summary> ///
+		/// <summary> �������� ġ��ŸȮ�� ������ </summary> ///
 		public float CriticalIncreaseRatioByLevelUp;
+		/// <summary> �̵��ӵ� </summary> ///
+		public float BaseSpeed;
 	}
 
 	public struct PlayerLevelEnergyTable

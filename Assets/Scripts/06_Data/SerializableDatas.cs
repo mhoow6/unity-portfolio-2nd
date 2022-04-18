@@ -26,6 +26,7 @@ public class CharacterData
     public float Damage;
     public float Defense;
     public float Critical;
+    public float Speed;
 
     public WeaponData EquipWeaponData;
 }

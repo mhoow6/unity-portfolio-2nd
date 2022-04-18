@@ -51,6 +51,7 @@ namespace TableSystem
 				info.DefenseIncreaseRatioByLevelUp = float.Parse(datas[10]);
 				info.BaseCritical = float.Parse(datas[11]);
 				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[12]);
+				info.BaseSpeed = float.Parse(datas[13]);
 				
                 CharacterTable.Add(info);
                 LoadedData++;

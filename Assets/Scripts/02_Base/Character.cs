@@ -107,6 +107,7 @@ public class Character : BaseObject
             Critical = row.BaseCritical,
             Damage = row.BaseDamage,
             Defense = row.BaseDefense,
+            Speed = row.BaseSpeed,
             EquipWeaponData = null
         };
 
