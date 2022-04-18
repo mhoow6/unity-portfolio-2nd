@@ -89,6 +89,10 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         m_Update?.Invoke();
+
+        // юс╫ц
+        if (Input.GetKeyDown(KeyCode.A))
+            UISystem.OpenWindow(UIType.InGame);
     }
 
     void OnApplicationQuit()
