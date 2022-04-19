@@ -213,7 +213,7 @@ public class Character : BaseObject
             critical = false;
 
         if (critical)
-            result *= criticalRate;
+            result *= 2;
 
         return result;
     }

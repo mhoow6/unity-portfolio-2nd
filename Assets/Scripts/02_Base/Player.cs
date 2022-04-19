@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         // 캐릭터 움직이기
-        var inputAxis = GameManager.Instance.InputSystem.InputAxis;
+        var inputAxis = GameManager.Instance.InputSystem.Controller;
         var cam = GameManager.Instance.MainCam;
         if (inputAxis != null && cam != null)
         {

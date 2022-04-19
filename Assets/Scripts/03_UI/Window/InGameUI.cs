@@ -16,6 +16,7 @@ public class InGameUI : UI
 
     public override void OnOpened()
     {
-        GameManager.Instance.InputSystem.InputAxis = Joystick;
+        GameManager.Instance.InputSystem.Controller = Joystick;
+        GameManager.Instance.InputSystem.CameraRotatable = true;
     }
 }
