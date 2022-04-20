@@ -18,6 +18,15 @@
         /// <summary> 점프할 때 애니메이션 </summary> ///
         JUMP = 4,
 
+        /// <summary> 가속(회피)할 때 애니메이션 </summary> ///
+        DASH = 5,
+
+        /// <summary> 스킬 쓸 때 애니메이션 </summary> ///
+        SKILL = 6,
+
+        /// <summary> 궁극기 쓸 때 애니메이션 </summary> ///
+        ULTIMATE = 7,
+
     }
 
     public enum QuestType

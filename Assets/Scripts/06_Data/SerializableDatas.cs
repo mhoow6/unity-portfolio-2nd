@@ -1,5 +1,7 @@
 using System;
 
+// 파일 데이터 저장용도
+
 [Serializable]
 public class StageRecordData
 {
