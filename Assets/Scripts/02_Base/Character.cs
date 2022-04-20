@@ -70,7 +70,18 @@ public class Character : BaseObject
         if (record != null)
             Data = record;
         else
-            Data = GetData(Code);
+            Data = new CharacterData()
+            {
+                Code = Code,
+                Level = 1,
+                Hp = table.BaseHp,
+                Sp = table.BaseSp,
+                Critical = table.BaseCritical,
+                Damage = table.BaseDamage,
+                Defense = table.BaseDefense,
+                Speed = table.BaseSpeed,
+                EquipWeaponData = null
+            };
     }
 
     /// <summary>
@@ -88,30 +99,6 @@ public class Character : BaseObject
             else
                 exist = cha.Data;
         }
-    }
-
-    /// <summary>
-    /// 테이블로부터 캐릭터 데이터를 가져옵니다.
-    /// </summary>
-    CharacterData GetData(ObjectCode code)
-    {
-        CharacterData result = null;
-        var row = TableManager.Instance.CharacterTable.Find(c => c.Code == code);
-
-        result = new CharacterData()
-        {
-            Code = code,
-            Level = 1,
-            Hp = row.BaseHp,
-            Sp = row.BaseSp,
-            Critical = row.BaseCritical,
-            Damage = row.BaseDamage,
-            Defense = row.BaseDefense,
-            Speed = row.BaseSpeed,
-            EquipWeaponData = null
-        };
-
-        return result;
     }
     #endregion
 
