@@ -1,31 +1,31 @@
 ﻿
 
-    public enum AniType
+    public enum AniCode
     {
         
         /// <summary> 가만히 있을 때 애니메이션 </summary> ///
-        IDLE = 0,
+        Sparcher_IDLE = 0,
 
         /// <summary> 달리는 애니메이션 </summary> ///
-        RUN = 1,
+        Sparcher_RUN = 1,
 
         /// <summary> 죽을 때 애니메이션 </summary> ///
-        DEAD = 2,
+        Sparcher_DEAD = 2,
 
         /// <summary> 공격할 때 애니메이션 </summary> ///
-        ATTACK = 3,
+        Sparcher_ATTACK = 3,
 
         /// <summary> 점프할 때 애니메이션 </summary> ///
-        JUMP = 4,
+        Sparcher_JUMP = 4,
 
         /// <summary> 가속(회피)할 때 애니메이션 </summary> ///
-        DASH = 5,
+        Sparcher_DASH = 5,
 
         /// <summary> 스킬 쓸 때 애니메이션 </summary> ///
-        SKILL = 6,
+        Sparcher_SKILL = 6,
 
         /// <summary> 궁극기 쓸 때 애니메이션 </summary> ///
-        ULTIMATE = 7,
+        Sparcher_ULTIMATE = 7,
 
     }
 
@@ -71,6 +71,9 @@
 
         /// <summary> 테스트용 캐릭터 </summary> ///
         CHAR_Dummy = 3,
+
+        /// <summary> Sparcher의 스킬 </summary> ///
+        SKILL_MagicArrow = 4,
 
     }
 

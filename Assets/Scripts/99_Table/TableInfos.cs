@@ -1,11 +1,11 @@
 ﻿namespace TableSystem
 {
-	public struct AniTypeDialogueTable
+	public struct AniCodeDialogueTable
 	{
 		/// <summary> 오브젝트 코드 </summary> ///
 		public ObjectCode ObjectCode;
 		/// <summary> 애니메이션 종류 </summary> ///
-		public AniType AniType;
+		public AniCode AniType;
 		/// <summary> 클릭 시 대화내용 </summary> ///
 		public string Dialog;
 	}

@@ -26,31 +26,9 @@ public class InGameUI : UI
         SkillButtonSetup();
     }
 
+    /// <summary> 현재 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
     public void SkillButtonSetup()
     {
-        var leader = GameManager.Instance.Player.CurrentCharacter;
-        // 공격 버튼 세팅
-        m_AttackButton.SetData(false, () =>
-        {
-            leader.Animator.SetInteger(leader.ANITYPE_HASHCODE, (int)AniType.ATTACK);
-        });
-
-        // 대쉬 버튼 세팅
-        m_DashButton.SetData(false, () =>
-        {
-            leader.Animator.SetInteger(leader.ANITYPE_HASHCODE, (int)AniType.DASH);
-        });
-
-        // 스킬 버튼 세팅
-        m_SkillButton.SetData(false, () =>
-        {
-            leader.Animator.SetInteger(leader.ANITYPE_HASHCODE, (int)AniType.SKILL);
-        });
-
-        // 스킬 버튼 세팅
-        m_UltimateButton.SetData(false, () =>
-        {
-            leader.Animator.SetInteger(leader.ANITYPE_HASHCODE, (int)AniType.ULTIMATE);
-        });
+        
     }
 }

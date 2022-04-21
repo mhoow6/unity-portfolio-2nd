@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenu_Character_StateMachineBehaviour : StateMachineBehaviour
+public class MainMenuSparcherStateMachineBehaviour : StateMachineBehaviour
 {
-    protected virtual AniType m_Type { get; }
+    protected virtual AniCode m_AniCode { get; }
 
     float m_CurrentAnimationTime;
     //MainMenuUI m_MainMenuUI;
@@ -24,7 +24,7 @@ public class MainMenu_Character_StateMachineBehaviour : StateMachineBehaviour
         m_CurrentAnimationTime = stateInfo.normalizedTime % 1;
         if (m_CurrentAnimationTime > 0.75f)
         {
-            animator.SetInteger("AniType", 0);
+            animator.SetInteger("AniCode", (int)AniCode.Sparcher_IDLE);
         }
     }
 
