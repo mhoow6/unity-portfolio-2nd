@@ -72,7 +72,6 @@ public class UISystem : MonoBehaviour, GameSystem
                 m_WindowStack.Push(window);
 
                 window.OnOpened();
-                return result;
             }
         }
 
@@ -88,6 +87,11 @@ public class UISystem : MonoBehaviour, GameSystem
         {
             CloseWindow();
         }
+
+        // 마지막 NoneClosableWindow 열어주기
+        var window = m_WindowStack.Peek();
+        window.transform.SetAsLastSibling();
+        window.OnOpened();
     }
 
     public void CloseWindow()

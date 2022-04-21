@@ -12,33 +12,33 @@
 
 	public struct CharacterTable
 	{
-		/// <summary> ������Ʈ �ڵ� </summary> ///
+		/// <summary> 오브젝트 코드 </summary> ///
 		public ObjectCode Code;
-		/// <summary> ĳ���� �Ӽ� </summary> ///
+		/// <summary> 캐릭터 속성 </summary> ///
 		public CharacterType Type;
-		/// <summary> ���� ������ ���Ǵ� �̸� </summary> ///
+		/// <summary> 게임 내에서 사용되는 이름 </summary> ///
 		public string Name;
-		/// <summary> ���� 1�϶� �⺻ Hp </summary> ///
+		/// <summary> 레벨 1일때 기본 Hp </summary> ///
 		public float BaseHp;
-		/// <summary> �������� Hp ������ </summary> ///
+		/// <summary> 레벨업시 Hp 증가율 </summary> ///
 		public float HpIncreaseRatioByLevelUp;
-		/// <summary> ���� 1�϶� �⺻ Sp </summary> ///
+		/// <summary> 레벨 1일때 기본 Sp </summary> ///
 		public float BaseSp;
-		/// <summary> �������� Sp ������ </summary> ///
+		/// <summary> 레벨업시 Sp 증가율 </summary> ///
 		public float SpIncreaseRatioByLevelUp;
-		/// <summary> ���� 1�϶� �⺻ ���ݷ� </summary> ///
+		/// <summary> 레벨 1일때 기본 공격력 </summary> ///
 		public float BaseDamage;
-		/// <summary> �������� ���ݷ� ������ </summary> ///
+		/// <summary> 레벨업시 공격력 증가율 </summary> ///
 		public float DamageIncreaseRatioByLevelUp;
-		/// <summary> ���� 1�϶� �⺻ ���� </summary> ///
+		/// <summary> 레벨 1일때 기본 방어력 </summary> ///
 		public float BaseDefense;
-		/// <summary> �������� ���� ������ </summary> ///
+		/// <summary> 레벨업시 방어력 증가율 </summary> ///
 		public float DefenseIncreaseRatioByLevelUp;
-		/// <summary> ���� 1�϶� �⺻ ġ��Ÿ Ȯ�� </summary> ///
+		/// <summary> 레벨 1일때 기본 치명타 확률 </summary> ///
 		public float BaseCritical;
-		/// <summary> �������� ġ��ŸȮ�� ������ </summary> ///
+		/// <summary> 레벨업시 치명타확률 증가율 </summary> ///
 		public float CriticalIncreaseRatioByLevelUp;
-		/// <summary> �̵��ӵ� </summary> ///
+		/// <summary> 이동속도 </summary> ///
 		public float BaseSpeed;
 	}
 
