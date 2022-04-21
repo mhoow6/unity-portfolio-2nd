@@ -13,7 +13,7 @@ public class SkillButtonDisplay : Display, IPointerDownHandler
 
     Action m_OnClicked;
 
-    public void SetData(bool useSp, Action onClick, string skillIconPath = null, int spCost = 0)
+    public void SetData(bool useSp, Action onClick, string skillIconPath, int spCost = 0)
     {
         if (useSp)
         {

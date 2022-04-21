@@ -12,8 +12,7 @@ public class BackwardDisplay : Display
     public void OnHomeBtnClick()
     {
         var sys = GameManager.Instance.UISystem;
-
-        // 메인화면은 기본적으로 열려있는 창이기 때문에 모든 창을 닫아주기만 하면 된다.
         sys.CloseAllWindow();
+        sys.OpenWindow(UIType.MainMenu);
     }
 }

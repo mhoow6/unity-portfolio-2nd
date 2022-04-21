@@ -62,14 +62,14 @@ public class MainMenuUI : UI
 
     public override void OnClosed()
     {
-        m_PlayerData.OnNickNameUpdate -= (nickname) => { LevelNicknameUpdate(nickname); };
+        GameManager.Instance.MainCam.gameObject.SetActive(false);
 
         StopAllCoroutines();
     }
 
     public override void OnOpened()
     {
-        // 최초 실행시
+        // 최초 실행시에 할 것들
         if (!m_Init)
         {
             var gm = GameManager.Instance;
@@ -85,33 +85,26 @@ public class MainMenuUI : UI
             m_Init = true;
         }
 
-        // 이벤트
-        m_PlayerData.OnNickNameUpdate += (nickname) => { LevelNicknameUpdate(nickname); };
+        // 메인 카메라 키기
+        GameManager.Instance.MainCam.gameObject.SetActive(true);
 
-        // UI
-        LevelNicknameUpdate(m_PlayerData.NickName);
-
-        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
-        ExperienceSlider.maxValue = maxExperience;
-
-        StatusDisplay.SetData();
-
-        //CharacterDialog.gameObject.SetActive(false);
-
-        // 트위닝
+        // 레벨과 닉네임
+        LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{m_PlayerData.NickName}</size>";
+        // 트위닝 효과
         LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
         LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, TWEEN_DURATION);
 
+        // 경험치 슬라이더
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
         ExperienceSlider.value = 0;
+        ExperienceSlider.maxValue = maxExperience;
         ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
+
+        // 에너지, 돈
+        StatusDisplay.SetData();
 
         // 메인메뉴에서 캐릭터 클릭 시 랜덤 애니메이션
         StartCoroutine(CheckingUserClickCharacter());
-    }
-
-    void LevelNicknameUpdate(string nickname)
-    {
-        LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{nickname}</size>";
     }
 
     IEnumerator CheckingUserClickCharacter()

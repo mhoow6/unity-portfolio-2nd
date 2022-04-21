@@ -22,6 +22,7 @@ public class UISystem : MonoBehaviour, GameSystem
     }
 
     [SerializeField] GameObject m_BlockWindow;
+    [SerializeField] Camera m_UICamera;
 
     public readonly float ScaleTweeningSpeed = 0.2f;
 
@@ -34,6 +35,7 @@ public class UISystem : MonoBehaviour, GameSystem
         m_BlockWindow.gameObject.SetActive(false);
 
         DontDestroyOnLoad(Canvas);
+        DontDestroyOnLoad(m_UICamera);
     }
 
     public void Tick()
@@ -47,7 +49,7 @@ public class UISystem : MonoBehaviour, GameSystem
                 var confirm = OpenWindow<ConfirmUI>(UIType.Confirm);
                 confirm.SetData("게임을 종료하시겠습니까?", Application.Quit);
             }
-                
+
         }
     }
 
@@ -59,6 +61,17 @@ public class UISystem : MonoBehaviour, GameSystem
     public T OpenWindow<T>(UIType type) where T : UI
     {
         T result = null;
+
+        // 지금 창은 닫자
+        if (m_WindowStack.Count > 0)
+        {
+            var current = m_WindowStack.Peek();
+            if (m_WindowStack.Peek() != null)
+            {
+                current.gameObject.SetActive(false);
+                current.OnClosed();
+            }
+        }
 
         // 새롭게 열기
         foreach (var window in Windows)
@@ -72,6 +85,7 @@ public class UISystem : MonoBehaviour, GameSystem
                 m_WindowStack.Push(window);
 
                 window.OnOpened();
+                return result;
             }
         }
 
@@ -85,25 +99,25 @@ public class UISystem : MonoBehaviour, GameSystem
     {
         while (m_WindowStack.Count != 1)
         {
-            CloseWindow();
+            CloseWindow(false);
         }
-
-        // 마지막 NoneClosableWindow 열어주기
-        var window = m_WindowStack.Peek();
-        window.transform.SetAsLastSibling();
-        window.OnOpened();
     }
 
-    public void CloseWindow()
+    public void CloseWindow(bool openPreviousWindow = true)
     {
-        var window = m_WindowStack.Peek();
-
-        if (window.Equals(NoneCloseableWindow))
-            return;
-
-        window = m_WindowStack.Pop();
+        // 현재 창 닫기
+        var window = m_WindowStack.Pop();
         window.gameObject.SetActive(false);
         window.OnClosed();
+
+        // 이전 창 열기
+        if (m_WindowStack.Count > 0 && openPreviousWindow)
+        {
+            var prev = m_WindowStack.Peek();
+            prev.gameObject.SetActive(true);
+            prev.transform.SetAsLastSibling();
+            prev.OnOpened();
+        }
     }
 
     [ContextMenu("# Get All Windows")]
