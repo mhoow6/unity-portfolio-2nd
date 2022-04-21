@@ -277,6 +277,17 @@ public static class Automation
         AssetDatabase.Refresh();
     }
 
+    [MenuItem("Automation/Table/Generate Json Class")]
+    public static void GenerateJsonClass()
+    {
+        // 해당 경로에 있는 json 파일들 텍스트로 읽기
+        var textassets = Resources.LoadAll<TextAsset>("99_Table/Json");
+        foreach (var text in textassets)
+        {
+            Debug.Log($"{text}");
+        }
+    }
+
     [MenuItem("Automation/Prefab/Generate Collider")]
     public static void GenerateCollider()
     {

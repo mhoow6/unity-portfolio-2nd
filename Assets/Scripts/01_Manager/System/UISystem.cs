@@ -60,21 +60,6 @@ public class UISystem : MonoBehaviour, GameSystem
     {
         T result = null;
 
-        // 기존에 열렸던 창인지 검사
-        foreach (var window in m_WindowStack)
-        {
-            if (window.Type == type)
-            {
-                // 현재 열고 싶은 창을 연다.
-                window.gameObject.SetActive(true);
-                window.transform.SetAsLastSibling();
-                result = window as T;
-
-                window.OnOpened();
-                return result;
-            }
-        }
-
         // 새롭게 열기
         foreach (var window in Windows)
         {
