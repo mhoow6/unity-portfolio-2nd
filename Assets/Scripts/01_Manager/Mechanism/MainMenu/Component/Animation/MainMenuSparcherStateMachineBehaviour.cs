@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainMenuSparcherStateMachineBehaviour : StateMachineBehaviour
 {
-    protected virtual AniCode m_AniCode { get; }
+    protected virtual AniType m_AniType { get; }
 
     float m_CurrentAnimationTime;
     //MainMenuUI m_MainMenuUI;
@@ -24,7 +24,7 @@ public class MainMenuSparcherStateMachineBehaviour : StateMachineBehaviour
         m_CurrentAnimationTime = stateInfo.normalizedTime % 1;
         if (m_CurrentAnimationTime > 0.75f)
         {
-            animator.SetInteger("AniCode", (int)AniCode.Sparcher_IDLE);
+            animator.SetInteger("AniCode", (int)AniType.IDLE_0);
         }
     }
 

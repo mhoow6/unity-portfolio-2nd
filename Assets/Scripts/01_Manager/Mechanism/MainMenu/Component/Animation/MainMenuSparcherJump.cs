@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainMenuSparcherJump: MainMenuSparcherStateMachineBehaviour
 {
-    protected override AniCode m_AniCode => AniCode.Sparcher_JUMP;
+    protected override AniType m_AniType => AniType.JUMP_0;
 }

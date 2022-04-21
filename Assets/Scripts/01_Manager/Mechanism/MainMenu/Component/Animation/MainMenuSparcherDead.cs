@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainMenuSparcherDead : MainMenuSparcherStateMachineBehaviour
 {
-    protected override AniCode m_AniCode => AniCode.Sparcher_DEAD;
+    protected override AniType m_AniType => AniType.DEAD_0;
 }

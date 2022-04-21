@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainMenuSparcherRun : MainMenuSparcherStateMachineBehaviour
 {
-    protected override AniCode m_AniCode => AniCode.Sparcher_RUN;
+    protected override AniType m_AniType => AniType.RUN_0;
 }

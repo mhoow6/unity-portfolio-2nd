@@ -7,7 +7,7 @@ namespace TableSystem
 	{
 		public static TableManager Instance { get; private set; } = new TableManager();
 		public int LoadedData { get; private set; } = 0;
-		public List<AniCodeDialogueTable> AniCodeDialogueTable = new List<AniCodeDialogueTable>();
+		public List<AniTypeDialogueTable> AniTypeDialogueTable = new List<AniTypeDialogueTable>();
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
@@ -18,17 +18,17 @@ namespace TableSystem
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
-            var AniCodeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/AniCodeDialogueTable");
-            string[] AniCodeDialogueTableLines = AniCodeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 4; i < AniCodeDialogueTableLines.Length; i++)
+            var AniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/AniTypeDialogueTable");
+            string[] AniTypeDialogueTableLines = AniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < AniTypeDialogueTableLines.Length; i++)
             {
-                string[] datas = AniCodeDialogueTableLines[i].Split(',');
-                AniCodeDialogueTable info;
+                string[] datas = AniTypeDialogueTableLines[i].Split(',');
+                AniTypeDialogueTable info;
                 info.ObjectCode = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[0]);
-				info.AniType = (AniCode)Enum.Parse(typeof(AniCode),datas[1]);
+				info.AniType = int.Parse(datas[1]);
 				info.Dialog = datas[2];
 				
-                AniCodeDialogueTable.Add(info);
+                AniTypeDialogueTable.Add(info);
                 LoadedData++;
             }
         

@@ -131,7 +131,7 @@ public class MainMenuUI : UI
                     if (hitInfo.collider.gameObject.Equals(character.gameObject))
                     {
                         int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
-                        AniCode randomAni = character.AnimationsWhenUserClick[random];
+                        AniType randomAni = character.AnimationsWhenUserClick[random];
 
                         character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
                     }

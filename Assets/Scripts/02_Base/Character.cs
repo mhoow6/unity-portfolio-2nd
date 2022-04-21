@@ -42,7 +42,7 @@ public class Character : BaseObject
 
     #region 메인메뉴
     // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
-    public List<AniCode> AnimationsWhenUserClick { get; protected set; } = new List<AniCode>();
+    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
     bool m_IsAnimationAndDialogSet;
 
     void SetMainMenuAnimations()
@@ -50,9 +50,9 @@ public class Character : BaseObject
         if (m_IsAnimationAndDialogSet)
             return;
 
-        var table = TableManager.Instance.AniCodeDialogueTable.FindAll(row => row.ObjectCode == Code);
+        var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
         foreach (var row in table)
-            AnimationsWhenUserClick.Add(row.AniType);
+            AnimationsWhenUserClick.Add((AniType)row.AniType);
 
         m_IsAnimationAndDialogSet = true;
     }
