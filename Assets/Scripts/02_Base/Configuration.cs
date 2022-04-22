@@ -8,4 +8,5 @@ public class Configuration : ScriptableObject
     public int DownloadDataCount;
     public string SaveFilePath;
     public string GameVerison;
+    public int JsonDataCount;
 }

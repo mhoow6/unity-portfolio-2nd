@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -282,11 +283,137 @@ public static class Automation
     {
         // 해당 경로에 있는 json 파일들 텍스트로 읽기
         var textassets = Resources.LoadAll<TextAsset>("99_Table/Json");
-        foreach (var text in textassets)
+        string[] separatingStrings = { "\r\n" };
+
+        // Configuration
+        var scriptableObj = Resources.Load<Configuration>("Configuration");
+        if (scriptableObj != null)
+            scriptableObj.JsonDataCount = 0;
+
+        foreach (var asset in textassets)
         {
-            Debug.Log($"{text}");
+            string fileName = asset.name;
+            int dataCount = 0;
+
+            // \r\n(캐리지리턴, 라인피트)으로 문자열 구분
+            string[] lines = asset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+
+            // 0번째와 마지막번째의 중괄호는 파싱 시작/끝 용도 -> 생략
+            // 클래스명: {
+            // ...
+            // }
+
+            bool parseTrigger = false;
+            StringBuilder classBuilder = new StringBuilder();
+            string classFormat =
+@"public class {0}
+{{
+    {1}
+}}
+";
+            StringBuilder classNameBuilder = new StringBuilder();
+            StringBuilder fieldsBuilder = new StringBuilder();
+            for (int i = 1; i < lines.Length-1; i++)
+            {
+                string word = lines[i];
+
+                // 파싱 시작
+                if (word[word.Length - 1] == '{')
+                {
+                    parseTrigger = !parseTrigger;
+
+                    // 클래스명 얻기
+                    int startIdx = word.IndexOf('\"');
+                    int endIdx = word.LastIndexOf('\"');
+                    for (int j = startIdx + 1; j < endIdx; j++)
+                        classNameBuilder.Append(word[j]);
+
+                    continue;
+                }
+                // 파싱 끝
+                else if (word == "  }," || word == "  }")
+                {
+                    parseTrigger = !parseTrigger;
+
+                    // 클래스 포맷 만들기
+                    string copied = string.Copy(classFormat);
+                    copied = string.Format(copied, classNameBuilder, fieldsBuilder);
+
+                    // 다음 클래스를 위해 초기화
+                    classNameBuilder.Clear();
+                    fieldsBuilder.Clear();
+
+                    // classBuilder에 추가
+                    classBuilder.AppendLine(copied);
+                    continue;
+                }
+                
+                if (parseTrigger)
+                {
+                    string field = string.Empty;
+
+                    // 필드명 얻기
+                    StringBuilder fieldNameBuilder = new StringBuilder();
+                    int startIdx = word.IndexOf('\"');
+                    int endIdx = FileHelper.FindSpecificChar(word, '\"', 2);
+                    for (int j = startIdx + 1; j < endIdx; j++)
+                        fieldNameBuilder.Append(word[j]);
+
+                    // 필드 타입 얻기
+                    StringBuilder fieldDataBuilder = new StringBuilder();
+                    startIdx = FileHelper.FindSpecificChar(word, '\"', 3);
+                    endIdx = FileHelper.FindSpecificChar(word, '\"', 4);
+                    for (int j = startIdx + 1; j < endIdx; j++)
+                        fieldDataBuilder.Append(word[j]);
+
+                    // 파싱시도 순서
+                    // int -> float -> bool -> string
+                    if (int.TryParse(fieldDataBuilder.ToString(), out _))
+                        field = $"public int {fieldNameBuilder};";
+                    else
+                    {
+                        if (float.TryParse(fieldDataBuilder.ToString(), out _))
+                            field = $"public float {fieldNameBuilder};";
+                        else
+                        {
+                            if (bool.TryParse(fieldDataBuilder.ToString(), out _))
+                                field = $"public bool {fieldNameBuilder};";
+                            else
+                                field = $"public string {fieldNameBuilder};";
+                        }
+                    }
+
+                    // StringBuilder에 추가
+                    dataCount++;
+                    fieldsBuilder.AppendLine(field);
+                    fieldsBuilder.Append($"    ");
+                }
+            }
+
+            // ---------------------------------------------------------------------------------------------------
+
+            string result = classBuilder.ToString();
+            if (FileHelper.DirectoryCheck($"{Application.dataPath}/Scripts/99_Json"))
+                Debug.LogError($"{Application.dataPath}/Scripts/99_Table 에 해당하는 경로가 없습니다.");
+            else
+            {
+                // 파일 저장
+                FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", result);
+
+                // 데이터 총 갯수 저장
+                if (scriptableObj != null)
+                {
+                    scriptableObj.DownloadDataCount += dataCount;
+                    EditorUtility.SetDirty(scriptableObj);
+                }
+                    
+            }
         }
+
+        AssetDatabase.Refresh();
     }
+
+    
 
     [MenuItem("Automation/Prefab/Generate Collider")]
     public static void GenerateCollider()
@@ -450,6 +577,5 @@ public static class Automation
 
         AssetDatabase.Refresh();
     }
-
 }
 #endif
