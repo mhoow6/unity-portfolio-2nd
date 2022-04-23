@@ -10,7 +10,7 @@ using System.Text;
 using UnityEditor;
 public static class Automation
 {
-    [MenuItem("Automation/Table/Generate Game Enum")]
+    [MenuItem("Automation/Database/Generate Game Enum")]
     public static void GenerateGameEnum()
     {
         string result = string.Empty;
@@ -125,7 +125,7 @@ public static class Automation
         
     }
 
-    [MenuItem("Automation/Table/Generate Table Class")]
+    [MenuItem("Automation/Database/Generate Table Class")]
     public static void GenerateTableClass()
     {
         // 데이터 갯수
@@ -133,7 +133,7 @@ public static class Automation
 
         // 테이블에 따른 구조체 생성
         string data = string.Empty;
-        data += $"namespace TableSystem\n{{\n\t";
+        data += $"namespace DatabaseSystem\n{{\n\t";
 
         string[] separatingStrings = { "\r\n" };
         var textassets = Resources.LoadAll<TextAsset>("99_Database/Table");
@@ -182,7 +182,7 @@ public static class Automation
         // 데이터 총 갯수 저장
         var scriptableObj = Resources.Load<Configuration>("Configuration");
         if (scriptableObj != null)
-            scriptableObj.DownloadDataCount = dataCount;
+            scriptableObj.CSVDataCount = dataCount;
         EditorUtility.SetDirty(scriptableObj);
 
         // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -194,7 +194,7 @@ public static class Automation
             managerData += $"using System.Collections.Generic;\n" +
                            $"using UnityEngine;\n" +
                            $"using System;\n" +
-                           $"namespace TableSystem\n{{\n\t" +
+                           $"namespace DatabaseSystem\n{{\n\t" +
                            $"public class TableManager\n\t{{\n\t\t" +
                            $"public static TableManager Instance {{ get; private set; }} = new TableManager();\n\t\t" +
                            $"public int LoadedData {{ get; private set; }} = 0;\n\t\t";
@@ -278,7 +278,7 @@ public static class Automation
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Automation/Table/Generate Json Class")]
+    [MenuItem("Automation/Database/Generate Json Class")]
     public static void GenerateJsonClass()
     {
         // 해당 경로에 있는 json 파일들 텍스트로 읽기
@@ -299,7 +299,7 @@ using UnityEngine;
 using SimpleJSON;
 using Newtonsoft.Json;
 
-namespace JsonSystem
+namespace DatabaseSystem
 {{
     public class JsonManager
     {{
@@ -348,7 +348,7 @@ namespace JsonSystem
             // }
             StringBuilder classBuilder = new StringBuilder();
             string classFormat =
-@"namespace JsonSystem
+@"namespace DatabaseSystem
 {{
     public class {0} : JsonDatable
     {{
@@ -413,8 +413,16 @@ namespace JsonSystem
 
                     // 인덱스는 부모 클래스에 있으므로 추가 안 해도 된다.
                     if (fieldNameBuilder.ToString().Equals("Index"))
+                    {
+                        // Configuration에 데이터 개수 늘리기
+                        if (scriptableObj != null)
+                        {
+                            scriptableObj.JsonDataCount += 1;
+                            EditorUtility.SetDirty(scriptableObj);
+                        }
                         continue;
-
+                    }
+                        
                     // 필드 타입 얻기
                     StringBuilder fieldDataBuilder = new StringBuilder();
                     startIdx = FileHelper.FindSpecificChar(word, '\"', 3);
@@ -454,10 +462,10 @@ namespace JsonSystem
                 // 파일 저장
                 FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", result.Trim());
 
-                // 데이터 총 갯수 저장
+                // Configuration에 데이터 총 갯수 저장
                 if (scriptableObj != null)
                 {
-                    scriptableObj.DownloadDataCount += dataCount;
+                    scriptableObj.JsonDataCount += dataCount;
                     EditorUtility.SetDirty(scriptableObj);
                 }
 
@@ -485,8 +493,6 @@ namespace JsonSystem
 
         AssetDatabase.Refresh();
     }
-
-    
 
     [MenuItem("Automation/Prefab/Generate Collider")]
     public static void GenerateCollider()

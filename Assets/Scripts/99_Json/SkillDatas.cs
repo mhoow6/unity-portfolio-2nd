@@ -1,4 +1,4 @@
-﻿namespace JsonSystem
+﻿namespace DatabaseSystem
 {
     public class SparcherBasicAttackData : JsonDatable
     {

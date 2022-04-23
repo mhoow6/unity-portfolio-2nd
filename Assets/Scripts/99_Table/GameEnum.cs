@@ -108,6 +108,9 @@
         /// <summary> 가속(회피)할 때 애니메이션 </summary> ///
         DASH_4 = 29,
 
+        /// <summary>  </summary> ///
+        NONE = -1,
+
     }
 
     public enum QuestType

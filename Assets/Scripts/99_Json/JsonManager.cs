@@ -4,7 +4,7 @@ using UnityEngine;
 using SimpleJSON;
 using Newtonsoft.Json;
 
-namespace JsonSystem
+namespace DatabaseSystem
 {
     public class JsonManager
     {

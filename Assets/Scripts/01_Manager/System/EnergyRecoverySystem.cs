@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TableSystem;
+using DatabaseSystem;
 using UnityEngine;
 
 public class EnergyRecoverySystem : GameSystem

@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TableSystem;
-using JsonSystem;
+using DatabaseSystem;
 using System;
 
 public class GameManager : MonoBehaviour

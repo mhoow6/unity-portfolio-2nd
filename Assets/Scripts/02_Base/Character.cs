@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TableSystem;
+using DatabaseSystem;
 
 public class Character : BaseObject
 {
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
+
+    #region 인게임용 데이터
     public CharacterType Type { get; private set; }
     public string Name { get; private set; }
 
+    public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
+    #endregion
+
+    /// <summary> 기록용 데이터 </summary> ///
     public CharacterData Data;
 
     protected void Start()
@@ -35,9 +41,14 @@ public class Character : BaseObject
     }
 
     protected virtual void OnSpawn() { }
-
     protected virtual void OnDead() { }
     protected virtual void OnLive() { }
+
+    #region 공격
+    public virtual void Attack(int skillIndex) { }
+    public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
+    public virtual int GetSpCost(int skillIndex) { return -1; }
+    #endregion
 
     #region 메인메뉴
     // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
@@ -204,4 +215,11 @@ public class Character : BaseObject
         return result;
     }
     #endregion
+
+    public enum SkillType
+    {
+        Attack,
+        Skill,
+        Dash,
+    }
 }

@@ -1,4 +1,4 @@
-﻿namespace TableSystem
+﻿namespace DatabaseSystem
 {
 	public struct AniTypeDialogueTable
 	{

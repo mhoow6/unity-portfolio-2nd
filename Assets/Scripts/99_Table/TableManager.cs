@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-namespace TableSystem
+namespace DatabaseSystem
 {
 	public class TableManager
 	{

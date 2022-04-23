@@ -1,6 +1,6 @@
-namespace JsonSystem
+namespace DatabaseSystem
 {
-    public class JsonDatable
+    public abstract class JsonDatable
     {
         public int Index;
     }
