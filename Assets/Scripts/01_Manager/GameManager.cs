@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TableSystem;
+using JsonSystem;
 using System;
 
 public class GameManager : MonoBehaviour
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
 
         // System Init
         TableManager.Instance.LoadTable();
+        JsonManager.Instance.LoadJson();
+
         if (UISystem != null)
             UISystem.Init();
 

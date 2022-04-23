@@ -18,7 +18,7 @@ namespace TableSystem
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
-            var AniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Table/Table/AniTypeDialogueTable");
+            var AniTypeDialogueTableTextasset = Resources.Load<TextAsset>("99_Database/Table/AniTypeDialogueTable");
             string[] AniTypeDialogueTableLines = AniTypeDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < AniTypeDialogueTableLines.Length; i++)
             {
@@ -32,7 +32,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var CharacterTableTextasset = Resources.Load<TextAsset>("99_Table/Table/CharacterTable");
+            var CharacterTableTextasset = Resources.Load<TextAsset>("99_Database/Table/CharacterTable");
             string[] CharacterTableLines = CharacterTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < CharacterTableLines.Length; i++)
             {
@@ -57,7 +57,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var PlayerLevelEnergyTableTextasset = Resources.Load<TextAsset>("99_Table/Table/PlayerLevelEnergyTable");
+            var PlayerLevelEnergyTableTextasset = Resources.Load<TextAsset>("99_Database/Table/PlayerLevelEnergyTable");
             string[] PlayerLevelEnergyTableLines = PlayerLevelEnergyTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < PlayerLevelEnergyTableLines.Length; i++)
             {
@@ -70,7 +70,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var PlayerLevelExperienceTableTextasset = Resources.Load<TextAsset>("99_Table/Table/PlayerLevelExperienceTable");
+            var PlayerLevelExperienceTableTextasset = Resources.Load<TextAsset>("99_Database/Table/PlayerLevelExperienceTable");
             string[] PlayerLevelExperienceTableLines = PlayerLevelExperienceTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < PlayerLevelExperienceTableLines.Length; i++)
             {
@@ -83,7 +83,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var QuestTableTextasset = Resources.Load<TextAsset>("99_Table/Table/QuestTable");
+            var QuestTableTextasset = Resources.Load<TextAsset>("99_Database/Table/QuestTable");
             string[] QuestTableLines = QuestTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < QuestTableLines.Length; i++)
             {
@@ -98,7 +98,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var RandomNicknameTableTextasset = Resources.Load<TextAsset>("99_Table/Table/RandomNicknameTable");
+            var RandomNicknameTableTextasset = Resources.Load<TextAsset>("99_Database/Table/RandomNicknameTable");
             string[] RandomNicknameTableLines = RandomNicknameTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < RandomNicknameTableLines.Length; i++)
             {
@@ -110,7 +110,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var SlangTableTextasset = Resources.Load<TextAsset>("99_Table/Table/SlangTable");
+            var SlangTableTextasset = Resources.Load<TextAsset>("99_Database/Table/SlangTable");
             string[] SlangTableLines = SlangTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < SlangTableLines.Length; i++)
             {
@@ -122,7 +122,7 @@ namespace TableSystem
                 LoadedData++;
             }
         
-            var StageTableTextasset = Resources.Load<TextAsset>("99_Table/Table/StageTable");
+            var StageTableTextasset = Resources.Load<TextAsset>("99_Database/Table/StageTable");
             string[] StageTableLines = StageTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < StageTableLines.Length; i++)
             {

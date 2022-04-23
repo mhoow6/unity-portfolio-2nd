@@ -39,7 +39,7 @@ public static class Automation
 ";
 
         string[] separatingStrings = { "\r\n" };
-        var textasset = Resources.Load<TextAsset>("99_Table/Enum/GameEnum");
+        var textasset = Resources.Load<TextAsset>("99_Database/Enum/GameEnum");
         string[] lines = textasset.text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
 
         bool enumStart = false;
@@ -136,7 +136,7 @@ public static class Automation
         data += $"namespace TableSystem\n{{\n\t";
 
         string[] separatingStrings = { "\r\n" };
-        var textassets = Resources.LoadAll<TextAsset>("99_Table/Table");
+        var textassets = Resources.LoadAll<TextAsset>("99_Database/Table");
         for (int i = 0; i < textassets.Length; i++)
         {
             var asset = textassets[i];
@@ -213,7 +213,7 @@ public static class Automation
             string loadTable = string.Empty;
             loadTable =
          @"
-            var {0}Textasset = Resources.Load<TextAsset>(""99_Table/Table/{0}"");
+            var {0}Textasset = Resources.Load<TextAsset>(""99_Database/Table/{0}"");
             string[] {0}Lines = {0}Textasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < {0}Lines.Length; i++)
             {{
@@ -282,7 +282,7 @@ public static class Automation
     public static void GenerateJsonClass()
     {
         // 해당 경로에 있는 json 파일들 텍스트로 읽기
-        var textassets = Resources.LoadAll<TextAsset>("99_Table/Json");
+        var textassets = Resources.LoadAll<TextAsset>("99_Database/Json");
         string[] separatingStrings = { "\r\n" };
 
         // Configuration
@@ -290,10 +290,54 @@ public static class Automation
         if (scriptableObj != null)
             scriptableObj.JsonDataCount = 0;
 
+        #region JsonManager String Format
+        // {0} jsonManagerLoadJsonFormat
+        string jsonManagerFormat =
+@"using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using SimpleJSON;
+using Newtonsoft.Json;
+
+namespace JsonSystem
+{{
+    public class JsonManager
+    {{
+        public static JsonManager Instance {{ get; private set; }} = new JsonManager();
+        public Dictionary<int, JsonDatable> JsonDatas {{ get; private set; }} = new Dictionary<int, JsonDatable>();
+
+        public void LoadJson()
+        {{
+            {0}
+        }}
+    }}
+}}";
+        StringBuilder jsonManagerBuilder = new StringBuilder();
+
+        // {0} 파일명
+        // {1} 파일명 전부 소문자
+        // {2} jsonManagerLoadJsonIterableFormat
+        string jsonManagerLoadJsonFormat =
+@"var {1} = Resources.Load<TextAsset>(""99_Database/Json/{0}"");
+            JSONNode {1}Root = JSONNode.Parse({1}.text);
+            {2}";
+        StringBuilder iterableFormatBuilder = new StringBuilder();
+
+
+        // {0} 파일명 소문자
+        // {1} 클래스명
+        // {2} 클래스명 전부 소문자
+        string jsonManagerLoadJsonIterableFormat =
+@"JSONNode {2}Node = {0}Root[""{1}""];
+            {1} {2} = JsonConvert.DeserializeObject<{1}>({2}Node.ToString());
+            JsonDatas.Add({2}.Index, {2});";
+        #endregion
+
         foreach (var asset in textassets)
         {
             string fileName = asset.name;
             int dataCount = 0;
+            bool parseTrigger = false;
 
             // \r\n(캐리지리턴, 라인피트)으로 문자열 구분
             string[] lines = asset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
@@ -302,18 +346,19 @@ public static class Automation
             // 클래스명: {
             // ...
             // }
-
-            bool parseTrigger = false;
             StringBuilder classBuilder = new StringBuilder();
             string classFormat =
-@"public class {0}
+@"namespace JsonSystem
 {{
-    {1}
+    public class {0} : JsonDatable
+    {{
+        {1}
+    }}
 }}
 ";
             StringBuilder classNameBuilder = new StringBuilder();
             StringBuilder fieldsBuilder = new StringBuilder();
-            for (int i = 1; i < lines.Length-1; i++)
+            for (int i = 1; i < lines.Length - 1; i++)
             {
                 string word = lines[i];
 
@@ -328,6 +373,13 @@ public static class Automation
                     for (int j = startIdx + 1; j < endIdx; j++)
                         classNameBuilder.Append(word[j]);
 
+                    // LoadJson() 내부에서 반복되는 부분 스트링 넣기
+                    string loadJsonInner = string.Empty;
+                    loadJsonInner = string.Format(jsonManagerLoadJsonIterableFormat, fileName.ToLower(), classNameBuilder.ToString(), classNameBuilder.ToString().ToLower());
+                    iterableFormatBuilder.AppendLine(loadJsonInner);
+                    // 들여쓰기 맞추기
+                    iterableFormatBuilder.AppendLine("");
+                    iterableFormatBuilder.Append("            ");
                     continue;
                 }
                 // 파싱 끝
@@ -347,7 +399,7 @@ public static class Automation
                     classBuilder.AppendLine(copied);
                     continue;
                 }
-                
+
                 if (parseTrigger)
                 {
                     string field = string.Empty;
@@ -359,6 +411,10 @@ public static class Automation
                     for (int j = startIdx + 1; j < endIdx; j++)
                         fieldNameBuilder.Append(word[j]);
 
+                    // 인덱스는 부모 클래스에 있으므로 추가 안 해도 된다.
+                    if (fieldNameBuilder.ToString().Equals("Index"))
+                        continue;
+
                     // 필드 타입 얻기
                     StringBuilder fieldDataBuilder = new StringBuilder();
                     startIdx = FileHelper.FindSpecificChar(word, '\"', 3);
@@ -367,38 +423,36 @@ public static class Automation
                         fieldDataBuilder.Append(word[j]);
 
                     // 파싱시도 순서
-                    // int -> float -> bool -> string
+                    // int -> float -> bool -> DateTime -> string
                     if (int.TryParse(fieldDataBuilder.ToString(), out _))
                         field = $"public int {fieldNameBuilder};";
+                    else if (float.TryParse(fieldDataBuilder.ToString(), out _))
+                        field = $"public float {fieldNameBuilder};";
+                    else if (bool.TryParse(fieldDataBuilder.ToString(), out _))
+                        field = $"public bool {fieldNameBuilder};";
+                    else if (DateTime.TryParse(fieldDataBuilder.ToString(), out _))
+                        field = $"public DateTime {fieldNameBuilder};";
                     else
-                    {
-                        if (float.TryParse(fieldDataBuilder.ToString(), out _))
-                            field = $"public float {fieldNameBuilder};";
-                        else
-                        {
-                            if (bool.TryParse(fieldDataBuilder.ToString(), out _))
-                                field = $"public bool {fieldNameBuilder};";
-                            else
-                                field = $"public string {fieldNameBuilder};";
-                        }
-                    }
+                        field = $"public string {fieldNameBuilder};";
 
                     // StringBuilder에 추가
                     dataCount++;
+                    // 들여쓰기 맞추기
                     fieldsBuilder.AppendLine(field);
-                    fieldsBuilder.Append($"    ");
+                    fieldsBuilder.Append($"        ");
                 }
             }
 
             // ---------------------------------------------------------------------------------------------------
 
+            // JsonDatable 클래스 파일 저장
             string result = classBuilder.ToString();
-            if (FileHelper.DirectoryCheck($"{Application.dataPath}/Scripts/99_Json"))
-                Debug.LogError($"{Application.dataPath}/Scripts/99_Table 에 해당하는 경로가 없습니다.");
+            if (!FileHelper.DirectoryCheck($"{Application.dataPath}/Scripts/99_Json"))
+                Debug.LogError($"{Application.dataPath}/Scripts/99_Json 에 해당하는 경로가 없습니다.");
             else
             {
                 // 파일 저장
-                FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", result);
+                FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", result.Trim());
 
                 // 데이터 총 갯수 저장
                 if (scriptableObj != null)
@@ -406,9 +460,28 @@ public static class Automation
                     scriptableObj.DownloadDataCount += dataCount;
                     EditorUtility.SetDirty(scriptableObj);
                 }
-                    
+
             }
+
+            // ---------------------------------------------------------------------------------------------------
+
+            // JsonManager.LoadJson() 구현
+            string loadJson = string.Empty;
+            loadJson = string.Format(jsonManagerLoadJsonFormat, fileName, fileName.ToLower(), iterableFormatBuilder.ToString());
+            jsonManagerBuilder.Append(loadJson);
+
+            // 다음 파일을 위해 초기화
+            iterableFormatBuilder.Clear();
         }
+
+        // JsonManager 구현
+        jsonManagerFormat = string.Format(jsonManagerFormat, jsonManagerBuilder.ToString().Trim());
+
+        // JsonManager.cs 저장
+        if (!FileHelper.DirectoryCheck($"{Application.dataPath}/Scripts/99_Json"))
+            Debug.LogError($"{Application.dataPath}/Scripts/99_Json 에 해당하는 경로가 없습니다.");
+        else
+            FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/JsonManager.cs", jsonManagerFormat);
 
         AssetDatabase.Refresh();
     }

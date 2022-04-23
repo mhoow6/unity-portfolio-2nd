@@ -1,23 +1,11 @@
-﻿public class SparcherAttackData
+﻿namespace JsonSystem
 {
-    public int Index;
-    public int AniCode;
-    public string Name;
-    public int SpCost;
-    public string IconPath;
-    public float DamageScale;
-    
+    public class SparcherBasicAttackData : JsonDatable
+    {
+        public int AniType;
+        public string Name;
+        public string IconPath;
+        public float DamageScale;
+        
+    }
 }
-
-public class SparcherSkillData
-{
-    public int Index;
-    public int AniCode;
-    public string Name;
-    public int SpCost;
-    public string IconPath;
-    public float DamageScale;
-    
-}
-
-
