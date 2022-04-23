@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuSparcherJump: MainMenuSparcherStateMachineBehaviour
+public class MainMenuSparcherJump: MainMenuCharacterStateMachineBehaviour
 {
     protected override AniType m_AniType => AniType.JUMP_0;
 }

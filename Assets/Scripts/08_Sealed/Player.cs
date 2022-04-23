@@ -29,17 +29,28 @@ public sealed class Player : MonoBehaviour
     private void Update()
     {
         // 캐릭터 움직이기
-        var inputAxis = GameManager.Instance.InputSystem.Controller;
+        var ControllerInput = GameManager.Instance.InputSystem.ControllerInput;
         var cam = GameManager.Instance.MainCam;
-        if (inputAxis != null && cam != null)
+        if (cam != null)
         {
             Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
             Vector3 cameraRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
-            Vector3 moveVector = cameraForward * inputAxis.Input.y + cameraRight * inputAxis.Input.x;
+            Vector3 moveVector = cameraForward * ControllerInput.y + cameraRight * ControllerInput.x;
 
-            // 회전
             if (moveVector.magnitude != 0)
+            {
+                // 회전
                 CurrentCharacter.transform.forward = moveVector.normalized;
+
+                // 애니메이션
+                CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AniType.RUN_0);
+            }
+            else
+            {
+                // 애니메이션
+                CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AniType.IDLE_0);
+            }
+                
 
             // 이동
             CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Data.Speed;

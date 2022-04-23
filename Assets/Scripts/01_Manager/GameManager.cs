@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
     public InputSystem InputSystem;
+    public SceneSystem SceneSystem { get; private set; }
 
     // Update Handler
     Action m_Update;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     public bool TitleLoadingDirectingSkip;
     public bool AskForNickNameSkip;
     public bool NoAutoSavePlayerData;
+    public bool IsTestZone;
 
     private void Awake()
     {
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour
         m_Update = null;
         m_FixedUpdate = null;
 
-        // Data
+        // Config
         Config = Resources.Load<Configuration>("Configuration");
         Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
 
@@ -62,12 +64,17 @@ public class GameManager : MonoBehaviour
         if (InputSystem != null)
             InputSystem.Init();
 
+        SceneSystem = new SceneSystem();
+        SceneSystem.Init();
+
         // Game Setting
         Application.targetFrameRate = 60;
 
         // Update
         if (UISystem != null)
             m_Update += UISystem.Tick;
+        if (InputSystem != null)
+            m_Update += InputSystem.Tick;
 
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
@@ -94,7 +101,7 @@ public class GameManager : MonoBehaviour
         m_Update?.Invoke();
 
         // юс╫ц
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
             UISystem.OpenWindow(UIType.InGame);
     }
 

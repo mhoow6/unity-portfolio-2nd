@@ -5,7 +5,7 @@ using TableSystem;
 
 public class Character : BaseObject
 {
-    public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniCode");
+    public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
     public CharacterType Type { get; private set; }
     public string Name { get; private set; }
@@ -17,7 +17,6 @@ public class Character : BaseObject
         // 컴포넌트 붙이기
         if (!Animator)
             Animator = GetComponent<Animator>();
-        // ---
 
         SetMainMenuAnimations();
         SetPropertiesFromTable();      

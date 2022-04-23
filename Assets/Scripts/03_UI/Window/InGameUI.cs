@@ -11,17 +11,32 @@ public class InGameUI : UI
     [SerializeField] SkillButtonDisplay m_DashButton;
     [SerializeField] SkillButtonDisplay m_SkillButton;
 
+    Inputable m_WASDController;
 
     public override void OnClosed()
     {
-        // 인게임 바깥에선 조이스틱이 필요없으므로 다시 Canvas의 RenderMode를 Screen Space - Camera
+        // 다시 Canvas의 RenderMode를 Screen Space - Camera
         GameManager.Instance.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceCamera;
         GameManager.Instance.UISystem.Canvas.worldCamera = GameManager.Instance.UISystem.UICamera;
+
+        // 컨트롤러 제외
+        GameManager.Instance.InputSystem.Controllers.Remove(m_Joystick);
+        GameManager.Instance.InputSystem.Controllers.Remove(m_WASDController);
     }
 
     public override void OnOpened()
     {
-        GameManager.Instance.InputSystem.Controller = m_Joystick;
+        // 컨트롤러 추가
+        GameManager.Instance.InputSystem.Controllers.Add(m_Joystick);
+        if (Application.platform != RuntimePlatform.Android)
+        {
+            if (m_WASDController == null)
+                m_WASDController = gameObject.AddComponent<WASDController>();
+
+            GameManager.Instance.InputSystem.Controllers.Add(m_WASDController);
+        }
+
+        // 카메라 회전 가능
         GameManager.Instance.InputSystem.CameraRotatable = true;
 
         // Canvas의 RenderMode가 Screen Space - Camera일 경우 조이스틱이 정상적으로 작동하지 않는 문제 발생

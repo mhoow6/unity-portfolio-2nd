@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuSparcherStateMachineBehaviour : StateMachineBehaviour
+public class MainMenuCharacterStateMachineBehaviour : StateMachineBehaviour
 {
     protected virtual AniType m_AniType { get; }
 
@@ -24,7 +24,7 @@ public class MainMenuSparcherStateMachineBehaviour : StateMachineBehaviour
         m_CurrentAnimationTime = stateInfo.normalizedTime % 1;
         if (m_CurrentAnimationTime > 0.75f)
         {
-            animator.SetInteger("AniCode", (int)AniType.IDLE_0);
+            animator.SetInteger("AniType", (int)AniType.IDLE_0);
         }
     }
 

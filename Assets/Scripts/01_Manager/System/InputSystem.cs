@@ -6,20 +6,44 @@ using Cinemachine;
 
 public class InputSystem : MonoBehaviour, GameSystem
 {
-    public Inputable Controller;
+    public List<Inputable> Controllers { get; private set; } = new List<Inputable>();
+    public Vector2 ControllerInput
+    {
+        get
+        {
+            if (m_MainController != null)
+                return m_MainController.Input;
+            else
+                return Vector2.zero;
+        }
+    }
+
     public bool CameraRotatable
     {
         set
         {
             if (value)
-                StartCoroutine(m_Rotating);
+            {
+                if (Application.platform == RuntimePlatform.Android)
+                    StartCoroutine(m_Rotating);
+            }
             else
-                StopCoroutine(m_Rotating);
+            {
+                if (Application.platform == RuntimePlatform.Android)
+                    StopCoroutine(m_Rotating);
+
+                var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
+                var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
+                activeCam.m_XAxis.m_MaxSpeed = 0;
+                activeCam.m_YAxis.m_MaxSpeed = 0;
+            }     
         }
     }
 
     IEnumerator m_Rotating;
     const float ROTATE_BREAK_SENSTIVITY = 2f;
+    Inputable m_MainController;
+    
 
     public void Init()
     {
@@ -28,7 +52,12 @@ public class InputSystem : MonoBehaviour, GameSystem
 
     public void Tick()
     {
-        
+        // 메인 컨트롤러 감지
+        foreach (var ctrl in Controllers)
+        {
+            if (ctrl.Input.magnitude != 0)
+                m_MainController = ctrl;
+        }
     }
 
     IEnumerator RotateCoroutine()
