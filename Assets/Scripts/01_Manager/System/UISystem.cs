@@ -22,7 +22,7 @@ public class UISystem : MonoBehaviour, GameSystem
     }
 
     [SerializeField] GameObject m_BlockWindow;
-    [SerializeField] Camera m_UICamera;
+    public Camera UICamera;
 
     public readonly float ScaleTweeningSpeed = 0.2f;
 
@@ -35,7 +35,9 @@ public class UISystem : MonoBehaviour, GameSystem
         m_BlockWindow.gameObject.SetActive(false);
 
         DontDestroyOnLoad(Canvas);
-        DontDestroyOnLoad(m_UICamera);
+
+        if (UICamera != null)
+            DontDestroyOnLoad(UICamera);
     }
 
     public void Tick()
@@ -124,16 +126,28 @@ public class UISystem : MonoBehaviour, GameSystem
     void GetAllWindows()
     {
         Windows.Clear();
-        var canvasObj = GameObject.Find("Canvas_Windows");
-        if (canvasObj != null)
+        if (Canvas != null)
         {
-            for (int i = 0; i < canvasObj.transform.childCount; i++)
+            // Windows 오브젝트 찾기
+            GameObject root = null;
+            for (int i = 0; i < Canvas.transform.childCount; i++)
             {
-                var child = canvasObj.transform.GetChild(i);
+                var child = Canvas.transform.GetChild(i);
+                if (child.name.Equals("Windows"))
+                {
+                    root = child.gameObject;
+                    break;
+                }
+            }
+
+            // Window의 자식들중 UI 붙은 것만 Windows에 등록
+            for (int i = 0; i < root.transform.childCount; i++)
+            {
+                var child = root.transform.GetChild(i);
                 var comp = child.GetComponent<UI>();
                 if (comp != null)
                     Windows.Add(comp);
-            }
+            } 
         }
         AssetDatabase.Refresh();
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ScriptableObject", menuName = "Configuration", order = 1)]
-public class Configuration : ScriptableObject
+public sealed class Configuration : ScriptableObject
 {
     public int DownloadDataCount;
     public string SaveFilePath;

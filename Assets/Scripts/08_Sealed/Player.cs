@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public sealed class Player : MonoBehaviour
 {
     [ReadOnly] public Character CurrentCharacter;
     [ReadOnly] public List<Character> Characters = new List<Character>();
