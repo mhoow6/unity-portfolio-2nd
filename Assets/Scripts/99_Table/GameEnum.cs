@@ -156,6 +156,9 @@
         /// <summary> 테스트용 캐릭터 </summary> ///
         CHAR_Dummy = 3,
 
+        /// <summary> 발사용 나무 화살 </summary> ///
+        PROJ_WoodenArrow = 4,
+
     }
 
 

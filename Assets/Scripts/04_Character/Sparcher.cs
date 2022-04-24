@@ -7,6 +7,8 @@ public class Sparcher : Character
 {
     public override ObjectCode Code => ObjectCode.CHAR_Sparcher;
 
+    [SerializeField] Transform m_ArrowSpawnPosition;
+
     const int ATTACK_INDEX = 2000;
     const int SKILL_INDEX = -1;
     const int DASH_INDEX = -1;
@@ -35,6 +37,12 @@ public class Sparcher : Character
         {
             case ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
+                var projData = TableManager.Instance.ProjectileTable.Find(p => p.Code == ObjectCode.PROJ_WoodenArrow);
+                var Loadedprojectile = Resources.Load<Projectile>($"07_Projectile/{projData.PrefabPath}");
+
+                var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.identity);
+
+                projectile.Shoot(transform.forward, projData.MoveSpeed, projData.LifeTime);
                 break;
         }
     }

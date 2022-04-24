@@ -47,6 +47,7 @@ public class Character : BaseObject
     protected virtual void OnLive() { }
 
     #region 공격
+    /// <summary> 애니메이션 이벤트 함수 </summary> ///
     public virtual void Attack(int skillIndex) { }
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }

@@ -20,7 +20,7 @@ public sealed class Player : MonoBehaviour
 
     IEnumerator m_ControlCoroutine;
 
-    const float ROTATE_SENSTIVITY = 6f;
+    const float ROTATE_SENSTIVITY = 12f;
 
     void Start()
     {

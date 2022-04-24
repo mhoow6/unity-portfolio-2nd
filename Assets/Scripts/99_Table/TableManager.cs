@@ -11,6 +11,7 @@ namespace DatabaseSystem
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
+		public List<ProjectileTable> ProjectileTable = new List<ProjectileTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
@@ -80,6 +81,21 @@ namespace DatabaseSystem
 				info.MaxExperience = int.Parse(datas[1]);
 				
                 PlayerLevelExperienceTable.Add(info);
+                LoadedData++;
+            }
+        
+            var ProjectileTableTextasset = Resources.Load<TextAsset>("99_Database/Table/ProjectileTable");
+            string[] ProjectileTableLines = ProjectileTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < ProjectileTableLines.Length; i++)
+            {
+                string[] datas = ProjectileTableLines[i].Split(',');
+                ProjectileTable info;
+                info.Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[0]);
+				info.LifeTime = int.Parse(datas[1]);
+				info.MoveSpeed = float.Parse(datas[2]);
+				info.PrefabPath = datas[3];
+				
+                ProjectileTable.Add(info);
                 LoadedData++;
             }
         

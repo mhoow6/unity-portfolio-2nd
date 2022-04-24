@@ -57,7 +57,7 @@ public class MainMenuUI : UI
 
     public void OnNickNameBtnClick()
     {
-        GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput);
+        GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput, false);
     }
 
     public override void OnClosed()

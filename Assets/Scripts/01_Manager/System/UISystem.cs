@@ -55,17 +55,17 @@ public class UISystem : MonoBehaviour, GameSystem
         }
     }
 
-    public void OpenWindow(UIType type)
+    public void OpenWindow(UIType type, bool closeCurrentWindow = true)
     {
-        OpenWindow<UI>(type);
+        OpenWindow<UI>(type, closeCurrentWindow);
     }
 
-    public T OpenWindow<T>(UIType type) where T : UI
+    public T OpenWindow<T>(UIType type, bool closeCurrentWindow = true) where T : UI
     {
         T result = null;
 
         // 지금 창은 닫자
-        if (m_WindowStack.Count > 0)
+        if (m_WindowStack.Count > 0 && closeCurrentWindow)
         {
             var current = m_WindowStack.Peek();
             if (m_WindowStack.Peek() != null)

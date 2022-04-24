@@ -597,7 +597,7 @@ namespace DatabaseSystem
         }
     }
 
-    [MenuItem("Automation/AssetBundle/Monster Asset Bundles")]
+    [MenuItem("Automation/Obsoleted/Build Monster Asset Bundles")]
     public static void ExportMonsterBundle()
     {
         AssetBundleBuild[] buildBundles = new AssetBundleBuild[1];
@@ -612,13 +612,13 @@ namespace DatabaseSystem
         BuildPipeline.BuildAssetBundles("Assets/AssetBundles/Monster", buildBundles, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
     }
 
-    [MenuItem("Automation/AssetBundle/All Asset Bundles")]
+    [MenuItem("Automation/Obsoleted/Build All Asset Bundles")]
     public static void ExportAllBundle()
     {
         
     }
 
-    [MenuItem("Automation/Table/Save Scene")]
+    [MenuItem("Automation/Obsoleted/Save Scene")]
     public static void SaveScene()
     {
         string sceneName = SceneManager.GetActiveScene().name;
