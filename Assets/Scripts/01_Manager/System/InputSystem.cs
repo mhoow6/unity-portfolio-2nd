@@ -6,7 +6,7 @@ using Cinemachine;
 
 public class InputSystem : MonoBehaviour, GameSystem
 {
-    public List<Inputable> Controllers { get; private set; } = new List<Inputable>();
+    public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
     public Vector2 ControllerInput
     {
         get
@@ -42,7 +42,7 @@ public class InputSystem : MonoBehaviour, GameSystem
 
     IEnumerator m_Rotating;
     const float ROTATE_BREAK_SENSTIVITY = 2f;
-    Inputable m_MainController;
+    InputProvider m_MainController;
     
 
     public void Init()

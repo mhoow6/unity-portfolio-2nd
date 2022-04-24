@@ -16,8 +16,11 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
+    public Queue<AniType> AnimationQueue { get; private set; } = new Queue<AniType>();
 
     IEnumerator m_ControlCoroutine;
+
+    const float ROTATE_SENSTIVITY = 6f;
 
     void Start()
     {
@@ -38,6 +41,13 @@ public sealed class Player : MonoBehaviour
         }
 
         m_ControlCoroutine = ControlCoroutine();
+    }
+
+    private void Update()
+    {
+        // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
+        if (CurrentCharacter != null && AnimationQueue.Count > 0)
+            CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AnimationQueue.Dequeue());
     }
 
     void OnDestroy()
@@ -61,17 +71,16 @@ public sealed class Player : MonoBehaviour
                 if (moveVector.magnitude != 0)
                 {
                     // 회전
-                    CurrentCharacter.transform.forward = moveVector.normalized;
+                    CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, moveVector.normalized, Time.deltaTime * ROTATE_SENSTIVITY);
 
                     // 애니메이션
-                    CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AniType.RUN_0);
+                    AnimationQueue.Enqueue(AniType.RUN_0);
                 }
                 else
                 {
                     // 애니메이션
-                    CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AniType.IDLE_0);
+                    AnimationQueue.Enqueue(AniType.IDLE_0);
                 }
-
 
                 // 이동
                 CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Data.Speed;

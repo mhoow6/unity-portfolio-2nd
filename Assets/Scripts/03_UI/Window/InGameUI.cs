@@ -12,7 +12,7 @@ public class InGameUI : UI
     [SerializeField] SkillButtonDisplay m_DashButton;
     [SerializeField] SkillButtonDisplay m_SkillButton;
 
-    Inputable m_WASDController;
+    InputProvider m_WASDController;
 
     public override void OnClosed()
     {
@@ -65,8 +65,11 @@ public class InGameUI : UI
             AniType aniType = character.GetAniType(attackIndex);
             m_AttackButton.SetData
                 (
-                    false, 
-                    () => character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)aniType),
+                    false,
+                    () =>
+                    {
+                        GameManager.Instance.Player.AnimationQueue.Enqueue(aniType);
+                    },
                     string.Empty
                 );
         }
@@ -80,7 +83,7 @@ public class InGameUI : UI
             m_SkillButton.SetData
                 (
                     true,
-                    () => character.Animator.SetInteger(character.ANITYPE_HASHCODE,(int)aniType),
+                    () => GameManager.Instance.Player.AnimationQueue.Enqueue(aniType),
                     string.Empty,
                     spCost
                 );
@@ -93,7 +96,7 @@ public class InGameUI : UI
             m_DashButton.SetData
                 (
                     false,
-                    () => character.Animator.SetInteger(character.ANITYPE_HASHCODE,(int)aniType),
+                    () => GameManager.Instance.Player.AnimationQueue.Enqueue(aniType),
                     string.Empty
                 );
         }

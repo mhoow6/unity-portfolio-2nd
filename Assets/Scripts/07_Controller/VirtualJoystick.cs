@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, Inputable
+public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, InputProvider
 {
     [SerializeField] RectTransform m_Background;
 
@@ -14,7 +14,7 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     Vector2 m_Center;
     Quaternion m_BackgroundQuaternion;
 
-    Vector2 Inputable.Input => m_Input;
+    Vector2 InputProvider.Input => m_Input;
 
     private void Start()
     {

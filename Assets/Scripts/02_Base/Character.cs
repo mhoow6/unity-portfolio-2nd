@@ -11,8 +11,8 @@ public class Character : BaseObject
     #region 인게임용 데이터
     public CharacterType Type { get; private set; }
     public string Name { get; private set; }
-
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
+    [ReadOnly] public AniType CurrentAniType;
     #endregion
 
     /// <summary> 기록용 데이터 </summary> ///
@@ -32,6 +32,8 @@ public class Character : BaseObject
 
     protected void Update()
     {
+        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
+
         OnLive();
     }
 
@@ -48,6 +50,13 @@ public class Character : BaseObject
     public virtual void Attack(int skillIndex) { }
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
+
+    public enum SkillType
+    {
+        Attack,
+        Skill,
+        Dash,
+    }
     #endregion
 
     #region 메인메뉴
@@ -215,11 +224,4 @@ public class Character : BaseObject
         return result;
     }
     #endregion
-
-    public enum SkillType
-    {
-        Attack,
-        Skill,
-        Dash,
-    }
 }

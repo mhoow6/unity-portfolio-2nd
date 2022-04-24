@@ -126,7 +126,7 @@ public class MainMenuUI : UI
                         int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
                         AniType randomAni = character.AnimationsWhenUserClick[random];
 
-                        character.Animator.SetInteger(character.ANITYPE_HASHCODE, (int)randomAni);
+                        player.AnimationQueue.Enqueue(randomAni);
                     }
                 }
             }

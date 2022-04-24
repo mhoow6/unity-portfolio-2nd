@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface Inputable
+public interface InputProvider
 {
     public Vector2 Input { get; }
 }

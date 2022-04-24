@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WASDController : MonoBehaviour, Inputable
+public class WASDController : MonoBehaviour, InputProvider
 {
     Vector2 m_Input;
-    Vector2 Inputable.Input => m_Input;
+    Vector2 InputProvider.Input => m_Input;
 
     void Update()
     {

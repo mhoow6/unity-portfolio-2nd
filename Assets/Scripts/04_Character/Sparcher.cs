@@ -11,8 +11,6 @@ public class Sparcher : Character
     const int SKILL_INDEX = -1;
     const int DASH_INDEX = -1;
 
-    [ReadOnly] public AniType CurrentAniType;
-
     protected override void OnSpawn()
     {
         var currentScene = GameManager.Instance.SceneSystem.CurrentScene;
@@ -28,11 +26,6 @@ public class Sparcher : Character
 
         // 스킬타입에 따른 인덱스 정해주기 (SkillDatas.json)
         SkillIndices.Add(SkillType.Attack, ATTACK_INDEX);
-    }
-
-    protected override void OnLive()
-    {
-        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
     }
 
     public override void Attack(int skillIndex)
