@@ -56,7 +56,7 @@ public class InGameUI : UI
         SkillButtonSetup(GameManager.Instance.Player.CurrentCharacter);
     }
 
-    /// <summary> 현재 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
+    /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
     public void SkillButtonSetup(Character character)
     {
         // 기본공격 세팅

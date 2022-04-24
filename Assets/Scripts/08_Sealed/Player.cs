@@ -16,11 +16,12 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
-    public Queue<AniType> AnimationQueue { get; private set; } = new Queue<AniType>();
+    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(ANIMATION_QUEUE_CAPACITY);
 
     IEnumerator m_ControlCoroutine;
 
     const float ROTATE_SENSTIVITY = 12f;
+    const int ANIMATION_QUEUE_CAPACITY = 2;
 
     void Start()
     {
