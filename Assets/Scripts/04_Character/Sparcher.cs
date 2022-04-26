@@ -42,7 +42,7 @@ public class Sparcher : Character
 
                 var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.identity);
 
-                projectile.Shoot(transform.forward, projData.MoveSpeed, projData.LifeTime);
+                projectile.Shoot(transform.forward, Projectile.TrajectoryType.Straight, projData.MoveSpeed, projData.LifeTime);
                 break;
         }
     }

@@ -26,7 +26,7 @@ public class LoadingTitleUI : UI
     int m_PredictRestTime;
 
     int m_FakeDataDownloadPerSecond;
-    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
+    const int m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
 
     public override UIType Type { get => UIType.Loading; }
 
@@ -37,8 +37,8 @@ public class LoadingTitleUI : UI
         m_FakeDataDownloadPerSecond = (int)(m_NeedToLoadDataCount * 0.01f) == 0 ? 1 : (int)(m_NeedToLoadDataCount * 0.01f);
         //Debug.Log($"초당 데이터 다운로드 수: {m_FakeDataDownloadPerSecond}");
 
-        int minValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
-        int maxValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
+        int minValue = m_FakeDataDownloadPerSecond > m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
+        int maxValue = m_FakeDataDownloadPerSecond > m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
         //Debug.Log($"최소 데이터 다운로드: {minValue}");
         //Debug.Log($"최소 데이터 다운로드: {maxValue}");
 
@@ -110,7 +110,7 @@ public class LoadingTitleUI : UI
     }
 
     #region 게임타이틀 로딩
-    public void LoadingTitle(bool quickMode = false)
+    void StartLoading(bool quickMode = false)
     {
         IsLoadingComplete = false;
 
@@ -126,7 +126,7 @@ public class LoadingTitleUI : UI
 
         // 로딩타이틀 연출시작
         if (LoadingTitleMechanism.Instance != null)
-            LoadingTitleMechanism.Instance.StartDirecting(this);
+            LoadingTitleMechanism.Instance.StartRoadMoving(this);
 
         if (quickMode)
             StartCoroutine(LoadComplete());
@@ -155,13 +155,13 @@ public class LoadingTitleUI : UI
 
         // 섬 근처로 카메라가 이동하는 연출 시작
         if (MainMenuMechanism.Instance != null)
-            MainMenuMechanism.Instance.StartDirecting();
+            MainMenuMechanism.Instance.MovingCamera();
     }
     #endregion
 
     public override void OnOpened()
     {
-        
+        StartLoading();
     }
 
     public override void OnClosed()

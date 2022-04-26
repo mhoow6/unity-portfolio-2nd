@@ -19,7 +19,7 @@ public class LoadingTitleMechanism : MonoSingleton<LoadingTitleMechanism>
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
-    public void StartDirecting(LoadingTitleUI ui)
+    public void StartRoadMoving(LoadingTitleUI ui)
     {
         m_LoadingUI = ui;
 

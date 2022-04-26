@@ -64,7 +64,9 @@ public class MainMenuUI : UI
     {
         GameManager.Instance.MainCam.gameObject.SetActive(false);
 
-        StopAllCoroutines();
+        // 캐릭터 클릭시 애니메이션 발생 시작
+        if (MainMenuMechanism.Instance != null)
+            MainMenuMechanism.Instance.CheckUserClickingTheCharacter = false;
     }
 
     public override void OnOpened()
@@ -103,36 +105,8 @@ public class MainMenuUI : UI
         // 에너지, 돈
         StatusDisplay.SetData();
 
-        // 메인메뉴에서 캐릭터 클릭 시 랜덤 애니메이션
-        StartCoroutine(CheckingUserClickCharacter());
-    }
-
-    IEnumerator CheckingUserClickCharacter()
-    {
-        while (true)
-        {
-            // 왼쪽 클릭시
-            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
-            {
-                RaycastHit hitInfo;
-                Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
-                {
-                    var player = GameManager.Instance.Player;
-                    var character = player.CurrentCharacter;
-                    if (hitInfo.collider.gameObject.Equals(character.gameObject))
-                    {
-                        int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
-                        AniType randomAni = character.AnimationsWhenUserClick[random];
-
-                        player.AnimationQueue.Enqueue(randomAni);
-                    }
-                }
-            }
-
-            yield return null;
-        }
-
+        // 캐릭터 클릭시 애니메이션 발생 시작
+        if (MainMenuMechanism.Instance != null)
+            MainMenuMechanism.Instance.CheckUserClickingTheCharacter = true;
     }
 }

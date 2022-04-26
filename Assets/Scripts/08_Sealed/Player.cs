@@ -16,12 +16,11 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
-    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(ANIMATION_QUEUE_CAPACITY);
+    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(2);
 
     IEnumerator m_ControlCoroutine;
 
-    const float ROTATE_SENSTIVITY = 12f;
-    const int ANIMATION_QUEUE_CAPACITY = 2;
+    const float m_ROTATE_SENSTIVITY = 12f;
 
     void Start()
     {
@@ -72,7 +71,7 @@ public sealed class Player : MonoBehaviour
                 if (moveVector.magnitude != 0)
                 {
                     // 회전
-                    CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, moveVector.normalized, Time.deltaTime * ROTATE_SENSTIVITY);
+                    CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, moveVector.normalized, Time.deltaTime * m_ROTATE_SENSTIVITY);
 
                     // 애니메이션
                     AnimationQueue.Enqueue(AniType.RUN_0);
