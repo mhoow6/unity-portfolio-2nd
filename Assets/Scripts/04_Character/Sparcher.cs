@@ -43,7 +43,7 @@ public class Sparcher : Character
 
                 var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
-                projectile.Shoot(m_ArrowSpawnPosition.forward, TrajectoryType.Parabola, data.ArrowMoveSpeed * 2f, data.ArrowLifeTime);
+                projectile.Shoot(gameObject, m_ArrowSpawnPosition.forward, TrajectoryType.Parabola, data.ArrowMoveSpeed * 2f, data.ArrowLifeTime);
                 break;
         }
     }

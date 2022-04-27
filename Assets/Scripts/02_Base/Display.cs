@@ -5,4 +5,7 @@ using UnityEngine;
 public class Display : MonoBehaviour
 {
     public virtual void SetData() { }
+    protected virtual void OnClosed() { }
+
+    protected void OnDisable() { OnClosed(); }
 }
