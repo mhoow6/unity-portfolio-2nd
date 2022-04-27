@@ -51,13 +51,6 @@ public class Character : BaseObject
     public virtual void Attack(int skillIndex) { }
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
-
-    public enum SkillType
-    {
-        Attack,
-        Skill,
-        Dash,
-    }
     #endregion
 
     #region 메인메뉴
@@ -225,4 +218,12 @@ public class Character : BaseObject
         return result;
     }
     #endregion
+}
+
+/// <summary> 캐릭터 스킬 타입 </summary> ///
+public enum SkillType
+{
+    Attack,
+    Skill,
+    Dash,
 }

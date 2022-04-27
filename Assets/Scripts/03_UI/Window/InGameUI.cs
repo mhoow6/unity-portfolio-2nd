@@ -61,7 +61,7 @@ public class InGameUI : UI
     public void SkillButtonSetup(Character character)
     {
         // 기본공격 세팅
-        if (character.SkillIndices.TryGetValue(Character.SkillType.Attack, out int attackIndex))
+        if (character.SkillIndices.TryGetValue(SkillType.Attack, out int attackIndex))
         {
             AniType aniType = character.GetAniType(attackIndex);
             m_AttackButton.SetData
@@ -76,7 +76,7 @@ public class InGameUI : UI
         }
 
         // 스킬 세팅
-        if (character.SkillIndices.TryGetValue(Character.SkillType.Skill, out int skillIndex))
+        if (character.SkillIndices.TryGetValue(SkillType.Skill, out int skillIndex))
         {
             AniType aniType = character.GetAniType(skillIndex);
             int spCost = character.GetSpCost(skillIndex);
@@ -91,7 +91,7 @@ public class InGameUI : UI
         }
 
         // 대쉬 세팅
-        if (character.SkillIndices.TryGetValue(Character.SkillType.Dash, out int dashIndex))
+        if (character.SkillIndices.TryGetValue(SkillType.Dash, out int dashIndex))
         {
             AniType aniType = character.GetAniType(dashIndex);
             m_DashButton.SetData

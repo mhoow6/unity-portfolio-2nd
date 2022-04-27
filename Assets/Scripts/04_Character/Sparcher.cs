@@ -37,12 +37,13 @@ public class Sparcher : Character
         {
             case ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
-                var projData = TableManager.Instance.ProjectileTable.Find(p => p.Code == ObjectCode.PROJ_WoodenArrow);
-                var Loadedprojectile = Resources.Load<Projectile>($"07_Projectile/{projData.PrefabPath}");
+                var Loadedprojectile = Resources.Load<Projectile>($"07_Projectile/{data.ArrowPrefabPath}");
+                // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전
+                var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, -30f);
 
-                var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.identity);
+                var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
-                projectile.Shoot(transform.forward, Projectile.TrajectoryType.Straight, projData.MoveSpeed, projData.LifeTime);
+                projectile.Shoot(m_ArrowSpawnPosition.forward, TrajectoryType.Parabola, data.ArrowMoveSpeed * 2f, data.ArrowLifeTime);
                 break;
         }
     }

@@ -58,18 +58,6 @@
 		public int MaxExperience;
 	}
 
-	public struct ProjectileTable
-	{
-		/// <summary>  </summary> ///
-		public ObjectCode Code;
-		/// <summary>  </summary> ///
-		public int LifeTime;
-		/// <summary>  </summary> ///
-		public float MoveSpeed;
-		/// <summary>  </summary> ///
-		public string PrefabPath;
-	}
-
 	public struct QuestTable
 	{
 		/// <summary> 퀘스트 인덱스 </summary> ///
