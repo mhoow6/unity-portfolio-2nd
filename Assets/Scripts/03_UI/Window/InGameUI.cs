@@ -21,7 +21,7 @@ public class InGameUI : UI
         GameManager.Instance.UISystem.Canvas.worldCamera = GameManager.Instance.UISystem.UICamera;
 
         // 컨트롤러 제외
-        var wasd = player.gameObject.GetComponent<WASDController>();
+        var wasd = player.gameObject.GetComponent<KeyboardController>();
         GameManager.Instance.InputSystem.Controllers.Remove(m_Joystick);
         if (wasd != null)
             Destroy(wasd);
@@ -41,7 +41,7 @@ public class InGameUI : UI
         GameManager.Instance.InputSystem.Controllers.Add(m_Joystick);
         if (Application.platform != RuntimePlatform.Android)
         {
-            var wasd = player.gameObject.AddComponent<WASDController>();
+            var wasd = player.gameObject.AddComponent<KeyboardController>();
             GameManager.Instance.InputSystem.Controllers.Add(wasd);
         }
 

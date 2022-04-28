@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WASDController : MonoBehaviour, InputProvider
+public class KeyboardController : MonoBehaviour, InputProvider
 {
     Vector2 m_Input;
     Vector2 InputProvider.Input => m_Input;

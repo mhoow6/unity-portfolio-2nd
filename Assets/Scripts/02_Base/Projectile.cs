@@ -43,7 +43,7 @@ public class Projectile : BaseObject
         {
             timer += Time.deltaTime;
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
         // TODO: 오브젝트 풀에 관리되게끔 해야함.
         Destroy(gameObject);
