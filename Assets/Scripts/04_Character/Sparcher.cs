@@ -9,9 +9,10 @@ public class Sparcher : Character
 
     [SerializeField] Transform m_ArrowSpawnPosition;
 
-    const int ATTACK_INDEX = 2000;
-    const int SKILL_INDEX = -1;
-    const int DASH_INDEX = -1;
+    public readonly int ATTACK_INDEX = m_ATTACK_INDEX;
+    const int m_ATTACK_INDEX = 2000;
+    const int m_SKILL_INDEX = -1;
+    const int m_DASH_INDEX = -1;
 
     protected override void OnSpawn()
     {
@@ -40,14 +41,15 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case ATTACK_INDEX:
+            case m_ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
+                // 화살 인스턴싱
                 var Loadedprojectile = Resources.Load<Projectile>($"07_Projectile/{data.ArrowPrefabPath}");
                 // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전
                 var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, 0f);
-
                 var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
+                // 화살 발사
                 projectile.Shoot(gameObject, transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
                 break;
         }
@@ -58,7 +60,7 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case ATTACK_INDEX:
+            case m_ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
                 return (AniType)data.AniType;
             default:
@@ -71,7 +73,7 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case SKILL_INDEX:
+            case m_SKILL_INDEX:
                 return 0;
             default:
                 return 0;

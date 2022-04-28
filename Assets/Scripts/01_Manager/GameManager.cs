@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public Camera MainCam;
     public Light DirectLight;
     [ReadOnly] public SceneType SceneType;
+    public bool AutoTargeting;
 
     // Game System
     public UISystem UISystem;

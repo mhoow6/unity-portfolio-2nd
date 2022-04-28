@@ -10,6 +10,7 @@
         public int ArrowLifeTime;
         public int ArrowMoveSpeed;
         public string ArrowPrefabPath;
+        public float AutoTargetDetectRange;
         
     }
 }
