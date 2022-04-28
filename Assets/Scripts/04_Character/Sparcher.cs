@@ -15,10 +15,10 @@ public class Sparcher : Character
 
     protected override void OnSpawn()
     {
-        var currentScene = GameManager.Instance.SceneSystem.CurrentScene;
+        var currentScene = GameManager.Instance.SceneType;
         switch (currentScene)
         {
-            case SceneSystem.SceneType.MainMenu:
+            case SceneType.MainMenu:
                 Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("09_AnimationController/Sparcher/MainMenu_Sparcher");
                 break;
             default:
@@ -30,6 +30,11 @@ public class Sparcher : Character
         SkillIndices.Add(SkillType.Attack, ATTACK_INDEX);
     }
 
+    protected override void OnLive()
+    {
+        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
+    }
+
     public override void Attack(int skillIndex)
     {
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
@@ -39,11 +44,11 @@ public class Sparcher : Character
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
                 var Loadedprojectile = Resources.Load<Projectile>($"07_Projectile/{data.ArrowPrefabPath}");
                 // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전
-                var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, -30f);
+                var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, 0f);
 
                 var projectile = Instantiate(Loadedprojectile, m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
-                projectile.Shoot(gameObject, m_ArrowSpawnPosition.forward, TrajectoryType.Parabola, data.ArrowMoveSpeed * 2f, data.ArrowLifeTime);
+                projectile.Shoot(gameObject, transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
                 break;
         }
     }

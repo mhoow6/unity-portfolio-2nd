@@ -36,15 +36,15 @@ public class Projectile : BaseObject
     IEnumerator ShootStraightCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
     {
         float timer = 0f;
-        m_RigidBody.isKinematic = true;
+        m_RigidBody.isKinematic = false;
+        m_RigidBody.useGravity = false;
+        m_RigidBody.velocity = direction.normalized * moveSpeed * m_SHOOT_VELOCITY;
         while (timer < lifeTime)
         {
             timer += Time.deltaTime;
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
 
             yield return null;
         }
-        m_RigidBody.isKinematic = false;
         // TODO: 오브젝트 풀에 관리되게끔 해야함.
         Destroy(gameObject);
     }
@@ -52,18 +52,17 @@ public class Projectile : BaseObject
     IEnumerator ShootParabolaCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
     {
         float timer = 0f;
-        Vector3 shooterForward = shooter.transform.forward;
-        float projectileZAngle = transform.eulerAngles.z;
-
         m_RigidBody.isKinematic = false;
         // direction 방향으로 moveSpeed만큼 속력을 준다.
         m_RigidBody.velocity = direction.normalized * moveSpeed * m_SHOOT_VELOCITY;
         while (timer < lifeTime)
         {
             timer += Time.deltaTime;
-            float angle = Vector3.SignedAngle(shooterForward, m_RigidBody.velocity.normalized, Vector3.up);
+            float angle = Mathf.Atan2(m_RigidBody.velocity.y, m_RigidBody.velocity.x) * Mathf.Rad2Deg;
+
             // 기존 회전값에 중력으로 각도가 바뀐만큼을 더해준다
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, angle + projectileZAngle);
+            transform.eulerAngles = new Vector3(0, 0, angle);
+
             yield return new WaitForFixedUpdate();
         }
         // TODO: 오브젝트 풀에 관리되게끔 해야함.

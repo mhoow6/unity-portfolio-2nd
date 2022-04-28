@@ -14,13 +14,13 @@ public class GameManager : MonoBehaviour
     [ReadOnly] public Player Player;
     public Camera MainCam;
     public Light DirectLight;
+    [ReadOnly] public SceneType SceneType;
 
     // Game System
     public UISystem UISystem;
     EnergyRecoverySystem EnergyRecoverySystem;
     public QuestSystem QuestSystem { get; private set; }
     public InputSystem InputSystem;
-    public SceneSystem SceneSystem { get; private set; }
 
     // Update Handler
     Action m_Update;
@@ -63,9 +63,6 @@ public class GameManager : MonoBehaviour
         if (InputSystem != null)
             InputSystem.Init();
 
-        SceneSystem = new SceneSystem();
-        SceneSystem.Init();
-
         // Game Setting
         Application.targetFrameRate = 60;
 
@@ -77,7 +74,12 @@ public class GameManager : MonoBehaviour
 
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
-        
+
+        if (IsTestZone)
+            SceneType = SceneType.Test;
+        else
+            SceneType = SceneType.MainMenu;
+
     }
 
     void Start()
@@ -97,7 +99,7 @@ public class GameManager : MonoBehaviour
         m_Update?.Invoke();
 
         // 임시
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (Input.GetKeyDown(KeyCode.T))
             UISystem.OpenWindow(UIType.InGame);
     }
 
@@ -173,6 +175,23 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region 플레이어 데이터
+    /// <summary>
+    /// 플레이어의 캐릭터 데이터를 업데이트 합니다.
+    /// </summary>
+    public void UpdatePlayerData()
+    {
+        foreach (var cha in Player.Characters)
+        {
+            var exist = PlayerData.CharacterDatas.Find(c => c.Code == cha.Code);
+            if (exist == null)
+                PlayerData.CharacterDatas.Add(cha.Data);
+            else
+                exist = cha.Data;
+        }
+    }
+    #endregion
+
     [ContextMenu("# Get Attached System")]
     void GetAttachedSystem()
     {
@@ -184,4 +203,11 @@ public class GameManager : MonoBehaviour
         var obj2 = GameObject.FindObjectOfType<InputSystem>();
         InputSystem = obj2;
     }
+}
+
+public enum SceneType
+{
+    MainMenu,
+    InGame,
+    Test = -1
 }

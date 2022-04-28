@@ -32,8 +32,6 @@ public class Character : BaseObject
 
     protected void Update()
     {
-        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
-
         OnLive();
     }
 
@@ -95,23 +93,6 @@ public class Character : BaseObject
                 Speed = table.BaseSpeed,
                 EquipWeaponData = null
             };
-    }
-
-    /// <summary>
-    /// 플레이어의 캐릭터 데이터를 업데이트 합니다.
-    /// </summary>
-    public void UpdatePlayerData()
-    {
-        var player = GameManager.Instance.Player;
-        foreach (var cha in player.Characters)
-        {
-            var playerData = GameManager.Instance.PlayerData;
-            var exist = playerData.CharacterDatas.Find(c => c.Code == cha.Code);
-            if (exist == null)
-                playerData.CharacterDatas.Add(cha.Data);
-            else
-                exist = cha.Data;
-        }
     }
     #endregion
 

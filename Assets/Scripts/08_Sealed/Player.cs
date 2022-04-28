@@ -16,7 +16,7 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
-    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(2);
+    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(1);
 
     IEnumerator m_ControlCoroutine;
 
