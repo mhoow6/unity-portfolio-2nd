@@ -18,7 +18,7 @@ public class StageManager : MonoSingleton<StageManager>
     }
 
     [ContextMenu("# Get Monsters")]
-    void GetAttachedSystem()
+    void GetMonsters()
     {
         for (int i = 0; i < MonsterRoot.transform.childCount; i++)
         {
@@ -27,5 +27,11 @@ public class StageManager : MonoSingleton<StageManager>
             if (monster != null)
                 Monsters.Add(monster);
         }
+    }
+
+    [ContextMenu("# Get Attached System")]
+    void GetAttachedSystem()
+    {
+        
     }
 }

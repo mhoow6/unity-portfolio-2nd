@@ -5,14 +5,9 @@ using UnityEngine;
 
 public class UISystem : MonoBehaviour, GameSystem
 {
-    [ReadOnly]
-    public List<UI> Windows = new List<UI>();
-    Stack<UI> m_WindowStack = new Stack<UI>();
-
-    public UI NoneCloseableWindow;
+    [ReadOnly] public List<UI> Windows = new List<UI>();
     public Canvas Canvas;
     public UI CurrentWindow => m_WindowStack.Peek();
-
     public bool BlockRaycast
     {
         set
@@ -20,11 +15,14 @@ public class UISystem : MonoBehaviour, GameSystem
             m_BlockWindow.SetActive(value);
         }
     }
-
-    [SerializeField] GameObject m_BlockWindow;
     public Camera UICamera;
+    public PoolSystem Pool { get; private set; }
 
     public readonly float ScaleTweeningSpeed = 0.2f;
+
+    Stack<UI> m_WindowStack = new Stack<UI>();
+    [SerializeField] GameObject m_BlockWindow;
+    [SerializeField] GameObject m_Pool;
 
     public void Init()
     {
@@ -38,6 +36,9 @@ public class UISystem : MonoBehaviour, GameSystem
 
         if (UICamera != null)
             DontDestroyOnLoad(UICamera);
+
+        Pool = new PoolSystem();
+        Pool.Init(m_Pool);
     }
 
     public void Tick()

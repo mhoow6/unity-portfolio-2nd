@@ -9,6 +9,7 @@ public class SparcherWoodenArrow : Projectile
     {
         Debug.Log($"{other.name}가 맞았습니다.");
 
+        //GameManager.Instance.UISystem.Pool.Load<>
         StageManager.Instance.Pool.Release(this);
     }
 }

@@ -13,6 +13,11 @@ public class PoolSystem : GameSystem
         m_Root = new GameObject("@Pool");
     }
 
+    public void Init(GameObject poolRoot)
+    {
+        m_Root = poolRoot;
+    }
+
     public T Load<T>(string prefabPath) where T : Component, IPoolable
     {
         if (m_PoolMap.TryGetValue(prefabPath, out var list))

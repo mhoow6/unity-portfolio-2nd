@@ -197,12 +197,18 @@ public class GameManager : MonoBehaviour
     void GetAttachedSystem()
     {
         // UI System
-        var obj = GameObject.FindObjectOfType<UISystem>();
-        UISystem = obj;
+        var uisys = GetComponent<UISystem>();
+        if (uisys != null)
+        {
+            UISystem = uisys;
+        }
 
         // InputSystem
-        var obj2 = GameObject.FindObjectOfType<InputSystem>();
-        InputSystem = obj2;
+        var inputsys = GetComponent<InputSystem>();
+        if (inputsys != null)
+        {
+            InputSystem = inputsys;
+        }
     }
 }
 

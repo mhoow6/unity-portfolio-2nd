@@ -29,9 +29,6 @@ public class Projectile : BaseObject, IPoolable
             case TrajectoryType.Straight:
                 StartCoroutine(ShootStraightCoroutine(shooter, direction, moveSpeed, lifeTime));
                 break;
-            case TrajectoryType.Parabola:
-                StartCoroutine(ShootParabolaCoroutine(shooter, direction, moveSpeed, lifeTime));
-                break;
             default:
                 break;
         }
@@ -52,7 +49,6 @@ public class Projectile : BaseObject, IPoolable
         StageManager.Instance.Pool.Release(this);
     }
 
-    [Obsolete]
     IEnumerator ShootParabolaCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
     {
         yield return null;
@@ -79,5 +75,6 @@ public enum TrajectoryType
     /// <summary> 직선 </summary>
     Straight,
     /// <summary> 포물선 </summary>
+    [Obsolete]
     Parabola
 }
