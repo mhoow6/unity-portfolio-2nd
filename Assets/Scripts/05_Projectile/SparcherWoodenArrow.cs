@@ -9,7 +9,6 @@ public class SparcherWoodenArrow : Projectile
     {
         Debug.Log($"{other.name}가 맞았습니다.");
 
-        // TODO: 오브젝트 풀링
-        Destroy(gameObject);
+        StageManager.Instance.Pool.Release(this);
     }
 }

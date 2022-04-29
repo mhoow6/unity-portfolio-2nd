@@ -2,10 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterManager : MonoSingleton<MonsterManager>
+public class StageManager : MonoSingleton<StageManager>
 {
     [SerializeField] GameObject MonsterRoot;
     [ReadOnly] public List<Character> Monsters = new List<Character>();
+
+    public PoolSystem Pool { get; private set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Pool = new PoolSystem();
+        Pool.Init();
+    }
 
     [ContextMenu("# Get Monsters")]
     void GetAttachedSystem()

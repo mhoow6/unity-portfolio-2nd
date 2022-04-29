@@ -1,14 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider),(typeof(Rigidbody)))]
-public class Projectile : BaseObject
+public class Projectile : BaseObject, IPoolable
 {
     [SerializeField] Rigidbody m_RigidBody;
     [SerializeField] SphereCollider m_SphereCollider;
 
     const float m_SHOOT_VELOCITY = 2f;
+    bool m_Poolable;
+
+    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
 
     protected void OnTriggerEnter(Collider other)
     {
@@ -45,28 +49,26 @@ public class Projectile : BaseObject
 
             yield return new WaitForFixedUpdate();
         }
-        // TODO: 오브젝트 풀에 관리되게끔 해야함.
-        Destroy(gameObject);
+        StageManager.Instance.Pool.Release(this);
     }
 
+    [Obsolete]
     IEnumerator ShootParabolaCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
     {
-        float timer = 0f;
-        m_RigidBody.isKinematic = false;
-        // direction 방향으로 moveSpeed만큼 속력을 준다.
-        m_RigidBody.velocity = direction.normalized * moveSpeed * m_SHOOT_VELOCITY;
-        while (timer < lifeTime)
-        {
-            timer += Time.deltaTime;
-            float angle = Mathf.Atan2(m_RigidBody.velocity.y, m_RigidBody.velocity.x) * Mathf.Rad2Deg;
+        yield return null;
+    }
+    #endregion
 
-            // 기존 회전값에 중력으로 각도가 바뀐만큼을 더해준다
-            transform.eulerAngles = new Vector3(0, 0, angle);
+    #region 오브젝트 풀링
+    public void OnLoad()
+    {
+        gameObject.SetActive(true);
+    }
 
-            yield return new WaitForFixedUpdate();
-        }
-        // TODO: 오브젝트 풀에 관리되게끔 해야함.
-        Destroy(gameObject);
+    public void OnRelease()
+    {
+        StopAllCoroutines();
+        gameObject.SetActive(false);
     }
     #endregion
 }

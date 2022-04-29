@@ -19,7 +19,7 @@ public class SparcherBasicAttackBehaviour : AnimationBehaviour
         // 오토 타겟팅이 켜져있으면 공격거리내의 몬스터에게 몸이 회전한다.
         if (GameManager.Instance.AutoTargeting)
         {
-            var find = MonsterManager.Instance.Monsters.Find(m => Vector3.Distance(m.transform.position, sparcher.transform.position) <= skillData.AutoTargetDetectRange);
+            var find = StageManager.Instance.Monsters.Find(m => Vector3.Distance(m.transform.position, sparcher.transform.position) <= skillData.AutoTargetDetectRange);
             if (find != null)
                 sparcher.transform.LookAt(find.transform);
         }
