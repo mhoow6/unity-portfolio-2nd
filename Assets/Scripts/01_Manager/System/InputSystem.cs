@@ -7,7 +7,7 @@ using Cinemachine;
 public class InputSystem : MonoBehaviour, GameSystem
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
-    public Vector2 ControllerInput
+    public Vector2 CharacterMoveInput
     {
         get
         {
@@ -15,6 +15,22 @@ public class InputSystem : MonoBehaviour, GameSystem
                 return m_MainController.Input;
             else
                 return Vector2.zero;
+        }
+    }
+    public Vector2 CameraRotateInput
+    {
+        get
+        {
+            var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
+            if (cam != null)
+            {
+                var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
+                if (activeCam != null)
+                {
+                    return new Vector2(activeCam.m_XAxis.m_InputAxisValue, activeCam.m_YAxis.m_InputAxisValue);
+                }
+            }
+            return Vector2.zero;
         }
     }
 
@@ -25,12 +41,12 @@ public class InputSystem : MonoBehaviour, GameSystem
             if (value)
             {
                 if (Application.platform == RuntimePlatform.Android)
-                    StartCoroutine(m_Rotating);
+                    StartCoroutine(m_CameraRotate);
             }
             else
             {
                 if (Application.platform == RuntimePlatform.Android)
-                    StopCoroutine(m_Rotating);
+                    StopCoroutine(m_CameraRotate);
 
                 var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
                 var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
@@ -40,14 +56,13 @@ public class InputSystem : MonoBehaviour, GameSystem
         }
     }
 
-    IEnumerator m_Rotating;
+    IEnumerator m_CameraRotate;
     const float ROTATE_BREAK_SENSTIVITY = 2f;
     InputProvider m_MainController;
     
-
     public void Init()
     {
-        m_Rotating = RotateCoroutine();
+        m_CameraRotate = CameraRotateCoroutine();
     }
 
     public void Tick()
@@ -60,7 +75,7 @@ public class InputSystem : MonoBehaviour, GameSystem
         }
     }
 
-    IEnumerator RotateCoroutine()
+    IEnumerator CameraRotateCoroutine()
     {
         var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
         var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();

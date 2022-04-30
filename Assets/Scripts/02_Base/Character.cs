@@ -13,6 +13,7 @@ public class Character : BaseObject
     public string Name { get; private set; }
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     [ReadOnly] public AniType CurrentAniType;
+    public Transform Head;
     #endregion
 
     /// <summary> 기록용 데이터 </summary> ///
@@ -97,17 +98,13 @@ public class Character : BaseObject
     #endregion
 
     #region 데미지 계산
-    /// <summary>
-    /// 상대방에게 입힐 데미지를 계산합니다.
-    /// </summary>
-    /// <param name="lhs">자신</param>
-    /// <param name="rhs">상대방</param>
-    /// <returns></returns>
-    protected float CalcuateDamage(Character lhs, Character rhs)
+    /// <summary> 상대방에게 입힐 데미지를 계산합니다. </summary> ///
+    /// <returns>float: 데미지 bool: 크리티컬</returns>
+    public (float, bool) CalcuateDamage(Character rhs)
     {
-        float result = 0;
-        result = CalculateTypeDamage(lhs, rhs);
-        result = CalculateCriticalDamage(result, lhs.Data.Critical);
+        (float, bool) result;
+        result.Item1 = CalculateTypeDamage(this, rhs);
+        result = CalculateCriticalDamage(result.Item1, Data.Critical);
         return result;
     }
 
@@ -182,21 +179,23 @@ public class Character : BaseObject
     /// <summary>
     /// 치명타 확률을 포함한 최종 데미지를 계산합니다.
     /// </summary>
-    float CalculateCriticalDamage(float damage, float criticalRate)
+    /// <returns>float: 데미지 bool: 크리티컬</returns>
+    (float, bool) CalculateCriticalDamage(float damage, float criticalRate)
     {
-        float result = damage;
+        float convertCriticalRate = criticalRate * 0.01f;
+        float calcuatedDamage = damage;
         bool critical = false;
 
         float random = Random.Range(0.0f, 1.0f);
-        if (criticalRate > random)
+        if (convertCriticalRate > random)
             critical = true;
         else
             critical = false;
 
         if (critical)
-            result *= 2;
+            calcuatedDamage *= 2;
 
-        return result;
+        return (calcuatedDamage, critical);
     }
     #endregion
 }

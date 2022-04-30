@@ -43,12 +43,13 @@ public class Sparcher : Character
         {
             case m_ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
+
                 // 화살 인스턴싱
                 var proj = StageManager.Instance.Pool.Load<Projectile>($"07_Projectile/{data.ArrowPrefabPath}");
+                proj.SetData(this);
                 
                 // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전
                 var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, 0f);
-
                 proj.transform.SetPositionAndRotation(m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
                 // 화살 발사

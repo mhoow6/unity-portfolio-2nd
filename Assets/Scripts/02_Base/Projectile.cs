@@ -6,11 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider),(typeof(Rigidbody)))]
 public class Projectile : BaseObject, IPoolable
 {
+    protected Character m_Owner;
+
     [SerializeField] Rigidbody m_RigidBody;
     [SerializeField] SphereCollider m_SphereCollider;
+    bool m_Poolable;
 
     const float m_SHOOT_VELOCITY = 2f;
-    bool m_Poolable;
 
     public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
 
@@ -20,6 +22,11 @@ public class Projectile : BaseObject, IPoolable
     }
 
     protected virtual void OnCollide(Collider other) { }
+
+    public void SetData(Character owner)
+    {
+        m_Owner = owner;
+    }
 
     #region 투사체 발사
     public void Shoot(GameObject shooter, Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
