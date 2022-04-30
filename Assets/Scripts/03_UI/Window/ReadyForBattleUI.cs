@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DatabaseSystem;
+using DG.Tweening;
 
 public class ReadyForBattleUI : UI
 {
@@ -30,6 +31,8 @@ public class ReadyForBattleUI : UI
     List<StageTable> m_StageTable;
     List<QuestTable> m_QuestTable;
     PlayerData m_PlayerData;
+
+    const float m_STAGE_DESCRIPTION_SPEED = 3f;
 
 
     // 전투 준비 버튼
@@ -77,15 +80,17 @@ public class ReadyForBattleUI : UI
         if (mission3Record != null)
             mission1Clear = mission3Record.Clear;
 
-
+        // 스테이지 설명
         StageName.text = $"Act.{stageIdx} {row.StageName}";
-        StageDescription.text = row.StageDescription;
+        StageDescription.text = string.Empty;
+        StageDescription.DOText(row.StageDescription, m_STAGE_DESCRIPTION_SPEED);
 
+        // 긴급 목표
         Mission1.SetData(QuestDescription(row.Quest1Idx), mission1Clear);
         Mission2.SetData(QuestDescription(row.Quest2Idx), mission2Clear);
         Mission3.SetData(QuestDescription(row.Quest3Idx), mission3Clear);
 
-        // TODO: 몬스터 아이템 리스트
+        // TODO: 스테이지에서 얻을 수 있는 아이템 리스트
 
         // 에너지 소비
         EnergyCost.text = row.EnergyCost.ToString();

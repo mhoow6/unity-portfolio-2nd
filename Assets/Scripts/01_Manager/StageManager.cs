@@ -13,6 +13,7 @@ public class StageManager : MonoSingleton<StageManager>
     {
         base.Awake();
 
+        // Init System 
         Pool = new PoolSystem();
         Pool.Init();
     }

@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     public Configuration Config { get; private set; }
     public PlayerData PlayerData { get; private set; }
     [ReadOnly] public Player Player;
-    public Camera MainCam;
-    public Light DirectLight;
+    [ReadOnly] public Camera MainCam;
+    [ReadOnly] public Light DirectionalLight;
     [ReadOnly] public SceneType SceneType;
     public bool AutoTargeting;
 
@@ -40,6 +40,14 @@ public class GameManager : MonoBehaviour
         Instance = this;
         m_Update = null;
         m_FixedUpdate = null;
+
+        // 씬에 메인카메라, 방향광원을 가지고 있으면 찾아서 게임매니저에 등록
+        var env = FindObjectOfType<Environment>();
+        if (env != null)
+        {
+            MainCam = env.Camera;
+            DirectionalLight = env.DirectionalLight;
+        }
 
         // Config
         Config = Resources.Load<Configuration>("Configuration");
@@ -119,7 +127,7 @@ public class GameManager : MonoBehaviour
             UnloadScene();
 
         var prevCam = MainCam;
-        var prevLight = DirectLight;
+        var prevLight = DirectionalLight;
 
         // name, xpos, ypos, zpos, xrot, yrot, zrot
         var texts = FileHelper.GetStringsFromByCSVFormat($"99_Table/{sceneName}");
@@ -172,7 +180,7 @@ public class GameManager : MonoBehaviour
         // 클리어
         m_roots.Clear();
         MainCam = null;
-        DirectLight = null;
+        DirectionalLight = null;
     }
     #endregion
 
