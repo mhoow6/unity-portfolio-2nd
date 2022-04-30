@@ -13,6 +13,11 @@ public class GreenSpider : Character
             manager.Monsters.Add(this);
     }
 
+    protected override void OnDamaged(float updateHp)
+    {
+        Debug.Log($"{Name}(이)가 {updateHp}만큼의 데미지를 받았습니다 ㅠㅠ");
+    }
+
     protected override void OnDead()
     {
         var manager = StageManager.Instance;

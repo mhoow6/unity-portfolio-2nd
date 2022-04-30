@@ -14,9 +14,24 @@ public class Character : BaseObject
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     [ReadOnly] public AniType CurrentAniType;
     public Transform Head;
+    public int Hp
+    {
+        get => Data.Hp;
+        set
+        {
+            int hpDelta = value - Data.Hp;
+
+            if (hpDelta > 0)
+                Recover(Mathf.Abs(hpDelta));
+            else if (hpDelta < 0)
+                Damaged(Mathf.Abs(hpDelta));
+
+            Data.Hp = value;
+        }
+    }
     #endregion
 
-    /// <summary> 기록용 데이터 </summary> ///
+    /// <summary> 기록용 데이터. 가급적 읽기 전용으로 사용할 것</summary> ///
     public CharacterData Data;
 
     protected void Start()
@@ -26,7 +41,7 @@ public class Character : BaseObject
             Animator = GetComponent<Animator>();
 
         SetMainMenuAnimations();
-        SetPropertiesFromTable();      
+        SetPropertiesFromTable();
 
         OnSpawn();
     }
@@ -41,11 +56,22 @@ public class Character : BaseObject
         OnDead();
     }
 
+    /// <summary> 캐릭터 스폰시 호출 (현재 Start()에서 호출하고 있음) </summary> ///
     protected virtual void OnSpawn() { }
+
+    /// <summary> 캐릭터 사망시 호출 </summary> ///
     protected virtual void OnDead() { }
+
+    /// <summary> 캐릭터 살아있을 때 호출 </summary> ///
     protected virtual void OnLive() { }
 
-    #region 공격
+    /// <summary> Hp 회복시 호출 </summary> ///
+    protected virtual void OnRecover(float updateHp) { }
+
+    /// <summary> Hp 감소시 호출 </summary> ///
+    protected virtual void OnDamaged(float updateHp) { }
+
+    #region 공격 관련
     /// <summary> 애니메이션 이벤트 함수 </summary> ///
     public virtual void Attack(int skillIndex) { }
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
@@ -99,10 +125,10 @@ public class Character : BaseObject
 
     #region 데미지 계산
     /// <summary> 상대방에게 입힐 데미지를 계산합니다. </summary> ///
-    /// <returns>float: 데미지 bool: 크리티컬</returns>
-    public (float, bool) CalcuateDamage(Character rhs)
+    /// <returns>int: 데미지 bool: 크리티컬 여부</returns>
+    public (int, bool) CalcuateDamage(Character rhs)
     {
-        (float, bool) result;
+        (int, bool) result;
         result.Item1 = CalculateTypeDamage(this, rhs);
         result = CalculateCriticalDamage(result.Item1, Data.Critical);
         return result;
@@ -114,13 +140,13 @@ public class Character : BaseObject
     /// <param name="lhs">자신</param>
     /// <param name="rhs">상대방</param>
     /// <returns>계산된 데미지</returns>
-    float CalculateTypeDamage(Character lhs, Character rhs)
+    int CalculateTypeDamage(Character lhs, Character rhs)
     {
         // 내 속성이 상대방에게 유리한 속성일 경우 30% 추뎀,
         // 내 속성이 상대방에게 불리한 속성일 경우 30%의 데미지만 입힐 수 있음
         // 내 속성과 상대방에게 어떠한 이점이 없을 경우 데미지는 그대로
 
-        float result = 0;
+        int result = 0;
         float bonusRatio = 1;
 
         switch (lhs.Type)
@@ -171,7 +197,7 @@ public class Character : BaseObject
                 break;
         }
 
-        result = lhs.Data.Damage * bonusRatio;
+        result = (int)(lhs.Data.Damage * bonusRatio);
 
         return result;
     }
@@ -180,7 +206,7 @@ public class Character : BaseObject
     /// 치명타 확률을 포함한 최종 데미지를 계산합니다.
     /// </summary>
     /// <returns>float: 데미지 bool: 크리티컬</returns>
-    (float, bool) CalculateCriticalDamage(float damage, float criticalRate)
+    (int, bool) CalculateCriticalDamage(float damage, float criticalRate)
     {
         float convertCriticalRate = criticalRate * 0.01f;
         float calcuatedDamage = damage;
@@ -195,7 +221,19 @@ public class Character : BaseObject
         if (critical)
             calcuatedDamage *= 2;
 
-        return (calcuatedDamage, critical);
+        return ((int)calcuatedDamage, critical);
+    }
+    #endregion
+
+    #region HP 변동시
+    void Recover(float updateHp)
+    {
+        OnRecover(updateHp);
+    }
+
+    void Damaged(float updateHp)
+    {
+        OnDamaged(updateHp);
     }
     #endregion
 }

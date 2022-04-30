@@ -53,7 +53,7 @@ public class Sparcher : Character
                 proj.transform.SetPositionAndRotation(m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
                 // 화살 발사
-                proj.Shoot(gameObject, transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
+                proj.Shoot(transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
                 break;
         }
     }

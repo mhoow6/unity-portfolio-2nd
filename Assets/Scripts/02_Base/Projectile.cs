@@ -29,19 +29,19 @@ public class Projectile : BaseObject, IPoolable
     }
 
     #region 투사체 발사
-    public void Shoot(GameObject shooter, Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
+    public void Shoot(Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
     {
         switch (trajectoryType)
         {
             case TrajectoryType.Straight:
-                StartCoroutine(ShootStraightCoroutine(shooter, direction, moveSpeed, lifeTime));
+                StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
                 break;
             default:
                 break;
         }
     }
 
-    IEnumerator ShootStraightCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
+    IEnumerator ShootStraightCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
     {
         float timer = 0f;
         m_RigidBody.isKinematic = false;
@@ -56,7 +56,7 @@ public class Projectile : BaseObject, IPoolable
         StageManager.Instance.Pool.Release(this);
     }
 
-    IEnumerator ShootParabolaCoroutine(GameObject shooter, Vector3 direction, float moveSpeed, int lifeTime)
+    IEnumerator ShootParabolaCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
     {
         yield return null;
     }

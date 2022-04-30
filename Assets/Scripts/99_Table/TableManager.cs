@@ -41,15 +41,15 @@ namespace DatabaseSystem
                 info.Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[0]);
 				info.Type = (CharacterType)Enum.Parse(typeof(CharacterType),datas[1]);
 				info.Name = datas[2];
-				info.BaseHp = float.Parse(datas[3]);
+				info.BaseHp = int.Parse(datas[3]);
 				info.HpIncreaseRatioByLevelUp = float.Parse(datas[4]);
-				info.BaseSp = float.Parse(datas[5]);
+				info.BaseSp = int.Parse(datas[5]);
 				info.SpIncreaseRatioByLevelUp = float.Parse(datas[6]);
-				info.BaseDamage = float.Parse(datas[7]);
+				info.BaseDamage = int.Parse(datas[7]);
 				info.DamageIncreaseRatioByLevelUp = float.Parse(datas[8]);
-				info.BaseDefense = float.Parse(datas[9]);
+				info.BaseDefense = int.Parse(datas[9]);
 				info.DefenseIncreaseRatioByLevelUp = float.Parse(datas[10]);
-				info.BaseCritical = float.Parse(datas[11]);
+				info.BaseCritical = int.Parse(datas[11]);
 				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[12]);
 				info.BaseSpeed = float.Parse(datas[13]);
 				

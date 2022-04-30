@@ -23,11 +23,11 @@ public class CharacterData
 {
     public ObjectCode Code;
     public int Level;
-    public float Hp;
-    public float Sp;
-    public float Damage;
-    public float Defense;
-    public float Critical;
+    public int Hp;
+    public int Sp;
+    public int Damage;
+    public int Defense;
+    public int Critical;
     public float Speed;
 
     public WeaponData EquipWeaponData;
