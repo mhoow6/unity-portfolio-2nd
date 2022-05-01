@@ -27,6 +27,11 @@ public class SkillButtonDisplay : Display, IPointerDownHandler
         m_OnClicked = onClick;
     }
 
+    public void Press()
+    {
+        m_OnClicked?.Invoke();
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         m_OnClicked?.Invoke();

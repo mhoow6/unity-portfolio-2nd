@@ -137,6 +137,7 @@ namespace DatabaseSystem
 				info.Quest3Idx = int.Parse(datas[6]);
 				info.EnergyCost = int.Parse(datas[7]);
 				info.LockContent = bool.Parse(datas[8]);
+				info.StageImage = datas[9];
 				
                 StageTable.Add(info);
                 LoadedData++;

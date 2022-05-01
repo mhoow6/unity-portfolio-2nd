@@ -85,6 +85,9 @@ public class ReadyForBattleUI : UI
         StageDescription.text = string.Empty;
         StageDescription.DOText(row.StageDescription, m_STAGE_DESCRIPTION_SPEED);
 
+        // 스테이지 이미지
+        StageImage.sprite = Resources.Load<Sprite>($"02_Texture/{row.StageImage}");
+
         // 긴급 목표
         Mission1.SetData(QuestDescription(row.Quest1Idx), mission1Clear);
         Mission2.SetData(QuestDescription(row.Quest2Idx), mission2Clear);

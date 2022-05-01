@@ -21,10 +21,20 @@ public class InGameUI : UI
         GameManager.Instance.UISystem.Canvas.worldCamera = GameManager.Instance.UISystem.UICamera;
 
         // 컨트롤러 제외
-        var wasd = player.gameObject.GetComponent<KeyboardController>();
         GameManager.Instance.InputSystem.Controllers.Remove(m_Joystick);
+
+        // 에디터 버젼은 키보드 컨트롤러도 달려있음
+        var wasd = player.gameObject.GetComponent<KeyboardController>();
         if (wasd != null)
+        {
+            wasd.DisconnectFromInGameUI();
             Destroy(wasd);
+
+            // 커서 다시 보이게 하기
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+            
 
         // 유저가 캐릭터 조작불가능
         player.Controlable = false;
@@ -39,10 +49,17 @@ public class InGameUI : UI
 
         // 컨트롤러 추가
         GameManager.Instance.InputSystem.Controllers.Add(m_Joystick);
+
+        // 에디터에선 키보드 컨트롤 가능하게
         if (Application.platform != RuntimePlatform.Android)
         {
             var wasd = player.gameObject.AddComponent<KeyboardController>();
+            wasd.ConnectToInGameUI(m_AttackButton, m_DashButton, m_SkillButton);
             GameManager.Instance.InputSystem.Controllers.Add(wasd);
+
+            // 커서도 편의상 잠궈놓자
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         // 유저가 캐릭터 조작가능
