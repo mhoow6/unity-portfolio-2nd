@@ -19,6 +19,7 @@ public enum UIType
     BattleResult, // 미구현
     WeaponDetail, // 미구현
     ItemDetail, // 미구현
+    InGameDialogue // 미구현
 }
 
 public abstract class UI : MonoBehaviour

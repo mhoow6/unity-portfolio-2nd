@@ -82,6 +82,28 @@
 		public string SlangWord;
 	}
 
+	public struct StageDialogueTable
+	{
+		/// <summary>  </summary> ///
+		public int Index;
+		/// <summary>  </summary> ///
+		public int WorldIdx;
+		/// <summary>  </summary> ///
+		public int StageIdx;
+		/// <summary>  </summary> ///
+		public int AreaIdx;
+		/// <summary>  </summary> ///
+		public bool IsLeft;
+		/// <summary>  </summary> ///
+		public bool NpcTalk;
+		/// <summary>  </summary> ///
+		public string NpcName;
+		/// <summary>  </summary> ///
+		public string NpcImage;
+		/// <summary>  </summary> ///
+		public string Dialogue;
+	}
+
 	public struct StageTable
 	{
 		/// <summary> 월드 IDX </summary> ///

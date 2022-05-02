@@ -14,6 +14,7 @@ namespace DatabaseSystem
 		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
+		public List<StageDialogueTable> StageDialogueTable = new List<StageDialogueTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
 		public void LoadTable()
 		{
@@ -119,6 +120,26 @@ namespace DatabaseSystem
                 info.SlangWord = datas[0];
 				
                 SlangTable.Add(info);
+                LoadedData++;
+            }
+        
+            var StageDialogueTableTextasset = Resources.Load<TextAsset>("99_Database/Table/StageDialogueTable");
+            string[] StageDialogueTableLines = StageDialogueTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < StageDialogueTableLines.Length; i++)
+            {
+                string[] datas = StageDialogueTableLines[i].Split(',');
+                StageDialogueTable info;
+                info.Index = int.Parse(datas[0]);
+				info.WorldIdx = int.Parse(datas[1]);
+				info.StageIdx = int.Parse(datas[2]);
+				info.AreaIdx = int.Parse(datas[3]);
+				info.IsLeft = bool.Parse(datas[4]);
+				info.NpcTalk = bool.Parse(datas[5]);
+				info.NpcName = datas[6];
+				info.NpcImage = datas[7];
+				info.Dialogue = datas[8];
+				
+                StageDialogueTable.Add(info);
                 LoadedData++;
             }
         

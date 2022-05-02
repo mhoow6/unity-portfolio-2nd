@@ -39,6 +39,7 @@ public class UISystem : MonoBehaviour, GameSystem
 
         Pool = new PoolSystem();
         Pool.Init(m_Pool);
+        DontDestroyOnLoad(m_Pool);
     }
 
     public void Tick()
