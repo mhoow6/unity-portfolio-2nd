@@ -10,7 +10,7 @@ public class DialogueTrigger : AreaTrigger
         int worldIdx = StageManager.Instance.WorldIdx;
         int stageIdx = StageManager.Instance.StageIdx;
 
-        var datas = TableManager.Instance.StageDialogueTable.FindAll(d => d.WorldIdx == worldIdx && d.StageIdx == stageIdx && d.AreaIdx == m_AreaIdx);
+        var datas = TableManager.Instance.StageDialogueTable.FindAll(d => d.WorldIdx == worldIdx && d.StageIdx == stageIdx && d.AreaIdx == AreaIdx);
 
         var ui = GameManager.Instance.UISystem.OpenWindow<InGameDialogueUI>(UIType.InGameDialogue);
         ui.SetData(datas);

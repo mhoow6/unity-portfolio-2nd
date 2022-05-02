@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class AreaTrigger : MonoBehaviour
+public class AreaTrigger : AreaComponent
 {
-    protected int m_AreaIdx;
-
-    public void SetData(int areaIdx)
-    {
-        m_AreaIdx = areaIdx;
-    }
-
     protected void OnTriggerEnter(Collider other)
     {
+        // Area¸¦ °¨½Î´Â º® ON
+        var parent = StageManager.Instance.Areas.Find(a => a.Index == AreaIdx);
+        parent.Wall = true;
+
         OnAreaEnter(other);
     }
 

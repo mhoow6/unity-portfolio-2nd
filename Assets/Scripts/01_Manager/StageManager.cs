@@ -12,22 +12,20 @@ public class StageManager : MonoSingleton<StageManager>
 
     [ReadOnly] public List<Character> Monsters = new List<Character>();
 
+    // 게임 시스템
     public PoolSystem Pool { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
-        // Init System 
+        // 시스템 Init
         Pool = new PoolSystem();
         Pool.Init();
-    }
 
-    private void Start()
-    {
-        // 트리거에 정보전달
+        // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
-            area.Trigger.SetData(area.Index);
+            area.Init();
     }
 
     [ContextMenu("# Get Monsters")]
