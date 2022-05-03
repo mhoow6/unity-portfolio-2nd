@@ -29,9 +29,18 @@ public class Character : BaseObject
             Data.Hp = value;
         }
     }
+
+    public float Speed
+    {
+        get => Data.Speed;
+        set
+        {
+            Data.Speed = value;
+        }
+    }
     #endregion
 
-    /// <summary> 기록용 데이터. 가급적 읽기 전용으로 사용할 것</summary> ///
+    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 Character 클래스 말고는 하지말것</summary> ///
     public CharacterData Data;
 
     protected void Start()

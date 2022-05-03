@@ -17,6 +17,7 @@ public sealed class Player : MonoBehaviour
         }
     }
     public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(1);
+    public Vector3 MoveVector { get; private set; }
 
     IEnumerator m_ControlCoroutine;
 
@@ -84,6 +85,8 @@ public sealed class Player : MonoBehaviour
 
                 // ¿Ãµø
                 CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Data.Speed;
+
+                MoveVector = moveVector;
             }
 
             yield return null;
