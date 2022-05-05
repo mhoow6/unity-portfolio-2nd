@@ -11,6 +11,7 @@
         public int ArrowMoveSpeed;
         public string ArrowPrefabPath;
         public float AutoTargetDetectRange;
+        public int DamageType;
         
     }
 }

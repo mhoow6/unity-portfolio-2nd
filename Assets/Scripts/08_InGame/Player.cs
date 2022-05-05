@@ -18,6 +18,7 @@ public sealed class Player : MonoBehaviour
     }
     public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(1);
     public Vector3 MoveVector { get; private set; }
+    public bool Moveable;
 
     IEnumerator m_ControlCoroutine;
 
@@ -32,6 +33,7 @@ public sealed class Player : MonoBehaviour
         {
             var child = transform.GetChild(i);
             var cha = child.GetComponent<Character>();
+            cha.tag = "Player";
 
             if (child.gameObject.activeSelf)
                 CurrentCharacter = cha;
@@ -42,6 +44,10 @@ public sealed class Player : MonoBehaviour
         }
 
         m_ControlCoroutine = ControlCoroutine();
+        Moveable = true;
+
+        // 이 게임에서 이 기능들은 쓸모없으니 끔
+        CurrentCharacter.Agent.updateRotation = false;
     }
 
     private void Update()
@@ -84,7 +90,8 @@ public sealed class Player : MonoBehaviour
                 }
 
                 // 이동
-                CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Data.Speed;
+                if (Moveable)
+                    CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Speed;
 
                 MoveVector = moveVector;
             }

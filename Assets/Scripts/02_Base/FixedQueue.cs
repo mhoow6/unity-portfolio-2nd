@@ -17,7 +17,7 @@ public class FixedQueue<T>
 
     public void Enqueue(T item)
     {
-        if (m_Queue.Count <= m_Size)
+        if (m_Queue.Count < m_Size)
             m_Queue.Enqueue(item);
     }
 

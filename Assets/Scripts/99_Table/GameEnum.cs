@@ -159,6 +159,20 @@
         /// <summary> 발사용 나무 화살 </summary> ///
         PROJ_WoodenArrow = 4,
 
+        /// <summary> Area 벽에 캐릭터가 닿았을 때 나오는 이펙트 </summary> ///
+        EFFECT_HexagonWall = 5,
+
+    }
+
+    public enum DamageType
+    {
+        
+        /// <summary> 경직이 되지 않는 유형 </summary> ///
+        Normal = 0,
+
+        /// <summary> 경직이 되는 유형 </summary> ///
+        Stiffness = 1,
+
     }
 
 

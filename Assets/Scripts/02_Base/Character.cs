@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
+using UnityEngine.AI;
 
 public class Character : BaseObject
 {
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
+    public NavMeshAgent Agent { get; private set; }
 
     #region 인게임용 데이터
     public CharacterType Type { get; private set; }
@@ -20,12 +22,6 @@ public class Character : BaseObject
         set
         {
             int hpDelta = value - Data.Hp;
-
-            if (hpDelta > 0)
-                Recover(Mathf.Abs(hpDelta));
-            else if (hpDelta < 0)
-                Damaged(Mathf.Abs(hpDelta));
-
             Data.Hp = value;
         }
     }
@@ -41,13 +37,16 @@ public class Character : BaseObject
     #endregion
 
     /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 Character 클래스 말고는 하지말것</summary> ///
-    public CharacterData Data;
+    public CharacterData Data { get; private set; }
 
     protected void Start()
     {
         // 컴포넌트 붙이기
         if (!Animator)
             Animator = GetComponent<Animator>();
+
+        if (!Agent)
+            Agent = GetComponent<NavMeshAgent>();
 
         SetMainMenuAnimations();
         SetPropertiesFromTable();
@@ -80,9 +79,22 @@ public class Character : BaseObject
     /// <summary> Hp 감소시 호출 </summary> ///
     protected virtual void OnDamaged(float updateHp) { }
 
-    #region 공격 관련
+    #region 공격
     /// <summary> 애니메이션 이벤트 함수 </summary> ///
     public virtual void Attack(int skillIndex) { }
+
+    public void Damaged(int damage, DamageType damageType)
+    {
+        Hp -= damage;
+        switch (damageType)
+        {
+            case DamageType.Normal:
+                break;
+            case DamageType.Stiffness:
+                break;
+        }
+    }
+
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
     #endregion
@@ -231,18 +243,6 @@ public class Character : BaseObject
             calcuatedDamage *= 2;
 
         return ((int)calcuatedDamage, critical);
-    }
-    #endregion
-
-    #region HP 변동시
-    void Recover(float updateHp)
-    {
-        OnRecover(updateHp);
-    }
-
-    void Damaged(float updateHp)
-    {
-        OnDamaged(updateHp);
     }
     #endregion
 }

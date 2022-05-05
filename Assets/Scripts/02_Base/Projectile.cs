@@ -7,6 +7,7 @@ using UnityEngine;
 public class Projectile : BaseObject, IPoolable
 {
     protected Character m_Owner;
+    protected DamageType m_DamageType;
 
     [SerializeField] Rigidbody m_RigidBody;
     [SerializeField] SphereCollider m_SphereCollider;
@@ -16,17 +17,20 @@ public class Projectile : BaseObject, IPoolable
 
     public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
 
+    public void SetData(Character owner, DamageType damageType)
+    {
+        m_Owner = owner;
+        m_DamageType = damageType;
+    }
+
+    #region 충돌 판정
     protected void OnTriggerEnter(Collider other)
     {
         OnCollide(other);
     }
 
     protected virtual void OnCollide(Collider other) { }
-
-    public void SetData(Character owner)
-    {
-        m_Owner = owner;
-    }
+    #endregion
 
     #region 투사체 발사
     public void Shoot(Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
