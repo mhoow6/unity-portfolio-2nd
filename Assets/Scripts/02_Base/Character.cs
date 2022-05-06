@@ -59,12 +59,7 @@ public class Character : BaseObject
         OnLive();
     }
 
-    protected void OnDestroy()
-    {
-        OnDead();
-    }
-
-    /// <summary> 캐릭터 스폰시 호출 (현재 Start()에서 호출하고 있음) </summary> ///
+    /// <summary> 캐릭터 스폰시 호출 </summary> ///
     protected virtual void OnSpawn() { }
 
     /// <summary> 캐릭터 사망시 호출 </summary> ///
@@ -86,6 +81,14 @@ public class Character : BaseObject
     public void Damaged(int damage, DamageType damageType)
     {
         Hp -= damage;
+        if (Hp <= 0)
+        {
+            Hp = 0;
+            OnDead();
+            return;
+        }
+
+        // TODO: 데미지 타입에 따른 애니메이션
         switch (damageType)
         {
             case DamageType.Normal:

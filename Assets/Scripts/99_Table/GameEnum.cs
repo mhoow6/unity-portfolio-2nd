@@ -144,7 +144,7 @@
     public enum ObjectCode
     {
         
-        /// <summary> 궁수 캐릭터 </summary> ///
+        /// <summary> 생물속성 궁수 </summary> ///
         CHAR_Sparcher = 0,
 
         /// <summary> 생물속성 거미 </summary> ///
@@ -161,6 +161,9 @@
 
         /// <summary> Area 벽에 캐릭터가 닿았을 때 나오는 이펙트 </summary> ///
         EFFECT_HexagonWall = 5,
+
+        /// <summary> 생물속성 해적 </summary> ///
+        CHAR_Pirate = 6,
 
     }
 

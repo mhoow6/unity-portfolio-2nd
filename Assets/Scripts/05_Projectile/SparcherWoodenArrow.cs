@@ -16,7 +16,7 @@ public class SparcherWoodenArrow : Projectile
             rhs.Damaged(result.Item1, DamageType.Normal);
 
             // 데미지 텍스트
-            var damageText = GameManager.Instance.UISystem.Pool.Load<FloatingDamageText>($"06_UI/FloatingDamage");
+            var damageText = GameManager.Instance.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.Instance.Config.UIResourcePath}/FloatingDamage");
             var floatingStartPoint = GameManager.Instance.MainCam.WorldToScreenPoint(rhs.Head.position);
             damageText.SetData(result.Item1, result.Item2, floatingStartPoint, rhs.Head.position);
 

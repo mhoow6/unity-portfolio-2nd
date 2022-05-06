@@ -4,10 +4,10 @@ using UnityEngine;
 
 public abstract class AreaComponent : MonoBehaviour
 {
-    [SerializeField] protected int AreaIdx;
+    [SerializeField] protected int m_AreaIdx;
 
     public void SetData(int areaIdx)
     {
-        AreaIdx = areaIdx;
+        m_AreaIdx = areaIdx;
     }
 }

@@ -8,7 +8,7 @@ public class AreaTrigger : AreaComponent
     protected void OnTriggerEnter(Collider other)
     {
         // Area¸¦ °¨½Î´Â º® ON
-        var parent = StageManager.Instance.Areas.Find(a => a.Index == AreaIdx);
+        var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
         parent.Wall = true;
 
         OnAreaEnter(other);
