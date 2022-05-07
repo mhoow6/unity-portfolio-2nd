@@ -153,7 +153,7 @@
         /// <summary> 이능속성 거미 </summary> ///
         CHAR_PurpleSpider = 2,
 
-        /// <summary> 테스트용 캐릭터 </summary> ///
+        /// <summary> 기계속성 더미 캐릭터 </summary> ///
         CHAR_Dummy = 3,
 
         /// <summary> 발사용 나무 화살 </summary> ///
@@ -164,6 +164,9 @@
 
         /// <summary> 생물속성 해적 </summary> ///
         CHAR_Pirate = 6,
+
+        /// <summary> 더미 코드 </summary> ///
+        NONE = -1,
 
     }
 

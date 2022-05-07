@@ -69,7 +69,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
                         int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
                         AniType randomAni = character.AnimationsWhenUserClick[random];
 
-                        player.AnimationQueue.Enqueue(randomAni);
+                        player.Commands.Enqueue(randomAni);
                     }
                 }
             }

@@ -5,11 +5,7 @@ using UnityEngine;
 
 public class Monster : Character
 {
-    /// <summary> 몬스터 클래스 스폰시 호출 </summary> ///
-    protected virtual void OnMonsterSpawn() { }
-
-    /// <summary> 몬스터 클래스 사망시 호출 </summary> ///
-    protected virtual void OnMonsterDead() { }
+    public FixedQueue<AniType> Commands { get; private set; } = new FixedQueue<AniType>(1);
 
     protected override void OnSpawn()
     {
@@ -17,7 +13,19 @@ public class Monster : Character
         if (manager != null)
             manager.Monsters.Add(this);
 
-        OnMonsterSpawn();
+        gameObject.tag = "Monster";
+    }
+
+    protected override void OnLive()
+    {
+        // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
+        if (Commands.Count > 0)
+            Animator.SetInteger(ANITYPE_HASHCODE, (int)Commands.Dequeue());
+    }
+
+    protected override void OnDamaged(Character attacker, float updateHp)
+    {
+        Debug.Log($"{attacker.Name}에게 {Name}이(가) {updateHp}만큼의 데미지를 입었습니다.");
     }
 
     protected override void OnDead()
@@ -39,7 +47,8 @@ public class Monster : Character
             if (spawner != null)
                 spawner.NotifyDead(this);
         }
-        
-        OnMonsterDead();
+
+        // 죽는 애니메이션
+        Commands.Enqueue(AniType.DEAD_0);
     }
 }

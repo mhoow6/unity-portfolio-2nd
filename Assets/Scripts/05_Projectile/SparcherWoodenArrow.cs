@@ -13,7 +13,7 @@ public class SparcherWoodenArrow : Projectile
             var result = m_Owner.CalcuateDamage(rhs);
 
             // 실제 데미지
-            rhs.Damaged(result.Item1, DamageType.Normal);
+            rhs.Damaged(m_Owner, result.Item1, DamageType.Normal);
 
             // 데미지 텍스트
             var damageText = GameManager.Instance.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.Instance.Config.UIResourcePath}/FloatingDamage");

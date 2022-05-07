@@ -30,7 +30,7 @@ public class AreaWall : AreaComponent
 
     IEnumerator CollideEffectCoroutine()
     {
-        var path = GameManager.Instance.Config.ParticleResourcePath;
+        var path = GameManager.Instance.Config.EffectResourcePath;
         var pool = StageManager.Instance.Pool;
         var player = GameManager.Instance.Player;
         var charcter = GameManager.Instance.Player.CurrentCharacter;

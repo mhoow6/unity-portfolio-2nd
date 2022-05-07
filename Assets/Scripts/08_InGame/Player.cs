@@ -16,7 +16,7 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
-    public FixedQueue<AniType> AnimationQueue { get; private set; } = new FixedQueue<AniType>(1);
+    public FixedQueue<AniType> Commands { get; private set; } = new FixedQueue<AniType>(1);
     public Vector3 MoveVector { get; private set; }
     public bool Moveable;
 
@@ -53,8 +53,8 @@ public sealed class Player : MonoBehaviour
     private void Update()
     {
         // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
-        if (CurrentCharacter != null && AnimationQueue.Count > 0)
-            CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AnimationQueue.Dequeue());
+        if (CurrentCharacter != null && Commands.Count > 0)
+            CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)Commands.Dequeue());
     }
 
     void OnDestroy()
@@ -81,12 +81,12 @@ public sealed class Player : MonoBehaviour
                     CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, moveVector.normalized, Time.deltaTime * m_ROTATE_SENSTIVITY);
 
                     // 애니메이션
-                    AnimationQueue.Enqueue(AniType.RUN_0);
+                    Commands.Enqueue(AniType.RUN_0);
                 }
                 else
                 {
                     // 애니메이션
-                    AnimationQueue.Enqueue(AniType.IDLE_0);
+                    Commands.Enqueue(AniType.IDLE_0);
                 }
 
                 // 이동

@@ -9,13 +9,16 @@ public class Character : BaseObject
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
     public NavMeshAgent Agent { get; private set; }
+    public Transform Head;
 
-    #region 인게임용 데이터
-    public CharacterType Type { get; private set; }
-    public string Name { get; private set; }
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     [ReadOnly] public AniType CurrentAniType;
-    public Transform Head;
+    
+    #region 캐릭터 데이터
+    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것</summary> ///
+    public CharacterData Data;
+    public string Name { get; private set; }
+    public CharacterType Type { get; private set; }
     public int Hp
     {
         get => Data.Hp;
@@ -34,10 +37,20 @@ public class Character : BaseObject
             Data.Speed = value;
         }
     }
-    #endregion
 
-    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 Character 클래스 말고는 하지말것</summary> ///
-    public CharacterData Data { get; private set; }
+    public int Damage
+    {
+        get
+        {
+            return Data.Damage;
+        }
+        set
+        {
+            Data.Damage = value;
+        }
+
+    }
+    #endregion
 
     protected void Start()
     {
@@ -68,17 +81,14 @@ public class Character : BaseObject
     /// <summary> 캐릭터 살아있을 때 호출 </summary> ///
     protected virtual void OnLive() { }
 
-    /// <summary> Hp 회복시 호출 </summary> ///
-    protected virtual void OnRecover(float updateHp) { }
-
-    /// <summary> Hp 감소시 호출 </summary> ///
-    protected virtual void OnDamaged(float updateHp) { }
+    /// <summary> Damaged 호출 시 해야할 행동 </summary> ///
+    protected virtual void OnDamaged(Character attacker, float updateHp) { }
 
     #region 공격
     /// <summary> 애니메이션 이벤트 함수 </summary> ///
     public virtual void Attack(int skillIndex) { }
 
-    public void Damaged(int damage, DamageType damageType)
+    public void Damaged(Character attacker, int damage, DamageType damageType)
     {
         Hp -= damage;
         if (Hp <= 0)
@@ -96,6 +106,8 @@ public class Character : BaseObject
             case DamageType.Stiffness:
                 break;
         }
+
+        OnDamaged(attacker, damage);
     }
 
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
@@ -221,7 +233,7 @@ public class Character : BaseObject
                 break;
         }
 
-        result = (int)(lhs.Data.Damage * bonusRatio);
+        result = (int)(lhs.Damage * bonusRatio);
 
         return result;
     }

@@ -3,42 +3,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Spawner : AreaComponent, IComparable<Spawner>
+public class Spawner : AreaComponent
 {
     public int Priority;
     public GameObject SpawnPrefab;
-    public int SpawnCount;
+    public int TotalSpawnCount;
+    [ReadOnly, SerializeField] int m_CurrentSpawnCount;
 
-    public List<Character> SpawnMonsters = new List<Character>();
+    [HideInInspector] public List<Character> Monsters = new List<Character>();
     [SerializeField] List<Transform> m_SpawnPositions = new List<Transform>();
 
-    public int CompareTo(Spawner other)
-    {
-        // lhs < rhs => 작은 순 정렬
-        return other.Priority.CompareTo(Priority);
-    }
-
-    public void Spawn()
+    /// <summary> 스폰 지점들에서 몬스터들이 소환됩니다. </summary> ///
+    public void SpawnMonsters()
     {
         foreach (var pos in m_SpawnPositions)
         {
-            // Start()호출
-            Instantiate(SpawnPrefab, pos);
+            var mob = Instantiate(SpawnPrefab, pos);
 
-            var comp = SpawnPrefab.GetComponent<Character>();
+            var comp = mob.GetComponent<Character>();
             if (comp != null)
-                SpawnMonsters.Add(comp);
+                Monsters.Add(comp);
+
+            m_CurrentSpawnCount++;
         }
     }
 
-    public bool NotifyDead(Character deadObj)
+    /// <summary> 스폰 지점중 랜덤한 곳에서 몬스터가 소환됩니다. </summary> ///
+    void SpawnMonsterOnce()
     {
-        var find = SpawnMonsters.Find(m => m.Equals(deadObj));
+        int random = UnityEngine.Random.Range(0, m_SpawnPositions.Count);
+        var pos = m_SpawnPositions[random];
+
+        var mob = Instantiate(SpawnPrefab, pos);
+        var comp = mob.GetComponent<Character>();
+        if (comp != null)
+            Monsters.Add(comp);
+        
+        m_CurrentSpawnCount++;
+    }
+
+    public void NotifyDead(Character deadObj)
+    {
+        var find = Monsters.Find(m => m.Equals(deadObj));
         if (find != null)
         {
-            SpawnMonsters.Remove(deadObj);
-            return true;
+            Monsters.Remove(deadObj);
+
+            // 스폰을 더 해야되는 상황이면
+            if (m_CurrentSpawnCount < TotalSpawnCount)
+                SpawnMonsterOnce();
+            else
+            {
+                // 자기를 포함하는 Area 찾기
+                var area = StageManager.Instance.Areas.Find(a => a.IsSpawnerIn(this));
+                if (area != null)
+                {
+                    // 다음 스포너에서 몬스터 생성 시작
+                    area.InitSpawner();
+                }
+            }
         }
-        return false;
     }
 }

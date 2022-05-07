@@ -19,7 +19,7 @@ public sealed class Configuration : ScriptableObject
     public string InteractableResourcePath;
     public string UIResourcePath;
     public string ProjectileResourcePath;
-    public string ParticleResourcePath;
+    public string EffectResourcePath;
     public string AnimationControllerResourcePath;
     public string DatabasePath;
 }
