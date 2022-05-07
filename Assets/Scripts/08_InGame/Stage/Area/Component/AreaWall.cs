@@ -10,17 +10,17 @@ public class AreaWall : AreaComponent
     List<Effect> m_InstantiateEffects = new List<Effect>();
     const int m_MAXIMUM_INSTANTIATE_EFFECT = 3;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
         // 벽 충돌시 이펙트 발생
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             var player = GameManager.Instance.Player;
             StartCoroutine(CollideEffectCoroutine());
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
         StopAllCoroutines();
 

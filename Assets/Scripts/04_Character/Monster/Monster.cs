@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Monster : Character
 {
-    public FixedQueue<AniType> Commands { get; private set; } = new FixedQueue<AniType>(1);
+    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
 
     protected override void OnSpawn()
     {
@@ -19,8 +19,8 @@ public class Monster : Character
     protected override void OnLive()
     {
         // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
-        if (Commands.Count > 0)
-            Animator.SetInteger(ANITYPE_HASHCODE, (int)Commands.Dequeue());
+        if (AnimationJobs.Count > 0)
+            Animator.SetInteger(ANITYPE_HASHCODE, (int)AnimationJobs.Dequeue());
     }
 
     protected override void OnDamaged(Character attacker, float updateHp)
@@ -49,6 +49,6 @@ public class Monster : Character
         }
 
         // 죽는 애니메이션
-        Commands.Enqueue(AniType.DEAD_0);
+        AnimationJobs.Enqueue(AniType.DEAD_0);
     }
 }

@@ -46,6 +46,7 @@ public class Area : MonoBehaviour
         m_Init = true;
     }
 
+    #region 스포너
     /// <summary> spawner가 여기에 속해있으면 True </summary> /// 
     public bool IsSpawnerIn(Spawner spawner)
     {
@@ -83,5 +84,6 @@ public class Area : MonoBehaviour
             // 모든 스포너에서 스폰이 완료된 경우 벽 해제
             m_Walls.ForEach(w => w.gameObject.SetActive(false));
         }
-    } 
+    }
+    #endregion
 }

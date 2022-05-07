@@ -86,7 +86,7 @@ public class InGameUI : UI
                     false,
                     () =>
                     {
-                        GameManager.Instance.Player.Commands.Enqueue(aniType);
+                        GameManager.Instance.Player.AnimationJobs.Enqueue(aniType);
                     },
                     string.Empty
                 );
@@ -101,7 +101,7 @@ public class InGameUI : UI
             m_SkillButton.SetData
                 (
                     true,
-                    () => GameManager.Instance.Player.Commands.Enqueue(aniType),
+                    () => GameManager.Instance.Player.AnimationJobs.Enqueue(aniType),
                     string.Empty,
                     spCost
                 );
@@ -114,7 +114,7 @@ public class InGameUI : UI
             m_DashButton.SetData
                 (
                     false,
-                    () => GameManager.Instance.Player.Commands.Enqueue(aniType),
+                    () => GameManager.Instance.Player.AnimationJobs.Enqueue(aniType),
                     string.Empty
                 );
         }

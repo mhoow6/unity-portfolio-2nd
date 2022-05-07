@@ -9,6 +9,7 @@ public class Character : BaseObject
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public Animator Animator { get; private set; }
     public NavMeshAgent Agent { get; private set; }
+    public Rigidbody Rigidbody { get; private set; }
     public Transform Head;
 
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
@@ -57,9 +58,10 @@ public class Character : BaseObject
         // 컴포넌트 붙이기
         if (!Animator)
             Animator = GetComponent<Animator>();
-
         if (!Agent)
             Agent = GetComponent<NavMeshAgent>();
+        if (!Rigidbody)
+            Rigidbody = GetComponent<Rigidbody>();
 
         SetMainMenuAnimations();
         SetPropertiesFromTable();

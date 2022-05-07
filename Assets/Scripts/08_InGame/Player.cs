@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Player : MonoBehaviour
+public class Player : MonoBehaviour
 {
     [ReadOnly] public Character CurrentCharacter;
     [ReadOnly] public List<Character> Characters = new List<Character>();
@@ -16,13 +16,13 @@ public sealed class Player : MonoBehaviour
                 StopCoroutine(m_ControlCoroutine);
         }
     }
-    public FixedQueue<AniType> Commands { get; private set; } = new FixedQueue<AniType>(1);
+    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
     public Vector3 MoveVector { get; private set; }
     public bool Moveable;
 
     IEnumerator m_ControlCoroutine;
 
-    const float m_ROTATE_SENSTIVITY = 12f;
+    const float m_ROTATE_SPEED = 20f;
 
     void Start()
     {
@@ -45,16 +45,13 @@ public sealed class Player : MonoBehaviour
 
         m_ControlCoroutine = ControlCoroutine();
         Moveable = true;
-
-        // 이 게임에서 이 기능들은 쓸모없으니 끔
-        CurrentCharacter.Agent.updateRotation = false;
     }
 
     private void Update()
     {
         // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
-        if (CurrentCharacter != null && Commands.Count > 0)
-            CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)Commands.Dequeue());
+        if (CurrentCharacter != null && AnimationJobs.Count > 0)
+            CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AnimationJobs.Dequeue());
     }
 
     void OnDestroy()
@@ -68,6 +65,7 @@ public sealed class Player : MonoBehaviour
         {
             // 캐릭터 움직이기
             var ControllerInput = GameManager.Instance.InputSystem.CharacterMoveInput;
+
             var cam = GameManager.Instance.MainCam;
             if (cam != null)
             {
@@ -78,25 +76,30 @@ public sealed class Player : MonoBehaviour
                 if (moveVector.magnitude != 0)
                 {
                     // 회전
-                    CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, moveVector.normalized, Time.deltaTime * m_ROTATE_SENSTIVITY);
+                    float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
+                    Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * m_ROTATE_SPEED, 0);
+                    CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(angularVelocity));
 
                     // 애니메이션
-                    Commands.Enqueue(AniType.RUN_0);
+                    AnimationJobs.Enqueue(AniType.RUN_0);
                 }
                 else
                 {
                     // 애니메이션
-                    Commands.Enqueue(AniType.IDLE_0);
+                    AnimationJobs.Enqueue(AniType.IDLE_0);
                 }
 
                 // 이동
                 if (Moveable)
-                    CurrentCharacter.transform.position += moveVector * Time.deltaTime * CurrentCharacter.Speed;
+                {
+                    Vector3 desired = CurrentCharacter.transform.position + (moveVector * CurrentCharacter.Speed * Time.deltaTime);
+                    CurrentCharacter.Rigidbody.MovePosition(desired);
+                }
 
                 MoveVector = moveVector;
             }
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
     }
 }
