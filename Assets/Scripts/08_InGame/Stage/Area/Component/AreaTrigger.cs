@@ -5,12 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class AreaTrigger : AreaComponent
 {
-    protected bool m_AutoDisable = true;
+    protected bool m_AutoDisable;
+    protected bool m_AutoWall;
+
     protected void OnTriggerEnter(Collider other)
     {
         // Area¸¦ °¨½Î´Â º® ON
-        var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
-        parent.Wall = true;
+        if (m_AutoWall)
+        {
+            var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
+            parent.Wall = true;
+        }
 
         OnAreaEnter(other);
 

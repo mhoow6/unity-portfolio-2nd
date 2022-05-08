@@ -83,9 +83,10 @@ public class Character : BaseObject
         Rigidbody = GetComponent<Rigidbody>();
         Collider = GetComponent<Collider>();      
 
-        // 테이블로부터 데이터 세팅
         SetMainMenuAnimations();
         SetPropertiesFromTable();
+
+        TryAttachToFloor();
 
         OnSpawn();
     }
@@ -162,33 +163,6 @@ public class Character : BaseObject
             AnimationsWhenUserClick.Add((AniType)row.AniType);
 
         m_IsAnimationAndDialogSet = true;
-    }
-    #endregion
-
-    #region 파일 데이터
-    void SetPropertiesFromTable()
-    {
-        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
-        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
-
-        Name = table.Name;
-        Type = table.Type;
-
-        if (record != null)
-            Data = record;
-        else
-            Data = new CharacterData()
-            {
-                Code = Code,
-                Level = 1,
-                Hp = table.BaseHp,
-                Sp = table.BaseSp,
-                Critical = table.BaseCritical,
-                Damage = table.BaseDamage,
-                Defense = table.BaseDefense,
-                Speed = table.BaseSpeed,
-                EquipWeaponData = null
-            };
     }
     #endregion
 
@@ -293,6 +267,46 @@ public class Character : BaseObject
         return ((int)calcuatedDamage, critical);
     }
     #endregion
+
+    /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary> ///
+    public bool TryAttachToFloor()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hitInfo;
+        int layermask = 1 << GameManager.Instance.Config.TerrainLayermask;
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
+        {
+            transform.position = hitInfo.point;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary> 테이블로부터 데이터 세팅 </summary> ///
+    void SetPropertiesFromTable()
+    {
+        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
+        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
+
+        Name = table.Name;
+        Type = table.Type;
+
+        if (record != null)
+            Data = record;
+        else
+            Data = new CharacterData()
+            {
+                Code = Code,
+                Level = 1,
+                Hp = table.BaseHp,
+                Sp = table.BaseSp,
+                Critical = table.BaseCritical,
+                Damage = table.BaseDamage,
+                Defense = table.BaseDefense,
+                Speed = table.BaseSpeed,
+                EquipWeaponData = null
+            };
+    }
 }
 
 /// <summary> 캐릭터 스킬 타입 </summary> ///

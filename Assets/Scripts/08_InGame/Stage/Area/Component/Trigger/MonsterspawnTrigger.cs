@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class MonsterspawnTrigger : AreaTrigger
 {
+    private void Awake()
+    {
+        m_AutoDisable = true;
+        m_AutoWall = true;
+    }
+
     protected override void OnAreaEnter(Collider other)
     {
         if (other.tag.Equals("Player"))

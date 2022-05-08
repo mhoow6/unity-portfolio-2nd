@@ -22,4 +22,6 @@ public sealed class Configuration : ScriptableObject
     public string EffectResourcePath;
     public string AnimationControllerResourcePath;
     public string DatabasePath;
+    public int BaseObjectLayermask;
+    public int TerrainLayermask;
 }

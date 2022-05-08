@@ -7,10 +7,14 @@ public class JumpTrigger : AreaTrigger
     [Range(1, 5), SerializeField]
     float m_JumpTime = 1;
 
+    private void Awake()
+    {
+        m_AutoDisable = false;
+        m_AutoWall = false;
+    }
+
     protected override void OnAreaEnter(Collider other)
     {
-        // 코루틴 돌려야하므로 자동 비활성화 시키면 안됨
-        m_AutoDisable = false;
         if (other.CompareTag("Player"))
         {
             // 컨트롤 불가능
@@ -36,9 +40,11 @@ public class JumpTrigger : AreaTrigger
             // 시뮬레이션 시작
             curve.Simulate(m_JumpTime, () =>
             {
-                GameManager.Instance.Player.Controlable = true;
+                player.Controlable = true;
                 player.AnimationJobs.Enqueue(AniType.IDLE_0);
                 player.CurrentCharacter.AniSpeed = 1;
+                player.CurrentCharacter.TryAttachToFloor();
+
                 gameObject.SetActive(false);
             });
         }
