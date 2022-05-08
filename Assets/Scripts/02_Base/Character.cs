@@ -31,6 +31,18 @@ public class Character : BaseObject
     #region ¹°¸®
     public Rigidbody Rigidbody { get; private set; }
     public Collider Collider { get; private set; }
+    public bool Physic
+    {
+        get
+        {
+            return !Rigidbody.isKinematic && Collider.enabled;
+        }
+        set
+        {
+            Rigidbody.isKinematic = !value;
+            Collider.enabled = value;
+        }
+    }
     #endregion
 
     public Transform Head;
@@ -274,7 +286,7 @@ public class Character : BaseObject
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hitInfo;
         int layermask = 1 << GameManager.Instance.Config.TerrainLayermask;
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
+        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
         {
             transform.position = hitInfo.point;
             return true;
