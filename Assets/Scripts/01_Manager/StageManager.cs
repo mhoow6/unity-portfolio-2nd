@@ -8,10 +8,8 @@ public class StageManager : MonoSingleton<StageManager>
     public int WorldIdx;
     public int StageIdx;
     public List<Area> Areas = new List<Area>();
-
     [ReadOnly] public List<Character> Monsters = new List<Character>();
 
-    // 게임 시스템
     public PoolSystem Pool { get; private set; }
 
     protected override void Awake()
