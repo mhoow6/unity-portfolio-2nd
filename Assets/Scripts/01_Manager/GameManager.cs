@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
 
+        // æ¿ ≈∏¿‘ ∞·¡§
         if (IsTestZone)
             SceneType = SceneType.Test;
         else

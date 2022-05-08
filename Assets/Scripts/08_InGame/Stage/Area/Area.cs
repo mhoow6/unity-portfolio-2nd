@@ -18,18 +18,32 @@ public class Area : MonoBehaviour
     }
     [SerializeField, ReadOnly] int m_CurrentSpawnerPriority = 0;
 
-    [SerializeField] AreaTrigger Trigger;
+    [SerializeField] List<AreaTrigger> m_Triggers = new List<AreaTrigger>();
     [SerializeField] List<AreaWall> m_Walls = new List<AreaWall>();
     [SerializeField] List<Spawner> m_Spawners = new List<Spawner>();
     
     bool m_Init;
 
+    [Header("# 개발자 옵션"), SerializeField]
+    bool m_Skipable;
+
     public void Init()
     {
+        if (m_Skipable)
+        {
+            m_Triggers.ForEach(e => e.gameObject.SetActive(false));
+            m_Walls.ForEach(e => e.gameObject.SetActive(false));
+            m_Spawners.ForEach(e => e.gameObject.SetActive(false));
+            return;
+        }
+
         if (m_Init)
             return;
 
-        Trigger.SetData(AreaIdx);
+        m_Triggers.ForEach(t =>
+        {
+            t.SetData(AreaIdx);
+        });
 
         m_Walls.ForEach(w =>
         {
@@ -72,6 +86,7 @@ public class Area : MonoBehaviour
         return null;
     }
 
+    /// <summary> 새로운 스포너 작동을 시작합니다. </summary> /// 
     public void InitSpawner()
     {
         if (m_CurrentSpawnerPriority < m_Spawners.Count)

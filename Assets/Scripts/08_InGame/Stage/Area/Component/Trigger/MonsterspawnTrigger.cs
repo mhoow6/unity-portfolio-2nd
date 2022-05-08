@@ -6,13 +6,11 @@ public class MonsterspawnTrigger : AreaTrigger
 {
     protected override void OnAreaEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag.Equals("Player"))
         {
             var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
             if (parent != null)
                 parent.InitSpawner();
-
-            gameObject.SetActive(false);
         }
     }
 }

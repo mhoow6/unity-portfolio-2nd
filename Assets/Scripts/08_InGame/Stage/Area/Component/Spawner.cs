@@ -13,6 +13,8 @@ public class Spawner : AreaComponent
     [HideInInspector] public List<Character> Monsters = new List<Character>();
     [SerializeField] List<Transform> m_SpawnPositions = new List<Transform>();
 
+    const float m_SPAWN_COOLTIME = 3f;
+
     /// <summary> 스폰 지점들에서 몬스터들이 소환됩니다. </summary> ///
     public void SpawnMonsters()
     {
@@ -29,10 +31,12 @@ public class Spawner : AreaComponent
     }
 
     /// <summary> 스폰 지점중 랜덤한 곳에서 몬스터가 소환됩니다. </summary> ///
-    void SpawnMonsterOnce()
+    IEnumerator SpawnMonsterCoroutine()
     {
         int random = UnityEngine.Random.Range(0, m_SpawnPositions.Count);
         var pos = m_SpawnPositions[random];
+
+        yield return new WaitForSeconds(m_SPAWN_COOLTIME);
 
         var mob = Instantiate(SpawnPrefab, pos);
         var comp = mob.GetComponent<Character>();
@@ -51,7 +55,7 @@ public class Spawner : AreaComponent
 
             // 스폰을 더 해야되는 상황이면
             if (m_CurrentSpawnCount < TotalSpawnCount)
-                SpawnMonsterOnce();
+                StartCoroutine(SpawnMonsterCoroutine());
             else
             {
                 // 자기를 포함하는 Area 찾기

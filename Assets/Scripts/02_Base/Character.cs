@@ -6,15 +6,35 @@ using UnityEngine.AI;
 
 public class Character : BaseObject
 {
+    #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
+    public readonly int ANISPEED_HASHCODE = Animator.StringToHash("AniSpeed");
     public Animator Animator { get; private set; }
+    public float AniSpeed
+    {
+        get
+        {
+            return Animator.GetFloat(ANISPEED_HASHCODE);
+        }
+        set
+        {
+            Animator.SetFloat(ANISPEED_HASHCODE, value);
+        }
+    }
+    [ReadOnly] public AniType CurrentAniType;
+    #endregion
+
+    #region AI
     public NavMeshAgent Agent { get; private set; }
+    #endregion
+
+    #region 물리
     public Rigidbody Rigidbody { get; private set; }
+    public Collider Collider { get; private set; }
+    #endregion
+
     public Transform Head;
 
-    public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
-    [ReadOnly] public AniType CurrentAniType;
-    
     #region 캐릭터 데이터
     /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것</summary> ///
     public CharacterData Data;
@@ -51,18 +71,19 @@ public class Character : BaseObject
         }
 
     }
+
+    public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     #endregion
 
     protected void Start()
     {
         // 컴포넌트 붙이기
-        if (!Animator)
-            Animator = GetComponent<Animator>();
-        if (!Agent)
-            Agent = GetComponent<NavMeshAgent>();
-        if (!Rigidbody)
-            Rigidbody = GetComponent<Rigidbody>();
+        Animator = GetComponent<Animator>();
+        Agent = GetComponent<NavMeshAgent>();
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();      
 
+        // 테이블로부터 데이터 세팅
         SetMainMenuAnimations();
         SetPropertiesFromTable();
 
@@ -71,6 +92,8 @@ public class Character : BaseObject
 
     protected void Update()
     {
+        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
+
         OnLive();
     }
 
@@ -93,9 +116,17 @@ public class Character : BaseObject
     public void Damaged(Character attacker, int damage, DamageType damageType)
     {
         Hp -= damage;
+
+        // 캐릭터 사망
         if (Hp <= 0)
         {
             Hp = 0;
+
+            // 물리 제거
+            Collider.enabled = false;
+            if (Rigidbody)
+                Rigidbody.isKinematic = true;
+
             OnDead();
             return;
         }

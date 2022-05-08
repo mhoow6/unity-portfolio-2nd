@@ -17,23 +17,20 @@ public class Sparcher : Character
     protected override void OnSpawn()
     {
         var currentScene = GameManager.Instance.SceneType;
+        var config = GameManager.Instance.Config;
+
         switch (currentScene)
         {
             case SceneType.MainMenu:
-                Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("09_AnimationController/Sparcher/MainMenu_Sparcher");
+                Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{config.AnimationControllerResourcePath}/Sparcher/MainMenu_Sparcher");
                 break;
             default:
-                Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("09_AnimationController/Sparcher/InGame_Sparcher");
+                Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{config.AnimationControllerResourcePath}/Sparcher/InGame_Sparcher");
                 break;
         }
 
         // 스킬타입에 따른 인덱스 정해주기 (SkillDatas.json)
         SkillIndices.Add(SkillType.Attack, ATTACK_INDEX);
-    }
-
-    protected override void OnLive()
-    {
-        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
     }
 
     public override void Attack(int skillIndex)

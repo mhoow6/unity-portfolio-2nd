@@ -2,11 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PirateDeadBehaviour : AnimationBehaviour
+public class DeadBehaviour : AnimationBehaviour
 {
+    float timer = 0f;
+    const float m_INVISIBLE_TIME = 3f;
+
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (m_CurrentAnimationTime > 0.99f)
+        timer += Time.deltaTime;
+        if (timer > m_INVISIBLE_TIME)
+        {
             Destroy(animator.gameObject);
+            timer = 0f;
+        }
     }
 }
