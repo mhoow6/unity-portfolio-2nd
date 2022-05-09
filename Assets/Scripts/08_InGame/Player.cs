@@ -20,14 +20,11 @@ public class Player : MonoBehaviour
     public Vector3 MoveVector { get; private set; }
     public bool Moveable;
 
-    [SerializeField] GameObject m_ShadowProjector;
-    Vector3 m_ProjectorOffset;
-
     IEnumerator m_ControlCoroutine;
 
     const float m_ROTATE_SPEED = 20f;
 
-    void Start()
+    public void Init()
     {
         GameManager.Instance.Player = this;
 
@@ -42,8 +39,6 @@ public class Player : MonoBehaviour
 
                 if (child.gameObject.activeSelf)
                     CurrentCharacter = cha;
-                else
-                    child.gameObject.SetActive(false);
 
                 Characters.Add(cha);
             }
@@ -51,18 +46,13 @@ public class Player : MonoBehaviour
 
         m_ControlCoroutine = ControlCoroutine();
         Moveable = true;
-
-        m_ProjectorOffset = m_ShadowProjector.transform.position - CurrentCharacter.transform.position;
     }
 
     private void Update()
     {
         // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
-        if (CurrentCharacter != null && AnimationJobs.Count > 0)
+        if (AnimationJobs.Count > 0)
             CurrentCharacter.Animator.SetInteger(CurrentCharacter.ANITYPE_HASHCODE, (int)AnimationJobs.Dequeue());
-
-        // ShadowProjector가 캐릭터를 따라다니도록 함
-        m_ShadowProjector.transform.position = CurrentCharacter.transform.position + m_ProjectorOffset;
     }
 
     void OnDestroy()

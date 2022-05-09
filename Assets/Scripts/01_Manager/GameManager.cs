@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 using System;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     // Global Data
-    public Configuration Config { get; private set; }
+    public Configuration Config;
     public PlayerData PlayerData { get; private set; }
     [ReadOnly] public Player Player;
     [ReadOnly] public Camera MainCam;
+    public CinemachineFreeLook FreeLookCam
+    {
+        get
+        {
+            var brain = MainCam.GetComponent<CinemachineBrain>();
+            if (brain)
+            {
+                var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
+                if (freelook)
+                    return freelook;
+            }
+            return null;
+        }
+    }
     [ReadOnly] public Light DirectionalLight;
     [ReadOnly] public SceneType SceneType;
     public bool AutoTargeting;
@@ -42,7 +57,7 @@ public class GameManager : MonoBehaviour
         m_FixedUpdate = null;
 
         // 씬에 메인카메라, 방향광원을 가지고 있으면 찾아서 게임매니저에 등록
-        var env = FindObjectOfType<Environment>();
+        var env = FindObjectOfType<Migration>();
         if (env != null)
         {
             MainCam = env.Camera;
@@ -50,7 +65,8 @@ public class GameManager : MonoBehaviour
         }
 
         // Config
-        Config = Resources.Load<Configuration>("Configuration");
+        if (!Config)
+            Config = Resources.Load<Configuration>("Configuration");
         Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
 
         PlayerData = PlayerData.GetData(Config.SaveFilePath);
@@ -90,6 +106,10 @@ public class GameManager : MonoBehaviour
         else
             SceneType = SceneType.MainMenu;
 
+        // Migration
+        Migration migration = FindObjectOfType<Migration>();
+        if (migration)
+            migration.Do();
     }
 
     void Start()

@@ -8,6 +8,10 @@ public class StageRecordData
     public int WorldIdx;
     public int StageIdx;
     public bool Clear;
+
+    public ObjectCode CharacterLeader;
+    public ObjectCode CharacterSecond;
+    public ObjectCode CharacterThird;
 }
 
 [Serializable]

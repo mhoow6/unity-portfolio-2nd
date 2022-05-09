@@ -319,6 +319,39 @@ public class Character : BaseObject
                 EquipWeaponData = null
             };
     }
+
+    #region 팩토리 메소드
+    /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary> ///
+    public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
+    {
+        Character result = null;
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                var tryload = Resources.Load<Sparcher>($"{resourcePath}/sparcher");
+                if (tryload)
+                    result = Instantiate(tryload, parent);
+                break;
+            case ObjectCode.CHAR_GreenSpider:
+                break;
+            case ObjectCode.CHAR_PurpleSpider:
+                break;
+            case ObjectCode.CHAR_Dummy:
+                break;
+            case ObjectCode.PROJ_WoodenArrow:
+                break;
+            case ObjectCode.EFFECT_HexagonWall:
+                break;
+            case ObjectCode.CHAR_Pirate:
+                break;
+            case ObjectCode.NONE:
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+    #endregion
 }
 
 /// <summary> 캐릭터 스킬 타입 </summary> ///
