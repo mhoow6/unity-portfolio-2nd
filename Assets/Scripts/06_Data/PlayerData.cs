@@ -73,6 +73,7 @@ public class PlayerData
 
     public bool AskForNickName;
 
+    public ObjectCode MainMenuCharacter;
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
     public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
     public List<CharacterData> CharacterDatas = new List<CharacterData>();
@@ -86,6 +87,7 @@ public class PlayerData
         Energy = 0;
         Gold = 0;
         AskForNickName = false;
+        MainMenuCharacter = ObjectCode.CHAR_Sparcher;
     }
 
     public static PlayerData GetData(string saveFilePath)

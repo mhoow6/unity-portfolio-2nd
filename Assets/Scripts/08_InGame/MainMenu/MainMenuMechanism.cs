@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
 {
     public Transform CameraPosition;
+    public Transform PlayerSpawnPosition;
     public bool CheckUserClickingTheCharacter
     {
         set
@@ -77,5 +78,22 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
             yield return null;
         }
 
+    }
+
+    public void SpawnMainCharacter()
+    {
+        var player = new GameObject("Player").AddComponent<Player>();
+        player.gameObject.SetActive(true);
+        player.transform.SetParent(PlayerSpawnPosition);
+
+        var main = GameManager.Instance.PlayerData.MainMenuCharacter;
+        var resourcePath = GameManager.Instance.Config.CharacterResourcePath;
+
+        var leader = Character.Get(main, player.transform, resourcePath);
+        leader.gameObject.SetActive(true);
+        leader.transform.position = PlayerSpawnPosition.position;
+        leader.transform.rotation = PlayerSpawnPosition.rotation;
+
+        player.Init();
     }
 }

@@ -28,11 +28,12 @@ public class StageManager : MonoSingleton<StageManager>
         foreach (var area in Areas)
             area.Init();
 
-        SpawnParty();
+        if (!GameManager.Instance.IsTestZone)
+            SpawnPlayer();
     }
 
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary> ///
-    void SpawnParty()
+    public void SpawnPlayer()
     {
         var player = new GameObject("Player").AddComponent<Player>();
         player.gameObject.SetActive(true);

@@ -13,21 +13,29 @@ public class GameManager : MonoBehaviour
     public Configuration Config;
     public PlayerData PlayerData { get; private set; }
     [ReadOnly] public Player Player;
-    [ReadOnly] public Camera MainCam;
-    public CinemachineFreeLook FreeLookCam
+
+    Camera m_MainCam;
+    public Camera MainCam
     {
         get
         {
-            var brain = MainCam.GetComponent<CinemachineBrain>();
+            return m_MainCam;
+        }
+        set
+        {
+            m_MainCam = value;
+            var brain = value.GetComponent<CinemachineBrain>();
             if (brain)
             {
                 var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
                 if (freelook)
-                    return freelook;
+                    m_FreeLookCam = freelook;
             }
-            return null;
         }
     }
+    CinemachineFreeLook m_FreeLookCam;
+    public CinemachineFreeLook FreeLookCam => m_FreeLookCam;
+
     [ReadOnly] public Light DirectionalLight;
     [ReadOnly] public SceneType SceneType;
     public bool AutoTargeting;
@@ -55,14 +63,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
         m_Update = null;
         m_FixedUpdate = null;
-
-        // 씬에 메인카메라, 방향광원을 가지고 있으면 찾아서 게임매니저에 등록
-        var env = FindObjectOfType<Migration>();
-        if (env != null)
-        {
-            MainCam = env.Camera;
-            DirectionalLight = env.DirectionalLight;
-        }
 
         // Config
         if (!Config)
@@ -100,20 +100,28 @@ public class GameManager : MonoBehaviour
         // FixedUpdate
         m_FixedUpdate += EnergyRecoverySystem.Tick;
 
+#if UNITY_EDITOR
         // 씬 타입 결정
         if (IsTestZone)
             SceneType = SceneType.Test;
         else
             SceneType = SceneType.MainMenu;
-
-        // Migration
-        Migration migration = FindObjectOfType<Migration>();
-        if (migration)
-            migration.Do();
+#endif
     }
 
     void Start()
     {
+        // 씬에 메인카메라, 방향광원을 가지고 있으면 찾아서 게임매니저에 등록
+        Migration migration = FindObjectOfType<Migration>();
+        if (migration)
+            migration.Do();
+
+#if UNITY_EDITOR
+        // 테스트 상황에선 여기서 플레이어 캐릭터를 소환시켜야 정상작동함
+        if (IsTestZone && StageManager.Instance)
+            StageManager.Instance.SpawnPlayer();
+#endif
+
         // UI 상에서 게임 로딩 시작
         if (UISystem != null && !TitleLoadingDirectingSkip)
             UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
@@ -138,72 +146,6 @@ public class GameManager : MonoBehaviour
         if (!NoAutoSavePlayerData)
             PlayerData.Save();
     }
-
-    #region 씬 수동 로딩
-    List<GameObject> m_roots = new List<GameObject>();
-    bool m_isSceneLoaded => m_roots.Count > 0;
-     void LoadScene(string sceneName)
-    {
-        if (m_isSceneLoaded)
-            UnloadScene();
-
-        var prevCam = MainCam;
-        var prevLight = DirectionalLight;
-
-        // name, xpos, ypos, zpos, xrot, yrot, zrot
-        var texts = FileHelper.GetStringsFromByCSVFormat($"99_Table/{sceneName}");
-        if (texts == null)
-            return;
-
-        GameObject go = null;
-        for (int i = 1; i < texts.Count; i++)
-        {
-            var split = texts[i].Split(',');
-            // xpos부터 아무 값이 저장이 안 되어 있으면 부모 오브젝트
-            if (split.Length == 1)
-            {
-                go = new GameObject(split[0]);
-                m_roots.Add(go);
-                continue;
-            }
-
-            GameObject prefab = null;
-            prefab = Resources.Load<GameObject>($"{go.name}/{split[0]}");
-
-            prefab.transform.position = new Vector3(float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));
-            prefab.transform.rotation = Quaternion.Euler(new Vector3(float.Parse(split[4]), float.Parse(split[5]), float.Parse(split[6])));
-            prefab.transform.localScale = new Vector3(float.Parse(split[7]), float.Parse(split[8]), float.Parse(split[9]));
-
-            // 부모의 자식으로 해놓아 에디터에서 관리하기 편하게 함
-            UnityEngine.Object.Instantiate(prefab, go.transform, true);
-        }
-
-        // 기존 씬에 있던 카메라와 direcitonal light은 삭제
-        if (prevCam && prevLight)
-        {
-            Destroy(prevCam.gameObject);
-            Destroy(prevLight.gameObject);
-        }
-    }
-
-     void UnloadScene()
-    {
-        foreach (var root in m_roots)
-        {
-            // 자식들 삭제
-            for (int i = 0; i < root.transform.childCount; i++)
-                UnityEngine.Object.Destroy(root.transform.GetChild(i).gameObject);
-
-            // 루트 삭제
-            UnityEngine.Object.Destroy(root);
-        }
-
-        // 클리어
-        m_roots.Clear();
-        MainCam = null;
-        DirectionalLight = null;
-    }
-    #endregion
 
     #region 플레이어 데이터
     /// <summary>

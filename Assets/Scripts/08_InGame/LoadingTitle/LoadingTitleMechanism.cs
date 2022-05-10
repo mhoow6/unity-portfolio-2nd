@@ -15,20 +15,16 @@ public class LoadingTitleMechanism : MonoSingleton<LoadingTitleMechanism>
         }
     }
 
-    LoadingTitleUI m_LoadingUI;
-
     const float ROAD_MOVE_SPEED = 2.0f;
 
     public void StartRoadMoving(LoadingTitleUI ui)
     {
-        m_LoadingUI = ui;
-
-        StartCoroutine(KeepRoadsMovingToCamera());
+        StartCoroutine(KeepRoadsMovingToCamera(ui));
     }
 
-    IEnumerator KeepRoadsMovingToCamera()
+    IEnumerator KeepRoadsMovingToCamera(LoadingTitleUI ui)
     {
-        while (!m_LoadingUI.IsLoadingComplete)
+        while (!ui.IsLoadingComplete)
         {
             if (Roads.Count > 0)
             {
