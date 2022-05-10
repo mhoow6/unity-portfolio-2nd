@@ -79,30 +79,23 @@ public class StageManager : MonoSingleton<StageManager>
 [CustomEditor(typeof(StageManager))]
 public class StageManagerEditor : Editor
 {
-    const float m_SPHEREHANDLE_SIZE = 0.2f;
-
     void OnEnable()
     {
-        SceneView.duringSceneGui += CustomOnSceneGUI;
+        //SceneView.duringSceneGui += CustomOnSceneGUI;
     }
 
-    void CustomOnSceneGUI(SceneView sceneview)
+    private void OnSceneGUI()
     {
         StageManager generator = (StageManager)target;
 
         // Set the colour of the next handle to be drawn:
-        Handles.color = Color.red;
-
         generator.PlayerSpawnPosition = Handles.PositionHandle(generator.PlayerSpawnPosition, Quaternion.identity);
+        Handles.Label(generator.PlayerSpawnPosition, "Player Spawn Position");
+    }
 
-        // ¼± Ãß°¡
-        Handles.SphereHandleCap(
-            0,
-            generator.PlayerSpawnPosition,
-            Quaternion.identity,
-            m_SPHEREHANDLE_SIZE,
-            EventType.Repaint
-            );
+    void CustomOnSceneGUI(SceneView sceneview)
+    {
+        
     }
 }
 #endif

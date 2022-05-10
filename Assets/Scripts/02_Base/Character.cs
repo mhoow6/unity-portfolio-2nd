@@ -285,7 +285,9 @@ public class Character : BaseObject
     {
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hitInfo;
-        int layermask = 1 << GameManager.Instance.Config.TerrainLayermask;
+
+        int layermask = 1 << LayerMask.NameToLayer("Terrain");
+
         if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
         {
             transform.position = hitInfo.point;
