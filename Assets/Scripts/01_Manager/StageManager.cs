@@ -18,8 +18,10 @@ public class StageManager : MonoSingleton<StageManager>
 
     public PoolSystem Pool { get; private set; }
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
         // 시스템 Init
         Pool = new PoolSystem();
         Pool.Init();
@@ -27,7 +29,10 @@ public class StageManager : MonoSingleton<StageManager>
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
             area.Init();
+    }
 
+    private void Start()
+    {
         if (!GameManager.Instance.IsTestZone)
             SpawnPlayer();
     }
@@ -63,8 +68,12 @@ public class StageManager : MonoSingleton<StageManager>
         player.Init();
 
         // 메인카메라가 현재 캐릭터에 바라보게끔 하기
-        GameManager.Instance.FreeLookCam.Follow = player.CurrentCharacter.transform;
-        GameManager.Instance.FreeLookCam.LookAt = player.CurrentCharacter.transform;
+        var freelookCam = GameManager.Instance.FreeLookCam;
+        if (freelookCam)
+        {
+            freelookCam.Follow = player.CurrentCharacter.transform;
+            freelookCam.LookAt = player.CurrentCharacter.transform;
+        }
     }
 
     [ContextMenu("# Get Attached System")]

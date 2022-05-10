@@ -322,7 +322,6 @@ public class Character : BaseObject
             };
     }
 
-    #region 팩토리 메소드
     /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary> ///
     public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
     {
@@ -353,7 +352,6 @@ public class Character : BaseObject
         }
         return result;
     }
-    #endregion
 }
 
 /// <summary> 캐릭터 스킬 타입 </summary> ///

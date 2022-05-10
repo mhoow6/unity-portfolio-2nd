@@ -51,11 +51,11 @@ public class GameManager : MonoBehaviour
     Action m_FixedUpdate;
 
     [Header("# 개발자 옵션")]
-    [ReadOnly] public string GameVerison;
-    public bool TitleLoadingDirectingSkip;
-    public bool AskForNickNameSkip;
-    public bool NoAutoSavePlayerData;
-    public bool IsTestZone;
+    [Rename("게임 버젼")] public string GameVerison;
+    [Rename("타이틀 로딩 스킵")] public bool TitleLoadingDirectingSkip;
+    [Rename("닉네임 묻기 스킵")] public bool AskForNickNameSkip;
+    [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
+    [Rename("테스트 환경")] public bool IsTestZone;
 
     private void Awake()
     {
