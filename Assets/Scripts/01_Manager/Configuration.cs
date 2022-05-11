@@ -34,4 +34,6 @@ public sealed class Configuration : ScriptableObject
     [SerializeField] string m_AnimationControllerResourcePath;
     public string DatabasePath => m_DatabasePath;
     [SerializeField] string m_DatabasePath;
+    public string CinemachineBlendSettingsPath => m_CinemachineBlendSettingsPath;
+    [SerializeField] string m_CinemachineBlendSettingsPath;
 }
