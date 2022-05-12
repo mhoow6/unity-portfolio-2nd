@@ -2,41 +2,84 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using DatabaseSystem;
 
 public class WorldSpaceDialogue : MonoBehaviour
 {
+    [SerializeField] CinemachineBlenderSettings m_BlenderSettings;
     [SerializeField] CinemachineVirtualCamera m_DialogueLookCamera;
-    GameObject m_BeforeCamera;
+    List<StageDialogueTable> m_Dialogues = new List<StageDialogueTable>();
+    GameObject m_ReturnCamera;
 
-    private void Start()
+    const float m_WAIT_FOR_BLENDING_TIME = 1f;
+
+    public void SetData(List<StageDialogueTable> dialogues)
     {
-        StartCoroutine(TestBlends());
+        // 대화목록 세팅
+        m_Dialogues = dialogues;
+
+        // Blend 세팅
+        SetBlendSetting(GameManager.Instance.BrainCam, GameManager.Instance.FreeLookCam);
+
+        // 카메라 연출
+        StartCoroutine(BlendingCoroutine(BlendType.OutIn));
     }
 
-    IEnumerator TestBlends()
+    void SetBlendSetting(CinemachineBrain brain, ICinemachineCamera activeCam)
     {
-        yield return new WaitForSeconds(3f);
-        SetBlendSetting(GameManager.Instance.MainCam.GetComponent<CinemachineBrain>());
-    }
-
-    void SetBlendSetting(CinemachineBrain brain)
-    {
-        var path = GameManager.Instance.Config.CinemachineBlendSettingsPath;
-        GameManager.Instance.InputSystem.CameraRotatable = false;
+        // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
+        //GameManager.Instance.InputSystem.CameraRotatable = false;
+        //GameManager.Instance.Player.Moveable = false;
 
         // 사전에 세팅한 BlenderSetting을 brain에 적용시킨다.
-        brain.m_CustomBlends = Resources.Load<CinemachineBlenderSettings>($"{path}/DialogueBlends");
+        brain.m_CustomBlends = m_BlenderSettings;
 
-        // From을 플레이어 카메라, To를 대화창을 바라보는 카메라로 바꾼다.
-        // Style과 Time은 세팅이 이미 되었을 것이므로 패스
-        brain.m_CustomBlends.m_CustomBlends[0].m_From = GameManager.Instance.FreeLookCam.name;
-        brain.m_CustomBlends.m_CustomBlends[0].m_To = m_DialogueLookCamera.name;
+        // 트리거를 밟아 대화창을 볼때 Blend 세팅
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.OutIn].m_From = activeCam.VirtualCameraGameObject.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.OutIn].m_To = m_DialogueLookCamera.name;
 
-        // 대화창을 끝내고 돌아가기 위해 플레이어 카메라를 before에 넣어주고 비활성화
-        m_BeforeCamera = GameManager.Instance.FreeLookCam.gameObject;
-        m_BeforeCamera.SetActive(false);
+        // 대화창을 끝내고 돌아갈때 Blend 세팅
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.InOut].m_From = m_DialogueLookCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.OutIn].m_To = activeCam.VirtualCameraGameObject.name;
 
-        // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
-        m_DialogueLookCamera.gameObject.SetActive(true);
+        // 대화창 끝낼 때 원래 카메라로 돌아가야함
+        m_ReturnCamera = activeCam.VirtualCameraGameObject;
+    }
+
+    IEnumerator BlendingCoroutine(BlendType type)
+    {
+        yield return new WaitForSeconds(m_WAIT_FOR_BLENDING_TIME);
+
+        switch (type)
+        {
+            case BlendType.OutIn:
+                // 현재 카메라 비활성화
+                m_ReturnCamera.SetActive(false);
+
+                // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
+                m_DialogueLookCamera.gameObject.SetActive(true);
+                break;
+            case BlendType.InOut:
+                // 현재 카메라 비활성화
+                m_DialogueLookCamera.gameObject.SetActive(false);
+
+                // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
+                m_ReturnCamera.SetActive(true);
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    void NextDialogue()
+    {
+
+    }
+
+    enum BlendType
+    {
+        OutIn,
+        InOut
     }
 }

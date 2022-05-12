@@ -27,12 +27,16 @@ public class GameManager : MonoBehaviour
             var brain = value.GetComponent<CinemachineBrain>();
             if (brain)
             {
+                m_BrainCam = brain;
                 var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
                 if (freelook)
                     m_FreeLookCam = freelook;
             }
         }
     }
+    CinemachineBrain m_BrainCam;
+    public CinemachineBrain BrainCam => m_BrainCam;
+
     CinemachineFreeLook m_FreeLookCam;
     public CinemachineFreeLook FreeLookCam => m_FreeLookCam;
 
