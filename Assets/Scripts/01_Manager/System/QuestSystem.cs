@@ -6,21 +6,10 @@ using DatabaseSystem;
 public class QuestSystem : GameSystem
 {
     // QuestIdx: PurposeCount
-    Dictionary<int, int> m_QuestIdxPurposeCountDic = new Dictionary<int, int>();
+    Dictionary<int, int> m_StageQuestIdxPurposeCountDic = new Dictionary<int, int>();
 	
 	// QuestIdx: RecordData
-	Dictionary<int, QuestRecordData> QuestRecords = new Dictionary<int, QuestRecordData>();
-
-	public List<int> QuestIndices
-    {
-		get
-        {
-			List<int> results = new List<int>();
-            foreach (var key in QuestRecords.Keys)
-				results.Add(key);
-			return results;
-		}
-    }
+	Dictionary<int, QuestRecordData> m_StageQuestRecords = new Dictionary<int, QuestRecordData>();
 
     PlayerData m_playerData;
     List<QuestTable> m_QuestTable = new List<QuestTable>();
@@ -35,7 +24,7 @@ public class QuestSystem : GameSystem
 			bool initFlag = row.Positive ? false : true;
 			int purposeCount = row.PurposeCount;
 			
-			if (QuestRecords.TryGetValue(index, out var record))
+			if (m_StageQuestRecords.TryGetValue(index, out var record))
 				continue;
 			else
 			{
@@ -45,19 +34,19 @@ public class QuestSystem : GameSystem
 					SuccessCount = 0,
 					Clear = initFlag,
 				};
-				QuestRecords.Add(index, newRecord);
+				m_StageQuestRecords.Add(index, newRecord);
 				}
-				m_QuestIdxPurposeCountDic.Add(index, purposeCount);
+				m_StageQuestIdxPurposeCountDic.Add(index, purposeCount);
 			}
 		}
 
 	/// <summary> 스테이지 게임오버 시 퀘스트 카운트 초기화 용도 </summary>
-	public void ResetQuest(int questIdx)
+	public void ResetStageQuest(int questIdx)
     {
         var quests = TableManager.Instance.QuestTable;
 		var row = m_QuestTable.Find(q => q.Index == questIdx);
 
-		if (QuestRecords.TryGetValue(questIdx, out var record))
+		if (m_StageQuestRecords.TryGetValue(questIdx, out var record))
         {
 			record.SuccessCount = 0;
 			record.Clear = row.Positive ? false : true;
@@ -67,7 +56,7 @@ public class QuestSystem : GameSystem
 	/// <summary> 게임중 퀘스트 시스템에게 해당 퀘스트의 목표를 달성했다는 보고 용도 </summary>
 	public void Report(int questIdx, int addCount = 1)
     {
-        if (QuestRecords.TryGetValue(questIdx, out var record))
+        if (m_StageQuestRecords.TryGetValue(questIdx, out var record))
 		{
 			var row = m_QuestTable.Find(q => q.Index == questIdx);
 			
@@ -93,7 +82,7 @@ public class QuestSystem : GameSystem
 	/// <summary> 스테이지 클리어시 퀘스트 기록을 데이터에 저장하는 용도 </summary>
 	public void UpdatePlayerQuestRecords()
     {
-        foreach (var record in QuestRecords.Values)
+        foreach (var record in m_StageQuestRecords.Values)
         {
 			var exist = m_playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
 			if (exist == null)
@@ -110,8 +99,6 @@ public class QuestSystem : GameSystem
     {
         m_QuestTable = TableManager.Instance.QuestTable;
         m_playerData = GameManager.Instance.PlayerData;
-
-		
     }
 
     public void Tick()

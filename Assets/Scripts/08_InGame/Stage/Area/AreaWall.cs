@@ -8,16 +8,13 @@ public class AreaWall : AreaComponent
     [SerializeField] Vector3 m_BlockEffectSpawnRotation;
 
     List<Effect> m_InstantiateEffects = new List<Effect>();
-    const int m_MAXIMUM_INSTANTIATE_EFFECT = 3;
+    const int MAXIMUM_INSTANTIATE_EFFECT = 3;
 
     private void OnCollisionEnter(Collision collision)
     {
         // 벽 충돌시 이펙트 발생
         if (collision.gameObject.CompareTag("Player"))
-        {
-            var player = GameManager.Instance.Player;
             StartCoroutine(CollideEffectCoroutine());
-        }
     }
 
     private void OnCollisionExit(Collision collision)
@@ -30,18 +27,16 @@ public class AreaWall : AreaComponent
 
     IEnumerator CollideEffectCoroutine()
     {
-        var path = GameManager.Instance.Config.EffectResourcePath;
-        var pool = StageManager.Instance.Pool;
-        var player = GameManager.Instance.Player;
-        var charcter = GameManager.Instance.Player.CurrentCharacter;
+        var gm = GameManager.Instance;
+        var sm = StageManager.Instance;
 
         while (true)
         {
             // 움직일 때 새로 이펙트 생성
-            if (player.MoveVector.magnitude != 0 && m_InstantiateEffects.Count < m_MAXIMUM_INSTANTIATE_EFFECT)
+            if (gm.Player.MoveVector.magnitude != 0 && m_InstantiateEffects.Count < MAXIMUM_INSTANTIATE_EFFECT)
             {
-                var particle = pool.Load<Effect>($"{path}/FX_Direction_Arrows_03");
-                Vector3 characterPosition = charcter.transform.position;
+                var particle = sm.Pool.Load<Effect>($"{gm.Config.EffectResourcePath}/FX_Direction_Arrows_03");
+                Vector3 characterPosition = gm.Player.CurrentCharacter.transform.position;
                 m_InstantiateEffects.Add(particle);
                 particle.transform.SetPositionAndRotation(characterPosition, Quaternion.Euler(m_BlockEffectSpawnRotation));
             }

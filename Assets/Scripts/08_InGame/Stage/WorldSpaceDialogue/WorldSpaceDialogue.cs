@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Cinemachine;
 using DatabaseSystem;
+using System;
 
 public class WorldSpaceDialogue : MonoBehaviour
 {
     [SerializeField] CinemachineBlenderSettings m_BlenderSettings;
     [SerializeField] CinemachineVirtualCamera m_DialogueLookCamera;
-    List<StageDialogueTable> m_Dialogues = new List<StageDialogueTable>();
     GameObject m_ReturnCamera;
 
-    const float m_WAIT_FOR_BLENDING_TIME = 1f;
+    List<StageDialogueTable> m_Dialogues = new List<StageDialogueTable>();
+
+    [SerializeField] SpeakerPreset m_LeftSpeaker;
+    [SerializeField] SpeakerPreset m_RightSpeaker;
+    [SerializeField] Text m_Dialogue;
+
+    const float WAIT_FOR_BLENDING_TIME = 1f;
 
     public void SetData(List<StageDialogueTable> dialogues)
     {
@@ -22,7 +29,21 @@ public class WorldSpaceDialogue : MonoBehaviour
         SetBlendSetting(GameManager.Instance.BrainCam, GameManager.Instance.FreeLookCam);
 
         // 카메라 연출
-        StartCoroutine(BlendingCoroutine(BlendType.OutIn));
+        StartCoroutine(BlendingCoroutine(BlendType.OutIn, () => 
+        {
+            // 맨 처음 대화자 세팅
+            if (m_Dialogues.Count > 0)
+            {
+                var dialogue = m_Dialogues[0];
+                if (dialogue.IsLeft)
+                    m_LeftSpeaker.Speak(dialogue, m_Dialogue);
+                else
+                    m_RightSpeaker.Speak(dialogue, m_Dialogue);
+
+                // 클릭하면 대화 다 읽어짐.
+                StartCoroutine(ClickForDialogueReadCoroutine());
+            }
+        }));      
     }
 
     void SetBlendSetting(CinemachineBrain brain, ICinemachineCamera activeCam)
@@ -40,15 +61,16 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // 대화창을 끝내고 돌아갈때 Blend 세팅
         brain.m_CustomBlends.m_CustomBlends[(int)BlendType.InOut].m_From = m_DialogueLookCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.OutIn].m_To = activeCam.VirtualCameraGameObject.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.InOut].m_To = activeCam.VirtualCameraGameObject.name;
 
         // 대화창 끝낼 때 원래 카메라로 돌아가야함
         m_ReturnCamera = activeCam.VirtualCameraGameObject;
     }
 
-    IEnumerator BlendingCoroutine(BlendType type)
+    IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)
     {
-        yield return new WaitForSeconds(m_WAIT_FOR_BLENDING_TIME);
+        yield return new WaitForSeconds(WAIT_FOR_BLENDING_TIME);
+        GameObject activeCam = null;
 
         switch (type)
         {
@@ -57,6 +79,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                 m_ReturnCamera.SetActive(false);
 
                 // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
+                activeCam = m_DialogueLookCamera.gameObject;
                 m_DialogueLookCamera.gameObject.SetActive(true);
                 break;
             case BlendType.InOut:
@@ -64,17 +87,21 @@ public class WorldSpaceDialogue : MonoBehaviour
                 m_DialogueLookCamera.gameObject.SetActive(false);
 
                 // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
+                activeCam = m_ReturnCamera;
                 m_ReturnCamera.SetActive(true);
                 break;
             default:
                 break;
         }
-        
+
+        // 활성화될 카메라가 정위치에 올때까지 기다리기
+        yield return new WaitUntil(() => activeCam.gameObject.activeSelf);
+        blendDoneCallback?.Invoke();
     }
 
-    void NextDialogue()
+    IEnumerator ClickForDialogueReadCoroutine()
     {
-
+        yield return null;
     }
 
     enum BlendType

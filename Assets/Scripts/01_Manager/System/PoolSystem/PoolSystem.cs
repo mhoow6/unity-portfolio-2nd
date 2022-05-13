@@ -8,7 +8,7 @@ public class PoolSystem : GameSystem
     // 키: 프리팹 경로 값: 오브젝트
     Dictionary<string, List<IPoolable>> m_PoolMap = new Dictionary<string, List<IPoolable>>();
 
-    const string m_DUMMY_OBJECT_NAME = "DummyObject";
+    const string DUMMY_OBJECT_NAME = "DummyObject";
 
     #region 게임 시스템
     public void Init()
@@ -27,7 +27,7 @@ public class PoolSystem : GameSystem
     #region 더미 오브젝트 풀링
     public DummyObject LoadDummyObject()
     {
-        if (m_PoolMap.TryGetValue(m_DUMMY_OBJECT_NAME, out var list))
+        if (m_PoolMap.TryGetValue(DUMMY_OBJECT_NAME, out var list))
         {
             var find = list.Find(obj => obj.Poolable);
             if (find != null)
@@ -45,7 +45,7 @@ public class PoolSystem : GameSystem
 
     DummyObject LoadPrimitiveDummyObject(List<IPoolable> pool)
     {
-        var load = new GameObject(m_DUMMY_OBJECT_NAME).AddComponent<DummyObject>();
+        var load = new GameObject(DUMMY_OBJECT_NAME).AddComponent<DummyObject>();
         load.transform.SetParent(m_Root.transform);
 
         load.OnLoad();
@@ -57,7 +57,7 @@ public class PoolSystem : GameSystem
         {
             pool = new List<IPoolable>();
             pool.Add(load);
-            m_PoolMap.Add(m_DUMMY_OBJECT_NAME, pool);
+            m_PoolMap.Add(DUMMY_OBJECT_NAME, pool);
         }
 
         return load;

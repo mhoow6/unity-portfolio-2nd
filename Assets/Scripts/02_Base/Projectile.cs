@@ -13,7 +13,7 @@ public class Projectile : BaseObject, IPoolable
     [SerializeField] SphereCollider m_SphereCollider;
     bool m_Poolable;
 
-    const float m_SHOOT_VELOCITY = 2f;
+    const float SHOOT_VELOCITY = 2f;
 
     public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
 
@@ -50,7 +50,7 @@ public class Projectile : BaseObject, IPoolable
         float timer = 0f;
         m_RigidBody.isKinematic = false;
         m_RigidBody.useGravity = false;
-        m_RigidBody.velocity = direction.normalized * moveSpeed * m_SHOOT_VELOCITY;
+        m_RigidBody.velocity = direction.normalized * moveSpeed * SHOOT_VELOCITY;
         while (timer < lifeTime)
         {
             timer += Time.deltaTime;

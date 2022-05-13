@@ -26,7 +26,7 @@ public class LoadingTitleUI : UI
     int m_PredictRestTime;
 
     int m_FakeDataDownloadPerSecond;
-    const int m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
+    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
 
     public override UIType Type { get => UIType.Loading; }
 
@@ -37,8 +37,8 @@ public class LoadingTitleUI : UI
         m_FakeDataDownloadPerSecond = (int)(m_NeedToLoadDataCount * 0.01f) == 0 ? 1 : (int)(m_NeedToLoadDataCount * 0.01f);
         //Debug.Log($"초당 데이터 다운로드 수: {m_FakeDataDownloadPerSecond}");
 
-        int minValue = m_FakeDataDownloadPerSecond > m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
-        int maxValue = m_FakeDataDownloadPerSecond > m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? m_DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
+        int minValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
+        int maxValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
         //Debug.Log($"최소 데이터 다운로드: {minValue}");
         //Debug.Log($"최소 데이터 다운로드: {maxValue}");
 

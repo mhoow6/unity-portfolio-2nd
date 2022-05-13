@@ -5,7 +5,7 @@ using UnityEngine;
 public class JumpTrigger : AreaTrigger
 {
     [Range(1, 5), SerializeField]
-    float m_JumpTime = 1;
+    const float JUMP_TIME = 1;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class JumpTrigger : AreaTrigger
 
             // 점프 애니메이션
             player.AnimationJobs.Enqueue(AniType.JUMP_0);
-            player.CurrentCharacter.AniSpeed = 1 / m_JumpTime;
+            player.CurrentCharacter.AniSpeed = 1 / JUMP_TIME;
 
             // 시뮬레이션 데이터 세팅
             BeizerCurve curve = GetComponent<BeizerCurve>();
@@ -39,7 +39,7 @@ public class JumpTrigger : AreaTrigger
             curve.P4 = new Vector3(other.transform.position.x, curve.P4.y, curve.P4.z);
 
             // 시뮬레이션 시작
-            curve.Simulate(m_JumpTime, () =>
+            curve.Simulate(JUMP_TIME, () =>
             {
                 player.Controlable = true;
                 player.CurrentCharacter.Physic = true;

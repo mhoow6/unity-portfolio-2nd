@@ -29,7 +29,7 @@ public class WarningUI : UI
         sys.BlockRaycast = true;
 
         RectTransform.localScale = new Vector3(1, 0, 1);
-        RectTransform.DOScaleY(1f, sys.ScaleTweeningSpeed);
+        RectTransform.DOScaleY(1f, sys.SCALE_TWEENING_SPEED);
         Invoke("AutoClose", 3f);
     }
 
@@ -38,7 +38,7 @@ public class WarningUI : UI
         var sys = GameManager.Instance.UISystem;
         if (sys.CurrentWindow.Type == UIType.Warning)
         {
-            RectTransform.DOScaleY(0f, sys.ScaleTweeningSpeed).OnComplete(() =>
+            RectTransform.DOScaleY(0f, sys.SCALE_TWEENING_SPEED).OnComplete(() =>
             {
                 sys.CloseWindow();
             });

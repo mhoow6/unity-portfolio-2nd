@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AreaWallBlockEffect : Effect
 {
-    const float m_INVISIBLE_DURATION = 2f;
+    const float INVISIBLE_DURATION = 2f;
 
     protected override void ReleaseAction()
     {
@@ -18,7 +18,7 @@ public class AreaWallBlockEffect : Effect
         var originColor = m_EffectColor;
 
         // 2초동안 알파블랜딩
-        while (timer < m_INVISIBLE_DURATION)
+        while (timer < INVISIBLE_DURATION)
         {
             // 뭔가 하고 있으니 풀링은 당연히 불가능
             Poolable = false;

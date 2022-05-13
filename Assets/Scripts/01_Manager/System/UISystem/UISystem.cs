@@ -18,7 +18,7 @@ public class UISystem : MonoBehaviour, GameSystem
     public Camera UICamera;
     public PoolSystem Pool { get; private set; }
 
-    public readonly float ScaleTweeningSpeed = 0.2f;
+    public readonly float SCALE_TWEENING_SPEED = 0.2f;
 
     Stack<UI> m_WindowStack = new Stack<UI>();
     [SerializeField] GameObject m_BlockWindow;

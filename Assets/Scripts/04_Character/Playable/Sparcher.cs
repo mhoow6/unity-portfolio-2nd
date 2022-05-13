@@ -9,10 +9,9 @@ public class Sparcher : Character
 
     [SerializeField] Transform m_ArrowSpawnPosition;
 
-    public readonly int ATTACK_INDEX = m_ATTACK_INDEX;
-    const int m_ATTACK_INDEX = 2000;
-    const int m_SKILL_INDEX = -1;
-    const int m_DASH_INDEX = -1;
+    public const int ATTACK_INDEX = 2000;
+    public const int SKILL_INDEX = -1;
+    public const int DASH_INDEX = -1;
 
     protected override void OnSpawn()
     {
@@ -38,7 +37,7 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case m_ATTACK_INDEX:
+            case ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
                 var config = GameManager.Instance.Config;
 
@@ -61,7 +60,7 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case m_ATTACK_INDEX:
+            case ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
                 return (AniType)data.AniType;
             default:
@@ -74,7 +73,7 @@ public class Sparcher : Character
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         switch (skillIndex)
         {
-            case m_SKILL_INDEX:
+            case SKILL_INDEX:
                 return 0;
             default:
                 return 0;

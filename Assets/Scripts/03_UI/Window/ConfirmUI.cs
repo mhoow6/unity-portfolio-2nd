@@ -41,7 +41,7 @@ public class ConfirmUI : UI
 
     public override void OnOpened()
     {
-        float tweenSpeed = GameManager.Instance.UISystem.ScaleTweeningSpeed;
+        float tweenSpeed = GameManager.Instance.UISystem.SCALE_TWEENING_SPEED;
         RectTransform.localScale = new Vector3(1, 0, 1);
         RectTransform.DOScaleY(1f, tweenSpeed);
     }

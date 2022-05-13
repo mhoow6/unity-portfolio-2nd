@@ -32,7 +32,7 @@ public class ReadyForBattleUI : UI
     List<QuestTable> m_QuestTable;
     PlayerData m_PlayerData;
 
-    const float m_STAGE_DESCRIPTION_SPEED = 3f;
+    const float STAGE_DESCRIPTION_SPEED = 3f;
 
 
     // 전투 준비 버튼
@@ -83,7 +83,7 @@ public class ReadyForBattleUI : UI
         // 스테이지 설명
         StageName.text = $"Act.{stageIdx} {row.StageName}";
         StageDescription.text = string.Empty;
-        StageDescription.DOText(row.StageDescription, m_STAGE_DESCRIPTION_SPEED);
+        StageDescription.DOText(row.StageDescription, STAGE_DESCRIPTION_SPEED);
 
         // 스테이지 이미지
         StageImage.sprite = Resources.Load<Sprite>($"02_Texture/{row.StageImage}");

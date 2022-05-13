@@ -18,7 +18,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         }
     }
 
-    const float m_CAMERA_MOVE_SPEED = 0.5F;
+    const float CAMERA_MOVE_SPEED = 0.5F;
     IEnumerator m_CheckUserClickingTheCharacterCoroutine;
 
     private void Start()
@@ -42,7 +42,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         {
             timer += Time.deltaTime;
             sensitivity += timer * 0.001f;
-            mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * m_CAMERA_MOVE_SPEED);
+            mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * CAMERA_MOVE_SPEED);
             yield return null;
         }
         if (LoadingTitleMechanism.Instance != null)

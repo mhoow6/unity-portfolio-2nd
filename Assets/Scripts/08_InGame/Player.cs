@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     IEnumerator m_ControlCoroutine;
 
-    const float m_ROTATE_SPEED = 20f;
+    const float CHARCTER_ROTATE_SPEED = 20f;
 
     public void Init()
     {
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
                 {
                     // 회전
                     float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
-                    Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * m_ROTATE_SPEED, 0);
+                    Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * CHARCTER_ROTATE_SPEED, 0);
                     CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(angularVelocity));
 
                     // 애니메이션
