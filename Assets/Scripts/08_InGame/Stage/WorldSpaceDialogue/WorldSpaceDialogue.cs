@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Cinemachine;
 using DatabaseSystem;
 using System;
-using UnityEditor;
+using DG.Tweening;
 
 public class WorldSpaceDialogue : MonoBehaviour
 {
@@ -29,14 +29,8 @@ public class WorldSpaceDialogue : MonoBehaviour
     // 어떤 Speaker가 말하고 있는가?
     SpeakerPreset m_CurrentSpeaker;
     [SerializeField] Text m_DialogueText;
-    IEnumerator m_CheckingForDialogueReadCoroutine;
 
-    const float WAIT_FOR_BLENDING_TIME = 1f;
-
-    private void Awake()
-    {
-        m_CheckingForDialogueReadCoroutine = CheckingForDialogueReadCoroutine();
-    }
+    float DIALOUGE_WINDOW_TWEENING_SPEED = 0.3f;
 
     public void SetData(List<StageDialogueTable> dialogues)
     {
@@ -56,30 +50,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         var brain = GameManager.Instance.BrainCam;
         StartCoroutine(BlendingCoroutine(BlendType.StartToEnd, () => 
         {
-            // 대화창 키기
-            m_Monitor.gameObject.SetActive(true);
-
-            // 맨 처음 대화자 세팅
-            if (m_Dialogues.Count > 0)
-            {
-                m_CurrentDialogueIndex = 0;
-                var dialogue = m_Dialogues[m_CurrentDialogueIndex++];
-                if (dialogue.IsLeft)
-                {
-                    m_LeftSpeaker.Speak(dialogue, m_DialogueText);
-                    m_CurrentSpeaker = m_LeftSpeaker;
-                    m_RightSpeaker.Listen();
-                }
-                else
-                {
-                    m_RightSpeaker.Speak(dialogue, m_DialogueText);
-                    m_CurrentSpeaker = m_RightSpeaker;
-                    m_LeftSpeaker.Listen();
-                }
-
-                // 클릭하면 대화 다 읽어짐.
-                StartCoroutine(m_CheckingForDialogueReadCoroutine);
-            }
+            Invoke("FirstDialogueRead", 0.5f);
         }));      
     }
 
@@ -125,7 +96,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                 m_StartBlendingCamera.gameObject.SetActive(true);
 
                 // 조금 기다린 뒤,
-                yield return new WaitForSeconds(WAIT_FOR_BLENDING_TIME);
+                yield return new WaitForSeconds(1f);
 
                 // 시작 카메라를 비활성화 하고
                 m_StartBlendingCamera.gameObject.SetActive(false);
@@ -146,8 +117,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                 // 다시 원래 카메라를 키기
                 m_ReturnCamera.SetActive(true);
 
-                // 대화창 비활성화
-                m_Monitor.gameObject.SetActive(false);
+                m_ReturnCamera = null;
                 yield return null;
                 break;
             default:
@@ -155,78 +125,97 @@ public class WorldSpaceDialogue : MonoBehaviour
         }
 
         // 활성화될 카메라가 정위치에 올때까지 기다리기
-        yield return null;
         yield return new WaitUntil(() => !brain.IsBlending);
         blendDoneCallback?.Invoke();
     }
 
-    IEnumerator CheckingForDialogueReadCoroutine()
+    void FirstDialogueRead()
     {
-        // 1. 누가 말하고 있는지 가져오기
-        while (true)
+        // 대화창 키기
+        m_Monitor.gameObject.SetActive(true);
+
+        // 대화창 트위닝
+        float desired = m_Monitor.transform.localScale.y;
+        m_Monitor.transform.localScale = new Vector3(m_Monitor.transform.localScale.x, 0, m_Monitor.transform.localScale.z);
+        m_Monitor.transform.DOScaleY(desired, DIALOUGE_WINDOW_TWEENING_SPEED);
+
+        // 맨 처음 대화자 세팅
+        if (m_Dialogues.Count > 0)
         {
-            // 클릭을 하면
-            if (Input.GetMouseButtonDown(0))
+            m_CurrentDialogueIndex = 0;
+            var dialogue = m_Dialogues[m_CurrentDialogueIndex++];
+            if (dialogue.IsLeft)
             {
-                // 남은 대화가 있는 경우
-                if (m_CurrentDialogueIndex < m_Dialogues.Count)
+                m_LeftSpeaker.Speak(dialogue, m_DialogueText);
+                m_CurrentSpeaker = m_LeftSpeaker;
+                m_RightSpeaker.Listen();
+            }
+            else
+            {
+                m_RightSpeaker.Speak(dialogue, m_DialogueText);
+                m_CurrentSpeaker = m_RightSpeaker;
+                m_LeftSpeaker.Listen();
+            }
+        }
+    }
+
+    /// <summary> Canvas-Button-OnClickEvent </summary> ///
+    public void DialogueRead()
+    {
+        // 남은 대화가 있는 경우
+        if (m_CurrentDialogueIndex < m_Dialogues.Count)
+        {
+            // 말하는 사람의 대화를 전부 다 출력한다.
+            if (m_CurrentSpeaker.IsSpeaking)
+                m_CurrentSpeaker.SpeakComplete();
+            else
+            {
+                // 말하고 있는 사람이 없는 거면 대화자가 말을 다 끝낸상태
+                var listener = m_CurrentSpeaker == m_LeftSpeaker ? m_RightSpeaker : m_LeftSpeaker;
+
+                // 다음 대화가 만약에 말하던 사람이면
+                var currentDialogue = m_Dialogues[m_CurrentDialogueIndex++];
+                if (currentDialogue.NpcName == m_CurrentSpeaker.SpeakerName)
                 {
-                    // 말하는 사람의 대화를 전부 다 출력한다.
-                    if (m_CurrentSpeaker.IsSpeaking)
-                        m_CurrentSpeaker.SpeakComplete();
-                    else
-                    {
-                        // 말하고 있는 사람이 없는 거면 대화자가 말을 다 끝낸상태
-                        var listener = m_CurrentSpeaker == m_LeftSpeaker ? m_RightSpeaker : m_LeftSpeaker;
-
-                        // 다음 대화가 만약에 말하던 사람이면
-                        var currentDialogue = m_Dialogues[m_CurrentDialogueIndex++];
-                        if (currentDialogue.NpcName == m_CurrentSpeaker.SpeakerName)
-                        {
-                            // 계속 말하게 하게 하고
-                            m_CurrentSpeaker.Speak(currentDialogue, m_DialogueText);
-                        }
-                        else
-                        {
-                            // 그게 아니면 기존에 말한 사람은 듣는 상태로 바꾸고
-                            m_CurrentSpeaker.Listen();
-
-                            // 듣는 사람이 말을 해야 한다.
-                            listener.Speak(currentDialogue, m_DialogueText);
-                            m_CurrentSpeaker = listener;
-                        }
-                    }
+                    // 계속 말하게 하게 하고
+                    m_CurrentSpeaker.Speak(currentDialogue, m_DialogueText);
                 }
                 else
                 {
-                    // 마지막 대화면 마저 말하게 하고
-                    if (m_CurrentSpeaker.IsSpeaking)
-                        m_CurrentSpeaker.SpeakComplete();
-                    // 더 이상 진행할 대화가 없다면 대화 종료
-                    else
-                    {
-                        StartCoroutine(BlendingCoroutine(BlendType.EndToStart,
-                            () =>
-                            {
-                                gameObject.SetActive(false);
+                    // 그게 아니면 기존에 말한 사람은 듣는 상태로 바꾸고
+                    m_CurrentSpeaker.Listen();
 
-                                // 인풋 원상복귀
-                                GameManager.Instance.InputSystem.CameraRotatable = true;
-                                GameManager.Instance.Player.Moveable = true;
-
-                                // UI 끄기
-                                GameManager.Instance.UISystem.HUD = true;
-
-                                // 인게임 UI 켜기
-                                GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
-                            }));
-                    }
-                    
+                    // 듣는 사람이 말을 해야 한다.
+                    listener.Speak(currentDialogue, m_DialogueText);
+                    m_CurrentSpeaker = listener;
                 }
-
             }
+        }
+        else
+        {
+            // 마지막 대화면 마저 말하게 하고
+            if (m_CurrentSpeaker.IsSpeaking)
+                m_CurrentSpeaker.SpeakComplete();
+            // 더 이상 진행할 대화가 없다면 대화 종료
+            else
+            {
+                m_Monitor.transform.DOScaleY(0, DIALOUGE_WINDOW_TWEENING_SPEED);
 
-            yield return null;
+                StartCoroutine(BlendingCoroutine(BlendType.EndToStart,
+                    () =>
+                    {
+                        gameObject.SetActive(false);
+
+                        GameManager.Instance.InputSystem.CameraRotatable = true;
+                        GameManager.Instance.Player.Moveable = true;
+
+                        // UI 끄기
+                        GameManager.Instance.UISystem.HUD = true;
+
+                        // 인게임 UI 켜기
+                        GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
+                    }));
+            }
         }
     }
 
