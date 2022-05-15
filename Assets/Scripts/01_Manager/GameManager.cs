@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     // Global Data
     public Configuration Config;
     public PlayerData PlayerData { get; private set; }
-    [ReadOnly] public Player Player;
+    public Player Player;
 
     Camera m_MainCam;
     public Camera MainCam
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     CinemachineFreeLook m_FreeLookCam;
     public CinemachineFreeLook FreeLookCam => m_FreeLookCam;
 
-    [ReadOnly] public Light DirectionalLight;
+    [HideInInspector] public Light DirectionalLight;
     [ReadOnly] public SceneType SceneType;
     public bool AutoTargeting;
 
