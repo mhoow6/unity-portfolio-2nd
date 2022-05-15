@@ -21,7 +21,9 @@ public class WorldSpaceDialogue : MonoBehaviour
     List<StageDialogueTable> m_Dialogues = new List<StageDialogueTable>();
     int m_CurrentDialogueIndex;
 
+    [Header("# 모니터 구성요소")]
     [SerializeField] GameObject m_Monitor;
+    [SerializeField] Canvas m_Canvas;
     [SerializeField] SpeakerPreset m_LeftSpeaker;
     [SerializeField] SpeakerPreset m_RightSpeaker;
     // 어떤 Speaker가 말하고 있는가?
@@ -43,6 +45,12 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // Blend 세팅
         SetBlendSetting();
+
+        // 캔버스 카메라 세팅
+        m_Canvas.worldCamera = GameManager.Instance.MainCam;
+
+        // UI 끄기
+        GameManager.Instance.UISystem.HUD = false;
 
         // 카메라 연출
         var brain = GameManager.Instance.BrainCam;
@@ -80,11 +88,11 @@ public class WorldSpaceDialogue : MonoBehaviour
         var brain = GameManager.Instance.BrainCam;
 
         // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
-        //GameManager.Instance.InputSystem.CameraRotatable = false;
-        //GameManager.Instance.Player.Moveable = false;
-        // 캐릭터 움직임도 고정
-        //GameManager.Instance.Player.transform.position = m_CharacterTransform.position;
-        //GameManager.Instance.Player.transform.rotation = m_CharacterTransform.rotation;
+        GameManager.Instance.InputSystem.CameraRotatable = false;
+        GameManager.Instance.Player.Moveable = false;
+        // 캐릭터 정위치
+        GameManager.Instance.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
+        GameManager.Instance.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
 
         // 사전에 세팅한 BlenderSetting을 brain에 적용시킨다.
         brain.m_CustomBlends = m_BlenderSettings;
@@ -105,7 +113,6 @@ public class WorldSpaceDialogue : MonoBehaviour
     IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)
     {
         var brain = GameManager.Instance.BrainCam;
-
         switch (type)
         {
             case BlendType.StartToEnd:
@@ -131,13 +138,16 @@ public class WorldSpaceDialogue : MonoBehaviour
                 // 블랜딩 시작 카메라 켜서 블랜딩
                 m_StartBlendingCamera.gameObject.SetActive(true);
 
-                // 조금 기다린 뒤,
-                yield return new WaitForSeconds(WAIT_FOR_BLENDING_TIME);
+                // 블랜딩을 기다린 뒤,
+                yield return new WaitUntil(() => !brain.IsBlending);
 
                 // 블랜딩 시작 카메라를 끈 뒤에
                 m_StartBlendingCamera.gameObject.SetActive(false);
-                // 다시 원래 카메라를 켜서 캐릭터 조작하게 하기
+                // 다시 원래 카메라를 키기
                 m_ReturnCamera.SetActive(true);
+
+                // 대화창 비활성화
+                m_Monitor.gameObject.SetActive(false);
                 yield return null;
                 break;
             default:
@@ -199,8 +209,16 @@ public class WorldSpaceDialogue : MonoBehaviour
                             () =>
                             {
                                 gameObject.SetActive(false);
-                                //GameManager.Instance.InputSystem.CameraRotatable = true;
-                                //GameManager.Instance.Player.Moveable = true;
+
+                                // 인풋 원상복귀
+                                GameManager.Instance.InputSystem.CameraRotatable = true;
+                                GameManager.Instance.Player.Moveable = true;
+
+                                // UI 끄기
+                                GameManager.Instance.UISystem.HUD = true;
+
+                                // 인게임 UI 켜기
+                                GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
                             }));
                     }
                     

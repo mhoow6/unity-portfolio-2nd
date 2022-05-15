@@ -97,7 +97,6 @@ public class StageManagerEditor : Editor
     {
         StageManager generator = (StageManager)target;
 
-        // Set the colour of the next handle to be drawn:
         generator.PlayerSpawnPosition = Handles.PositionHandle(generator.PlayerSpawnPosition, Quaternion.identity);
         Handles.Label(generator.PlayerSpawnPosition, "Player Spawn Position");
     }

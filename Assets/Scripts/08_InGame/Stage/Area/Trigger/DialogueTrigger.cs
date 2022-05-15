@@ -9,6 +9,7 @@ public class DialogueTrigger : AreaTrigger
 
     protected override void OnAreaEnter(Collider other)
     {
+        m_AutoDisable = true;
         //int worldIdx = StageManager.Instance.WorldIdx;
         //int stageIdx = StageManager.Instance.StageIdx;
 

@@ -42,16 +42,19 @@ public class InputSystem : MonoBehaviour, GameSystem
             {
                 if (Application.platform == RuntimePlatform.Android)
                     StartCoroutine(m_CameraRotate);
+
+                var freelookCam = GameManager.Instance.FreeLookCam;
+                freelookCam.m_XAxis.m_MaxSpeed = 300;
+                freelookCam.m_YAxis.m_MaxSpeed = 2;
             }
             else
             {
                 if (Application.platform == RuntimePlatform.Android)
                     StopCoroutine(m_CameraRotate);
 
-                var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
-                var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
-                activeCam.m_XAxis.m_MaxSpeed = 0;
-                activeCam.m_YAxis.m_MaxSpeed = 0;
+                var freelookCam = GameManager.Instance.FreeLookCam;
+                freelookCam.m_XAxis.m_MaxSpeed = 0;
+                freelookCam.m_YAxis.m_MaxSpeed = 0;
             }     
         }
     }
