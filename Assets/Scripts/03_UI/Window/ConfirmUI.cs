@@ -29,7 +29,7 @@ public class ConfirmUI : UI
     public void OnCancelBtnClick()
     {
         if (m_CancelCallback == null)
-            GameManager.Instance.UISystem.CloseWindow();
+            GameManager.UISystem.CloseWindow();
         else
             m_CancelCallback.Invoke();
     }
@@ -41,7 +41,7 @@ public class ConfirmUI : UI
 
     public override void OnOpened()
     {
-        float tweenSpeed = GameManager.Instance.UISystem.SCALE_TWEENING_SPEED;
+        float tweenSpeed = GameManager.UISystem.SCALE_TWEENING_SPEED;
         RectTransform.localScale = new Vector3(1, 0, 1);
         RectTransform.DOScaleY(1f, tweenSpeed);
     }

@@ -151,7 +151,7 @@ public class LoadingTitleUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        GameManager.Instance.UISystem.CloseWindow();
+        GameManager.UISystem.CloseWindow();
 
         var mainMenuMechanism = MainMenuMechanism.Instance;
         if (mainMenuMechanism != null)

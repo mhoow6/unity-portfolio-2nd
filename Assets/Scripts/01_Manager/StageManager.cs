@@ -3,28 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using DatabaseSystem;
-using Cinemachine;
 
 public class StageManager : MonoSingleton<StageManager>
 {
-    // 에디터에서 직접 값을 넣어줘야 하는 것들
+    [Header("# 수동 기입")]
     public int WorldIdx;
     public int StageIdx;
     public Vector3 PlayerSpawnPosition;
-
     public List<Area> Areas = new List<Area>();
+
+    [Header("# 자동 기입")]
     [ReadOnly] public List<Character> Monsters = new List<Character>();
 
-    public PoolSystem Pool { get; private set; }
+    // 시스템
+    public PoolSystem PoolSystem { get; private set; }
+    public QuestSystem MissionSystem { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
         // 시스템 Init
-        Pool = new PoolSystem();
-        Pool.Init();
+        PoolSystem = new PoolSystem();
+        PoolSystem.Init();
+
+        MissionSystem = new QuestSystem();
+        MissionSystem.Init();
 
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
@@ -44,7 +48,7 @@ public class StageManager : MonoSingleton<StageManager>
         player.gameObject.SetActive(true);
         // 현재 스테이지에 맞는 캐릭터 가져오기
         // var record = GameManager.Instance.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
-        // Test
+        // UNDONE: Test
         var record = new StageRecordData()
         {
             CharacterLeader = ObjectCode.CHAR_Sparcher,

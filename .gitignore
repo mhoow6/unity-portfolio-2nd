@@ -9,6 +9,7 @@ UserSettings/
 .vs/
 
 # Ignore Resources
+Assets/Scenes
 Assets/Resources
 Assets/Animation
 Assets/Customizable Skybox
@@ -25,6 +26,7 @@ Assets/Alstra Infinite
 Assets/Stylized_Pirate_Ship
 Assets/MeshCombineResult
 Assets/Standard Assets
+Assets/StarterAssets
 
 # Ignore File
 *.dll

@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
         while (true)
         {
             // 캐릭터 움직이기
-            var ControllerInput = GameManager.Instance.InputSystem.CharacterMoveInput;
+            var ControllerInput = GameManager.InputSystem.CharacterMoveInput;
 
             var cam = GameManager.Instance.MainCam;
             if (cam != null)

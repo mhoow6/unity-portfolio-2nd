@@ -12,6 +12,7 @@ public class WorldSpaceDialogue : MonoBehaviour
     [SerializeField] CinemachineBlenderSettings m_BlenderSettings;
     [SerializeField] CinemachineVirtualCamera m_StartBlendingCamera;
     [SerializeField] CinemachineVirtualCamera m_EndBlendingCamera;
+    [SerializeField] GameObject m_EndBlendingPostProcessing;
 
     // 플레이어 방향 고정시키기
     [SerializeField] Transform m_CharacterFixedTransform;
@@ -44,7 +45,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         m_Canvas.worldCamera = GameManager.Instance.MainCam;
 
         // UI 끄기
-        GameManager.Instance.UISystem.HUD = false;
+        GameManager.UISystem.HUD = false;
 
         // 카메라 연출
         var brain = GameManager.Instance.BrainCam;
@@ -59,7 +60,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         var brain = GameManager.Instance.BrainCam;
 
         // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
-        GameManager.Instance.InputSystem.CameraRotatable = false;
+        GameManager.InputSystem.CameraRotatable = false;
         GameManager.Instance.Player.Moveable = false;
         // 캐릭터 정위치
         GameManager.Instance.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
@@ -87,7 +88,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         switch (type)
         {
             case BlendType.StartToEnd:
-                // 대화창 끝낼 때 원래 카메라로 돌아가야함
+                // 대화창 끝낼 때 원래 카메라로 돌아가야한다
                 m_ReturnCamera = brain.ActiveVirtualCamera.VirtualCameraGameObject;
 
                 // 현재 카메라를 끄고
@@ -100,12 +101,18 @@ public class WorldSpaceDialogue : MonoBehaviour
 
                 // 시작 카메라를 비활성화 하고
                 m_StartBlendingCamera.gameObject.SetActive(false);
+
                 // 대화창을 바라보는 카메라를 활성화시켜 블랜딩
                 m_EndBlendingCamera.gameObject.SetActive(true);
+                // 포스트 프로세싱도 같이 켜준다.
+                m_EndBlendingPostProcessing.SetActive(true);
                 break;
             case BlendType.EndToStart:
                 // 대화창을 바라보는 카메라 비활성화하고
                 m_EndBlendingCamera.gameObject.SetActive(false);
+                // 포스트 프로세싱도 같이 꺼주고
+                m_EndBlendingPostProcessing.SetActive(false);
+
                 // 블랜딩 시작 카메라 켜서 블랜딩
                 m_StartBlendingCamera.gameObject.SetActive(true);
 
@@ -129,6 +136,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         blendDoneCallback?.Invoke();
     }
 
+    // SetData에서 Invoke으로 호출
     void FirstDialogueRead()
     {
         // 대화창 키기
@@ -159,7 +167,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         }
     }
 
-    /// <summary> Canvas-Button-OnClickEvent </summary> ///
+    // Canvas-Button-OnClickEvent
     public void DialogueRead()
     {
         // 남은 대화가 있는 경우
@@ -206,14 +214,14 @@ public class WorldSpaceDialogue : MonoBehaviour
                     {
                         gameObject.SetActive(false);
 
-                        GameManager.Instance.InputSystem.CameraRotatable = true;
+                        GameManager.InputSystem.CameraRotatable = true;
                         GameManager.Instance.Player.Moveable = true;
 
                         // UI 끄기
-                        GameManager.Instance.UISystem.HUD = true;
+                        GameManager.UISystem.HUD = true;
 
                         // 인게임 UI 켜기
-                        GameManager.Instance.UISystem.OpenWindow(UIType.InGame);
+                        GameManager.UISystem.OpenWindow(UIType.InGame);
                     }));
             }
         }

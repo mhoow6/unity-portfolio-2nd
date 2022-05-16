@@ -11,14 +11,14 @@ public class KeyboardController : MonoBehaviour, InputProvider
     SkillButtonDisplay m_ConnectedDashButton;
     SkillButtonDisplay m_ConnectedSkillButton;
 
-    public void ConnectToInGameUI(SkillButtonDisplay attack, SkillButtonDisplay dash, SkillButtonDisplay skill)
+    public void ConnectButtons(SkillButtonDisplay attack, SkillButtonDisplay dash, SkillButtonDisplay skill)
     {
         m_ConnectedAttackButton = attack;
         m_ConnectedDashButton = dash;
         m_ConnectedSkillButton = skill;
     }
 
-    public void DisconnectFromInGameUI()
+    public void Dispose()
     {
         m_ConnectedAttackButton = m_ConnectedDashButton = m_ConnectedSkillButton = null;
     }

@@ -24,10 +24,12 @@ public class GameManager : MonoBehaviour
         set
         {
             m_MainCam = value;
+            // 메인카메라를 바꿀때 시네머신 Brain이 있는 경우 적용
             var brain = value.GetComponent<CinemachineBrain>();
             if (brain)
             {
                 m_BrainCam = brain;
+                // 메인카메라를 바꿀때 FreeLook이 있는 경우 적용
                 var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
                 if (freelook)
                     m_FreeLookCam = freelook;
@@ -45,10 +47,16 @@ public class GameManager : MonoBehaviour
     public bool AutoTargeting;
 
     // Game System
-    public UISystem UISystem;
-    EnergyRecoverySystem EnergyRecoverySystem;
-    public QuestSystem QuestSystem { get; private set; }
-    public InputSystem InputSystem;
+    public static UISystem UISystem => Instance.m_UISystem;
+    [SerializeField] UISystem m_UISystem;
+
+    EnergyRecoverySystem m_EnergyRecoverySystem;
+
+    public static AchievementSystem Achievement => Instance.AchievementSystem;
+    public AchievementSystem AchievementSystem { get; private set; }
+
+    public static InputSystem InputSystem => Instance.m_InputSystem;
+    [SerializeField] InputSystem m_InputSystem;
 
     // Update Handler
     Action m_Update;
@@ -80,14 +88,14 @@ public class GameManager : MonoBehaviour
         TableManager.Instance.LoadTable();
         JsonManager.Instance.LoadJson();
 
-        if (UISystem != null)
-            UISystem.Init();
+        if (m_UISystem != null)
+            m_UISystem.Init();
 
-        EnergyRecoverySystem = new EnergyRecoverySystem();
-        EnergyRecoverySystem.Init();
+        m_EnergyRecoverySystem = new EnergyRecoverySystem();
+        m_EnergyRecoverySystem.Init();
 
-        QuestSystem = new QuestSystem();
-        QuestSystem.Init();
+        AchievementSystem = new AchievementSystem();
+        AchievementSystem.Init();
 
         if (InputSystem != null)
             InputSystem.Init();
@@ -96,13 +104,13 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
 
         // Update
-        if (UISystem != null)
-            m_Update += UISystem.Tick;
+        if (m_UISystem != null)
+            m_Update += m_UISystem.Tick;
         if (InputSystem != null)
             m_Update += InputSystem.Tick;
 
         // FixedUpdate
-        m_FixedUpdate += EnergyRecoverySystem.Tick;
+        m_FixedUpdate += m_EnergyRecoverySystem.Tick;
 
 #if UNITY_EDITOR
         // 씬 타입 결정
@@ -127,8 +135,8 @@ public class GameManager : MonoBehaviour
 #endif
 
         // UI 상에서 게임 로딩 시작
-        if (UISystem != null && !TitleLoadingDirectingSkip)
-            UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
+        if (m_UISystem != null && !TitleLoadingDirectingSkip)
+            m_UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
     }
 
     private void FixedUpdate()
@@ -142,7 +150,7 @@ public class GameManager : MonoBehaviour
 
         // 임시
         if (Input.GetKeyDown(KeyCode.T))
-            UISystem.OpenWindow(UIType.InGame);
+            m_UISystem.OpenWindow(UIType.InGame);
     }
 
     void OnApplicationQuit()
@@ -166,6 +174,22 @@ public class GameManager : MonoBehaviour
                 exist = cha.Data;
         }
     }
+
+    /// <summary> 퀘스트 기록을 업데이트 </summary>
+	public void UpdatePlayerQuestRecords()
+    {
+        foreach (var record in AchievementSystem.QuestRecords.Values)
+        {
+            var exist = PlayerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+            if (exist == null)
+                PlayerData.QuestRecords.Add(record);
+            else
+            {
+                exist.SuccessCount = record.SuccessCount;
+                exist.Clear = record.Clear;
+            }
+        }
+    }
     #endregion
 
     [ContextMenu("# Get Attached System")]
@@ -175,14 +199,14 @@ public class GameManager : MonoBehaviour
         var uisys = GetComponent<UISystem>();
         if (uisys != null)
         {
-            UISystem = uisys;
+            m_UISystem = uisys;
         }
 
         // InputSystem
         var inputsys = GetComponent<InputSystem>();
         if (inputsys != null)
         {
-            InputSystem = inputsys;
+            m_InputSystem = inputsys;
         }
     }
 }

@@ -13,8 +13,6 @@ public class MainMenuUI : UI
 
     public StatusDisplay StatusDisplay;
 
-    //public Text CharacterDialog;
-
     PlayerData m_PlayerData;
     bool m_Init;
     Vector3 m_OriginNickNameAnchoredPosition;
@@ -27,7 +25,7 @@ public class MainMenuUI : UI
 
     public void OnAdventureBtnClick()
     {
-        GameManager.Instance.UISystem.OpenWindow<AdventureUI>(UIType.Adventure);
+        GameManager.UISystem.OpenWindow<AdventureUI>(UIType.Adventure);
     }
 
     public void OnEquipmentBtnClick()
@@ -57,7 +55,7 @@ public class MainMenuUI : UI
 
     public void OnNickNameBtnClick()
     {
-        GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput, false);
+        GameManager.UISystem.OpenWindow(UIType.NickNameInput, false);
     }
 
     public override void OnClosed()
@@ -80,7 +78,7 @@ public class MainMenuUI : UI
 
             if (m_PlayerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
             {
-                GameManager.Instance.UISystem.OpenWindow(UIType.NickNameInput);
+                GameManager.UISystem.OpenWindow(UIType.NickNameInput);
                 m_PlayerData.AskForNickName = true;
             }
 

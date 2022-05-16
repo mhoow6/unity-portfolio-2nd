@@ -6,6 +6,7 @@ public class AnimationBehaviour : StateMachineBehaviour
 {
     protected float m_CurrentAnimationTime;
     protected virtual AniType m_AniType { get; }
+
     protected virtual void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
     protected virtual void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
     protected virtual void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }

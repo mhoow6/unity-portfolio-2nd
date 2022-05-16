@@ -6,12 +6,12 @@ public class BackwardDisplay : Display
 {
     public void OnBackwardBtnClick()
     {
-        GameManager.Instance.UISystem.CloseWindow();
+        GameManager.UISystem.CloseWindow();
     }
 
     public void OnHomeBtnClick()
     {
-        var sys = GameManager.Instance.UISystem;
+        var sys = GameManager.UISystem;
         sys.CloseAllWindow();
         sys.OpenWindow(UIType.MainMenu);
     }

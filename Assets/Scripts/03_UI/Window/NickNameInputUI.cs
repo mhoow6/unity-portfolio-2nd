@@ -15,7 +15,7 @@ public class NickNameInputUI : ConfirmUI
 
     public void OnXBtnClick()
     {
-        GameManager.Instance.UISystem.CloseWindow();
+        GameManager.UISystem.CloseWindow();
     }
 
     public override void OnClosed()
@@ -41,7 +41,7 @@ public class NickNameInputUI : ConfirmUI
                 if (IsVaildNickName(InputField.text))
                 {
                     GameManager.Instance.PlayerData.NickName = InputField.text;
-                    GameManager.Instance.UISystem.CloseWindow();
+                    GameManager.UISystem.CloseWindow();
                 }
                     
             });
@@ -72,7 +72,7 @@ public class NickNameInputUI : ConfirmUI
         {
             if (nickname.Contains(row.SlangWord))
             {
-                // TODO: 메시지 띄우기
+                // UNDONE: 메시지 띄우기
                 Debug.Log("비속어를 포함할 수 없습니다");
                 InputField.text = string.Empty;
                 return false;

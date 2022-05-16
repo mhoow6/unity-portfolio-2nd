@@ -45,8 +45,6 @@ public class Character : BaseObject
     }
     #endregion
 
-    public Transform Head;
-
     #region 캐릭터 데이터
     /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것</summary> ///
     public CharacterData Data;
@@ -87,29 +85,9 @@ public class Character : BaseObject
     public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     #endregion
 
-    protected void Start()
-    {
-        // 컴포넌트 붙이기
-        Animator = GetComponent<Animator>();
-        Agent = GetComponent<NavMeshAgent>();
-        Rigidbody = GetComponent<Rigidbody>();
-        Collider = GetComponent<Collider>();      
+    public Transform Head;
 
-        SetMainMenuAnimations();
-        SetPropertiesFromTable();
-
-        TryAttachToFloor();
-
-        OnSpawn();
-    }
-
-    protected void Update()
-    {
-        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
-
-        OnLive();
-    }
-
+    #region 캐릭터의 기본
     /// <summary> 캐릭터 스폰시 호출 </summary> ///
     protected virtual void OnSpawn() { }
 
@@ -119,8 +97,28 @@ public class Character : BaseObject
     /// <summary> 캐릭터 살아있을 때 호출 </summary> ///
     protected virtual void OnLive() { }
 
-    /// <summary> Damaged 호출 시 해야할 행동 </summary> ///
-    protected virtual void OnDamaged(Character attacker, float updateHp) { }
+    protected void Start()
+    {
+        // 컴포넌트 붙이기
+        Animator = GetComponent<Animator>();
+        Agent = GetComponent<NavMeshAgent>();
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+
+        SetMainMenuAnimations();
+        SetPropertiesFromTable();
+
+        TryAttachToFloor();
+
+        OnSpawn();
+    }
+    protected void Update()
+    {
+        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
+
+        OnLive();
+    }
+    #endregion
 
     #region 공격
     /// <summary> 애니메이션 이벤트 함수 </summary> ///
@@ -155,6 +153,9 @@ public class Character : BaseObject
 
         OnDamaged(attacker, damage);
     }
+
+    /// <summary> Damaged 호출 시 해야할 행동 </summary> ///
+    protected virtual void OnDamaged(Character attacker, float updateHp) { }
 
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
@@ -296,32 +297,6 @@ public class Character : BaseObject
         return false;
     }
 
-    /// <summary> 테이블로부터 데이터 세팅 </summary> ///
-    void SetPropertiesFromTable()
-    {
-        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
-        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
-
-        Name = table.Name;
-        Type = table.Type;
-
-        if (record != null)
-            Data = record;
-        else
-            Data = new CharacterData()
-            {
-                Code = Code,
-                Level = 1,
-                Hp = table.BaseHp,
-                Sp = table.BaseSp,
-                Critical = table.BaseCritical,
-                Damage = table.BaseDamage,
-                Defense = table.BaseDefense,
-                Speed = table.BaseSpeed,
-                EquipWeaponData = null
-            };
-    }
-
     /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary> ///
     public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
     {
@@ -351,6 +326,32 @@ public class Character : BaseObject
                 break;
         }
         return result;
+    }
+
+    /// <summary> 테이블로부터 데이터 세팅 </summary> ///
+    void SetPropertiesFromTable()
+    {
+        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
+        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
+
+        Name = table.Name;
+        Type = table.Type;
+
+        if (record != null)
+            Data = record;
+        else
+            Data = new CharacterData()
+            {
+                Code = Code,
+                Level = 1,
+                Hp = table.BaseHp,
+                Sp = table.BaseSp,
+                Critical = table.BaseCritical,
+                Damage = table.BaseDamage,
+                Defense = table.BaseDefense,
+                Speed = table.BaseSpeed,
+                EquipWeaponData = null
+            };
     }
 }
 

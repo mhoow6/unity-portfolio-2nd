@@ -17,17 +17,17 @@ public class InGameUI : UI
         var player = GameManager.Instance.Player;
 
         // 다시 Canvas의 RenderMode를 Screen Space - Camera
-        GameManager.Instance.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        GameManager.Instance.UISystem.Canvas.worldCamera = GameManager.Instance.UISystem.UICamera;
+        GameManager.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        GameManager.UISystem.Canvas.worldCamera = GameManager.UISystem.UICamera;
 
         // 컨트롤러 제외
-        GameManager.Instance.InputSystem.Controllers.Remove(m_Joystick);
+        GameManager.InputSystem.Controllers.Remove(m_Joystick);
 
         // 에디터 버젼은 키보드 컨트롤러도 달려있음
         var wasd = player.gameObject.GetComponent<KeyboardController>();
         if (wasd != null)
         {
-            wasd.DisconnectFromInGameUI();
+            wasd.Dispose();
             Destroy(wasd);
 
             // 커서 다시 보이게 하기
@@ -40,7 +40,7 @@ public class InGameUI : UI
         player.Controlable = false;
 
         // 카메라 회전 불가능
-        GameManager.Instance.InputSystem.CameraRotatable = false;
+        GameManager.InputSystem.CameraRotatable = false;
     }
 
     public override void OnOpened()
@@ -48,14 +48,14 @@ public class InGameUI : UI
         var player = GameManager.Instance.Player;
 
         // 컨트롤러 추가
-        GameManager.Instance.InputSystem.Controllers.Add(m_Joystick);
+        GameManager.InputSystem.Controllers.Add(m_Joystick);
 
         // 에디터에선 키보드 컨트롤 가능하게
         if (Application.platform != RuntimePlatform.Android)
         {
             var wasd = player.gameObject.AddComponent<KeyboardController>();
-            wasd.ConnectToInGameUI(m_AttackButton, m_DashButton, m_SkillButton);
-            GameManager.Instance.InputSystem.Controllers.Add(wasd);
+            wasd.ConnectButtons(m_AttackButton, m_DashButton, m_SkillButton);
+            GameManager.InputSystem.Controllers.Add(wasd);
 
             // 커서도 편의상 잠궈놓자
             Cursor.visible = false;
@@ -66,10 +66,10 @@ public class InGameUI : UI
         player.Controlable = true;
 
         // 카메라 회전 가능
-        GameManager.Instance.InputSystem.CameraRotatable = true;
+        GameManager.InputSystem.CameraRotatable = true;
 
         // Canvas의 RenderMode가 Screen Space - Camera일 경우 조이스틱이 정상적으로 작동하지 않는 문제 발생
-        GameManager.Instance.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        GameManager.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
         SkillButtonSetup(player.CurrentCharacter);
     }

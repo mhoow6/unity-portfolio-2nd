@@ -48,7 +48,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         if (LoadingTitleMechanism.Instance != null)
             Destroy(LoadingTitleMechanism.Instance.gameObject);
 
-        GameManager.Instance.UISystem.OpenWindow(UIType.MainMenu);
+        GameManager.UISystem.OpenWindow(UIType.MainMenu);
     }
 
     IEnumerator CheckingUserClickCharacterCoroutine()

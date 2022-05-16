@@ -20,7 +20,7 @@ public class StageDisplay : Display
 
     public void OnVeilBtnClick()
     {
-        var warning = GameManager.Instance.UISystem.OpenWindow<WarningUI>(UIType.Warning);
+        var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning);
         string message = string.Empty;
 
         if (m_IsStageLocked)
@@ -33,7 +33,7 @@ public class StageDisplay : Display
 
     public void OnStageEnterBtnClick()
     {
-        var battle = GameManager.Instance.UISystem.OpenWindow<ReadyForBattleUI>(UIType.ReadyForBattle);
+        var battle = GameManager.UISystem.OpenWindow<ReadyForBattleUI>(UIType.ReadyForBattle);
         battle.SetData(m_WorldIdx, m_StageIdx);
     }
 

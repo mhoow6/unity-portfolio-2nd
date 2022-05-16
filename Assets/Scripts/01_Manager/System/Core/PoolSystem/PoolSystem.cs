@@ -10,19 +10,10 @@ public class PoolSystem : GameSystem
 
     const string DUMMY_OBJECT_NAME = "DummyObject";
 
-    #region 게임 시스템
-    public void Init()
-    {
-        m_Root = new GameObject("@Pool");
-    }
+    public void Init() => m_Root = new GameObject("@Pool");
+    public void Init(GameObject poolRoot) => m_Root = poolRoot;
 
     public void Tick() { }
-
-    public void Init(GameObject poolRoot)
-    {
-        m_Root = poolRoot;
-    }
-    #endregion
 
     #region 더미 오브젝트 풀링
     public DummyObject LoadDummyObject()

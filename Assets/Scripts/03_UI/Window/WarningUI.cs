@@ -19,13 +19,13 @@ public class WarningUI : UI
 
     public override void OnClosed()
     {
-        var sys = GameManager.Instance.UISystem;
+        var sys = GameManager.UISystem;
         sys.BlockRaycast = false;
     }
 
     public override void OnOpened()
     {
-        var sys = GameManager.Instance.UISystem;
+        var sys = GameManager.UISystem;
         sys.BlockRaycast = true;
 
         RectTransform.localScale = new Vector3(1, 0, 1);
@@ -35,7 +35,7 @@ public class WarningUI : UI
 
     void AutoClose()
     {
-        var sys = GameManager.Instance.UISystem;
+        var sys = GameManager.UISystem;
         if (sys.CurrentWindow.Type == UIType.Warning)
         {
             RectTransform.DOScaleY(0f, sys.SCALE_TWEENING_SPEED).OnComplete(() =>
