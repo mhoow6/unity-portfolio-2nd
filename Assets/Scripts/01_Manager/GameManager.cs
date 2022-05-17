@@ -151,24 +151,59 @@ public class GameManager : MonoBehaviour
             PlayerData.Save();
     }
 
-    /// <summary> 플레이어의 캐릭터 데이터를 업데이트 합니다. </summary>
-    public void UpdatePlayerData()
+    #region 플레이어 데이터
+    /// <summary> 업적 시스템에 기록된 업적 기록을 플레이어 데이터에 업데이트 </summary>
+	public void UpdatePlayerAchievementRecords()
     {
-        foreach (var cha in Player.Characters)
+        foreach (var map in m_AchievementSystem.QuestRecords)
         {
-            var exist = PlayerData.CharacterDatas.Find(c => c.Code == cha.Code);
+            var questRecord = map.Value;
+            var exist = PlayerData.QuestRecords.Find(r => r.QuestIdx == questRecord.QuestIdx);
             if (exist == null)
-                PlayerData.CharacterDatas.Add(cha.Data);
+                PlayerData.QuestRecords.Add(questRecord);
             else
-                exist = cha.Data;
+            {
+                exist.SuccessCount = questRecord.SuccessCount;
+                exist.Clear = questRecord.Clear;
+            }
         }
     }
 
-    /// <summary> 업적 기록을 플레이어 데이터에 업데이트 </summary>
-	public void UpdatePlayerAchievementRecords()
+    /// <summary> characterCode에 해당하는 캐릭터를 얻습니다. </summary>
+    public void AddPlayerCharacter(ObjectCode characterCode)
     {
-        
+        var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
+        if (exist == null)
+        {
+            var data = TableManager.Instance.CharacterTable.Find(c => c.Code == characterCode);
+            var newData = new CharacterData()
+            {
+                Code = characterCode,
+                Hp = data.BaseHp,
+                Sp = data.BaseSp,
+                Speed = data.BaseSpeed,
+                Level = 1,
+                Critical = data.BaseCritical,
+                Damage = data.BaseDamage,
+                Defense = data.BaseDefense,
+                EquipWeaponData = new WeaponData()
+                {
+                    Code = ObjectCode.NONE,
+                    Critical = 0,
+                    Damage = 0
+                }
+            };
+        }
     }
+
+    /// <summary> characterCode에 해당하는 캐릭터를 없앱니다. </summary>
+    public void RemovePlayerCharacter(ObjectCode characterCode)
+    {
+        var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
+        if (exist != null)
+            PlayerData.CharacterDatas.Remove(exist);
+    }
+    #endregion
 
     [ContextMenu("# Get Attached System")]
     void GetAttachedSystem()
