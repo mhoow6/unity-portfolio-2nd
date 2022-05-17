@@ -57,7 +57,7 @@ public class Projectile : BaseObject, IPoolable
 
             yield return new WaitForFixedUpdate();
         }
-        StageManager.Instance.PoolSystem.Release(this);
+        StageManager.PoolSystem.Release(this);
     }
 
     IEnumerator ShootParabolaCoroutine(Vector3 direction, float moveSpeed, int lifeTime)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using DatabaseSystem;
 
 public class StageManager : MonoSingleton<StageManager>
 {
@@ -16,19 +17,22 @@ public class StageManager : MonoSingleton<StageManager>
     [ReadOnly] public List<Character> Monsters = new List<Character>();
 
     // 시스템
-    public PoolSystem PoolSystem { get; private set; }
-    public QuestSystem MissionSystem { get; private set; }
+    public static PoolSystem PoolSystem => Instance.m_PoolSystem;
+    public PoolSystem m_PoolSystem;
+
+    public static MissionSystem MissionSystem => Instance.m_MissionSystem;
+    MissionSystem m_MissionSystem;
 
     protected override void Awake()
     {
         base.Awake();
 
         // 시스템 Init
-        PoolSystem = new PoolSystem();
-        PoolSystem.Init();
+        m_PoolSystem = new PoolSystem();
+        m_PoolSystem.Init();
 
-        MissionSystem = new QuestSystem();
-        MissionSystem.Init();
+        m_MissionSystem = new MissionSystem();
+        m_MissionSystem.Init();
 
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
@@ -38,7 +42,15 @@ public class StageManager : MonoSingleton<StageManager>
     private void Start()
     {
         if (!GameManager.Instance.IsTestZone)
+        {
             SpawnPlayer();
+
+            // 목표 등록
+            var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
+            List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx};
+            MissionSystem.Register(questIndices);
+        }
+            
     }
 
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary> ///
@@ -56,18 +68,25 @@ public class StageManager : MonoSingleton<StageManager>
             CharacterThird = ObjectCode.CHAR_Sparcher
         };
 
+        // 캐릭터 인스턴싱
         string resourcePath = GameManager.Instance.Config.CharacterResourcePath;
         var leader = Character.Get(record.CharacterLeader, player.transform, resourcePath);
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition;
-
-        var second = Character.Get(record.CharacterSecond, player.transform, resourcePath);
-        second.gameObject.SetActive(false);
-        second.transform.position = PlayerSpawnPosition;
-
-        var third = Character.Get(record.CharacterThird, player.transform, resourcePath);
-        third.gameObject.SetActive(false);
-        third.transform.position = PlayerSpawnPosition;
+        // 리더는 반드시 있어야 하는데 나머지는 반드시 없어도 됨.
+        if (record.CharacterSecond != ObjectCode.NONE)
+        {
+            var second = Character.Get(record.CharacterSecond, player.transform, resourcePath);
+            second.gameObject.SetActive(false);
+            second.transform.position = PlayerSpawnPosition;
+        }
+        
+        if (record.CharacterThird != ObjectCode.NONE)
+        {
+            var third = Character.Get(record.CharacterThird, player.transform, resourcePath);
+            third.gameObject.SetActive(false);
+            third.transform.position = PlayerSpawnPosition;
+        }
 
         player.Init();
 
@@ -77,6 +96,23 @@ public class StageManager : MonoSingleton<StageManager>
         {
             freelookCam.Follow = player.CurrentCharacter.transform;
             freelookCam.LookAt = player.CurrentCharacter.transform;
+        }
+    }
+
+    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
+	public void UpdatePlayerMissionRecords()
+    {
+        var playerData = GameManager.Instance.PlayerData;
+        foreach (var record in m_MissionSystem.QuestRecords.Values)
+        {
+            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+            if (exist == null)
+                playerData.QuestRecords.Add(record);
+            else
+            {
+                exist.SuccessCount = record.SuccessCount;
+                exist.Clear = record.Clear;
+            }
         }
     }
 
@@ -92,10 +128,7 @@ public class StageManager : MonoSingleton<StageManager>
 [CustomEditor(typeof(StageManager))]
 public class StageManagerEditor : Editor
 {
-    void OnEnable()
-    {
-        //SceneView.duringSceneGui += CustomOnSceneGUI;
-    }
+    //void OnEnable() => SceneView.duringSceneGui += CustomOnSceneGUI;
 
     private void OnSceneGUI()
     {
@@ -105,9 +138,6 @@ public class StageManagerEditor : Editor
         Handles.Label(generator.PlayerSpawnPosition, "Player Spawn Position");
     }
 
-    void CustomOnSceneGUI(SceneView sceneview)
-    {
-        
-    }
+    void CustomOnSceneGUI(SceneView sceneview){}
 }
 #endif

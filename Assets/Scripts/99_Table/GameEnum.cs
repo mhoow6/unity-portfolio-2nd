@@ -125,6 +125,15 @@
         /// <summary> 전투 불능 횟수 n회 이하 </summary> ///
         INCAPCITATED = 2,
 
+        /// <summary> 골드 소모시 카운트 증가 </summary> ///
+        CONSUME_GOLDS = 3,
+
+        /// <summary> 에너지 소모시 카운트 증가 </summary> ///
+        CONSUME_ENERGY = 4,
+
+        /// <summary> 특정 캐릭터 흭득시 카운트 증가 </summary> ///
+        GET_SPECIFIC_CHARACTER = 5,
+
     }
 
     public enum CharacterType
@@ -162,8 +171,11 @@
         /// <summary> Area 벽에 캐릭터가 닿았을 때 나오는 이펙트 </summary> ///
         EFFECT_HexagonWall = 5,
 
-        /// <summary> 생물속성 해적 </summary> ///
-        CHAR_Pirate = 6,
+        /// <summary> 생물속성 해적(몬스터) </summary> ///
+        CHAR_MonsterPirate = 6,
+
+        /// <summary> 생물속성 해적(플레이어블) </summary> ///
+        CHAR_Pirate = 7,
 
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,

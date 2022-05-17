@@ -1,46 +1,34 @@
-using DatabaseSystem;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using DatabaseSystem;
 
 public class AchievementSystem : QuestSystem
 {
-	/// <summary> 스테이지 시작시 도전 목표 등록 용도 </summary>
-	public void RegisterStageQuests(List<int> questIndices)
-	{
-		foreach (int index in questIndices)
-		{
-			var row = TableManager.Instance.QuestTable.Find(q => q.Index == index);
+    const int ACHIEVEMENT_START_INDEX = 3000;
 
-			bool initFlag = row.Positive ? false : true;
-			int purposeCount = row.PurposeCount;
+    public void Init(JsonManager jsonManager)
+    {
+        // 업적데이터를 퀘스트로 만들어야 한다.
+        List<Questable> achievements = new List<Questable>();
+        foreach (var kvp in jsonManager.JsonDatas)
+        {
+            int idx = kvp.Key;
+            var jsonData = kvp.Value;
 
-			if (QuestRecords.TryGetValue(index, out var record))
-				continue;
-			else
-			{
-				var newRecord = new QuestRecordData()
-				{
-					QuestIdx = index,
-					SuccessCount = 0,
-					Clear = initFlag,
-				};
-				QuestRecords.Add(index, newRecord);
-			}
-			m_QuestIdxPurposeCountDic.Add(index, purposeCount);
-		}
-	}
+            if (idx >= ACHIEVEMENT_START_INDEX)
+            {
+                var achievement = new Questable()
+                {
+                    Index = idx,
+                    PurposeCount = (kvp.Value as Questable).PurposeCount
+                };
+                achievements.Add(achievement);
+            }
+                
+        }
 
-	/// <summary> 스테이지 게임오버 시 퀘스트 카운트 초기화 용도 </summary>
-	public void ResetStageQuest(int questIdx)
-	{
-		var questTable = TableManager.Instance.QuestTable;
-		var row = questTable.Find(q => q.Index == questIdx);
-
-		if (QuestRecords.TryGetValue(questIdx, out var record))
-		{
-			record.SuccessCount = 0;
-			record.Clear = row.Positive ? false : true;
-		}
-	}
-
-	
+        // 퀘스트로 만들면 여기에 등록을 해주자.
+        GameManager.AchievementSystem.Register(achievements);
+    }
 }

@@ -22,7 +22,7 @@ public class SparcherWoodenArrow : Projectile
 
             damageText.StartFloating();
 
-            StageManager.Instance.PoolSystem.Release(this);
+            StageManager.PoolSystem.Release(this);
         }
     }
 }

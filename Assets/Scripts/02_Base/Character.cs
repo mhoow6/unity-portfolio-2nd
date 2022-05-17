@@ -314,15 +314,7 @@ public class Character : BaseObject
                 break;
             case ObjectCode.CHAR_Dummy:
                 break;
-            case ObjectCode.PROJ_WoodenArrow:
-                break;
-            case ObjectCode.EFFECT_HexagonWall:
-                break;
-            case ObjectCode.CHAR_Pirate:
-                break;
-            case ObjectCode.NONE:
-                break;
-            default:
+            case ObjectCode.CHAR_MonsterPirate:
                 break;
         }
         return result;

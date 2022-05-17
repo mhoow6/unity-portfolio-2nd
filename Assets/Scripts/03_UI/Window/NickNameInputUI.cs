@@ -53,7 +53,8 @@ public class NickNameInputUI : ConfirmUI
         int byteCount = Encoding.UTF8.GetBytes(nickname).Length;
         if (byteCount < 1 || byteCount > MAXIMUM_NICKNAME_BYTE)
         {
-            Debug.Log("´Ð³×ÀÓÀÌ 1±ÛÀÚº¸´Ù Àû°Å³ª 8±ÛÀÚº¸´Ù ¸¹½À´Ï´Ù.");
+            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+            warning.SetData("´Ð³×ÀÓÀÌ 1±ÛÀÚº¸´Ù Àû°Å³ª 8±ÛÀÚº¸´Ù ¸¹½À´Ï´Ù.");
             InputField.text = string.Empty;
             return false;
         }
@@ -61,7 +62,8 @@ public class NickNameInputUI : ConfirmUI
         // Æ¯¼ö¹®ÀÚ °Ë»ç
         if (Regex.IsMatch(InputField.text, @"[^a-zA-Z0-9°¡-ÆR]"))
         {
-            Debug.Log("Æ¯¼ö¹®ÀÚ¸¦ Æ÷ÇÔ½ÃÅ³ ¼ö ¾ø½À´Ï´Ù.");
+            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+            warning.SetData("Æ¯¼ö¹®ÀÚ¸¦ Æ÷ÇÔ½ÃÅ³ ¼ö ¾ø½À´Ï´Ù.");
             InputField.text = string.Empty;
             return false;
         }    
@@ -72,8 +74,8 @@ public class NickNameInputUI : ConfirmUI
         {
             if (nickname.Contains(row.SlangWord))
             {
-                // UNDONE: ¸Þ½ÃÁö ¶ç¿ì±â
-                Debug.Log("ºñ¼Ó¾î¸¦ Æ÷ÇÔÇÒ ¼ö ¾ø½À´Ï´Ù");
+                var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                warning.SetData("ºñ¼Ó¾î¸¦ Æ÷ÇÔÇÒ ¼ö ¾ø½À´Ï´Ù.");
                 InputField.text = string.Empty;
                 return false;
             }

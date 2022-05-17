@@ -6,6 +6,7 @@ public class Migration : MonoBehaviour
 {
     public Camera Camera;
     public Light DirectionalLight;
+    public SceneType CurrentSceneType;
 
     /// <summary> GameManager에 변수들을 옮깁니다. </summary>
     public void Do()
@@ -16,6 +17,7 @@ public class Migration : MonoBehaviour
         {
             GameManager.Instance.MainCam = Camera;
             GameManager.Instance.DirectionalLight = DirectionalLight;
+            GameManager.Instance.SceneType = CurrentSceneType;
         }
         // 역할이 다했으니 파괴
         Destroy(gameObject);

@@ -40,7 +40,7 @@ public sealed class FloatingDamageText : MonoBehaviour, IPoolable
         m_RectTransform.position = new Vector3(textStartPoint.x, textStartPoint.y, 0);
 
         // 텍스트가 따라다닐 오브젝트
-        m_FollowObject = StageManager.Instance.PoolSystem.LoadDummyObject();
+        m_FollowObject = StageManager.PoolSystem.LoadDummyObject();
         m_FollowObject.transform.position = textFollowObjectStartPoint;
     }
 
@@ -88,7 +88,7 @@ public sealed class FloatingDamageText : MonoBehaviour, IPoolable
 
         m_Damage = 0;
         m_IsCrit = false;
-        StageManager.Instance.PoolSystem.Release(m_FollowObject);
+        StageManager.PoolSystem.Release(m_FollowObject);
     }
     #endregion
 }

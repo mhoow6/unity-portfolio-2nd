@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 
-public class Sparcher : Character
+public class Sparcher : Playable
 {
     public override ObjectCode Code => ObjectCode.CHAR_Sparcher;
 
@@ -42,7 +42,7 @@ public class Sparcher : Character
                 var config = GameManager.Instance.Config;
 
                 // 화살 인스턴싱
-                var proj = StageManager.Instance.PoolSystem.Load<Projectile>($"{config.ProjectileResourcePath}/{data.ArrowPrefabPath}");
+                var proj = StageManager.PoolSystem.Load<Projectile>($"{config.ProjectileResourcePath}/{data.ArrowPrefabPath}");
                 proj.SetData(this, (DamageType)data.DamageType);
                 
                 // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전

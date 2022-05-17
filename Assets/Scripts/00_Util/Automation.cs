@@ -329,9 +329,12 @@ namespace DatabaseSystem
         // {2} 클래스명 전부 소문자
         string jsonManagerLoadJsonIterableFormat =
 @"JSONNode {2}Node = {0}Root[""{1}""];
-            {1} {2} = JsonConvert.DeserializeObject<{1}>({2}Node.ToString());
+            {3} {2} = JsonConvert.DeserializeObject<{3}>({2}Node.ToString());
             JsonDatas.Add({2}.Index, {2});";
         #endregion
+
+        // 필드명 제외 리스트
+        string[] exceptFields = DatabaseSystem.JsonDatable.JsonDataExceptFields;
 
         foreach (var asset in textassets)
         {
@@ -350,7 +353,7 @@ namespace DatabaseSystem
             string classFormat =
 @"namespace DatabaseSystem
 {{
-    public class {0} : JsonDatable
+    public class {0} : {2}
     {{
         {1}
     }}
@@ -358,6 +361,7 @@ namespace DatabaseSystem
 ";
             StringBuilder classNameBuilder = new StringBuilder();
             StringBuilder fieldsBuilder = new StringBuilder();
+            string parentName = string.Empty;
             for (int i = 1; i < lines.Length - 1; i++)
             {
                 string word = lines[i];
@@ -369,13 +373,25 @@ namespace DatabaseSystem
 
                     // 클래스명 얻기
                     int startIdx = word.IndexOf('\"');
-                    int endIdx = word.LastIndexOf('\"');
+                    int endIdx = word.IndexOf('(');
                     for (int j = startIdx + 1; j < endIdx; j++)
                         classNameBuilder.Append(word[j]);
 
+                    // 부모 얻기
+                    startIdx = endIdx;
+                    endIdx = word.IndexOf(')');
+                    for (int k = startIdx + 1; k < endIdx; k++)
+                        parentName += word[k];
+
                     // LoadJson() 내부에서 반복되는 부분 스트링 넣기
                     string loadJsonInner = string.Empty;
-                    loadJsonInner = string.Format(jsonManagerLoadJsonIterableFormat, fileName.ToLower(), classNameBuilder.ToString(), classNameBuilder.ToString().ToLower());
+                    loadJsonInner = string.Format(
+                        jsonManagerLoadJsonIterableFormat,
+                        fileName.ToLower(),
+                        $"{classNameBuilder}({parentName})".ToString(),
+                        classNameBuilder.ToString().ToLower(),
+                        classNameBuilder.ToString());
+
                     iterableFormatBuilder.AppendLine(loadJsonInner);
                     // 들여쓰기 맞추기
                     iterableFormatBuilder.AppendLine("");
@@ -389,11 +405,12 @@ namespace DatabaseSystem
 
                     // 클래스 포맷 만들기
                     string copied = string.Copy(classFormat);
-                    copied = string.Format(copied, classNameBuilder, fieldsBuilder);
+                    copied = string.Format(copied, classNameBuilder, fieldsBuilder, parentName);
 
                     // 다음 클래스를 위해 초기화
                     classNameBuilder.Clear();
                     fieldsBuilder.Clear();
+                    parentName = string.Empty;
 
                     // classBuilder에 추가
                     classBuilder.AppendLine(copied);
@@ -411,17 +428,25 @@ namespace DatabaseSystem
                     for (int j = startIdx + 1; j < endIdx; j++)
                         fieldNameBuilder.Append(word[j]);
 
-                    // 인덱스는 부모 클래스에 있으므로 추가 안 해도 된다.
-                    if (fieldNameBuilder.ToString().Equals("Index"))
+                    // 필드명 제외 리스트에 있는지 검출
+                    bool find = false;
+                    foreach (var f in exceptFields)
                     {
-                        // Configuration에 데이터 개수 늘리기
-                        if (scriptableObj != null)
+                        if (fieldNameBuilder.ToString().Equals(f))
                         {
-                            scriptableObj.JsonDataCount += 1;
-                            EditorUtility.SetDirty(scriptableObj);
+                            // Configuration에 데이터 개수만 늘리기
+                            if (scriptableObj != null)
+                            {
+                                scriptableObj.JsonDataCount += 1;
+                                EditorUtility.SetDirty(scriptableObj);
+                            }
+                            // 검출했으니 스킵하기 위해 true
+                            find = true;
+                            break;
                         }
-                        continue;
                     }
+                    if (find)
+                        continue;
                         
                     // 필드 타입 얻기
                     StringBuilder fieldDataBuilder = new StringBuilder();

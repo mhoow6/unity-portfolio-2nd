@@ -52,8 +52,8 @@ public class GameManager : MonoBehaviour
 
     EnergyRecoverySystem m_EnergyRecoverySystem;
 
-    public static AchievementSystem Achievement => Instance.AchievementSystem;
-    public AchievementSystem AchievementSystem { get; private set; }
+    public static AchievementSystem AchievementSystem => Instance.m_AchievementSystem;
+    public AchievementSystem m_AchievementSystem { get; private set; }
 
     public static InputSystem InputSystem => Instance.m_InputSystem;
     [SerializeField] InputSystem m_InputSystem;
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     [Rename("타이틀 로딩 스킵")] public bool TitleLoadingDirectingSkip;
     [Rename("닉네임 묻기 스킵")] public bool AskForNickNameSkip;
     [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
-    [Rename("테스트 환경")] public bool IsTestZone;
+    [Rename("인게임 테스트 환경")] public bool IsTestZone;
 
     private void Awake()
     {
@@ -94,8 +94,8 @@ public class GameManager : MonoBehaviour
         m_EnergyRecoverySystem = new EnergyRecoverySystem();
         m_EnergyRecoverySystem.Init();
 
-        AchievementSystem = new AchievementSystem();
-        AchievementSystem.Init();
+        m_AchievementSystem = new AchievementSystem();
+        AchievementSystem.Init(JsonManager.Instance);
 
         if (InputSystem != null)
             InputSystem.Init();
@@ -111,14 +111,6 @@ public class GameManager : MonoBehaviour
 
         // FixedUpdate
         m_FixedUpdate += m_EnergyRecoverySystem.Tick;
-
-#if UNITY_EDITOR
-        // 씬 타입 결정
-        if (IsTestZone)
-            SceneType = SceneType.Test;
-        else
-            SceneType = SceneType.MainMenu;
-#endif
     }
 
     void Start()
@@ -130,12 +122,12 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_EDITOR
         // 테스트 상황에선 여기서 플레이어 캐릭터를 소환시켜야 정상작동함
-        if (IsTestZone && StageManager.Instance)
+        if (IsTestZone)
             StageManager.Instance.SpawnPlayer();
 #endif
 
         // UI 상에서 게임 로딩 시작
-        if (m_UISystem != null && !TitleLoadingDirectingSkip)
+        if (!TitleLoadingDirectingSkip)
             m_UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
     }
 
@@ -148,8 +140,8 @@ public class GameManager : MonoBehaviour
     {
         m_Update?.Invoke();
 
-        // 임시
-        if (Input.GetKeyDown(KeyCode.T))
+        // UNDONE: 임시
+        if (IsTestZone && Input.GetKeyDown(KeyCode.T))
             m_UISystem.OpenWindow(UIType.InGame);
     }
 
@@ -159,10 +151,7 @@ public class GameManager : MonoBehaviour
             PlayerData.Save();
     }
 
-    #region 플레이어 데이터
-    /// <summary>
-    /// 플레이어의 캐릭터 데이터를 업데이트 합니다.
-    /// </summary>
+    /// <summary> 플레이어의 캐릭터 데이터를 업데이트 합니다. </summary>
     public void UpdatePlayerData()
     {
         foreach (var cha in Player.Characters)
@@ -175,22 +164,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary> 퀘스트 기록을 업데이트 </summary>
-	public void UpdatePlayerQuestRecords()
+    /// <summary> 업적 기록을 플레이어 데이터에 업데이트 </summary>
+	public void UpdatePlayerAchievementRecords()
     {
-        foreach (var record in AchievementSystem.QuestRecords.Values)
-        {
-            var exist = PlayerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
-            if (exist == null)
-                PlayerData.QuestRecords.Add(record);
-            else
-            {
-                exist.SuccessCount = record.SuccessCount;
-                exist.Clear = record.Clear;
-            }
-        }
+        
     }
-    #endregion
 
     [ContextMenu("# Get Attached System")]
     void GetAttachedSystem()

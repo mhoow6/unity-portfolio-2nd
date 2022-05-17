@@ -21,7 +21,7 @@ public class AreaWall : AreaComponent
     {
         StopAllCoroutines();
 
-        m_InstantiateEffects.ForEach(p => StageManager.Instance.PoolSystem.Release(p));
+        m_InstantiateEffects.ForEach(p => StageManager.PoolSystem.Release(p));
         m_InstantiateEffects.Clear();
     }
 
@@ -35,7 +35,7 @@ public class AreaWall : AreaComponent
             // 움직일 때 새로 이펙트 생성
             if (gm.Player.MoveVector.magnitude != 0 && m_InstantiateEffects.Count < MAXIMUM_INSTANTIATE_EFFECT)
             {
-                var particle = sm.PoolSystem.Load<Effect>($"{gm.Config.EffectResourcePath}/FX_Direction_Arrows_03");
+                var particle = StageManager.PoolSystem.Load<Effect>($"{gm.Config.EffectResourcePath}/FX_Direction_Arrows_03");
                 Vector3 characterPosition = gm.Player.CurrentCharacter.transform.position;
                 m_InstantiateEffects.Add(particle);
                 particle.transform.SetPositionAndRotation(characterPosition, Quaternion.Euler(m_BlockEffectSpawnRotation));
@@ -43,7 +43,7 @@ public class AreaWall : AreaComponent
             // 가만히 있을때에 아예 없애주자
             else
             {
-                m_InstantiateEffects.ForEach(p => StageManager.Instance.PoolSystem.Release(p));
+                m_InstantiateEffects.ForEach(p => StageManager.PoolSystem.Release(p));
                 m_InstantiateEffects.Clear();
             }
 
