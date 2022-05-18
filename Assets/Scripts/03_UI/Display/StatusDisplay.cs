@@ -8,7 +8,7 @@ public class StatusDisplay : Display
 {
     public Text Energy;
     public Image EnergyBackground;
-    public Text EnergyMax;
+    public GameObject EnergyMax;
 
     public Text Gold;
 
