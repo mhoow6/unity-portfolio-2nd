@@ -24,7 +24,7 @@ public class NickNameInputUI : ConfirmUI
         {
             var table = TableManager.Instance.RandomNicknameTable;
             int randomIndx = Random.Range(0, table.Count);
-            GameManager.Instance.PlayerData.NickName = table[randomIndx].RandomNickname;
+            GameManager.PlayerData.NickName = table[randomIndx].RandomNickname;
         }
         InputField.text = string.Empty;
     }
@@ -40,7 +40,7 @@ public class NickNameInputUI : ConfirmUI
             {
                 if (IsVaildNickName(InputField.text))
                 {
-                    GameManager.Instance.PlayerData.NickName = InputField.text;
+                    GameManager.PlayerData.NickName = InputField.text;
                     GameManager.UISystem.CloseWindow();
                 }
                     

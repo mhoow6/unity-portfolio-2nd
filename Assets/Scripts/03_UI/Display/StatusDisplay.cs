@@ -12,30 +12,29 @@ public class StatusDisplay : Display
 
     public Text Gold;
 
-    PlayerData m_PlayerData;
     const float ENERGY_ALPHA = 0.31f;
     const float ENERGY_MAX_ALPHA = 0.5f;
 
     public override void SetData()
     {
-        m_PlayerData = GameManager.Instance.PlayerData;
+        var playerData = GameManager.PlayerData;
 
         // 이벤트 등록 
-        m_PlayerData.OnEnergyUpdate += EnergyTextUpdate;
+        playerData.OnEnergyUpdate += EnergyTextUpdate;
 
-        Gold.text = $"{m_PlayerData.Gold}";
+        Gold.text = $"{playerData.Gold}";
 
-        EnergyTextUpdate(m_PlayerData.Energy);
+        EnergyTextUpdate(playerData.Energy);
     }
 
     protected override void OnClosed()
     {
-        m_PlayerData.OnEnergyUpdate = null;
+        GameManager.PlayerData.OnEnergyUpdate = null;
     }
 
     void EnergyTextUpdate(int energy)
     {
-        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTable.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
+        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTable.Find(info => info.Level == GameManager.PlayerData.Level).MaxEnergy;
         Energy.text = $"{energy}/{maxEnergy}";
 
         if (energy >= maxEnergy)

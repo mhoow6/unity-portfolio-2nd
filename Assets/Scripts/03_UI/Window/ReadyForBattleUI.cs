@@ -25,12 +25,10 @@ public class ReadyForBattleUI : UI
 
     public StatusDisplay StatusDisplay;
 
-    public override UIType Type => UIType.ReadyForBattle;
+    // 스테이지 정보
+    StageSet m_StageSet = new StageSet();
 
-    bool m_Init;
-    List<StageTable> m_StageTable;
-    List<QuestTable> m_QuestTable;
-    PlayerData m_PlayerData;
+    public override UIType Type => UIType.ReadyForBattle;
 
     const float STAGE_DESCRIPTION_SPEED = 3f;
 
@@ -38,7 +36,8 @@ public class ReadyForBattleUI : UI
     // 전투 준비 버튼
     public void OnBattleBtnClick()
     {
-
+        var window = GameManager.UISystem.OpenWindow<SortieUI>(UIType.Sortie);
+        window.SetData(m_StageSet.WorldIdx, m_StageSet.StageIdx);
     }
     
     public override void OnClosed()
@@ -48,34 +47,28 @@ public class ReadyForBattleUI : UI
 
     public override void OnOpened()
     {
-        if (!m_Init)
-        {
-            m_StageTable = TableManager.Instance.StageTable;
-            m_QuestTable = TableManager.Instance.QuestTable;
-            m_PlayerData = GameManager.Instance.PlayerData;
-
-            m_Init = true;
-        }
-
         StatusDisplay.SetData();
     }
 
     public void SetData(int worldIdx, int stageIdx)
     {
-        var row = m_StageTable.Find(s => s.WorldIdx == worldIdx && s.StageIdx == stageIdx);
+        var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == worldIdx && s.StageIdx == stageIdx);
+        var playerData = GameManager.PlayerData;
+        m_StageSet.WorldIdx = worldIdx;
+        m_StageSet.StageIdx = stageIdx;
 
         // 퀘스트 목표
-        var mission1Record = m_PlayerData.QuestRecords.Find(r => r.QuestIdx == row.Quest1Idx);
+        var mission1Record = playerData.QuestRecords.Find(r => r.QuestIdx == row.Quest1Idx);
         bool mission1Clear = false;
         if (mission1Record != null)
             mission1Clear = mission1Record.Clear;
 
-        var mission2Record = m_PlayerData.QuestRecords.Find(r => r.QuestIdx == row.Quest2Idx);
+        var mission2Record = playerData.QuestRecords.Find(r => r.QuestIdx == row.Quest2Idx);
         bool mission2Clear = false;
         if (mission2Record != null)
             mission2Clear = mission2Record.Clear;
 
-        var mission3Record = m_PlayerData.QuestRecords.Find(r => r.QuestIdx == row.Quest3Idx);
+        var mission3Record = playerData.QuestRecords.Find(r => r.QuestIdx == row.Quest3Idx);
         bool mission3Clear = false;
         if (mission3Record != null)
             mission1Clear = mission3Record.Clear;
@@ -93,7 +86,7 @@ public class ReadyForBattleUI : UI
         Mission2.SetData(QuestDescription(row.Quest2Idx), mission2Clear);
         Mission3.SetData(QuestDescription(row.Quest3Idx), mission3Clear);
 
-        // TODO: 스테이지에서 얻을 수 있는 아이템 리스트
+        // UNDONE: 스테이지에서 얻을 수 있는 아이템 리스트
 
         // 에너지 소비
         EnergyCost.text = row.EnergyCost.ToString();
@@ -102,7 +95,7 @@ public class ReadyForBattleUI : UI
     string QuestDescription(int questIdx)
     {
         string result = string.Empty;
-        var row = m_QuestTable.Find(q => q.Index == questIdx);
+        var row = TableManager.Instance.QuestTable.Find(q => q.Index == questIdx);
 
         switch (row.Type)
         {

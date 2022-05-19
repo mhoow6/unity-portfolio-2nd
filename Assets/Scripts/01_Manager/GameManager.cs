@@ -4,14 +4,16 @@ using UnityEngine;
 using DatabaseSystem;
 using System;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     // Global Data
-    public Configuration Config;
-    public PlayerData PlayerData { get; private set; }
+    public static PlayerData PlayerData => Instance.m_PlayerData;
+    public PlayerData m_PlayerData;
+
     public Player Player;
 
     Camera m_MainCam;
@@ -62,6 +64,12 @@ public class GameManager : MonoBehaviour
     Action m_Update;
     Action m_FixedUpdate;
 
+    // 스크립터블 오브젝트
+    public Configuration Config => m_Config;
+    [Header("# 스크립터블 오브젝트")]
+    [SerializeField] Configuration m_Config;
+    [SerializeField] SceneBuildIndexStageSetPair m_SceneLoadHelper;
+
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
     [Rename("타이틀 로딩 스킵")] public bool TitleLoadingDirectingSkip;
@@ -76,13 +84,15 @@ public class GameManager : MonoBehaviour
         m_Update = null;
         m_FixedUpdate = null;
 
-        // Config
-        if (!Config)
-            Config = Resources.Load<Configuration>("Configuration");
+        // 스크립터블 오브젝트 로드
+        if (!m_Config)
+            m_Config = Resources.Load<Configuration>("Configuration");
         Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
-
-        PlayerData = PlayerData.GetData(Config.SaveFilePath);
+        m_PlayerData = PlayerData.GetData(Config.SaveFilePath);
         GameVerison = Config.GameVerison;
+
+        if (!m_SceneLoadHelper)
+            m_Config = Resources.Load<Configuration>("SceneBuildIndex-StageSet");
 
         // System Init
         TableManager.Instance.LoadTable();
@@ -202,6 +212,33 @@ public class GameManager : MonoBehaviour
         var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
         if (exist != null)
             PlayerData.CharacterDatas.Remove(exist);
+    }
+    #endregion
+
+    #region 씬 로드
+    public void LoadStage(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
+    {
+        StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, onLoadStageCallback));
+    }
+
+    IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
+    {
+        yield return null;
+
+        var pair = m_SceneLoadHelper.SceneBuildStages.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
+        AsyncOperation async = SceneManager.LoadSceneAsync(pair.BuildIndex, LoadSceneMode.Additive);
+
+        while (!async.isDone)
+        {
+            Debug.Log($"async progress: {async.progress}%\nasync.allowSceneActivation = {async.allowSceneActivation}");
+
+            if (async.progress >= 0.9f)
+                async.allowSceneActivation = true;
+
+            yield return null;
+        }
+
+        onLoadStageCallback?.Invoke();
     }
     #endregion
 

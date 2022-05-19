@@ -39,7 +39,7 @@ public class StageDisplay : Display
 
     public void SetData(int worldIdx, int stageIdx)
     {
-        var playerData = GameManager.Instance.PlayerData;
+        var playerData = GameManager.PlayerData;
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
 

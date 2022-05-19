@@ -324,7 +324,7 @@ public class Character : BaseObject
     void SetPropertiesFromTable()
     {
         var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
-        var record = GameManager.Instance.PlayerData.CharacterDatas.Find(c => c.Code == Code);
+        var record = GameManager.PlayerData.CharacterDatas.Find(c => c.Code == Code);
 
         Name = table.Name;
         Type = table.Type;

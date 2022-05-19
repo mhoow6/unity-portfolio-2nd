@@ -44,3 +44,17 @@ public class WeaponData
     public float Damage;
     public float Critical;
 }
+
+[Serializable]
+public class StageSet
+{
+    public int WorldIdx;
+    public int StageIdx;
+}
+
+[Serializable]
+public struct SceneBuildStage
+{
+    public int BuildIndex;
+    public StageSet Set;
+}

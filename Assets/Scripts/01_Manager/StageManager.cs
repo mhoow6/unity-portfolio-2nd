@@ -102,7 +102,7 @@ public class StageManager : MonoSingleton<StageManager>
     /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
 	public void UpdatePlayerMissionRecords()
     {
-        var playerData = GameManager.Instance.PlayerData;
+        var playerData = GameManager.PlayerData;
         foreach (var record in m_MissionSystem.QuestRecords.Values)
         {
             var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);

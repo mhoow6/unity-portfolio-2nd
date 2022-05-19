@@ -13,7 +13,6 @@ public class MainMenuUI : UI
 
     public StatusDisplay StatusDisplay;
 
-    PlayerData m_PlayerData;
     bool m_Init;
     Vector3 m_OriginNickNameAnchoredPosition;
 
@@ -69,17 +68,16 @@ public class MainMenuUI : UI
 
     public override void OnOpened()
     {
+        var playerData = GameManager.PlayerData;
         // 최초 실행시에 할 것들
         if (!m_Init)
         {
-            var gm = GameManager.Instance;
-            m_PlayerData = gm.PlayerData;
             m_OriginNickNameAnchoredPosition = LevelNickName.rectTransform.anchoredPosition;
 
-            if (m_PlayerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
+            if (playerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
             {
                 GameManager.UISystem.OpenWindow(UIType.NickNameInput);
-                m_PlayerData.AskForNickName = true;
+                playerData.AskForNickName = true;
             }
 
             m_Init = true;
@@ -89,16 +87,16 @@ public class MainMenuUI : UI
         GameManager.Instance.MainCam.gameObject.SetActive(true);
 
         // 레벨과 닉네임
-        LevelNickName.text = $"Lv.{m_PlayerData.Level} <size=50>{m_PlayerData.NickName}</size>";
+        LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";
         // 트위닝 효과
         LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
         LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, TWEEN_DURATION);
 
         // 경험치 슬라이더
-        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == m_PlayerData.Level).MaxExperience;
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == playerData.Level).MaxExperience;
         ExperienceSlider.value = 0;
         ExperienceSlider.maxValue = maxExperience;
-        ExperienceSlider.DOValue(m_PlayerData.Experience, TWEEN_DURATION);
+        ExperienceSlider.DOValue(playerData.Experience, TWEEN_DURATION);
 
         // 에너지, 돈
         StatusDisplay.SetData();

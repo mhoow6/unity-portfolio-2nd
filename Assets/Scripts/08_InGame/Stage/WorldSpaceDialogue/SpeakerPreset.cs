@@ -7,12 +7,12 @@ using DG.Tweening;
 
 public class SpeakerPreset : MonoBehaviour
 {
-    public bool IsSpeaking { get; private set; } = false;
-    public string SpeakerName { get; private set; } = string.Empty;
-
     [SerializeField] Image m_Portrait;
     [SerializeField] Image m_SpeakerLabel;
     [SerializeField] Text m_SpeakerName;
+
+    public bool IsSpeaking { get; private set; } = false;
+    public string SpeakerName { get; private set; } = string.Empty;
 
     readonly Color SPEAK_LABEL_COLOR = Color.yellow;
     readonly Color LISTEN_LABEL_COLOR = Color.gray;
@@ -38,7 +38,7 @@ public class SpeakerPreset : MonoBehaviour
         if (dialogue.NpcName != string.Empty)
             m_SpeakerName.text = $"¢∫ {dialogue.NpcName}";
         else
-            m_SpeakerName.text = $"¢∫ {gm.PlayerData.NickName}";
+            m_SpeakerName.text = $"¢∫ {GameManager.PlayerData.NickName}";
         SpeakerName = dialogue.NpcName;
 
         // ¥Î»≠√¢

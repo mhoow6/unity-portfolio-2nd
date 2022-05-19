@@ -11,7 +11,7 @@ public class EnergyRecoverySystem : GameSystem
 
     public void Init()
     {
-        m_PlayerData = GameManager.Instance.PlayerData;
+        m_PlayerData = GameManager.PlayerData;
     }
 
     public void Tick()
