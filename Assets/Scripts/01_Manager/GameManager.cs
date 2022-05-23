@@ -153,6 +153,11 @@ public class GameManager : MonoBehaviour
         // UNDONE: юс╫ц
         if (IsTestZone && Input.GetKeyDown(KeyCode.T))
             m_UISystem.OpenWindow(UIType.InGame);
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            var window = m_UISystem.OpenWindow<SortieUI>(UIType.Sortie);
+            window.SetData(1, 1);
+        }
     }
 
     void OnApplicationQuit()

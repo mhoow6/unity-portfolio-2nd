@@ -40,6 +40,8 @@
 		public float CriticalIncreaseRatioByLevelUp;
 		/// <summary> 이동속도 </summary> ///
 		public float BaseSpeed;
+		/// <summary> 캐릭터 초상화 이름 </summary> ///
+		public string PortraitName;
 	}
 
 	public struct PlayerLevelEnergyTable

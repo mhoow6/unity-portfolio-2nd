@@ -10,7 +10,7 @@ using System.Text;
 using UnityEditor;
 public static class Automation
 {
-    [MenuItem("Automation/Database/Generate Game Enum")]
+    [MenuItem("Custom Tools/Automation/Database/Generate Game Enum")]
     public static void GenerateGameEnum()
     {
         string result = string.Empty;
@@ -125,7 +125,7 @@ public static class Automation
         
     }
 
-    [MenuItem("Automation/Database/Generate Table Class")]
+    [MenuItem("Custom Tools/Automation/Database/Generate Table Class")]
     public static void GenerateTableClass()
     {
         // 데이터 갯수
@@ -278,7 +278,7 @@ public static class Automation
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Automation/Database/Generate Json Class")]
+    [MenuItem("Custom Tools/Automation/Database/Generate Json Class")]
     public static void GenerateJsonClass()
     {
         // 해당 경로에 있는 json 파일들 텍스트로 읽기
@@ -519,7 +519,7 @@ namespace DatabaseSystem
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Automation/Prefab/Generate Collider")]
+    [MenuItem("Custom Tools/Automation/Prefab/Generate Collider")]
     public static void GenerateCollider()
     {
         string path = Application.dataPath + "/Resources/Result/";
@@ -562,7 +562,7 @@ namespace DatabaseSystem
         Debug.Log("박스 콜라이더 생성이 완료되었습니다. 콜라이더의 센터는 오브젝트마다 다르니 필요시 조정하세요.");
     }
 
-    [MenuItem("Automation/Prefab/Mesh Combined Objects")]
+    [MenuItem("Custom Tools/Automation/Prefab/Mesh Combined Objects")]
     public static void MeshCombinedObjects()
     {
         // MeshCombine 컴포넌트가 붙은 게임오브젝트들을 찾아 배열에 저장한다. 
@@ -622,7 +622,7 @@ namespace DatabaseSystem
         }
     }
 
-    [MenuItem("Automation/Obsoleted/Build Monster Asset Bundles")]
+    [MenuItem("Custom Tools/Automation/Obsoleted/Build Monster Asset Bundles")]
     public static void ExportMonsterBundle()
     {
         AssetBundleBuild[] buildBundles = new AssetBundleBuild[1];
@@ -637,13 +637,13 @@ namespace DatabaseSystem
         BuildPipeline.BuildAssetBundles("Assets/AssetBundles/Monster", buildBundles, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
     }
 
-    [MenuItem("Automation/Obsoleted/Build All Asset Bundles")]
+    [MenuItem("Custom Tools/Automation/Obsoleted/Build All Asset Bundles")]
     public static void ExportAllBundle()
     {
         
     }
 
-    [MenuItem("Automation/Obsoleted/Save Scene")]
+    [MenuItem("Custom Tools/Automation/Obsoleted/Save Scene")]
     public static void SaveScene()
     {
         string sceneName = SceneManager.GetActiveScene().name;

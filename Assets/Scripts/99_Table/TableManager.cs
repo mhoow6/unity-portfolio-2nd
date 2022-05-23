@@ -53,6 +53,7 @@ namespace DatabaseSystem
 				info.BaseCritical = int.Parse(datas[11]);
 				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[12]);
 				info.BaseSpeed = float.Parse(datas[13]);
+				info.PortraitName = datas[14];
 				
                 CharacterTable.Add(info);
                 LoadedData++;
