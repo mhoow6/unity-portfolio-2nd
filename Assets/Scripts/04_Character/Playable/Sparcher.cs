@@ -15,8 +15,8 @@ public class Sparcher : Playable
 
     protected override void OnSpawn()
     {
-        var currentScene = GameManager.Instance.SceneType;
-        var config = GameManager.Instance.Config;
+        var currentScene = GameManager.SceneType;
+        var config = GameManager.Config;
 
         switch (currentScene)
         {
@@ -39,7 +39,7 @@ public class Sparcher : Playable
         {
             case ATTACK_INDEX:
                 SparcherBasicAttackData data = origin as SparcherBasicAttackData;
-                var config = GameManager.Instance.Config;
+                var config = GameManager.Config;
 
                 // 화살 인스턴싱
                 var proj = StageManager.PoolSystem.Load<Projectile>($"{config.ProjectileResourcePath}/{data.ArrowPrefabPath}");

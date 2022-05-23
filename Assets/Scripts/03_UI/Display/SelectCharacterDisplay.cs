@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DatabaseSystem;
+using UnityEngine.EventSystems;
 
-public class SelectCharacterDisplay : Display
+public class SelectCharacterDisplay : Display, IPointerDownHandler
 {
     public bool PortraitVisible
     {
         get
         {
-            return m_CharacterPortrait.gameObject.activeSelf;
+            return m_CharacterPortrait.gameObject.activeSelf && m_CharacterLevel.gameObject.activeSelf;
         }
         set
         {
-            m_CharacterPortrait.gameObject.SetActive(true);
+            m_CharacterPortrait.gameObject.SetActive(value);
+            m_CharacterLevel.gameObject.SetActive(value);
         }
     }
 
@@ -28,15 +30,20 @@ public class SelectCharacterDisplay : Display
 
         if (record != null)
         {
-            m_CharacterLevel.text = $"Lv. {m_CharacterLevel.text}";
-            m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.Instance.Config.TextureResourcePath}/{row.PortraitName}");
+            m_CharacterLevel.text = $"Lv. {record.Level}";
+            m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.Config.TextureResourcePath}/{row.PortraitName}");
         }
             
         else
         {
-            Debug.LogError($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
+            Debug.Log($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
             PortraitVisible = false;
         }
             
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        // UNDONE: 클릭 시 캐릭터 상세정보 창
     }
 }

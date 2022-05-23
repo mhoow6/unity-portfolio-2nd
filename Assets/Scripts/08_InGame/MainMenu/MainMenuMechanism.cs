@@ -87,7 +87,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         player.transform.SetParent(PlayerSpawnPosition);
 
         var main = GameManager.PlayerData.MainMenuCharacter;
-        var resourcePath = GameManager.Instance.Config.CharacterResourcePath;
+        var resourcePath = GameManager.Config.CharacterResourcePath;
 
         var leader = Character.Get(main, player.transform, resourcePath);
         leader.gameObject.SetActive(true);

@@ -59,17 +59,17 @@ public class StageManager : MonoSingleton<StageManager>
         var player = new GameObject("Player").AddComponent<Player>();
         player.gameObject.SetActive(true);
         // 현재 스테이지에 맞는 캐릭터 가져오기
-        // var record = GameManager.Instance.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
+         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
         // UNDONE: Test
-        var record = new StageRecordData()
-        {
-            CharacterLeader = ObjectCode.CHAR_Sparcher,
-            CharacterSecond = ObjectCode.CHAR_Sparcher,
-            CharacterThird = ObjectCode.CHAR_Sparcher
-        };
+        //var record = new StageRecordData()
+        //{
+        //    CharacterLeader = ObjectCode.CHAR_Sparcher,
+        //    CharacterSecond = ObjectCode.CHAR_Sparcher,
+        //    CharacterThird = ObjectCode.CHAR_Sparcher
+        //};
 
         // 캐릭터 인스턴싱
-        string resourcePath = GameManager.Instance.Config.CharacterResourcePath;
+        string resourcePath = GameManager.Config.CharacterResourcePath;
         var leader = Character.Get(record.CharacterLeader, player.transform, resourcePath);
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition;

@@ -23,10 +23,8 @@ public class SpeakerPreset : MonoBehaviour
 
     public void Speak(StageDialogueTable dialogue, Text speakText)
     {
-        var gm = GameManager.Instance;
-
         // √ ªÛ»≠
-        var speakerImagePath = $"{gm.Config.TextureResourcePath}/{dialogue.NpcImage}";
+        var speakerImagePath = $"{GameManager.Config.TextureResourcePath}/{dialogue.NpcImage}";
         if (m_SpeakerImagePath != speakerImagePath)
             m_Portrait.sprite = Resources.Load<Sprite>(speakerImagePath);
 

@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 
+#if UNITY_EDITOR
 public class SavefileEditor : EditorWindow
 {
     PlayerData m_PlayerData;
@@ -113,3 +114,4 @@ public class SavefileEditor : EditorWindow
             m_PlayerData.Save();
     }
 }
+#endif

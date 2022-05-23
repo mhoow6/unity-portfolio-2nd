@@ -118,7 +118,7 @@ public class LoadingTitleUI : UI
         m_LoadingCompleteObject.SetActive(false);
 
         // 다운로드 해야할 데이터 양 가져오기
-        m_NeedToLoadDataCount = GameManager.Instance.Config.DownloadDataCount;
+        m_NeedToLoadDataCount = GameManager.Config.DownloadDataCount;
         m_LoadingSlider.maxValue = m_NeedToLoadDataCount;
 
         // 이벤트 설정

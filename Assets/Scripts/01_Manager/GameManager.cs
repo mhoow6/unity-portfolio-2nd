@@ -45,7 +45,19 @@ public class GameManager : MonoBehaviour
     public CinemachineFreeLook FreeLookCam => m_FreeLookCam;
 
     [HideInInspector] public Light DirectionalLight;
-    [ReadOnly] public SceneType SceneType;
+
+    public static SceneType SceneType
+    {
+        get
+        {
+            return Instance.m_SceneType;
+        }
+        set
+        {
+            Instance.m_SceneType = value;
+        }
+    }
+    [ReadOnly, SerializeField] SceneType m_SceneType;
     public bool AutoTargeting;
 
     // Game System
@@ -65,10 +77,10 @@ public class GameManager : MonoBehaviour
     Action m_FixedUpdate;
 
     // 스크립터블 오브젝트
-    public Configuration Config => m_Config;
+    public static Configuration Config => Instance.m_Config;
     [Header("# 스크립터블 오브젝트")]
     [SerializeField] Configuration m_Config;
-    [SerializeField] SceneBuildIndexStageSetPair m_SceneLoadHelper;
+    [SerializeField] SceneBuildIndexStageSet m_SceneBuildIndexStageSet;
 
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
@@ -87,11 +99,11 @@ public class GameManager : MonoBehaviour
         // 스크립터블 오브젝트 로드
         if (!m_Config)
             m_Config = Resources.Load<Configuration>("Configuration");
-        Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
+        m_Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
         m_PlayerData = PlayerData.GetData(Config.SaveFilePath);
         GameVerison = Config.GameVerison;
 
-        if (!m_SceneLoadHelper)
+        if (!m_SceneBuildIndexStageSet)
             m_Config = Resources.Load<Configuration>("SceneBuildIndex-StageSet");
 
         // System Init
@@ -226,11 +238,16 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, onLoadStageCallback));
     }
 
+    public void LoadMainMenu()
+    {
+        StartCoroutine(LoadStageCoroutine(0, 0));
+    }
+
     IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
     {
         yield return null;
 
-        var pair = m_SceneLoadHelper.SceneBuildStages.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
+        var pair = m_SceneBuildIndexStageSet.Pair.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
         AsyncOperation async = SceneManager.LoadSceneAsync(pair.BuildIndex, LoadSceneMode.Additive);
 
         while (!async.isDone)

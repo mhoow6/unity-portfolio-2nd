@@ -15,14 +15,6 @@ public class SortieUI : UI
 
     public void SetData(int worldIdx, int stageIdx)
     {
-        // UNDONE: 테스트 환경
-        GameManager.PlayerData.StageRecords.Add(new StageRecordData()
-        {
-            WorldIdx = worldIdx,
-            StageIdx = stageIdx,
-            CharacterLeader = ObjectCode.CHAR_Sparcher
-        });
-
         // 플레이어 데이터에서 기록 찾기
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == worldIdx && r.StageIdx == stageIdx);
         if (record != null)
@@ -39,6 +31,17 @@ public class SortieUI : UI
             // 기록이 없으면 초상화 오브젝트 안 보이게
             foreach (var display in m_SelectCharacterDisplays)
                 display.PortraitVisible = false;
+
+            // 기록 데이터 새로 만들기
+            GameManager.PlayerData.StageRecords.Add(new StageRecordData()
+            {
+                WorldIdx = worldIdx,
+                StageIdx = stageIdx,
+                Clear = false,
+                CharacterLeader = ObjectCode.NONE,
+                CharacterSecond = ObjectCode.NONE,
+                CharacterThird = ObjectCode.NONE,
+            });
         }
 
         // 출격 준비 버튼 세팅
@@ -46,6 +49,8 @@ public class SortieUI : UI
         {
             GameManager.Instance.LoadStage(worldIdx, stageIdx);
         };
+
+        
     }
 
     #region UI 필수 구현 메소드
