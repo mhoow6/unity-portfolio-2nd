@@ -6,9 +6,9 @@ using UnityEngine;
 public class SortieUI : UI
 {
     public override UIType Type => UIType.Sortie;
+    public List<SelectCharacterDisplay> m_SelectCharacterDisplays = new List<SelectCharacterDisplay>();
 
     [SerializeField] LeaderPassiveInfoDisplay m_LeaderPassiveInfoDisplay;
-    [SerializeField] List<SelectCharacterDisplay> m_SelectCharacterDisplays = new List<SelectCharacterDisplay>();
     [SerializeField] StatusDisplay m_StatusDisplay;
 
     Action m_OnBattleButtonClick;

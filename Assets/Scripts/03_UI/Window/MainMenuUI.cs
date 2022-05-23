@@ -10,8 +10,11 @@ public class MainMenuUI : UI
 {
     public Text LevelNickName;
     public Slider ExperienceSlider;
-
     public StatusDisplay StatusDisplay;
+
+    [SerializeField] RectTransform m_AdventureBtnRectTransform;
+    [SerializeField] RectTransform m_EquipmentBtnRectTransform;
+    [SerializeField] RectTransform m_CharacterBtnRectTransform;
 
     bool m_Init;
     Vector3 m_OriginNickNameAnchoredPosition;
@@ -82,6 +85,11 @@ public class MainMenuUI : UI
 
             m_Init = true;
         }
+
+        // 버튼 스케일 값 복구
+        m_AdventureBtnRectTransform.localScale = Vector3.one;
+        m_EquipmentBtnRectTransform.localScale = Vector3.one;
+        m_CharacterBtnRectTransform.localScale = Vector3.one;
 
         // 메인 카메라 키기
         GameManager.Instance.MainCam.gameObject.SetActive(true);
