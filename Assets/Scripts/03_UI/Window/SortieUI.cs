@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class SortieUI : UI
 {
     public override UIType Type => UIType.Sortie;
-    public List<SelectCharacterDisplay> m_SelectCharacterDisplays = new List<SelectCharacterDisplay>();
+    public List<SelectCharacterDisplay> SelectCharacterDisplays = new List<SelectCharacterDisplay>();
     public RectTransform SelectCharacterGroupTransform;
     public RectTransform StageBackgroundTransform;
 
@@ -23,16 +23,16 @@ public class SortieUI : UI
         if (record != null)
         {
             // 파티 프리셋을 기록대로 정하기
-            m_SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].SetData(record.CharacterLeader);
+            SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].SetData(record.CharacterLeader);
             // UNDONE: 리더 패시브 스킬이 뭔지 알려주기
             m_LeaderPassiveInfoDisplay.SetData();
-            m_SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Second].SetData(record.CharacterSecond);
-            m_SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].SetData(record.CharacterThird);
+            SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Second].SetData(record.CharacterSecond);
+            SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].SetData(record.CharacterThird);
         }
         else
         {
             // 기록이 없으면 초상화 오브젝트 안 보이게
-            foreach (var display in m_SelectCharacterDisplays)
+            foreach (var display in SelectCharacterDisplays)
                 display.PortraitVisible = false;
 
             // 기록 데이터 새로 만들기
