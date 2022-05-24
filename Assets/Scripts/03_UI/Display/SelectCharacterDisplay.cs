@@ -28,8 +28,9 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
 
-    RectTransform m_Rt;
+    RectTransform m_RectTransform;
     CustomRect m_Rect;
+    SelectCharacterDisplay m_Copied;
 
     public void SetData(ObjectCode characterCode)
     {
@@ -53,14 +54,14 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 
     protected override void OnInit()
     {
-        m_Rt = GetComponent<RectTransform>();
-        m_Rect = new CustomRect(m_Rt.rect);
+        m_RectTransform = GetComponent<RectTransform>();
+        m_Rect = new CustomRect(m_RectTransform.rect);
     }
 
     protected override void OnClosed()
     {
         // 스케일 트위닝 도중 닫힐 경우 문제 발생 -> Scale값 복원
-        m_Rt.localScale = Vector3.one;
+        m_RectTransform.localScale = Vector3.one;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -71,23 +72,62 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (ColorUtility.TryParseHtmlString(m_OnPointerDownColorCode, out Color color))
-            m_Background.color = color;
+        
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log($"{m_DisplayedCharacter}가 드래그 하기 시작");
+        var ui = GameManager.UISystem.CurrentWindow;
+        if (ui.Type == UIType.Sortie)
+        {
+            // 자기 자신 복사
+            var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
+            if (display)
+            {
+                // 인스턴싱
+                var sortie = ui as SortieUI;
+                var instanitate = Instantiate(display, sortie.transform);
+                m_Copied = instanitate;
+
+                // 데이터 세팅
+                instanitate.SetData(m_DisplayedCharacter);
+
+                // 위치 맞추기
+                var rt = instanitate.GetComponent<RectTransform>();
+                rt.anchoredPosition = new Vector3
+                    (m_RectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
+                    sortie.SelectCharacterGroupTransform.anchoredPosition.y,
+                    0);
+
+                // 색 변화
+                if (ColorUtility.TryParseHtmlString(m_OnPointerDownColorCode, out Color color))
+                    instanitate.m_Background.color = color;
+            }
+        }
+
+        Debug.Log($"{gameObject.name}가 드래그 하기 시작");
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log($"{m_DisplayedCharacter}가 드래그 중..");
+        var ui = GameManager.UISystem.CurrentWindow;
+        if (ui.Type == UIType.Sortie)
+        {
+            var sortie = ui as SortieUI;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(sortie.StageBackgroundTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPoint);
+            m_Copied.m_RectTransform.anchoredPosition = localPoint;
+        }
+        
+        //Debug.Log($"{m_Copied.m_RectTransform.anchoredPosition}");
+
+        Debug.Log($"{gameObject.name}가 드래그 중..");
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log($"{m_DisplayedCharacter} 드래그 끝");
+        Debug.Log($"{gameObject.name} 드래그 끝");
+        Destroy(m_Copied.gameObject);
+        m_Copied = null;
 
         if (ColorUtility.TryParseHtmlString(m_OnPointerUpColorCode, out Color color))
             m_Background.color = color;

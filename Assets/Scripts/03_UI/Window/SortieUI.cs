@@ -2,15 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SortieUI : UI
 {
     public override UIType Type => UIType.Sortie;
     public List<SelectCharacterDisplay> m_SelectCharacterDisplays = new List<SelectCharacterDisplay>();
+    public RectTransform SelectCharacterGroupTransform;
+    public RectTransform StageBackgroundTransform;
 
     [SerializeField] LeaderPassiveInfoDisplay m_LeaderPassiveInfoDisplay;
     [SerializeField] StatusDisplay m_StatusDisplay;
-
+    
     Action m_OnBattleButtonClick;
 
     public void SetData(int worldIdx, int stageIdx)
@@ -49,8 +52,6 @@ public class SortieUI : UI
         {
             GameManager.Instance.LoadStage(worldIdx, stageIdx);
         };
-
-        
     }
 
     #region UI 필수 구현 메소드

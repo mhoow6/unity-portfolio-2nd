@@ -8,6 +8,6 @@ public class Display : MonoBehaviour
     protected virtual void OnClosed() { }
     protected virtual void OnInit() { }
 
-    protected void Awake(){ OnInit(); }
+    protected void Awake() { OnInit(); }
     protected void OnDisable() { OnClosed(); }
 }

@@ -26,7 +26,25 @@ public class Projectile : BaseObject, IPoolable
     #region 충돌 판정
     protected void OnTriggerEnter(Collider other)
     {
-        OnCollide(other);
+        var rhs = other.GetComponent<Character>();
+        if (rhs != null && !other.CompareTag(m_Owner.tag))
+        {
+            var result = m_Owner.CalcuateDamage(rhs);
+
+            // 실제 데미지
+            rhs.Damaged(m_Owner, result.Item1, DamageType.Normal);
+
+            // 데미지 텍스트
+            var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.Config.UIResourcePath}/InGame/FloatingDamage");
+            var floatingStartPoint = GameManager.Instance.MainCam.WorldToScreenPoint(rhs.Head.position);
+            damageText.SetData(result.Item1, result.Item2, floatingStartPoint, rhs.Head.position);
+            damageText.StartFloating();
+
+            OnCollide(other);
+
+            // 풀에게 자기 반환
+            StageManager.PoolSystem.Release(this);
+        }
     }
 
     protected virtual void OnCollide(Collider other) { }

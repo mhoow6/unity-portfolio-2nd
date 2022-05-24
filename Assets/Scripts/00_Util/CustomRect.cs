@@ -9,14 +9,14 @@ public struct CustomRect
 
     Vector2 m_Center;
 
-    public CustomRect(Vector2 screenCenterPosition)
+    public CustomRect(Vector2 centerPosition)
     {
-        m_Center = screenCenterPosition;
+        m_Center = centerPosition;
         m_Width = 0;
         m_Height = 0;
     }
 
-    public CustomRect(Vector2 screenCenterPosition, int width, int height) : this(screenCenterPosition)
+    public CustomRect(Vector2 centerPosition, int width, int height) : this(centerPosition)
     {
         m_Width = width;
         m_Height = height;
@@ -29,15 +29,15 @@ public struct CustomRect
         m_Height = rect.height;
     }
 
-    public bool IsMousePositionInRect(Vector2 mousePosition)
+    public bool IsPositionInRect(Vector2 position)
     {
         float minX = m_Center.x - (m_Width * 0.5f);
         float minY = m_Center.y - (m_Height * 0.5f);
         float maxX = m_Center.x + (m_Width * 0.5f);
         float maxY = m_Center.x + (m_Height * 0.5f);
 
-        if (mousePosition.x >= minX && mousePosition.x <= maxX &&
-            mousePosition.y >= minY && mousePosition.y <= maxY)
+        if (position.x >= minX && position.x <= maxX &&
+            position.y >= minY && position.y <= maxY)
             return true;
 
         return false;
