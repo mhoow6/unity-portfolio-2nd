@@ -30,8 +30,12 @@ public class SavefileEditor : EditorWindow
         EditorStyles.textField.fontSize = 14;
         EditorStyles.textField.wordWrap = true;
 
-        TableManager.Instance.LoadTable();
-        JsonManager.Instance.LoadJson();
+        if (!TableManager.Instance && !JsonManager.Instance)
+        {
+            TableManager.Instance.LoadTable();
+            JsonManager.Instance.LoadJson();
+        }
+        
     }
 
     private void Awake()

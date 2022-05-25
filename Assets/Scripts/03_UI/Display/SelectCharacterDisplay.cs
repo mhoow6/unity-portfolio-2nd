@@ -9,7 +9,7 @@ using DG.Tweening;
 public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     
-    [HideInInspector] public RectTransform RectTransform;
+    [HideInInspector] public RectTransform BackgroundRectTransform;
     public CustomRect Rect;
     [SerializeField] Image m_CharacterPortrait;
     [SerializeField] Image m_Background;
@@ -40,17 +40,29 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 
     }
 
+    public bool Raycastable
+    {
+        get
+        {
+            return m_CanvasGroup.blocksRaycasts;
+        }
+        set
+        {
+            m_CanvasGroup.blocksRaycasts = value;
+        }
+    }
+    public ObjectCode DisplayedCharacter { get; private set; } = ObjectCode.NONE;
+
     CanvasGroup m_CanvasGroup;
     SelectCharacterDisplay m_Copied;
 
-    ObjectCode m_DisplayedCharacter = ObjectCode.NONE;
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
     const float DISPLAY_SWAP_ALPHA = 0.8f;
 
     public void SetData(ObjectCode characterCode)
     {
-        m_DisplayedCharacter = characterCode;
+        DisplayedCharacter = characterCode;
 
         var record = GameManager.PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
         var row = TableManager.Instance.CharacterTable.Find(c => c.Code == characterCode);
@@ -59,6 +71,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         {
             m_CharacterLevel.text = $"Lv. {record.Level}";
             m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.Config.TextureResourcePath}/{row.PortraitName}");
+            PortraitVisible = true;
         }
             
         else
@@ -70,14 +83,14 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 
     private void Awake()
     {
-        RectTransform = GetComponent<RectTransform>();
+        BackgroundRectTransform = GetComponent<RectTransform>();
         m_CanvasGroup = GetComponent<CanvasGroup>();
     }
 
     protected override void OnClosed()
     {
         // 스케일 트위닝 도중 닫힐 경우 문제 발생 -> Scale값 복원
-        RectTransform.localScale = Vector3.one;
+        BackgroundRectTransform.localScale = Vector3.one;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -94,7 +107,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     public void OnBeginDrag(PointerEventData eventData)
     {
         var ui = GameManager.UISystem.CurrentWindow;
-        if (ui.Type == UIType.Sortie)
+        if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE)
         {
             // 자기 자신 복사
             var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
@@ -106,13 +119,13 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                 m_Copied = instanitate;
 
                 // 데이터 세팅
-                instanitate.SetData(m_DisplayedCharacter);
+                instanitate.SetData(DisplayedCharacter);
 
                 // 위치 맞추기
                 // 인스턴싱된건 layoutGroup의 자식이 아님. 따라서 layoutGroup의 x좌표만큼의 더해줘야함
-                var rt = instanitate.RectTransform;
+                var rt = instanitate.BackgroundRectTransform;
                 rt.anchoredPosition = new Vector3
-                    (RectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
+                    (BackgroundRectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
                     sortie.SelectCharacterGroupTransform.anchoredPosition.y,
                     0);
 
@@ -124,9 +137,10 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                 // 드래그를 시작할때 해당 display들의 rect를 초기화시키자.
                 foreach (var dis in sortie.SelectCharacterDisplays)
                 {
-                    var convert = GameManager.UISystem.UICamera.WorldToViewportPoint(dis.RectTransform.position);
+                    // 스크린좌표를 활용하기 위해 뷰포트 변환
+                    var convert = GameManager.UISystem.UICamera.WorldToViewportPoint(dis.BackgroundRectTransform.position);
                     Vector3 resolutionMultipled = new Vector3(convert.x * Screen.width, convert.y * Screen.height, 0);
-                    dis.Rect = new CustomRect(resolutionMultipled, dis.RectTransform.rect.width, dis.RectTransform.rect.height);
+                    dis.Rect = new CustomRect(resolutionMultipled, dis.BackgroundRectTransform.rect.width, dis.BackgroundRectTransform.rect.height);
                 }
             }
         }
@@ -136,22 +150,20 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     {
         // 복사본을 드래그한다.
         var ui = GameManager.UISystem.CurrentWindow;
-        if (ui.Type == UIType.Sortie)
+        if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE)
         {
             var sortie = ui as SortieUI;
             // rectTransform 범위에 스크린 좌표가 있으면 해당하는 좌표를 rectTransform 축의 좌표로 변환
             RectTransformUtility.ScreenPointToLocalPointInRectangle(sortie.StageBackgroundTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPoint);
-            m_Copied.RectTransform.anchoredPosition = localPoint;
+            m_Copied.BackgroundRectTransform.anchoredPosition = localPoint;
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log($"{gameObject.name} 드래그 끝");
-
         // 드래그한 위치에 자신을 제외한 Display가 있으면 스왑
         var ui = GameManager.UISystem.CurrentWindow;
-        if (ui.Type == UIType.Sortie)
+        if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE)
         {
             var sortie = ui as SortieUI;
             foreach (var display in sortie.SelectCharacterDisplays)
@@ -162,22 +174,30 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                 // 해당 Display에서 드래그를 멈췄다면
                 if (display.Rect.IsScreenPointInRect(eventData.position))
                 {
+                    // 리더가 빈자리랑 스왑할 경우엔 하지 못하게 해야한다.
+                    if (display.DisplayedCharacter == ObjectCode.NONE)
+                    {
+                        var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                        warning.SetData("파티의 리더는 빈자리와 교체할 수 없습니다.");
+                        break;
+                    }
+
                     // 자기 자신 복사하여
                     var tryload = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
                     if (tryload)
                     {
-                        // 인스턴싱
+                        // 자리 옮기는 연출을 보여줄 슬롯 인스턴싱
                         var instanitate = Instantiate(display, sortie.transform);
 
                         // 데이터 세팅
-                        instanitate.SetData(m_DisplayedCharacter);
+                        instanitate.SetData(DisplayedCharacter);
 
                         // 위치 맞추기
-                        var rt = instanitate.RectTransform;
+                        var rt = instanitate.BackgroundRectTransform;
                         rt.anchorMin = new Vector2(0, 1);
                         rt.anchorMax = new Vector2(0, 1);
                         rt.anchoredPosition = new Vector3
-                            (RectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
+                            (BackgroundRectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
                             sortie.SelectCharacterGroupTransform.anchoredPosition.y,
                             0);
 
@@ -185,34 +205,59 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                         instanitate.Alpha = DISPLAY_SWAP_ALPHA;
 
                         // 해당 슬롯으로 X 좌표 이동
-                        instanitate.RectTransform.DOAnchorPosX(display.RectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x, 1f, false)
+                        instanitate.BackgroundRectTransform.DOAnchorPosX(display.BackgroundRectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x, 1f, false)
                             .SetEase(Ease.Linear)
+                            .OnPlay(() =>
+                            {
+                                instanitate.Raycastable = false;
+                            })
                             .OnComplete(() =>
                             {
-                                // 이동 완료시 데이터 스왑
-                                ObjectCode displayCharacter = display.m_DisplayedCharacter;
-                                display.SetData(m_DisplayedCharacter);
+                                // 이동 완료시 실제 자리에 있는 캐릭터 스왑
+                                ObjectCode displayCharacter = display.DisplayedCharacter;
+                                display.SetData(DisplayedCharacter);
                                 this.SetData(displayCharacter);
+
+                                // 바로 없어지면 OnComplete가 실행안됨. 2초 뒤에 사라지게함
+                                instanitate.LateDestroy(2f);
+
+                                // 실제 파티 프리셋 데이터 갱신
+                                sortie.UpdatePartyPreset();
                             });
                     }
                     break;
                 }
             }
+
+            // 사용했던 복사본 파괴
+            Destroy(m_Copied.gameObject);
+            m_Copied = null;
+
+            // 색 변화
+            if (ColorUtility.TryParseHtmlString(m_OnPointerUpColorCode, out Color color))
+                m_Background.color = color;
         }
-
-
-        // 복사본 파괴
-        Destroy(m_Copied.gameObject);
-        m_Copied = null;
-
-        // 색 변화
-        if (ColorUtility.TryParseHtmlString(m_OnPointerUpColorCode, out Color color))
-            m_Background.color = color;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (ColorUtility.TryParseHtmlString(m_OnPointerUpColorCode, out Color color))
             m_Background.color = color;
+    }
+
+    public void LateDestroy(float duration)
+    {
+        StartCoroutine(DestroyCoroutine(duration));
+    }
+
+    IEnumerator DestroyCoroutine(float duration)
+    {
+        float timer = 0f;
+        while (timer <= duration)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(gameObject);
     }
 }

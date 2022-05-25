@@ -195,7 +195,7 @@ public static class Automation
                            $"using UnityEngine;\n" +
                            $"using System;\n" +
                            $"namespace DatabaseSystem\n{{\n\t" +
-                           $"public class TableManager\n\t{{\n\t\t" +
+                           $"public partial class TableManager\n\t{{\n\t\t" +
                            $"public static TableManager Instance {{ get; private set; }} = new TableManager();\n\t\t" +
                            $"public int LoadedData {{ get; private set; }} = 0;\n\t\t";
 
@@ -301,7 +301,7 @@ using Newtonsoft.Json;
 
 namespace DatabaseSystem
 {{
-    public class JsonManager
+    public partial class JsonManager
     {{
         public static JsonManager Instance {{ get; private set; }} = new JsonManager();
         public Dictionary<int, JsonDatable> JsonDatas {{ get; private set; }} = new Dictionary<int, JsonDatable>();

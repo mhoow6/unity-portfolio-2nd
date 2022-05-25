@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 namespace DatabaseSystem
 {
-	public class TableManager
+	public partial class TableManager
 	{
 		public static TableManager Instance { get; private set; } = new TableManager();
 		public int LoadedData { get; private set; } = 0;

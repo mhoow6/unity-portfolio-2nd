@@ -16,8 +16,14 @@ public class SortieUI : UI
     
     Action m_OnBattleButtonClick;
 
+    int m_WorldIdx;
+    int m_StageIdx;
+
     public void SetData(int worldIdx, int stageIdx)
     {
+        m_WorldIdx = worldIdx;
+        m_StageIdx = stageIdx;
+
         // 플레이어 데이터에서 기록 찾기
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == worldIdx && r.StageIdx == stageIdx);
         if (record != null)
@@ -66,11 +72,25 @@ public class SortieUI : UI
     }
     #endregion
 
-    // Battle Button-Button-OnClickEvent
+    /// <summary> Battle Button-Button-OnClickEvent </summary>
     public void OnBattleButtonClick()
     {
         m_OnBattleButtonClick?.Invoke();
         m_OnBattleButtonClick = null;
+    }
+
+    /// <summary> Display의 캐릭터들이 SetData 이후 변경되었을 때 사용 </summary>
+    public void UpdatePartyPreset()
+    {
+        var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == m_WorldIdx && r.StageIdx == m_StageIdx);
+        if (record == null)
+            return;
+        else
+        {
+            record.CharacterLeader = SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].DisplayedCharacter;
+            record.CharacterSecond = SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Second].DisplayedCharacter;
+            record.CharacterThird = SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].DisplayedCharacter;
+        }
     }
 
     enum SelectCharacterDisplaySlot

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace DatabaseSystem
 {
-    public class JsonManager
+    public partial class JsonManager
     {
         public static JsonManager Instance { get; private set; } = new JsonManager();
         public Dictionary<int, JsonDatable> JsonDatas { get; private set; } = new Dictionary<int, JsonDatable>();
