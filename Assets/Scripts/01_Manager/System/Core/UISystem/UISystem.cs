@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UISystem : MonoBehaviour, GameSystem
 {
@@ -17,6 +18,7 @@ public class UISystem : MonoBehaviour, GameSystem
     }
     public Camera UICamera;
     public PoolSystem Pool { get; private set; }
+    public EventSystem EventSystem;
     public bool HUD
     {
         get
@@ -47,6 +49,9 @@ public class UISystem : MonoBehaviour, GameSystem
 
         if (UICamera != null)
             DontDestroyOnLoad(UICamera);
+
+        if (EventSystem != null)
+            DontDestroyOnLoad(EventSystem);
 
         Pool = new PoolSystem();
         Pool.Init(m_Pool);
@@ -137,6 +142,7 @@ public class UISystem : MonoBehaviour, GameSystem
     [ContextMenu("# Get All Windows")]
     void GetAllWindows()
     {
+        EditorUtility.SetDirty(this);
         Windows.Clear();
         if (Canvas != null)
         {

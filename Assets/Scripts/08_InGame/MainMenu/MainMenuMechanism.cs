@@ -35,7 +35,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
     {
         float timer = 0f;
         float sensitivity = 0f;
-        Camera mainCam = GameManager.Instance.MainCam;
+        Camera mainCam = GameManager.MainCam;
         Vector3 goalPosition = CameraPosition.transform.position;
 
         while (timer < 4f)
@@ -59,7 +59,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
             if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
             {
                 RaycastHit hitInfo;
-                Ray ray = GameManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
+                Ray ray = GameManager.MainCam.ScreenPointToRay(Input.mousePosition);
 
                 if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
                 {

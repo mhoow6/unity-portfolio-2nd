@@ -32,7 +32,7 @@ public class NickNameInputUI : ConfirmUI
     public override void OnOpened()
     {
         // 메인 카메라 키기
-        GameManager.Instance.MainCam.gameObject.SetActive(true);
+        GameManager.MainCam.gameObject.SetActive(true);
 
         SetData(
             "닉네임 입력(1 ~ 8글자)",

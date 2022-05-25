@@ -334,7 +334,7 @@ namespace DatabaseSystem
         #endregion
 
         // 필드명 제외 리스트
-        string[] exceptFields = DatabaseSystem.JsonDatable.JsonDataExceptFields;
+        string[] exceptFields = DatabaseSystem.JsonDatable.AutomationExcepts;
 
         foreach (var asset in textassets)
         {

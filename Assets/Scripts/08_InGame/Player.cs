@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
             // 캐릭터 움직이기
             var ControllerInput = GameManager.InputSystem.CharacterMoveInput;
 
-            var cam = GameManager.Instance.MainCam;
+            var cam = GameManager.MainCam;
             if (cam != null)
             {
                 Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;

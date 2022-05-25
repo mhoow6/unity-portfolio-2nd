@@ -1,6 +1,5 @@
 using System;
-
-// 파일 데이터 저장용도
+using UnityEngine;
 
 [Serializable]
 public class StageRecordData
@@ -53,8 +52,16 @@ public class StageSet
 }
 
 [Serializable]
-public struct SceneBuildStage
+public struct SceneLoadData
 {
     public int BuildIndex;
     public StageSet Set;
+}
+
+[Serializable]
+public struct SceneData
+{
+    public Camera Camera;
+    public Light DirectionalLight;
+    public SceneType CurrentSceneType;
 }

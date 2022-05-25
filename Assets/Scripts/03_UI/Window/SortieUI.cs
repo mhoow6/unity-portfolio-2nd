@@ -13,8 +13,6 @@ public class SortieUI : UI
 
     [SerializeField] LeaderPassiveInfoDisplay m_LeaderPassiveInfoDisplay;
     [SerializeField] StatusDisplay m_StatusDisplay;
-    
-    Action m_OnBattleButtonClick;
 
     int m_WorldIdx;
     int m_StageIdx;
@@ -23,6 +21,17 @@ public class SortieUI : UI
     {
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
+
+        // UNDONE: 기록 데이터 새로 만들기
+        GameManager.PlayerData.StageRecords.Add(new StageRecordData()
+        {
+            WorldIdx = worldIdx,
+            StageIdx = stageIdx,
+            Clear = false,
+            CharacterLeader = ObjectCode.CHAR_Sparcher,
+            CharacterSecond = ObjectCode.NONE,
+            CharacterThird = ObjectCode.NONE,
+        });
 
         // 플레이어 데이터에서 기록 찾기
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == worldIdx && r.StageIdx == stageIdx);
@@ -52,31 +61,6 @@ public class SortieUI : UI
                 CharacterThird = ObjectCode.NONE,
             });
         }
-
-        // 출격 준비 버튼 세팅
-        m_OnBattleButtonClick = () =>
-        {
-            GameManager.Instance.LoadStage(worldIdx, stageIdx);
-        };
-    }
-
-    #region UI 필수 구현 메소드
-    public override void OnClosed()
-    {
-        
-    }
-
-    public override void OnOpened()
-    {
-        m_StatusDisplay.SetData();
-    }
-    #endregion
-
-    /// <summary> Battle Button-Button-OnClickEvent </summary>
-    public void OnBattleButtonClick()
-    {
-        m_OnBattleButtonClick?.Invoke();
-        m_OnBattleButtonClick = null;
     }
 
     /// <summary> Display의 캐릭터들이 SetData 이후 변경되었을 때 사용 </summary>
@@ -92,6 +76,34 @@ public class SortieUI : UI
             record.CharacterThird = SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].DisplayedCharacter;
         }
     }
+
+    /// <summary> Battle Button-Button-OnClickEvent </summary>
+    public void OnBattleButtonClick()
+    {
+        if (SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].DisplayedCharacter != ObjectCode.NONE)
+            GameManager.Instance.LoadStage(m_WorldIdx, m_StageIdx, () =>
+            {
+                StageManager.Instance.StartStage();
+
+            });
+        else
+        {
+            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+            warning.SetData("리더 한 명이라도 있어야 게임이 가능합니다.");
+        }
+    }
+
+    #region UI 필수 구현 메소드
+    public override void OnClosed()
+    {
+
+    }
+
+    public override void OnOpened()
+    {
+        m_StatusDisplay.SetData();
+    }
+    #endregion
 
     enum SelectCharacterDisplaySlot
     {

@@ -42,13 +42,13 @@ public class WorldSpaceDialogue : MonoBehaviour
         SetBlendSetting();
 
         // 캔버스 카메라 세팅
-        m_Canvas.worldCamera = GameManager.Instance.MainCam;
+        m_Canvas.worldCamera = GameManager.MainCam;
 
         // UI 끄기
         GameManager.UISystem.HUD = false;
 
         // 카메라 연출
-        var brain = GameManager.Instance.BrainCam;
+        var brain = GameManager.BrainCam;
         StartCoroutine(BlendingCoroutine(BlendType.StartToEnd, () => 
         {
             Invoke("FirstDialogueRead", 0.5f);
@@ -57,7 +57,7 @@ public class WorldSpaceDialogue : MonoBehaviour
 
     void SetBlendSetting()
     {
-        var brain = GameManager.Instance.BrainCam;
+        var brain = GameManager.BrainCam;
 
         // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
         GameManager.InputSystem.CameraRotatable = false;
@@ -79,12 +79,12 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // 시작 카메라에서 플레이어 카메라로 돌아갈때 Blend 세팅
         brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_From = m_StartBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = GameManager.Instance.FreeLookCam.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = GameManager.FreeLookCam.name;
     }
 
     IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)
     {
-        var brain = GameManager.Instance.BrainCam;
+        var brain = GameManager.BrainCam;
         switch (type)
         {
             case BlendType.StartToEnd:

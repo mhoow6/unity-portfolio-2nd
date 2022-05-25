@@ -16,6 +16,14 @@ public class Area : MonoBehaviour
                 m_Walls.ForEach(w => w.gameObject.SetActive(false));
         }
     }
+    public bool TriggerActive
+    {
+        set
+        {
+            m_Triggers.ForEach((t) => t.gameObject.SetActive(value));
+        }
+    }
+
     [SerializeField, ReadOnly] int m_CurrentSpawnerPriority = 0;
 
     [SerializeField] List<AreaTrigger> m_Triggers = new List<AreaTrigger>();

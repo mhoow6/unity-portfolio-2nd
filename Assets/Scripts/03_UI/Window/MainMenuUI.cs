@@ -62,7 +62,7 @@ public class MainMenuUI : UI
 
     public override void OnClosed()
     {
-        GameManager.Instance.MainCam.gameObject.SetActive(false);
+        GameManager.MainCam.gameObject.SetActive(false);
 
         // 캐릭터 클릭시 애니메이션 발생 시작
         if (MainMenuMechanism.Instance != null)
@@ -92,7 +92,7 @@ public class MainMenuUI : UI
         m_CharacterBtnRectTransform.localScale = Vector3.one;
 
         // 메인 카메라 키기
-        GameManager.Instance.MainCam.gameObject.SetActive(true);
+        GameManager.MainCam.gameObject.SetActive(true);
 
         // 레벨과 닉네임
         LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";

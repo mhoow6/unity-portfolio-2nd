@@ -55,6 +55,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 
     CanvasGroup m_CanvasGroup;
     SelectCharacterDisplay m_Copied;
+    SelectCharacterDisplay m_Moved;
 
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
@@ -72,13 +73,14 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
             m_CharacterLevel.text = $"Lv. {record.Level}";
             m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.Config.TextureResourcePath}/{row.PortraitName}");
             PortraitVisible = true;
-        }
-            
+        }    
         else
-        {
-            Debug.Log($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
             PortraitVisible = false;
-        }
+    }
+
+    public void LateDestroy(float duration)
+    {
+        StartCoroutine(DestroyCoroutine(duration));
     }
 
     private void Awake()
@@ -91,23 +93,36 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     {
         // 스케일 트위닝 도중 닫힐 경우 문제 발생 -> Scale값 복원
         BackgroundRectTransform.localScale = Vector3.one;
+
+        // 캐릭터 스왑도중 나갈 경우 처리
+        if (m_Copied != null)
+            Destroy(m_Copied);
+        if (m_Moved != null)
+            Destroy(m_Moved);
     }
 
+    IEnumerator DestroyCoroutine(float duration)
+    {
+        float timer = 0f;
+        while (timer <= duration)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(gameObject);
+    }
+
+    #region 이벤트시스템 메소드
     public void OnPointerClick(PointerEventData eventData)
     {
         //var ui = GameManager.UISystem.OpenWindow<CharacterDetailUI>(UIType.CharacterDetail);
         //ui.SetData(m_DisplayedCharacter);
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         var ui = GameManager.UISystem.CurrentWindow;
-        if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE)
+        if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE && m_Moved == null)
         {
             // 자기 자신 복사
             var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
@@ -188,6 +203,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                     {
                         // 자리 옮기는 연출을 보여줄 슬롯 인스턴싱
                         var instanitate = Instantiate(display, sortie.transform);
+                        m_Moved = instanitate;
 
                         // 데이터 세팅
                         instanitate.SetData(DisplayedCharacter);
@@ -245,19 +261,10 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
             m_Background.color = color;
     }
 
-    public void LateDestroy(float duration)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        StartCoroutine(DestroyCoroutine(duration));
+        if (ColorUtility.TryParseHtmlString(m_OnPointerDownColorCode, out Color color))
+            m_Background.color = color;
     }
-
-    IEnumerator DestroyCoroutine(float duration)
-    {
-        float timer = 0f;
-        while (timer <= duration)
-        {
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        Destroy(gameObject);
-    }
+    #endregion
 }

@@ -21,7 +21,7 @@ public class InputSystem : MonoBehaviour, GameSystem
     {
         get
         {
-            var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
+            var cam = GameManager.MainCam.GetComponent<CinemachineBrain>();
             if (cam != null)
             {
                 var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
@@ -43,18 +43,25 @@ public class InputSystem : MonoBehaviour, GameSystem
                 if (Application.platform == RuntimePlatform.Android)
                     StartCoroutine(m_CameraRotate);
 
-                var freelookCam = GameManager.Instance.FreeLookCam;
-                freelookCam.m_XAxis.m_MaxSpeed = 300;
-                freelookCam.m_YAxis.m_MaxSpeed = 2;
+                var freelookCam = GameManager.FreeLookCam;
+                if (freelookCam)
+                {
+                    freelookCam.m_XAxis.m_MaxSpeed = 300;
+                    freelookCam.m_YAxis.m_MaxSpeed = 2;
+                }
             }
             else
             {
                 if (Application.platform == RuntimePlatform.Android)
                     StopCoroutine(m_CameraRotate);
 
-                var freelookCam = GameManager.Instance.FreeLookCam;
-                freelookCam.m_XAxis.m_MaxSpeed = 0;
-                freelookCam.m_YAxis.m_MaxSpeed = 0;
+                var freelookCam = GameManager.FreeLookCam;
+                if (freelookCam)
+                {
+                    freelookCam.m_XAxis.m_MaxSpeed = 0;
+                    freelookCam.m_YAxis.m_MaxSpeed = 0;
+                }
+                
             }     
         }
     }
@@ -80,7 +87,7 @@ public class InputSystem : MonoBehaviour, GameSystem
 
     IEnumerator CameraRotateCoroutine()
     {
-        var cam = GameManager.Instance.MainCam.GetComponent<CinemachineBrain>();
+        var cam = GameManager.MainCam.GetComponent<CinemachineBrain>();
         var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
         float XAxisMaxSpeed = activeCam.m_XAxis.m_MaxSpeed;
         float YAxisMaxSpeed = activeCam.m_YAxis.m_MaxSpeed;

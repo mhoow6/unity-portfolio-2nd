@@ -20,7 +20,8 @@ public enum UIType
     WeaponDetail, // 미구현
     ItemDetail, // 미구현
     CharacterDetail, // 미구현
-    Sortie, // 작업중
+    Sortie,
+    SceneTransition,
 }
 
 public abstract class UI : MonoBehaviour

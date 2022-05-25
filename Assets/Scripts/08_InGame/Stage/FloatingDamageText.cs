@@ -52,7 +52,7 @@ public sealed class FloatingDamageText : MonoBehaviour, IPoolable
     IEnumerator FloatingCoroutine()
     {
         float timer = 0f;
-        var mainCam = GameManager.Instance.MainCam;
+        var mainCam = GameManager.MainCam;
         
         // 텍스트 생성시 애니메이션
         m_Animator.SetTrigger("Active");

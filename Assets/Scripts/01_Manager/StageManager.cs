@@ -10,7 +10,9 @@ public class StageManager : MonoSingleton<StageManager>
     [Header("# 수동 기입")]
     public int WorldIdx;
     public int StageIdx;
+    public SceneType SceneType;
     public Vector3 PlayerSpawnPosition;
+    public Camera PlayerCamera;
     public List<Area> Areas = new List<Area>();
 
     [Header("# 자동 기입")]
@@ -39,34 +41,25 @@ public class StageManager : MonoSingleton<StageManager>
             area.Init();
     }
 
-    private void Start()
+    public void StartStage()
     {
-        if (!GameManager.Instance.IsTestZone)
-        {
-            SpawnPlayer();
+        HandOverPropertiesToGameManager();
+        RegisterMissions();
+        SpawnPlayer();
 
-            // 목표 등록
-            var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
-            List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx};
-            MissionSystem.Register(questIndices);
-        }
-            
+        // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
+        Areas.ForEach((a) => { a.TriggerActive = true; });
     }
 
-    /// <summary> 유저가 고른 캐릭터대로 소환 </summary> ///
-    public void SpawnPlayer()
+    #region StartStage()의 메소드들
+    /// <summary> 유저가 고른 캐릭터대로 소환 </summary>
+    void SpawnPlayer()
     {
         var player = new GameObject("Player").AddComponent<Player>();
         player.gameObject.SetActive(true);
+
         // 현재 스테이지에 맞는 캐릭터 가져오기
-         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
-        // UNDONE: Test
-        //var record = new StageRecordData()
-        //{
-        //    CharacterLeader = ObjectCode.CHAR_Sparcher,
-        //    CharacterSecond = ObjectCode.CHAR_Sparcher,
-        //    CharacterThird = ObjectCode.CHAR_Sparcher
-        //};
+        var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
 
         // 캐릭터 인스턴싱
         string resourcePath = GameManager.Config.CharacterResourcePath;
@@ -80,7 +73,7 @@ public class StageManager : MonoSingleton<StageManager>
             second.gameObject.SetActive(false);
             second.transform.position = PlayerSpawnPosition;
         }
-        
+
         if (record.CharacterThird != ObjectCode.NONE)
         {
             var third = Character.Get(record.CharacterThird, player.transform, resourcePath);
@@ -91,13 +84,29 @@ public class StageManager : MonoSingleton<StageManager>
         player.Init();
 
         // 메인카메라가 현재 캐릭터에 바라보게끔 하기
-        var freelookCam = GameManager.Instance.FreeLookCam;
+        var freelookCam = GameManager.FreeLookCam;
         if (freelookCam)
         {
             freelookCam.Follow = player.CurrentCharacter.transform;
             freelookCam.LookAt = player.CurrentCharacter.transform;
         }
     }
+
+    /// <summary> 긴급 목표를 시스템에 등록 </summary>
+    void RegisterMissions()
+    {
+        var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
+        List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
+        MissionSystem.Register(questIndices);
+    }
+
+    /// <summary> 게임매니저에 변수 넘기기 </summary>
+    void HandOverPropertiesToGameManager()
+    {
+        GameManager.SceneType = SceneType;
+        GameManager.MainCam = PlayerCamera;
+    }
+    #endregion
 
     /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
 	public void UpdatePlayerMissionRecords()
@@ -114,12 +123,6 @@ public class StageManager : MonoSingleton<StageManager>
                 exist.Clear = record.Clear;
             }
         }
-    }
-
-    [ContextMenu("# Get Attached System")]
-    void GetAttachedSystem()
-    {
-        
     }
 }
 

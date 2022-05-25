@@ -10,41 +10,46 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // Global Data
+    // Data
     public static PlayerData PlayerData => Instance.m_PlayerData;
-    public PlayerData m_PlayerData;
+    PlayerData m_PlayerData;
 
     public Player Player;
 
-    Camera m_MainCam;
-    public Camera MainCam
+    #region 카메라
+    public static Camera MainCam
     {
         get
         {
-            return m_MainCam;
+            return Instance.m_MainCam;
         }
         set
         {
-            m_MainCam = value;
+            Instance.m_MainCam = value;
             // 메인카메라를 바꿀때 시네머신 Brain이 있는 경우 적용
             var brain = value.GetComponent<CinemachineBrain>();
             if (brain)
             {
-                m_BrainCam = brain;
+                Instance.m_BrainCam = brain;
                 // 메인카메라를 바꿀때 FreeLook이 있는 경우 적용
-                var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
-                if (freelook)
-                    m_FreeLookCam = freelook;
+                
+                if (brain.ActiveVirtualCamera != null)
+                {
+                    var freelook = brain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
+                    if (freelook)
+                        Instance.m_FreeLookCam = freelook;
+                }
             }
         }
     }
+    [SerializeField] Camera m_MainCam;
+    
     CinemachineBrain m_BrainCam;
-    public CinemachineBrain BrainCam => m_BrainCam;
+    public static CinemachineBrain BrainCam => Instance.m_BrainCam;
 
     CinemachineFreeLook m_FreeLookCam;
-    public CinemachineFreeLook FreeLookCam => m_FreeLookCam;
-
-    [HideInInspector] public Light DirectionalLight;
+    public static CinemachineFreeLook FreeLookCam => Instance.m_FreeLookCam;
+    #endregion
 
     public static SceneType SceneType
     {
@@ -58,9 +63,11 @@ public class GameManager : MonoBehaviour
         }
     }
     [ReadOnly, SerializeField] SceneType m_SceneType;
+
+    // Setting
     public bool AutoTargeting;
 
-    // Game System
+    // System
     public static UISystem UISystem => Instance.m_UISystem;
     [SerializeField] UISystem m_UISystem;
 
@@ -76,11 +83,11 @@ public class GameManager : MonoBehaviour
     Action m_Update;
     Action m_FixedUpdate;
 
-    // 스크립터블 오브젝트
+    // DB
     public static Configuration Config => Instance.m_Config;
     [Header("# 스크립터블 오브젝트")]
     [SerializeField] Configuration m_Config;
-    [SerializeField] SceneBuildIndexStageSet m_SceneBuildIndexStageSet;
+    [SerializeField] SceneLoadDatabase m_SceneBuildIndexStageSet;
 
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
@@ -137,20 +144,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // 씬에 메인카메라, 방향광원을 가지고 있으면 찾아서 게임매니저에 등록
-        Migration migration = FindObjectOfType<Migration>();
-        if (migration)
-            migration.Do();
-
-#if UNITY_EDITOR
-        // 테스트 상황에선 여기서 플레이어 캐릭터를 소환시켜야 정상작동함
-        if (IsTestZone)
-            StageManager.Instance.SpawnPlayer();
-#endif
-
         // UI 상에서 게임 로딩 시작
         if (!TitleLoadingDirectingSkip)
             m_UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
+
+        if (!IsTestZone)
+            m_SceneType = SceneType.MainMenu;
     }
 
     private void FixedUpdate()
@@ -161,15 +160,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         m_Update?.Invoke();
-
-        // UNDONE: 임시
-        if (IsTestZone && Input.GetKeyDown(KeyCode.T))
-            m_UISystem.OpenWindow(UIType.InGame);
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            var window = m_UISystem.OpenWindow<SortieUI>(UIType.Sortie);
-            window.SetData(1, 1);
-        }
     }
 
     void OnApplicationQuit()
@@ -238,25 +228,24 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, onLoadStageCallback));
     }
 
-    public void LoadMainMenu()
-    {
-        StartCoroutine(LoadStageCoroutine(0, 0));
-    }
-
     IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
     {
         yield return null;
 
-        var pair = m_SceneBuildIndexStageSet.Pair.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
-        AsyncOperation async = SceneManager.LoadSceneAsync(pair.BuildIndex, LoadSceneMode.Additive);
+        // UI를 열어 씬이 로드되는 과정 가리기
+        var transition = m_UISystem.OpenWindow<SceneTransitionUI>(UIType.SceneTransition);
 
+        var pair = m_SceneBuildIndexStageSet.Pair.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
+        AsyncOperation async = SceneManager.LoadSceneAsync(pair.BuildIndex, LoadSceneMode.Single);
         while (!async.isDone)
         {
             Debug.Log($"async progress: {async.progress}%\nasync.allowSceneActivation = {async.allowSceneActivation}");
 
+            // 씬이 로드되면
             if (async.progress >= 0.9f)
+            {
                 async.allowSceneActivation = true;
-
+            }
             yield return null;
         }
 
