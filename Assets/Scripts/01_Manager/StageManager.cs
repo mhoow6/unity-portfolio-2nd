@@ -62,7 +62,7 @@ public class StageManager : MonoSingleton<StageManager>
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
 
         // 캐릭터 인스턴싱
-        string resourcePath = GameManager.Config.CharacterResourcePath;
+        string resourcePath = GameManager.GameDevelopSettings.CharacterResourcePath;
         var leader = Character.Get(record.CharacterLeader, player.transform, resourcePath);
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition;

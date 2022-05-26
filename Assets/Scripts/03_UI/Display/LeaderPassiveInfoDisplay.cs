@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class LeaderPassiveInfoDisplay : Display
 {
-    
+    public void SetData(ObjectCode characterCode)
+    {
+
+    }
 }

@@ -35,7 +35,7 @@ public class Projectile : BaseObject, IPoolable
             rhs.Damaged(m_Owner, result.Item1, DamageType.Normal);
 
             // 데미지 텍스트
-            var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.Config.UIResourcePath}/InGame/FloatingDamage");
+            var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingDamage");
             var floatingStartPoint = GameManager.MainCam.WorldToScreenPoint(rhs.Head.position);
             damageText.SetData(result.Item1, result.Item2, floatingStartPoint, rhs.Head.position);
             damageText.StartFloating();

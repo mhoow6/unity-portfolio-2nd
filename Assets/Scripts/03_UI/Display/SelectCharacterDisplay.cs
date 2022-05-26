@@ -10,11 +10,6 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
 {
     
     [HideInInspector] public RectTransform BackgroundRectTransform;
-    public CustomRect Rect;
-    [SerializeField] Image m_CharacterPortrait;
-    [SerializeField] Image m_Background;
-    [SerializeField] Text m_CharacterLevel;
-
     public bool PortraitVisible
     {
         get
@@ -39,7 +34,6 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         }
 
     }
-
     public bool Raycastable
     {
         get
@@ -51,12 +45,27 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
             m_CanvasGroup.blocksRaycasts = value;
         }
     }
+    public bool IsLeaderSlot
+    {
+        get
+        {
+            return m_LeaderIcon.gameObject.activeSelf;
+        }
+        set
+        {
+            m_LeaderIcon.gameObject.SetActive(value);
+        }
+    }
     public ObjectCode DisplayedCharacter { get; private set; } = ObjectCode.NONE;
 
+    [SerializeField] Image m_LeaderIcon;
+    [SerializeField] Image m_CharacterPortrait;
+    [SerializeField] Image m_Background;
+    [SerializeField] Text m_CharacterLevel;
     CanvasGroup m_CanvasGroup;
     SelectCharacterDisplay m_Copied;
     SelectCharacterDisplay m_Moved;
-
+    CustomRect Rect;
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
     const float DISPLAY_SWAP_ALPHA = 0.8f;
@@ -71,7 +80,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         if (record != null)
         {
             m_CharacterLevel.text = $"Lv. {record.Level}";
-            m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.Config.TextureResourcePath}/{row.PortraitName}");
+            m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}");
             PortraitVisible = true;
         }    
         else
@@ -115,6 +124,20 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     #region 이벤트시스템 메소드
     public void OnPointerClick(PointerEventData eventData)
     {
+        // 리더가 선택이 안 되어있으면 리더부터 고르게 할 것
+        var ui = GameManager.UISystem.CurrentWindow;
+        if (ui.Type == UIType.Sortie)
+        {
+            var sortie = ui as SortieUI;
+            var leaderSlot = sortie.SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader];
+            if (!leaderSlot.Equals(this) && leaderSlot.DisplayedCharacter == ObjectCode.NONE)
+            {
+                var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                warning.SetData("파티의 리더부터 골라주세요.");
+                return;
+            }
+        }
+        
         //var ui = GameManager.UISystem.OpenWindow<CharacterDetailUI>(UIType.CharacterDetail);
         //ui.SetData(m_DisplayedCharacter);
     }
@@ -125,7 +148,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE && m_Moved == null)
         {
             // 자기 자신 복사
-            var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
+            var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
             if (display)
             {
                 // 인스턴싱
@@ -198,7 +221,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                     }
 
                     // 자기 자신 복사하여
-                    var tryload = Resources.Load<SelectCharacterDisplay>($"{GameManager.Config.UIResourcePath}/Display/SelectCharacterDisplay");
+                    var tryload = Resources.Load<SelectCharacterDisplay>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
                     if (tryload)
                     {
                         // 자리 옮기는 연출을 보여줄 슬롯 인스턴싱

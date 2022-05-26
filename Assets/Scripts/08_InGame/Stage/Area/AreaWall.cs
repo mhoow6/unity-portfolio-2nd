@@ -35,7 +35,7 @@ public class AreaWall : AreaComponent
             // 움직일 때 새로 이펙트 생성
             if (gm.Player.MoveVector.magnitude != 0 && m_InstantiateEffects.Count < MAXIMUM_INSTANTIATE_EFFECT)
             {
-                var particle = StageManager.PoolSystem.Load<Effect>($"{GameManager.Config.EffectResourcePath}/FX_Direction_Arrows_03");
+                var particle = StageManager.PoolSystem.Load<Effect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/FX_Direction_Arrows_03");
                 Vector3 characterPosition = gm.Player.CurrentCharacter.transform.position;
                 m_InstantiateEffects.Add(particle);
                 particle.transform.SetPositionAndRotation(characterPosition, Quaternion.Euler(m_BlockEffectSpawnRotation));

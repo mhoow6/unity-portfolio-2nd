@@ -83,11 +83,11 @@ public class GameManager : MonoBehaviour
     Action m_Update;
     Action m_FixedUpdate;
 
-    // DB
-    public static Configuration Config => Instance.m_Config;
+    // Scriptable Object
     [Header("# 스크립터블 오브젝트")]
-    [SerializeField] Configuration m_Config;
-    [SerializeField] SceneLoadDatabase m_SceneBuildIndexStageSet;
+    [SerializeField] GameDevelopSettings m_GameDevelopSettings;
+    public static GameDevelopSettings GameDevelopSettings => Instance.m_GameDevelopSettings;
+    [SerializeField] BuildIndexSettings m_BuildIndexSettings;
 
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
@@ -104,14 +104,14 @@ public class GameManager : MonoBehaviour
         m_FixedUpdate = null;
 
         // 스크립터블 오브젝트 로드
-        if (!m_Config)
-            m_Config = Resources.Load<Configuration>("Configuration");
-        m_Config.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
-        m_PlayerData = PlayerData.GetData(Config.SaveFilePath);
-        GameVerison = Config.GameVerison;
+        if (!m_GameDevelopSettings)
+            m_GameDevelopSettings = Resources.Load<GameDevelopSettings>("GameDevelopSettings");
+        m_GameDevelopSettings.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
+        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
+        GameVerison = GameDevelopSettings.GameVerison;
 
-        if (!m_SceneBuildIndexStageSet)
-            m_Config = Resources.Load<Configuration>("SceneBuildIndex-StageSet");
+        if (!m_BuildIndexSettings)
+            m_BuildIndexSettings = Resources.Load<BuildIndexSettings>("BuildIndexSettings");
 
         // System Init
         TableManager.Instance.LoadTable();
@@ -235,7 +235,7 @@ public class GameManager : MonoBehaviour
         // UI를 열어 씬이 로드되는 과정 가리기
         var transition = m_UISystem.OpenWindow<SceneTransitionUI>(UIType.SceneTransition);
 
-        var pair = m_SceneBuildIndexStageSet.Pair.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
+        var pair = m_BuildIndexSettings.Pair.Find(map => map.Set.WorldIdx == worldIdx && map.Set.StageIdx == stageIdx);
         AsyncOperation async = SceneManager.LoadSceneAsync(pair.BuildIndex, LoadSceneMode.Single);
         while (!async.isDone)
         {

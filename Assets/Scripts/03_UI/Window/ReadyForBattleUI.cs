@@ -79,7 +79,7 @@ public class ReadyForBattleUI : UI
         StageDescription.DOText(row.StageDescription, STAGE_DESCRIPTION_SPEED);
 
         // 스테이지 이미지
-        StageImage.sprite = Resources.Load<Sprite>($"{GameManager.Config.TextureResourcePath}/{row.StageImage}");
+        StageImage.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.StageImage}");
 
         // 긴급 목표
         Mission1.SetData(QuestDescription(row.Quest1Idx), mission1Clear);

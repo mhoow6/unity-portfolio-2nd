@@ -180,7 +180,7 @@ public static class Automation
         FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Table/TableInfos.cs", data, () => data = string.Empty);
 
         // µ•¿Ã≈Õ √— ∞πºˆ ¿˙¿Â
-        var scriptableObj = Resources.Load<Configuration>("Configuration");
+        var scriptableObj = Resources.Load<GameDevelopSettings>("Configuration");
         if (scriptableObj != null)
             scriptableObj.CSVDataCount = dataCount;
         EditorUtility.SetDirty(scriptableObj);
@@ -286,7 +286,7 @@ public static class Automation
         string[] separatingStrings = { "\r\n" };
 
         // Configuration
-        var scriptableObj = Resources.Load<Configuration>("Configuration");
+        var scriptableObj = Resources.Load<GameDevelopSettings>("Configuration");
         if (scriptableObj != null)
             scriptableObj.JsonDataCount = 0;
 

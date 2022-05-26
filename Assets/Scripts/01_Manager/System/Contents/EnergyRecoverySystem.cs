@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnergyRecoverySystem : GameSystem
 {
     PlayerData m_PlayerData;
-    const int RECOVERY_MINUTE = 10;
+    const int RECOVERY_MINUTE = 1;
 
     public void Init()
     {
