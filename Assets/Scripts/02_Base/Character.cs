@@ -100,8 +100,6 @@ public class Character : BaseObject
         Agent = GetComponent<NavMeshAgent>();
         Rigidbody = GetComponent<Rigidbody>();
         Collider = GetComponent<Collider>();
-
-        SetMainMenuAnimations();
         SetPropertiesFromTable();
 
         TryAttachToFloor();
@@ -339,24 +337,6 @@ public class Character : BaseObject
         }
         return false;
     }
-
-    #region 메인메뉴 애니메이션
-    // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
-    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
-    bool m_IsAnimationAndDialogSet;
-
-    void SetMainMenuAnimations()
-    {
-        if (m_IsAnimationAndDialogSet)
-            return;
-
-        var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
-        foreach (var row in table)
-            AnimationsWhenUserClick.Add((AniType)row.AniType);
-
-        m_IsAnimationAndDialogSet = true;
-    }
-    #endregion
 
     /// <summary> 테이블로부터 데이터 세팅 </summary>
     void SetPropertiesFromTable()

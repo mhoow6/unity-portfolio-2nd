@@ -151,6 +151,10 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         m_Update?.Invoke();
+
+        // юс╫ц
+        if (Input.GetKeyDown(KeyCode.K))
+            LoadLobby();
     }
 
     void OnApplicationQuit()
@@ -221,7 +225,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadLobby()
     {
-        StartCoroutine(LoadStageCoroutine(0, 0, () => { StageManager.Instance.Init(); }));
+        StartCoroutine(LoadStageCoroutine(0, 0, () => { MainMenuSystem.Instance.Init(false); }));
     }
 
     IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)

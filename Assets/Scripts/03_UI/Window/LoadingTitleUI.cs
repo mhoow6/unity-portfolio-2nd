@@ -127,8 +127,8 @@ public class LoadingTitleUI : UI
         OnLoadComplete += () => { StartCoroutine(WaitForGameStart()); };
 
         // 로딩타이틀 연출시작
-        if (LoadingTitleMechanism.Instance != null)
-            LoadingTitleMechanism.Instance.Init(this);
+        if (LoadingTitleSystem.Instance != null)
+            LoadingTitleSystem.Instance.Init(this);
 
         if (quickMode)
             StartCoroutine(LoadComplete());
@@ -156,16 +156,17 @@ public class LoadingTitleUI : UI
         GameManager.UISystem.CloseWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
-        var mainMenuMechanism = MainMenuMechanism.Instance;
-        if (mainMenuMechanism != null)
-            mainMenuMechanism.Init();
+        var system = MainMenuSystem.Instance;
+        if (system != null)
+            system.Init(true);
 
     }
     #endregion
 
     public override void OnOpened()
     {
-        StartLoading();
+        if (!GameManager.Initialized)
+            StartLoading();
     }
 
     public override void OnClosed()

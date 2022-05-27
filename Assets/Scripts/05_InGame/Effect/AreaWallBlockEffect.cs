@@ -15,7 +15,7 @@ public class AreaWallBlockEffect : Effect
     IEnumerator AlphaBlendingCoroutine()
     {
         float timer = 0f;
-        var originColor = m_EffectColor;
+        var originColor = EffectColor;
 
         // 2초동안 알파블랜딩
         while (timer < INVISIBLE_DURATION)
@@ -24,14 +24,14 @@ public class AreaWallBlockEffect : Effect
             Poolable = false;
 
             timer += Time.deltaTime;
-            var currentColor = m_EffectColor;
+            var currentColor = EffectColor;
 
-            Color desired = Color.Lerp(m_EffectColor, new Color(currentColor.r, currentColor.g, currentColor.b, 0), Time.deltaTime);
-            m_EffectColor = desired;
+            Color desired = Color.Lerp(EffectColor, new Color(currentColor.r, currentColor.g, currentColor.b, 0), Time.deltaTime);
+            EffectColor = desired;
             yield return null;
         }
         m_ParticleSystem.Stop(true);
-        m_EffectColor = originColor;
+        EffectColor = originColor;
         Poolable = true;
         gameObject.SetActive(false);
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
+public class MainMenuSystem : MonoSingleton<MainMenuSystem>
 {
     public Transform CameraPosition;
     public Transform PlayerSpawnPosition;
@@ -27,7 +27,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
     }
 
-    public void Init()
+    public void Init(bool movingCamera)
     {
         if (!GameManager.Instance.IsTestZone)
             GameManager.SceneType = SceneType.MainMenu;
@@ -35,7 +35,11 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
             GameManager.SceneType = SceneType.Test;
 
         SpawnMainCharacter();
-        StartCoroutine(MovingCameraCoroutine());
+
+        if (movingCamera)
+            StartCoroutine(MovingCameraCoroutine());
+        else
+            GettingReadyToStart();
     }
 
     IEnumerator MovingCameraCoroutine()
@@ -52,10 +56,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * CAMERA_MOVE_SPEED);
             yield return null;
         }
-        if (LoadingTitleMechanism.Instance != null)
-            Destroy(LoadingTitleMechanism.Instance.gameObject);
-
-        GameManager.UISystem.OpenWindow(UIType.MainLobby);
+        GettingReadyToStart();
     }
 
     IEnumerator CheckingUserClickCharacterCoroutine()
@@ -71,7 +72,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
                 if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
                 {
                     var player = GameManager.Instance.Player;
-                    var character = player.CurrentCharacter;
+                    var character = player.CurrentCharacter as Playable;
                     if (hitInfo.collider.gameObject.Equals(character.gameObject))
                     {
                         int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
@@ -102,5 +103,15 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         leader.transform.rotation = PlayerSpawnPosition.rotation;
 
         player.Init();
+    }
+
+    void GettingReadyToStart()
+    {
+        GameManager.MainCam.transform.position = CameraPosition.transform.position;
+
+        if (LoadingTitleSystem.Instance != null)
+            Destroy(LoadingTitleSystem.Instance.gameObject);
+
+        GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 }

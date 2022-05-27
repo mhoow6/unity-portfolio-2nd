@@ -5,18 +5,17 @@ using UnityEditor;
 using System;
 
 #region 설명
-// P1과 P2를 잇는 선분에서, t지점의 좌표는 Lerp(P1,P2, t)이다.
-// 4개의 점에서 시작하여, 각 선분의 t 지점의 좌표를 구하는 과정을 1차 보간이라고 함.
-// 3차 보간까지 하여 얻은 점 x가 나오는데, 이때 t를 연속적으로 증가시키며 3차보간을 계속하는 나오는 점들을 이으면 곡선을 만들수 있다.
-// 이것을 베지어 곡선이라 한다.
+// 점 P0과 점 P1를 잇는 선분에서 t지점의 좌표는 M0 = Lerp(P1, P2, t)이다.
+// 여기서 새로운 점 P2을 추가하여 선분P2P3에서의 t지점의 좌표는 M1 = Lerp(P2, P3, t)이다.
+// 이때, M0와 M1을 선분으로 잇게되면 t에따라 선분은 움직이며, 선분위의 임의의 점 B가 그리는 궤적을 2차 베지어 곡선이라 한다.
+// 여기서 점 P3을 추가하여, 같은 과정을 거쳐서 나온 궤적을 3차 베지어 곡선이라 한다.
+// Class BeizerCurve는 3차 베지어 곡선의 원리를 이용하여 궤적을 그리는 클래스이다.
 #endregion
 public class BeizerCurve : MonoBehaviour
 {
     public GameObject TargetObject;
     [Range(0, 1)]
     public float Value;
-
-    Action m_SimulateCB;
 
     public void Simulate(float endTime, Action endCallback = null)
     {

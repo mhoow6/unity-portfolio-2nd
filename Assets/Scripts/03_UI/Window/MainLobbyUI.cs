@@ -65,8 +65,8 @@ public class MainLobbyUI : UI
         GameManager.MainCam.gameObject.SetActive(false);
 
         // 캐릭터 클릭시 애니메이션 발생 시작
-        if (MainMenuMechanism.Instance != null)
-            MainMenuMechanism.Instance.CheckUserClickingTheCharacter = false;
+        if (MainMenuSystem.Instance != null)
+            MainMenuSystem.Instance.CheckUserClickingTheCharacter = false;
     }
 
     public override void OnOpened()
@@ -110,7 +110,7 @@ public class MainLobbyUI : UI
         StatusDisplay.SetData();
 
         // 캐릭터 클릭시 애니메이션 발생 시작
-        if (MainMenuMechanism.Instance != null)
-            MainMenuMechanism.Instance.CheckUserClickingTheCharacter = true;
+        if (MainMenuSystem.Instance != null)
+            MainMenuSystem.Instance.CheckUserClickingTheCharacter = true;
     }
 }

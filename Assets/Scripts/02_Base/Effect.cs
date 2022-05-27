@@ -6,7 +6,7 @@ public class Effect : BaseObject, IPoolable
 {
     public float Duration => m_ParticleSystem.main.duration;
 
-    protected Color m_EffectColor
+    public Color EffectColor
     {
         get
         {
@@ -22,7 +22,7 @@ public class Effect : BaseObject, IPoolable
 
     [SerializeField] protected ParticleSystem m_ParticleSystem;
 
-    /// <summary> Pool에 파티클을 넘겨줄때 해야할 행동 /// </summary>
+    /// <summary> Pool에 파티클을 넘겨줄때 해야할 행동 </summary>
     protected virtual void ReleaseAction() { }
 
     #region 오브젝트 풀링
