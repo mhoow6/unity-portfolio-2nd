@@ -20,8 +20,6 @@ namespace DatabaseSystem
 {
     public class SparcherPassiveSkillData : PassiveSkillable
     {
-        public string Name;
-        public string Description;
         public float IncreaseCriticalRatio;
         public string CharacterType;
         

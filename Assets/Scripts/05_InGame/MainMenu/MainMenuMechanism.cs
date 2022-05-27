@@ -29,6 +29,11 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
 
     public void Init()
     {
+        if (!GameManager.Instance.IsTestZone)
+            GameManager.SceneType = SceneType.MainMenu;
+        else
+            GameManager.SceneType = SceneType.Test;
+
         SpawnMainCharacter();
         StartCoroutine(MovingCameraCoroutine());
     }
@@ -50,7 +55,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
         if (LoadingTitleMechanism.Instance != null)
             Destroy(LoadingTitleMechanism.Instance.gameObject);
 
-        GameManager.UISystem.OpenWindow(UIType.MainMenu);
+        GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
     IEnumerator CheckingUserClickCharacterCoroutine()

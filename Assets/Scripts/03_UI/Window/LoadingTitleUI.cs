@@ -105,6 +105,8 @@ public class LoadingTitleUI : UI
         if (m_LoadingCompleteAnimator != null)
             m_LoadingCompleteAnimator.SetBool("LoadingComplete", true);
 
+        GameManager.Initialized = true;
+
         OnLoadComplete?.Invoke();
         OnLoadComplete = null;
     }

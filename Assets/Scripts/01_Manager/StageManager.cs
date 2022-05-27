@@ -43,12 +43,7 @@ public class StageManager : MonoSingleton<StageManager>
 
     public void Init()
     {
-        HandOverPropertiesToGameManager();
-        RegisterMissions();
-        SpawnPlayer();
-
-        // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
-        Areas.ForEach((a) => { a.TriggerActive = true; });
+        StartCoroutine(InitCoroutine());
     }
 
     /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
@@ -66,6 +61,19 @@ public class StageManager : MonoSingleton<StageManager>
                 exist.Clear = record.Clear;
             }
         }
+    }
+
+    #region Init() 내부 메소드들
+    IEnumerator InitCoroutine()
+    {
+        // 시네머신이 active camera를 가져오는데 1frame이 걸림.
+        yield return null;
+        GivePropertiesToGameManager();
+        RegisterMissionsToSystem();
+        SpawnPlayer();
+
+        // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
+        Areas.ForEach((a) => { a.TriggerActive = true; });
     }
 
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary>
@@ -109,7 +117,7 @@ public class StageManager : MonoSingleton<StageManager>
     }
 
     /// <summary> 긴급 목표를 시스템에 등록 </summary>
-    void RegisterMissions()
+    void RegisterMissionsToSystem()
     {
         var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
         List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
@@ -117,11 +125,12 @@ public class StageManager : MonoSingleton<StageManager>
     }
 
     /// <summary> 게임매니저에 변수 넘기기 </summary>
-    void HandOverPropertiesToGameManager()
+    void GivePropertiesToGameManager()
     {
         GameManager.SceneType = SceneType;
         GameManager.MainCam = PlayerCamera;
     }
+    #endregion
 }
 
 #if UNITY_EDITOR

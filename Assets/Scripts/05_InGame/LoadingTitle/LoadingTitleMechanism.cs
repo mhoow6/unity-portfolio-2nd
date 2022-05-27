@@ -17,6 +17,15 @@ public class LoadingTitleMechanism : MonoSingleton<LoadingTitleMechanism>
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
+    private void Start()
+    {
+        // UI 상에서 게임 로딩 시작
+        if (!GameManager.Instance.TitleLoadingDirectingSkip && !GameManager.Initialized)
+            GameManager.UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
+        else
+            Destroy(gameObject);
+    }
+
     public void Init(LoadingTitleUI ui)
     {
         StartCoroutine(KeepRoadsMovingToCamera(ui));

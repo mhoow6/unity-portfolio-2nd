@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum UIType
 {
-    MainMenu,
+    MainLobby,
     Loading,
     Adventure,
     NickNameInput,

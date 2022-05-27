@@ -61,7 +61,7 @@ public class UISystem : MonoBehaviour, GameSystem
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (m_WindowStack.Peek().Type != UIType.MainMenu)
+            if (m_WindowStack.Peek().Type != UIType.MainLobby)
                 CloseWindow();
             else
             {

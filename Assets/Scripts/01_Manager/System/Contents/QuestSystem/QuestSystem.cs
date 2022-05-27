@@ -45,13 +45,14 @@ public class QuestSystem : GameSystem
 		{
 			int purposeCount = quest.PurposeCount;
 
-			if (QuestRecords.TryGetValue(quest.Index, out var record))
+			if (QuestRecords.ContainsKey(quest.Index))
 				continue;
 			else
 			{
 				var newRecord = new QuestRecordData()
 				{
 					QuestIdx = quest.Index,
+					Type = (QuestType)quest.QuestType,
 					SuccessCount = 0,
 					Clear = false
 				};
@@ -67,13 +68,12 @@ public class QuestSystem : GameSystem
     {
         if (QuestRecords.TryGetValue(questIdx, out var record))
 		{
-			var row = TableManager.Instance.QuestTable.Find(q => q.Index == questIdx);
-			
+			int purposeCount = m_QuestIdxPurposeCountDic[questIdx];
 			record.SuccessCount += addCount;
-			if (record.SuccessCount >= row.PurposeCount)
+			if (record.SuccessCount >= purposeCount)
 			{
-				record.SuccessCount = row.PurposeCount;
-				record.Clear = row.Positive;
+				record.SuccessCount = purposeCount;
+				record.Clear = !record.Clear;
 			}
 		}
     }
@@ -81,10 +81,10 @@ public class QuestSystem : GameSystem
 	/// <summary> 해당 퀘스트 타입의 목표를 달성했다는 보고 용도 </summary>
 	public void ReportAll(QuestType type, int addCount = 1)
     {
-        foreach (var q in TableManager.Instance.QuestTable)
+        foreach (var kvp in QuestRecords)
         {
-            if (q.Type == type)
-                Report(q.Index, addCount);
+			if (kvp.Value.Type == type)
+				Report(kvp.Key, addCount);
         }
     }
 

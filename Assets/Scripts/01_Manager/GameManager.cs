@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
     [ReadOnly, SerializeField] SceneType m_SceneType;
 
     // Setting
+    public static bool Initialized;
     public bool AutoTargeting;
 
     // System
@@ -140,16 +141,6 @@ public class GameManager : MonoBehaviour
 
         // FixedUpdate
         m_FixedUpdate += m_EnergyRecoverySystem.Tick;
-    }
-
-    void Start()
-    {
-        // UI 상에서 게임 로딩 시작
-        if (!TitleLoadingDirectingSkip)
-            m_UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
-
-        if (!IsTestZone)
-            m_SceneType = SceneType.MainMenu;
     }
 
     private void FixedUpdate()
@@ -228,6 +219,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, () => { StageManager.Instance.Init(); }));
     }
 
+    public void LoadLobby()
+    {
+        StartCoroutine(LoadStageCoroutine(0, 0, () => { StageManager.Instance.Init(); }));
+    }
+
     IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
     {
         // UI를 열어 씬이 로드되는 과정 가리기
@@ -246,9 +242,6 @@ public class GameManager : MonoBehaviour
             }
             yield return null;
         }
-
-        // 씬이 안정적으로 로드가 될때까지 시간을 주자
-        yield return new WaitForSeconds(2f);
         onLoadStageCallback?.Invoke();
     }
     #endregion

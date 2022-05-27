@@ -13,6 +13,6 @@ public class BackwardDisplay : Display
     {
         var sys = GameManager.UISystem;
         sys.CloseAllWindow();
-        sys.OpenWindow(UIType.MainMenu);
+        sys.OpenWindow(UIType.MainLobby);
     }
 }

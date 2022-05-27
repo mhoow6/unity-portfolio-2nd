@@ -17,6 +17,7 @@ public class StageRecordData
 public class QuestRecordData
 {
     public int QuestIdx;
+    public QuestType Type;
     public int SuccessCount;
     public bool Clear;
 }

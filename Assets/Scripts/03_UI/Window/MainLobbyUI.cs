@@ -6,7 +6,7 @@ using DatabaseSystem;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 
-public class MainMenuUI : UI
+public class MainLobbyUI : UI
 {
     public Text LevelNickName;
     public Slider ExperienceSlider;
@@ -23,7 +23,7 @@ public class MainMenuUI : UI
     const int LEVELNICKNAME_TWEEN_DELTA = 50;
     const float TWEEN_DURATION = 0.5f;
 
-    public override UIType Type => UIType.MainMenu;
+    public override UIType Type => UIType.MainLobby;
 
     public void OnAdventureBtnClick()
     {
