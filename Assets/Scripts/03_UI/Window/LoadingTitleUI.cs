@@ -126,7 +126,7 @@ public class LoadingTitleUI : UI
 
         // 로딩타이틀 연출시작
         if (LoadingTitleMechanism.Instance != null)
-            LoadingTitleMechanism.Instance.StartRoadMoving(this);
+            LoadingTitleMechanism.Instance.Init(this);
 
         if (quickMode)
             StartCoroutine(LoadComplete());
@@ -153,16 +153,11 @@ public class LoadingTitleUI : UI
         m_LoadingCompleteObject.SetActive(false);
         GameManager.UISystem.CloseWindow();
 
+        // 섬 근처로 카메라가 이동하는 연출 시작
         var mainMenuMechanism = MainMenuMechanism.Instance;
         if (mainMenuMechanism != null)
-        {
-            // 메인메뉴에서 보일 캐릭터 소환
-            mainMenuMechanism.SpawnMainCharacter();
+            mainMenuMechanism.Init();
 
-            // 섬 근처로 카메라가 이동하는 연출 시작
-            mainMenuMechanism.MovingCamera();
-        }
-            
     }
     #endregion
 

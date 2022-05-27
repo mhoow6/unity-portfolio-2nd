@@ -17,7 +17,7 @@ public class LoadingTitleMechanism : MonoSingleton<LoadingTitleMechanism>
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
-    public void StartRoadMoving(LoadingTitleUI ui)
+    public void Init(LoadingTitleUI ui)
     {
         StartCoroutine(KeepRoadsMovingToCamera(ui));
     }

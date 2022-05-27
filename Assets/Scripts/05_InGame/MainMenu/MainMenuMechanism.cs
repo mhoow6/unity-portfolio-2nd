@@ -21,13 +21,15 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
     const float CAMERA_MOVE_SPEED = 0.5F;
     IEnumerator m_CheckUserClickingTheCharacterCoroutine;
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
     }
 
-    public void MovingCamera()
+    public void Init()
     {
+        SpawnMainCharacter();
         StartCoroutine(MovingCameraCoroutine());
     }
 
@@ -80,7 +82,7 @@ public class MainMenuMechanism : MonoSingleton<MainMenuMechanism>
 
     }
 
-    public void SpawnMainCharacter()
+    void SpawnMainCharacter()
     {
         var player = new GameObject("Player").AddComponent<Player>();
         player.gameObject.SetActive(true);
