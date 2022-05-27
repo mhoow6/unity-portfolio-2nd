@@ -77,46 +77,6 @@ public class InGameUI : UI
     /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
     public void SkillButtonSetup(Character character)
     {
-        // 기본공격 세팅
-        if (character.SkillIndices.TryGetValue(SkillType.Attack, out int attackIndex))
-        {
-            AniType aniType = character.GetAniType(attackIndex);
-            m_AttackButton.SetData
-                (
-                    false,
-                    () =>
-                    {
-                        GameManager.Instance.Player.AnimationJobs.Enqueue(aniType);
-                    },
-                    string.Empty
-                );
-        }
-
-        // 스킬 세팅
-        if (character.SkillIndices.TryGetValue(SkillType.Skill, out int skillIndex))
-        {
-            AniType aniType = character.GetAniType(skillIndex);
-            int spCost = character.GetSpCost(skillIndex);
-
-            m_SkillButton.SetData
-                (
-                    true,
-                    () => GameManager.Instance.Player.AnimationJobs.Enqueue(aniType),
-                    string.Empty,
-                    spCost
-                );
-        }
-
-        // 대쉬 세팅
-        if (character.SkillIndices.TryGetValue(SkillType.Dash, out int dashIndex))
-        {
-            AniType aniType = character.GetAniType(dashIndex);
-            m_DashButton.SetData
-                (
-                    false,
-                    () => GameManager.Instance.Player.AnimationJobs.Enqueue(aniType),
-                    string.Empty
-                );
-        }
+        
     }
 }

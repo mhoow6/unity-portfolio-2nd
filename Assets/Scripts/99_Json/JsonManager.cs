@@ -32,6 +32,10 @@ namespace DatabaseSystem
             JSONNode sparcherbasicattackdataNode = skilldatasRoot["SparcherBasicAttackData(JsonDatable)"];
             SparcherBasicAttackData sparcherbasicattackdata = JsonConvert.DeserializeObject<SparcherBasicAttackData>(sparcherbasicattackdataNode.ToString());
             JsonDatas.Add(sparcherbasicattackdata.Index, sparcherbasicattackdata);
+
+            JSONNode sparcherpassiveskilldataNode = skilldatasRoot["SparcherPassiveSkillData(PassiveSkillable)"];
+            SparcherPassiveSkillData sparcherpassiveskilldata = JsonConvert.DeserializeObject<SparcherPassiveSkillData>(sparcherpassiveskilldataNode.ToString());
+            JsonDatas.Add(sparcherpassiveskilldata.Index, sparcherpassiveskilldata);
         }
     }
 }

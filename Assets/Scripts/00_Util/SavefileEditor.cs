@@ -10,7 +10,9 @@ using UnityEngine;
 public class SavefileEditor : EditorWindow
 {
     PlayerData m_PlayerData;
+    string m_PlayerDataString;
     bool m_PlayerDataSave;
+    string m_textAreaString;
 
     ObjectCode m_SelectedCharacter;
 
@@ -42,6 +44,12 @@ public class SavefileEditor : EditorWindow
     {
         m_PlayerData = PlayerData.GetData($"{Application.persistentDataPath}/PlayerData.json");
         m_PlayerDataSave = true;
+
+        if (m_PlayerData != null)
+        {
+            m_PlayerDataString = JsonConvert.SerializeObject(m_PlayerData);
+            m_textAreaString = m_PlayerDataString;
+        }
     }
 
     // The actual window code goes here
@@ -51,10 +59,7 @@ public class SavefileEditor : EditorWindow
         GUILayout.Label("세이브 파일", EditorStyles.boldLabel);
         GUILayout.Space(2);
         if (m_PlayerData != null)
-        {
-            string playerDataString = JsonConvert.SerializeObject(m_PlayerData);
-            EditorGUILayout.TextArea(playerDataString, new GUILayoutOption[] { GUILayout.Height(300) });
-        }
+            m_textAreaString = EditorGUILayout.TextArea(m_textAreaString, new GUILayoutOption[] { GUILayout.Height(300) });
 
         if (GUILayout.Button("세이브파일 조회", new GUILayoutOption[] { GUILayout.Height(30) }))
             m_PlayerData = PlayerData.GetData($"{Application.persistentDataPath}/PlayerData.json");
@@ -115,7 +120,14 @@ public class SavefileEditor : EditorWindow
     private void OnDestroy()
     {
         if (m_PlayerDataSave)
+        {
+            PlayerData deserialized = JsonConvert.DeserializeObject<PlayerData>(m_textAreaString);
+            Debug.Log($"{m_textAreaString}");
+
+            m_PlayerData = deserialized;
             m_PlayerData.Save();
+        }
+            
     }
 }
 #endif

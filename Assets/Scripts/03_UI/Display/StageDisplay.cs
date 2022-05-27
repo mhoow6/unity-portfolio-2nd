@@ -46,6 +46,8 @@ public class StageDisplay : Display
         var stageData = TableManager.Instance.StageTable.Find(q => q.WorldIdx == worldIdx && q.StageIdx == stageIdx);
         var stageRecord = playerData.StageRecords.Find(sr => sr.WorldIdx == worldIdx && sr.StageIdx == stageIdx);
 
+        if (stageData.StageImage != string.Empty)
+            StageImage.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{stageData.StageImage}");
         StageText.text = $"{worldIdx}-{stageIdx}";
         VeilText.text = $"{worldIdx}-{stageIdx}";
         Veil.gameObject.SetActive(false);

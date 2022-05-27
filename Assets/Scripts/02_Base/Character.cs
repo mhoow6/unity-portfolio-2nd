@@ -81,20 +81,16 @@ public class Character : BaseObject
         }
 
     }
-
-    public Dictionary<SkillType, int> SkillIndices = new Dictionary<SkillType, int>();
     #endregion
 
-    public Transform Head;
-
     #region 캐릭터의 기본
-    /// <summary> 캐릭터 스폰시 호출 </summary> ///
+    /// <summary> 캐릭터 스폰시 호출 </summary>
     protected virtual void OnSpawn() { }
 
-    /// <summary> 캐릭터 사망시 호출 </summary> ///
+    /// <summary> 캐릭터 사망시 호출 </summary>
     protected virtual void OnDead() { }
 
-    /// <summary> 캐릭터 살아있을 때 호출 </summary> ///
+    /// <summary> 캐릭터 살아있을 때 호출 </summary>
     protected virtual void OnLive() { }
 
     protected void Start()
@@ -120,7 +116,9 @@ public class Character : BaseObject
     }
     #endregion
 
-    #region 공격
+    #region 공격/스킬
+    public PassiveSkill PassiveSkill;
+
     /// <summary> 애니메이션 이벤트 함수 </summary> ///
     public virtual void Attack(int skillIndex) { }
 
@@ -159,24 +157,6 @@ public class Character : BaseObject
 
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
-    #endregion
-
-    #region 메인메뉴
-    // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
-    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
-    bool m_IsAnimationAndDialogSet;
-
-    void SetMainMenuAnimations()
-    {
-        if (m_IsAnimationAndDialogSet)
-            return;
-
-        var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
-        foreach (var row in table)
-            AnimationsWhenUserClick.Add((AniType)row.AniType);
-
-        m_IsAnimationAndDialogSet = true;
-    }
     #endregion
 
     #region 데미지 계산
@@ -281,22 +261,7 @@ public class Character : BaseObject
     }
     #endregion
 
-    /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary> ///
-    public bool TryAttachToFloor()
-    {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hitInfo;
-
-        int layermask = 1 << LayerMask.NameToLayer("Terrain");
-
-        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
-        {
-            transform.position = hitInfo.point;
-            return true;
-        }
-        return false;
-    }
-
+    #region 팩토리 메소드
     /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary> ///
     public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
     {
@@ -320,7 +285,80 @@ public class Character : BaseObject
         return result;
     }
 
-    /// <summary> 테이블로부터 데이터 세팅 </summary> ///
+    /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
+    public static int GetPassiveIndex(ObjectCode objectCode)
+    {
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2001;
+            default:
+                return -1;
+        }
+    }
+
+    /// <summary> objectCode에 맞는 기본공격 인덱스 </summary>
+    public static int GetAttackIndex(ObjectCode objectCode)
+    {
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2000;
+            default:
+                return -1;
+        }
+    }
+
+    /// <summary> objectCode에 맞는 대쉬 인덱스 </summary>
+    public static int GetDashIndex(ObjectCode objectCode)
+    {
+        return -1;
+    }
+
+    /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
+    public static int GetUltimateIndex(ObjectCode objectCode)
+    {
+        return -1;
+    }
+    #endregion
+
+    public Transform Head;
+
+    /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
+    public bool TryAttachToFloor()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hitInfo;
+
+        int layermask = 1 << LayerMask.NameToLayer("Terrain");
+
+        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
+        {
+            transform.position = hitInfo.point;
+            return true;
+        }
+        return false;
+    }
+
+    #region 메인메뉴 애니메이션
+    // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
+    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
+    bool m_IsAnimationAndDialogSet;
+
+    void SetMainMenuAnimations()
+    {
+        if (m_IsAnimationAndDialogSet)
+            return;
+
+        var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
+        foreach (var row in table)
+            AnimationsWhenUserClick.Add((AniType)row.AniType);
+
+        m_IsAnimationAndDialogSet = true;
+    }
+    #endregion
+
+    /// <summary> 테이블로부터 데이터 세팅 </summary>
     void SetPropertiesFromTable()
     {
         var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
@@ -347,10 +385,11 @@ public class Character : BaseObject
     }
 }
 
-/// <summary> 캐릭터 스킬 타입 </summary> ///
+/// <summary> 캐릭터 스킬 타입 </summary>
 public enum SkillType
 {
     Attack,
     Skill,
     Dash,
+    PassiveSkill
 }

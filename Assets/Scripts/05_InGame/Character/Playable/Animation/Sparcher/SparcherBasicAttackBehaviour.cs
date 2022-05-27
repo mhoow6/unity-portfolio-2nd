@@ -14,7 +14,7 @@ public class SparcherBasicAttackBehaviour : AnimationBehaviour
         m_Player.Controlable = false;
 
         var sparcher = m_Player.CurrentCharacter as Sparcher;
-        var skillData = JsonManager.Instance.JsonDatas[Sparcher.ATTACK_INDEX] as SparcherBasicAttackData;
+        var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(sparcher.Code)] as SparcherBasicAttackData;
 
         // 오토 타겟팅이 켜져있으면 공격거리내의 몬스터에게 몸이 회전한다.
         if (GameManager.Instance.AutoTargeting)

@@ -223,15 +223,13 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 씬 로드
-    public void LoadStage(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
+    public void LoadStage(int worldIdx, int stageIdx)
     {
-        StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, onLoadStageCallback));
+        StartCoroutine(LoadStageCoroutine(worldIdx, stageIdx, () => { StageManager.Instance.Init(); }));
     }
 
     IEnumerator LoadStageCoroutine(int worldIdx, int stageIdx, Action onLoadStageCallback = null)
     {
-        yield return null;
-
         // UI를 열어 씬이 로드되는 과정 가리기
         var transition = m_UISystem.OpenWindow<SceneTransitionUI>(UIType.SceneTransition);
 
@@ -249,6 +247,8 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        // 씬이 안정적으로 로드가 될때까지 시간을 주자
+        yield return new WaitForSeconds(2f);
         onLoadStageCallback?.Invoke();
     }
     #endregion

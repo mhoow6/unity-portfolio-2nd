@@ -50,6 +50,7 @@ public class Area : MonoBehaviour
 
         m_Triggers.ForEach(t =>
         {
+            t.gameObject.SetActive(false);
             t.SetData(AreaIdx);
         });
 

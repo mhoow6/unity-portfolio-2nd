@@ -41,7 +41,7 @@ public class StageManager : MonoSingleton<StageManager>
             area.Init();
     }
 
-    public void StartStage()
+    public void Init()
     {
         HandOverPropertiesToGameManager();
         RegisterMissions();
@@ -51,7 +51,23 @@ public class StageManager : MonoSingleton<StageManager>
         Areas.ForEach((a) => { a.TriggerActive = true; });
     }
 
-    #region StartStage()의 메소드들
+    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
+	public void UpdatePlayerMissionRecords()
+    {
+        var playerData = GameManager.PlayerData;
+        foreach (var record in m_MissionSystem.QuestRecords.Values)
+        {
+            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+            if (exist == null)
+                playerData.QuestRecords.Add(record);
+            else
+            {
+                exist.SuccessCount = record.SuccessCount;
+                exist.Clear = record.Clear;
+            }
+        }
+    }
+
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary>
     void SpawnPlayer()
     {
@@ -105,24 +121,6 @@ public class StageManager : MonoSingleton<StageManager>
     {
         GameManager.SceneType = SceneType;
         GameManager.MainCam = PlayerCamera;
-    }
-    #endregion
-
-    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
-	public void UpdatePlayerMissionRecords()
-    {
-        var playerData = GameManager.PlayerData;
-        foreach (var record in m_MissionSystem.QuestRecords.Values)
-        {
-            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
-            if (exist == null)
-                playerData.QuestRecords.Add(record);
-            else
-            {
-                exist.SuccessCount = record.SuccessCount;
-                exist.Clear = record.Clear;
-            }
-        }
     }
 }
 
