@@ -36,14 +36,14 @@ public class Projectile : BaseObject, IPoolable
 
             // 데미지 텍스트
             var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingDamage");
-            var floatingStartPoint = GameManager.MainCam.WorldToScreenPoint(rhs.Head.position);
+            var floatingStartPoint = StageManager.Instance.MainCam.WorldToScreenPoint(rhs.Head.position);
             damageText.SetData(result.Item1, result.Item2, floatingStartPoint, rhs.Head.position);
             damageText.StartFloating();
 
             OnCollide(other);
 
             // 풀에게 자기 반환
-            StageManager.PoolSystem.Release(this);
+            StageManager.Instance.PoolSystem.Release(this);
         }
     }
 
@@ -75,7 +75,7 @@ public class Projectile : BaseObject, IPoolable
 
             yield return new WaitForFixedUpdate();
         }
-        StageManager.PoolSystem.Release(this);
+        StageManager.Instance.PoolSystem.Release(this);
     }
 
     IEnumerator ShootParabolaCoroutine(Vector3 direction, float moveSpeed, int lifeTime)

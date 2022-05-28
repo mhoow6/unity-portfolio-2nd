@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class LoadingTitleSystem : MonoSingleton<LoadingTitleSystem>
+public class LoadingTitleSystem : MonoBehaviour
 {
     public List<LoadingTitleRoad> Roads = new List<LoadingTitleRoad>();
     public LoadingTitleRoad LastRoad
@@ -17,13 +17,9 @@ public class LoadingTitleSystem : MonoSingleton<LoadingTitleSystem>
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
-    private void Start()
+    private void OnDestroy()
     {
-        // UI 상에서 게임 로딩 시작
-        if (!GameManager.Instance.TitleLoadingDirectingSkip && !GameManager.Initialized)
-            GameManager.UISystem.OpenWindow<LoadingTitleUI>(UIType.Loading);
-        else
-            Destroy(gameObject);
+        LobbyManager.Instance.LoadingTitleSystem = null;
     }
 
     public void Init(LoadingTitleUI ui)

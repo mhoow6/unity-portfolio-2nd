@@ -62,11 +62,10 @@ public class MainLobbyUI : UI
 
     public override void OnClosed()
     {
-        GameManager.MainCam.gameObject.SetActive(false);
+        LobbyManager.Instance.MainCam.gameObject.SetActive(false);
 
         // 캐릭터 클릭시 애니메이션 발생 시작
-        if (MainMenuSystem.Instance != null)
-            MainMenuSystem.Instance.CheckUserClickingTheCharacter = false;
+        LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = false;
     }
 
     public override void OnOpened()
@@ -92,7 +91,7 @@ public class MainLobbyUI : UI
         m_CharacterBtnRectTransform.localScale = Vector3.one;
 
         // 메인 카메라 키기
-        GameManager.MainCam.gameObject.SetActive(true);
+        LobbyManager.Instance.MainCam.gameObject.SetActive(true);
 
         // 레벨과 닉네임
         LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";
@@ -110,7 +109,6 @@ public class MainLobbyUI : UI
         StatusDisplay.SetData();
 
         // 캐릭터 클릭시 애니메이션 발생 시작
-        if (MainMenuSystem.Instance != null)
-            MainMenuSystem.Instance.CheckUserClickingTheCharacter = true;
+        LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = true;
     }
 }

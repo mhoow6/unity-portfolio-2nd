@@ -6,6 +6,6 @@ public class LoadingTitleExit : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        LoadingTitleSystem.Instance.LastRoad.Attach(other.gameObject);
+        LobbyManager.Instance.LoadingTitleSystem.LastRoad.Attach(other.gameObject);
     }
 }

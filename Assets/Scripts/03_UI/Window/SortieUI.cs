@@ -110,7 +110,12 @@ public class SortieUI : UI
             return;
         }
 
-        GameManager.Instance.LoadStage(m_WorldIdx, m_StageIdx);
+        var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == m_WorldIdx && s.StageIdx == m_StageIdx);
+        GameManager.Instance.LoadScene(
+            row.SceneCode,
+            () => { GameManager.UISystem.OpenWindow(UIType.SceneTransition); },
+            null,
+            () => { StageManager.Instance.Init(); });
     }
 
     #region UI 필수 구현 메소드

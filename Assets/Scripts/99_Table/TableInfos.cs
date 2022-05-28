@@ -128,6 +128,8 @@
 		public bool LockContent;
 		/// <summary> 스테이지 썸네일 이름 </summary> ///
 		public string StageImage;
+		/// <summary> Enum </summary> ///
+		public SceneCode SceneCode;
 	}
 
 }

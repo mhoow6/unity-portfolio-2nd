@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MainMenuSystem : MonoSingleton<MainMenuSystem>
+public class MainLobbySystem : MonoBehaviour
 {
     public Transform CameraPosition;
     public Transform PlayerSpawnPosition;
+    public Camera LobbyCamera;
     public bool CheckUserClickingTheCharacter
     {
         set
@@ -21,32 +22,37 @@ public class MainMenuSystem : MonoSingleton<MainMenuSystem>
     const float CAMERA_MOVE_SPEED = 0.5F;
     IEnumerator m_CheckUserClickingTheCharacterCoroutine;
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
     }
 
-    public void Init(bool movingCamera)
+    private void OnDestroy()
     {
-        if (!GameManager.Instance.IsTestZone)
-            GameManager.SceneType = SceneType.MainMenu;
-        else
-            GameManager.SceneType = SceneType.Test;
+        LobbyManager.Instance.MainLobbySystem = null;
+    }
 
+    public void Init()
+    {
+        SpawnMainCharacter();
+        StartCoroutine(MovingCameraCoroutine());
+    }
+
+    public void FastInit()
+    {
         SpawnMainCharacter();
 
-        if (movingCamera)
-            StartCoroutine(MovingCameraCoroutine());
-        else
-            GettingReadyToStart();
+        LobbyManager.Instance.MainCam = LobbyCamera;
+        LobbyManager.Instance.MainCam.transform.position = CameraPosition.transform.position;
+        Destroy(LobbyManager.Instance.LoadingTitleSystem.gameObject);
+        GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
     IEnumerator MovingCameraCoroutine()
     {
         float timer = 0f;
         float sensitivity = 0f;
-        Camera mainCam = GameManager.MainCam;
+        Camera mainCam = LobbyManager.Instance.MainCam;
         Vector3 goalPosition = CameraPosition.transform.position;
 
         while (timer < 4f)
@@ -56,7 +62,10 @@ public class MainMenuSystem : MonoSingleton<MainMenuSystem>
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, goalPosition, sensitivity * CAMERA_MOVE_SPEED);
             yield return null;
         }
-        GettingReadyToStart();
+
+        LobbyManager.Instance.MainCam = LobbyCamera;
+        Destroy(LobbyManager.Instance.LoadingTitleSystem.gameObject);
+        GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
     IEnumerator CheckingUserClickCharacterCoroutine()
@@ -67,11 +76,11 @@ public class MainMenuSystem : MonoSingleton<MainMenuSystem>
             if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)
             {
                 RaycastHit hitInfo;
-                Ray ray = GameManager.MainCam.ScreenPointToRay(Input.mousePosition);
+                Ray ray = LobbyManager.Instance.MainCam.ScreenPointToRay(Input.mousePosition);
 
                 if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
                 {
-                    var player = GameManager.Instance.Player;
+                    var player = LobbyManager.Instance.Player;
                     var character = player.CurrentCharacter as Playable;
                     if (hitInfo.collider.gameObject.Equals(character.gameObject))
                     {
@@ -103,15 +112,5 @@ public class MainMenuSystem : MonoSingleton<MainMenuSystem>
         leader.transform.rotation = PlayerSpawnPosition.rotation;
 
         player.Init();
-    }
-
-    void GettingReadyToStart()
-    {
-        GameManager.MainCam.transform.position = CameraPosition.transform.position;
-
-        if (LoadingTitleSystem.Instance != null)
-            Destroy(LoadingTitleSystem.Instance.gameObject);
-
-        GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 }

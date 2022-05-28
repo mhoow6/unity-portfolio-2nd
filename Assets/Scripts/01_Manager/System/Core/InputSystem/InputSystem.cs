@@ -21,15 +21,9 @@ public class InputSystem : MonoBehaviour, GameSystem
     {
         get
         {
-            var cam = GameManager.MainCam.GetComponent<CinemachineBrain>();
+            var cam = StageManager.Instance.FreeLookCam;
             if (cam != null)
-            {
-                var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
-                if (activeCam != null)
-                {
-                    return new Vector2(activeCam.m_XAxis.m_InputAxisValue, activeCam.m_YAxis.m_InputAxisValue);
-                }
-            }
+                return new Vector2(cam.m_XAxis.m_InputAxisValue, cam.m_YAxis.m_InputAxisValue);
             return Vector2.zero;
         }
     }
@@ -43,7 +37,7 @@ public class InputSystem : MonoBehaviour, GameSystem
                 if (Application.platform == RuntimePlatform.Android)
                     StartCoroutine(m_CameraRotate);
 
-                var freelookCam = GameManager.FreeLookCam;
+                var freelookCam = StageManager.Instance.FreeLookCam;
                 if (freelookCam)
                 {
                     freelookCam.m_XAxis.m_MaxSpeed = 300;
@@ -55,7 +49,7 @@ public class InputSystem : MonoBehaviour, GameSystem
                 if (Application.platform == RuntimePlatform.Android)
                     StopCoroutine(m_CameraRotate);
 
-                var freelookCam = GameManager.FreeLookCam;
+                var freelookCam = StageManager.Instance.FreeLookCam;
                 if (freelookCam)
                 {
                     freelookCam.m_XAxis.m_MaxSpeed = 0;
@@ -87,8 +81,7 @@ public class InputSystem : MonoBehaviour, GameSystem
 
     IEnumerator CameraRotateCoroutine()
     {
-        var cam = GameManager.MainCam.GetComponent<CinemachineBrain>();
-        var activeCam = cam.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineFreeLook>();
+        var activeCam = StageManager.Instance.FreeLookCam;
         float XAxisMaxSpeed = activeCam.m_XAxis.m_MaxSpeed;
         float YAxisMaxSpeed = activeCam.m_YAxis.m_MaxSpeed;
 

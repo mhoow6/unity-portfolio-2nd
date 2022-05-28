@@ -18,17 +18,44 @@ public class LoadingTitleUI : UI
     [SerializeField] Animator m_LoadingCompleteAnimator;
 
     [ReadOnly] public bool IsLoadingComplete;
-    public Action OnLoadComplete { get; set; }
+    public override UIType Type { get => UIType.LoadingTitle; }
 
     int m_DownloadDataPerSecond;
     int m_NeedToLoadDataCount;
     int m_TotalDownloadDataCount;
     int m_PredictRestTime;
-
     int m_FakeDataDownloadPerSecond;
-    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 20;
+    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 10;
 
-    public override UIType Type { get => UIType.Loading; }
+    public override void OnOpened()
+    {
+        IsLoadingComplete = false;
+
+        m_LoadingObject.SetActive(true);
+        m_LoadingCompleteObject.SetActive(false);
+
+        // 다운로드 해야할 데이터 양 가져오기
+        m_NeedToLoadDataCount = GameManager.GameDevelopSettings.DownloadDataCount;
+        m_LoadingSlider.maxValue = m_NeedToLoadDataCount;
+
+        // 로딩타이틀 연출시작
+        LobbyManager.Instance.LoadingTitleSystem.Init(this);
+
+        StartCoroutine(FakeLoadingWithProgress());
+        StartCoroutine(FakeLoadingWithTime());
+    }
+
+    public override void OnClosed()
+    {
+        m_DownloadDataPerSecond = 0;
+        m_NeedToLoadDataCount = 0;
+        m_TotalDownloadDataCount = 0;
+        m_PredictRestTime = 0;
+        m_LoadingPercent.text = string.Format("{0:00.00}", 0);
+        m_RestTime.text = "00:00";
+        m_LoadingSlider.value = 0;
+        IsLoadingComplete = false;
+    }
 
     IEnumerator FakeLoadingWithProgress()
     {
@@ -39,8 +66,6 @@ public class LoadingTitleUI : UI
 
         int minValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND - 1 : m_FakeDataDownloadPerSecond - 1;
         int maxValue = m_FakeDataDownloadPerSecond > DATA_MAXIMUM_DOWNLOAD_PER_SECOND ? DATA_MAXIMUM_DOWNLOAD_PER_SECOND : m_FakeDataDownloadPerSecond;
-        //Debug.Log($"최소 데이터 다운로드: {minValue}");
-        //Debug.Log($"최소 데이터 다운로드: {maxValue}");
 
         while (m_TotalDownloadDataCount < m_NeedToLoadDataCount)
         {
@@ -107,40 +132,9 @@ public class LoadingTitleUI : UI
 
         GameManager.Initialized = true;
 
-        OnLoadComplete?.Invoke();
-        OnLoadComplete = null;
+        StartCoroutine(WaitForGameStart());
     }
 
-    #region 게임타이틀 로딩
-    void StartLoading(bool quickMode = false)
-    {
-        IsLoadingComplete = false;
-
-        m_LoadingObject.SetActive(true);
-        m_LoadingCompleteObject.SetActive(false);
-
-        // 다운로드 해야할 데이터 양 가져오기
-        m_NeedToLoadDataCount = GameManager.GameDevelopSettings.DownloadDataCount;
-        m_LoadingSlider.maxValue = m_NeedToLoadDataCount;
-
-        // 이벤트 설정
-        OnLoadComplete += () => { StartCoroutine(WaitForGameStart()); };
-
-        // 로딩타이틀 연출시작
-        if (LoadingTitleSystem.Instance != null)
-            LoadingTitleSystem.Instance.Init(this);
-
-        if (quickMode)
-            StartCoroutine(LoadComplete());
-        else
-        {
-            StartCoroutine(FakeLoadingWithProgress());
-            StartCoroutine(FakeLoadingWithTime());
-        }
-
-    }
-
-    // 로딩 완료 후 게임 시작 대기
     IEnumerator WaitForGameStart()
     {
         bool ready = false;
@@ -156,28 +150,7 @@ public class LoadingTitleUI : UI
         GameManager.UISystem.CloseWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
-        var system = MainMenuSystem.Instance;
-        if (system != null)
-            system.Init(true);
+        LobbyManager.Instance.MainLobbySystem.Init();
 
-    }
-    #endregion
-
-    public override void OnOpened()
-    {
-        if (!GameManager.Initialized)
-            StartLoading();
-    }
-
-    public override void OnClosed()
-    {
-        m_DownloadDataPerSecond = 0;
-        m_NeedToLoadDataCount = 0;
-        m_TotalDownloadDataCount = 0;
-        m_PredictRestTime = 0;
-        m_LoadingPercent.text = string.Format("{0:00.00}", 0);
-        m_RestTime.text = "00:00";
-        m_LoadingSlider.value = 0;
-        IsLoadingComplete = false;
     }
 }

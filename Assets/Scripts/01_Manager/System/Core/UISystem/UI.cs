@@ -5,7 +5,7 @@ using UnityEngine;
 public enum UIType
 {
     MainLobby,
-    Loading,
+    LoadingTitle,
     Adventure,
     NickNameInput,
     Equipment, // 미구현
@@ -22,6 +22,8 @@ public enum UIType
     CharacterDetail, // 미구현
     Sortie,
     SceneTransition,
+    Logo,
+    BlackFade,
 }
 
 public abstract class UI : MonoBehaviour

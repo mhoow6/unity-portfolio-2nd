@@ -160,7 +160,8 @@ namespace DatabaseSystem
 				info.EnergyCost = int.Parse(datas[7]);
 				info.LockContent = bool.Parse(datas[8]);
 				info.StageImage = datas[9];
-				
+                info.SceneCode = (SceneCode)Enum.Parse(typeof(SceneCode), datas[10]);
+
                 StageTable.Add(info);
                 LoadedData++;
             }

@@ -52,6 +52,6 @@ public class Monster : Character
         AnimationJobs.Enqueue(AniType.DEAD_0);
 
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
-        StageManager.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
+        StageManager.Instance.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
     }
 }

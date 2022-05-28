@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 
     public void Init()
     {
-        GameManager.Instance.Player = this;
+        RegisterToGameSceneManager();
 
         // 제일 첫번째로 활성화된 것이 현재 캐릭터임
         for (int i = 0; i < transform.childCount; i++)
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.Instance.Player = null;
+        ReleaseFromGameManager();
     }
 
     IEnumerator ControlCoroutine()
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
             // 캐릭터 움직이기
             var ControllerInput = GameManager.InputSystem.CharacterMoveInput;
 
-            var cam = GameManager.MainCam;
+            var cam = StageManager.Instance.MainCam;
             if (cam != null)
             {
                 Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
@@ -101,6 +101,44 @@ public class Player : MonoBehaviour
             }
 
             yield return new WaitForFixedUpdate();
+        }
+    }
+
+    void RegisterToGameSceneManager()
+    {
+        switch (GameManager.SceneCode)
+        {
+            case SceneCode.Logo:
+                break;
+            case SceneCode.Lobby:
+                LobbyManager.Instance.Player = this;
+                break;
+            case SceneCode.Stage0101:
+                StageManager.Instance.Player = this;
+                break;
+            case SceneCode.None:
+                break;
+            default:
+                break;
+        }
+    }
+
+    void ReleaseFromGameManager()
+    {
+        switch (GameManager.SceneCode)
+        {
+            case SceneCode.Logo:
+                break;
+            case SceneCode.Lobby:
+                LobbyManager.Instance.Player = null;
+                break;
+            case SceneCode.Stage0101:
+                StageManager.Instance.Player = null;
+                break;
+            case SceneCode.None:
+                break;
+            default:
+                break;
         }
     }
 }

@@ -26,7 +26,9 @@ public class ReadyForBattleUI : UI
     public StatusDisplay StatusDisplay;
 
     // 스테이지 정보
-    StageSet m_StageSet = new StageSet();
+    int m_WorldIdx;
+    int m_StageIdx;
+
 
     public override UIType Type => UIType.ReadyForBattle;
 
@@ -37,7 +39,7 @@ public class ReadyForBattleUI : UI
     public void OnBattleBtnClick()
     {
         var window = GameManager.UISystem.OpenWindow<SortieUI>(UIType.Sortie);
-        window.SetData(m_StageSet.WorldIdx, m_StageSet.StageIdx);
+        window.SetData(m_WorldIdx, m_StageIdx);
     }
     
     public override void OnClosed()
@@ -54,8 +56,8 @@ public class ReadyForBattleUI : UI
     {
         var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == worldIdx && s.StageIdx == stageIdx);
         var playerData = GameManager.PlayerData;
-        m_StageSet.WorldIdx = worldIdx;
-        m_StageSet.StageIdx = stageIdx;
+        m_WorldIdx = worldIdx;
+        m_StageIdx = stageIdx;
 
         // 퀘스트 목표
         var mission1Record = playerData.QuestRecords.Find(r => r.QuestIdx == row.Quest1Idx);

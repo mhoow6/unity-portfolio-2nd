@@ -14,7 +14,7 @@ public class InGameUI : UI
 
     public override void OnClosed()
     {
-        var player = GameManager.Instance.Player;
+        var player = StageManager.Instance.Player;
 
         // 다시 Canvas의 RenderMode를 Screen Space - Camera
         GameManager.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -34,7 +34,7 @@ public class InGameUI : UI
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-            
+
 
         // 유저가 캐릭터 조작불가능
         player.Controlable = false;
@@ -45,7 +45,7 @@ public class InGameUI : UI
 
     public override void OnOpened()
     {
-        var player = GameManager.Instance.Player;
+        var player = StageManager.Instance.Player;
 
         // 컨트롤러 추가
         GameManager.InputSystem.Controllers.Add(m_Joystick);

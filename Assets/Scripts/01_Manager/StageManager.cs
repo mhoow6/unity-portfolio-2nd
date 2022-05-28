@@ -5,36 +5,33 @@ using UnityEditor;
 using UnityEngine;
 using DatabaseSystem;
 
-public class StageManager : MonoSingleton<StageManager>
+public class StageManager : GameSceneManager
 {
+    public static StageManager Instance { get; private set; }
+
     [Header("# 수동 기입")]
     public int WorldIdx;
     public int StageIdx;
-    public SceneType SceneType;
     public Vector3 PlayerSpawnPosition;
-    public Camera PlayerCamera;
     public List<Area> Areas = new List<Area>();
 
     [Header("# 자동 기입")]
     [ReadOnly] public List<Character> Monsters = new List<Character>();
 
     // 시스템
-    public static PoolSystem PoolSystem => Instance.m_PoolSystem;
-    public PoolSystem m_PoolSystem;
+    public PoolSystem PoolSystem;
+    public MissionSystem MissionSystem;
 
-    public static MissionSystem MissionSystem => Instance.m_MissionSystem;
-    MissionSystem m_MissionSystem;
-
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
+        Instance = this;
 
         // 시스템 Init
-        m_PoolSystem = new PoolSystem();
-        m_PoolSystem.Init();
+        PoolSystem = new PoolSystem();
+        PoolSystem.Init();
 
-        m_MissionSystem = new MissionSystem();
-        m_MissionSystem.Init();
+        MissionSystem = new MissionSystem();
+        MissionSystem.Init();
 
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
@@ -50,7 +47,7 @@ public class StageManager : MonoSingleton<StageManager>
 	public void UpdatePlayerMissionRecords()
     {
         var playerData = GameManager.PlayerData;
-        foreach (var record in m_MissionSystem.QuestRecords.Values)
+        foreach (var record in MissionSystem.QuestRecords.Values)
         {
             var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
             if (exist == null)
@@ -68,7 +65,8 @@ public class StageManager : MonoSingleton<StageManager>
     {
         // 시네머신이 active camera를 가져오는데 1frame이 걸림.
         yield return null;
-        GivePropertiesToGameManager();
+        MainCam = m_MainCam;
+
         RegisterMissionsToSystem();
         SpawnPlayer();
 
@@ -80,6 +78,7 @@ public class StageManager : MonoSingleton<StageManager>
     void SpawnPlayer()
     {
         var player = new GameObject("Player").AddComponent<Player>();
+        Player = player;
         player.gameObject.SetActive(true);
 
         // 현재 스테이지에 맞는 캐릭터 가져오기
@@ -106,13 +105,11 @@ public class StageManager : MonoSingleton<StageManager>
         }
 
         player.Init();
-
         // 메인카메라가 현재 캐릭터에 바라보게끔 하기
-        var freelookCam = GameManager.FreeLookCam;
-        if (freelookCam)
+        if (FreeLookCam)
         {
-            freelookCam.Follow = player.CurrentCharacter.transform;
-            freelookCam.LookAt = player.CurrentCharacter.transform;
+            FreeLookCam.Follow = player.CurrentCharacter.transform;
+            FreeLookCam.LookAt = player.CurrentCharacter.transform;
         }
     }
 
@@ -122,13 +119,6 @@ public class StageManager : MonoSingleton<StageManager>
         var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
         List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
         MissionSystem.Register(questIndices);
-    }
-
-    /// <summary> 게임매니저에 변수 넘기기 </summary>
-    void GivePropertiesToGameManager()
-    {
-        GameManager.SceneType = SceneType;
-        GameManager.MainCam = PlayerCamera;
     }
     #endregion
 }

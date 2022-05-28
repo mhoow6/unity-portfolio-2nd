@@ -44,25 +44,3 @@ public class WeaponData
     public float Damage;
     public float Critical;
 }
-
-[Serializable]
-public class StageSet
-{
-    public int WorldIdx;
-    public int StageIdx;
-}
-
-[Serializable]
-public struct SceneLoadData
-{
-    public int BuildIndex;
-    public StageSet Set;
-}
-
-[Serializable]
-public struct SceneData
-{
-    public Camera Camera;
-    public Light DirectionalLight;
-    public SceneType CurrentSceneType;
-}

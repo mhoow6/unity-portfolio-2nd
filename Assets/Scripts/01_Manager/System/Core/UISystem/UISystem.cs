@@ -7,8 +7,13 @@ using UnityEngine.EventSystems;
 public class UISystem : MonoBehaviour, GameSystem
 {
     [ReadOnly] public List<UI> Windows = new List<UI>();
+    [ReadOnly] public List<Toast> Toasts = new List<Toast>();
+
+    public PoolSystem Pool { get; private set; }
+    public EventSystem EventSystem;
+
     public Canvas Canvas;
-    public UI CurrentWindow => m_WindowStack.Peek();
+    public Camera UICamera;
     public bool BlockRaycast
     {
         set
@@ -16,9 +21,6 @@ public class UISystem : MonoBehaviour, GameSystem
             m_BlockWindow.SetActive(value);
         }
     }
-    public Camera UICamera;
-    public PoolSystem Pool { get; private set; }
-    public EventSystem EventSystem;
     public bool HUD
     {
         get
@@ -33,9 +35,13 @@ public class UISystem : MonoBehaviour, GameSystem
 
     public readonly float SCALE_TWEENING_SPEED = 0.2f;
 
+    public UI CurrentWindow => m_WindowStack.Peek();
     Stack<UI> m_WindowStack = new Stack<UI>();
     [SerializeField] GameObject m_BlockWindow;
     [SerializeField] GameObject m_Pool;
+
+    public Toast CurrentToast { get; set; }
+    Queue<Toast> m_Toasts = new Queue<Toast>();
 
     public void Init()
     {
@@ -52,6 +58,10 @@ public class UISystem : MonoBehaviour, GameSystem
 
         if (EventSystem != null)
             DontDestroyOnLoad(EventSystem);
+
+        m_Toasts.Clear();
+        foreach (var toast in Toasts)
+            toast.gameObject.SetActive(false);
 
         Pool = new PoolSystem();
         Pool.Init(m_Pool);
@@ -70,8 +80,23 @@ public class UISystem : MonoBehaviour, GameSystem
             }
 
         }
+
+        if (m_Toasts.Count > 0)
+        {
+            var toast = m_Toasts.Peek();
+            if (toast.Initalize == true && CurrentToast == null)
+            {
+                CurrentToast = toast;
+                toast.transform.SetAsLastSibling();
+                toast.OnOpened();
+                m_Toasts.Dequeue();
+            }
+                
+        }
+            
     }
 
+    #region Windows
     public void OpenWindow(UIType type, bool closeCurrentWindow = true)
     {
         OpenWindow<UI>(type, closeCurrentWindow);
@@ -169,4 +194,54 @@ public class UISystem : MonoBehaviour, GameSystem
         }
         AssetDatabase.Refresh();
     }
+    #endregion
+
+    #region Toasts
+    public Toast OpenToast(ToastType type)
+    {
+        return OpenToast<Toast>(type);
+    }
+
+    public T OpenToast<T>(ToastType type) where T : Toast
+    {
+        var toast = Toasts.Find(toast => toast.Type == type);
+        if (toast != null)
+        {
+            m_Toasts.Enqueue(toast);
+            return toast as T;
+        }
+        return null;
+    }
+
+    [ContextMenu("# Get All Toasts")]
+    void GetAllToasts()
+    {
+        EditorUtility.SetDirty(this);
+        Toasts.Clear();
+        if (Canvas != null)
+        {
+            // Toasts 오브젝트 찾기
+            GameObject root = null;
+            for (int i = 0; i < Canvas.transform.childCount; i++)
+            {
+                var child = Canvas.transform.GetChild(i);
+                if (child.name.Equals("Toasts"))
+                {
+                    root = child.gameObject;
+                    break;
+                }
+            }
+
+            // Toasts 자식들중 UI 붙은 것만 Toasts에 등록
+            for (int i = 0; i < root.transform.childCount; i++)
+            {
+                var child = root.transform.GetChild(i);
+                var comp = child.GetComponent<Toast>();
+                if (comp != null)
+                    Toasts.Add(comp);
+            }
+        }
+        AssetDatabase.Refresh();
+    }
+    #endregion
 }

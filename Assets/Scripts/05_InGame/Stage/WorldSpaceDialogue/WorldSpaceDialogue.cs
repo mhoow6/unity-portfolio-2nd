@@ -42,13 +42,13 @@ public class WorldSpaceDialogue : MonoBehaviour
         SetBlendSetting();
 
         // 캔버스 카메라 세팅
-        m_Canvas.worldCamera = GameManager.MainCam;
+        m_Canvas.worldCamera = StageManager.Instance.MainCam;
 
         // UI 끄기
         GameManager.UISystem.HUD = false;
 
         // 카메라 연출
-        var brain = GameManager.BrainCam;
+        var brain = StageManager.Instance.BrainCam;
         StartCoroutine(BlendingCoroutine(BlendType.StartToEnd, () => 
         {
             Invoke("DialogueSetting", 0.5f);
@@ -103,7 +103,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                         gameObject.SetActive(false);
 
                         GameManager.InputSystem.CameraRotatable = true;
-                        GameManager.Instance.Player.Moveable = true;
+                        StageManager.Instance.Player.Moveable = true;
 
                         // UI 끄기
                         GameManager.UISystem.HUD = true;
@@ -117,14 +117,14 @@ public class WorldSpaceDialogue : MonoBehaviour
 
     void SetBlendSetting()
     {
-        var brain = GameManager.BrainCam;
+        var brain = StageManager.Instance.BrainCam;
 
         // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
         GameManager.InputSystem.CameraRotatable = false;
-        GameManager.Instance.Player.Moveable = false;
+        StageManager.Instance.Player.Moveable = false;
         // 캐릭터 정위치
-        GameManager.Instance.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
-        GameManager.Instance.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
+        StageManager.Instance.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
+        StageManager.Instance.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
 
         // 사전에 세팅한 BlenderSetting을 brain에 적용시킨다.
         brain.m_CustomBlends = m_BlenderSettings;
@@ -139,12 +139,12 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // 시작 카메라에서 플레이어 카메라로 돌아갈때 Blend 세팅
         brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_From = m_StartBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = GameManager.FreeLookCam.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = StageManager.Instance.FreeLookCam.name;
     }
 
     IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)
     {
-        var brain = GameManager.BrainCam;
+        var brain = StageManager.Instance.BrainCam;
         switch (type)
         {
             case BlendType.StartToEnd:

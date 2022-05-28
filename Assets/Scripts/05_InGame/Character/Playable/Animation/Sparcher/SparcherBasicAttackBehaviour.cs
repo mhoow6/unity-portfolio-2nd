@@ -10,7 +10,7 @@ public class SparcherBasicAttackBehaviour : AnimationBehaviour
 
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        m_Player = GameManager.Instance.Player;
+        m_Player = StageManager.Instance.Player;
         m_Player.Controlable = false;
 
         var sparcher = m_Player.CurrentCharacter as Sparcher;

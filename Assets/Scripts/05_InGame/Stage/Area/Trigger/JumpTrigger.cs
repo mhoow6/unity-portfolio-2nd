@@ -18,7 +18,7 @@ public class JumpTrigger : AreaTrigger
         if (other.CompareTag("Player"))
         {
             // 컨트롤 불가능
-            var player = GameManager.Instance.Player;
+            var player = StageManager.Instance.Player;
             player.Controlable = false;
             player.CurrentCharacter.Physic = false;
 
