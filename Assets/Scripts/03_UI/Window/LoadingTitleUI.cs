@@ -25,7 +25,7 @@ public class LoadingTitleUI : UI
     int m_TotalDownloadDataCount;
     int m_PredictRestTime;
     int m_FakeDataDownloadPerSecond;
-    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 10;
+    const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 5;
 
     public override void OnOpened()
     {

@@ -205,6 +205,9 @@
         /// <summary> 스테이지 1-1 </summary> ///
         Stage0101 = 2,
 
+        /// <summary> 테스터 씬 </summary> ///
+        Stage0000 = 3,
+
         /// <summary> 예외 </summary> ///
         None = -1,
 

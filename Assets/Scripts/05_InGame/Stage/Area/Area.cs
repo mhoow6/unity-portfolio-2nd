@@ -33,11 +33,11 @@ public class Area : MonoBehaviour
     bool m_Init;
 
     [Header("# 개발자 옵션"), SerializeField]
-    bool m_Skipable;
+    bool m_AreaActive = true;
 
     public void Init()
     {
-        if (m_Skipable)
+        if (!m_AreaActive)
         {
             m_Triggers.ForEach(e => e.gameObject.SetActive(false));
             m_Walls.ForEach(e => e.gameObject.SetActive(false));

@@ -116,9 +116,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         m_Update?.Invoke();
-
-        if (Input.GetKeyDown(KeyCode.K))
-            LoadScene(SceneCode.Lobby, null, null, () => { LobbyManager.Instance.Init(); });
     }
 
     void OnApplicationQuit()

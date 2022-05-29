@@ -11,16 +11,25 @@ public class Player : MonoBehaviour
         set
         {
             if (value)
+            {
+                StartCoroutine(m_GetInputCoroutine);
                 StartCoroutine(m_ControlCoroutine);
+            }
             else
+            {
+                StopCoroutine(m_GetInputCoroutine);
                 StopCoroutine(m_ControlCoroutine);
+            }
+                
         }
     }
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
     public Vector3 MoveVector { get; private set; }
+    public Vector3 RotateVector { get; private set; }
     public bool Moveable;
 
     IEnumerator m_ControlCoroutine;
+    IEnumerator m_GetInputCoroutine;
 
     const float CHARCTER_ROTATE_SPEED = 20f;
 
@@ -45,6 +54,8 @@ public class Player : MonoBehaviour
         }
 
         m_ControlCoroutine = ControlCoroutine();
+        m_GetInputCoroutine = GetInputCoroutine();
+
         Moveable = true;
     }
 
@@ -60,45 +71,47 @@ public class Player : MonoBehaviour
         ReleaseFromGameManager();
     }
 
-    IEnumerator ControlCoroutine()
+    IEnumerator GetInputCoroutine()
     {
         while (true)
         {
             // 캐릭터 움직이기
-            var ControllerInput = GameManager.InputSystem.CharacterMoveInput;
-
+            var controllerInput = GameManager.InputSystem.CharacterMoveInput;
             var cam = StageManager.Instance.MainCam;
             if (cam != null)
             {
                 Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
                 Vector3 cameraRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
-                Vector3 moveVector = cameraForward * ControllerInput.y + cameraRight * ControllerInput.x;
+                Vector3 moveVector = cameraForward * controllerInput.y + cameraRight * controllerInput.x;
 
-                if (moveVector.magnitude != 0)
-                {
-                    // 회전
-                    float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
-                    Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * CHARCTER_ROTATE_SPEED, 0);
-                    CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(angularVelocity));
+                // 회전값
+                float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
+                Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * CHARCTER_ROTATE_SPEED, 0);
+                RotateVector = angularVelocity;
 
-                    // 애니메이션
-                    AnimationJobs.Enqueue(AniType.RUN_0);
-                }
-                else
-                {
-                    // 애니메이션
-                    AnimationJobs.Enqueue(AniType.IDLE_0);
-                }
-
-                // 이동
-                if (Moveable)
-                {
-                    Vector3 desired = CurrentCharacter.transform.position + (moveVector * CurrentCharacter.Speed * Time.deltaTime);
-                    CurrentCharacter.Rigidbody.MovePosition(desired);
-                }
-
+                // 이동값
                 MoveVector = moveVector;
             }
+            yield return null;
+        }
+    }
+
+    IEnumerator ControlCoroutine()
+    {
+        while (true)
+        {
+            CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(RotateVector));
+            if (MoveVector.magnitude != 0 && Moveable)
+            {
+                // 이동가능하면 움직이자
+                Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.Speed * Time.deltaTime);
+                CurrentCharacter.Rigidbody.MovePosition(desired);
+
+                // 애니메이션
+                AnimationJobs.Enqueue(AniType.RUN_0);
+            }
+            else
+                AnimationJobs.Enqueue(AniType.IDLE_0);
 
             yield return new WaitForFixedUpdate();
         }
