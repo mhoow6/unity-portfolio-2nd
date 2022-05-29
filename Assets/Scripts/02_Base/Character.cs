@@ -21,7 +21,7 @@ public class Character : BaseObject
             Animator.SetFloat(ANISPEED_HASHCODE, value);
         }
     }
-    [ReadOnly] public AniType CurrentAniType;
+    public AniType CurrentAniType { get; private set; }
     #endregion
 
     #region AI
@@ -46,7 +46,7 @@ public class Character : BaseObject
     #endregion
 
     #region 캐릭터 데이터
-    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것</summary> ///
+    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것 </summary>
     public CharacterData Data;
     public string Name { get; private set; }
     public CharacterType Type { get; private set; }
@@ -60,7 +60,7 @@ public class Character : BaseObject
         }
     }
 
-    public float Speed
+    public float MoveSpeed
     {
         get => Data.Speed;
         set
@@ -83,7 +83,52 @@ public class Character : BaseObject
     }
     #endregion
 
-    #region 캐릭터의 기본
+    #region 캐릭터 기본
+    bool Update
+    {
+        set
+        {
+            if (value)
+                StartCoroutine(m_UpdateCoroutine);
+            else
+                StopCoroutine(m_UpdateCoroutine);
+        }
+    }
+    IEnumerator m_UpdateCoroutine;
+
+    public void Init()
+    {
+        Spawn();
+        Update = true;
+    }
+
+    void Spawn()
+    {
+        // 컴포넌트 붙이기
+        Animator = GetComponent<Animator>();
+        Agent = GetComponent<NavMeshAgent>();
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+        gameObject.layer = 6;
+        m_UpdateCoroutine = UpdateCoroutine();
+
+        SetPropertiesFromTable();
+        TryAttachToFloor();
+
+        OnSpawn();
+    }
+
+    IEnumerator UpdateCoroutine()
+    {
+        while (true)
+        {
+            CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
+            OnLive();
+
+            yield return null;
+        }
+    }
+
     /// <summary> 캐릭터 스폰시 호출 </summary>
     protected virtual void OnSpawn() { }
 
@@ -92,34 +137,11 @@ public class Character : BaseObject
 
     /// <summary> 캐릭터 살아있을 때 호출 </summary>
     protected virtual void OnLive() { }
-
-    protected void Start()
-    {
-        // 컴포넌트 붙이기
-        Animator = GetComponent<Animator>();
-        Agent = GetComponent<NavMeshAgent>();
-        Rigidbody = GetComponent<Rigidbody>();
-        Collider = GetComponent<Collider>();
-        SetPropertiesFromTable();
-
-        TryAttachToFloor();
-
-        OnSpawn();
-    }
-    protected void Update()
-    {
-        CurrentAniType = (AniType)Animator.GetInteger(ANITYPE_HASHCODE);
-
-        OnLive();
-    }
     #endregion
 
-    #region 공격/스킬
+    #region 캐릭터 공격/스킬
     public PassiveSkill PassiveSkill;
-
-    /// <summary> 애니메이션 이벤트 함수 </summary> ///
-    public virtual void Attack(int skillIndex) { }
-
+    /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, DamageType damageType)
     {
         Hp -= damage;
@@ -150,11 +172,13 @@ public class Character : BaseObject
         OnDamaged(attacker, damage);
     }
 
-    /// <summary> Damaged 호출 시 해야할 행동 </summary> ///
-    protected virtual void OnDamaged(Character attacker, float updateHp) { }
-
+    /// <summary> 애니메이션 이벤트 함수 </summary>
+    public virtual void Attack(int skillIndex) { }
     public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
     public virtual int GetSpCost(int skillIndex) { return -1; }
+
+    /// <summary> Damaged 호출 시 해야할 행동 </summary>
+    protected virtual void OnDamaged(Character attacker, float updateHp) { }
     #endregion
 
     #region 데미지 계산
@@ -320,6 +344,7 @@ public class Character : BaseObject
     }
     #endregion
 
+    #region 기타
     public Transform Head;
 
     /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
@@ -363,6 +388,7 @@ public class Character : BaseObject
                 EquipWeaponData = null
             };
     }
+    #endregion
 }
 
 /// <summary> 캐릭터 스킬 타입 </summary>

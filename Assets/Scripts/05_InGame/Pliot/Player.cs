@@ -44,10 +44,10 @@ public class Player : MonoBehaviour
             var cha = child.GetComponent<Character>();
             if (cha != null)
             {
-                cha.tag = "Player";
-
                 if (child.gameObject.activeSelf)
                     CurrentCharacter = cha;
+
+                cha.Init();
 
                 Characters.Add(cha);
             }
@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
             if (MoveVector.magnitude != 0 && Moveable)
             {
                 // 이동가능하면 움직이자
-                Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.Speed * Time.deltaTime);
+                Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.MoveSpeed * Time.deltaTime);
                 CurrentCharacter.Rigidbody.MovePosition(desired);
 
                 // 애니메이션
@@ -121,17 +121,11 @@ public class Player : MonoBehaviour
     {
         switch (GameManager.SceneCode)
         {
-            case SceneCode.Logo:
-                break;
             case SceneCode.Lobby:
                 LobbyManager.Instance.Player = this;
                 break;
-            case SceneCode.Stage0101:
-                StageManager.Instance.Player = this;
-                break;
-            case SceneCode.None:
-                break;
             default:
+                StageManager.Instance.Player = this;
                 break;
         }
     }
@@ -140,17 +134,11 @@ public class Player : MonoBehaviour
     {
         switch (GameManager.SceneCode)
         {
-            case SceneCode.Logo:
-                break;
             case SceneCode.Lobby:
                 LobbyManager.Instance.Player = null;
                 break;
-            case SceneCode.Stage0101:
-                StageManager.Instance.Player = null;
-                break;
-            case SceneCode.None:
-                break;
             default:
+                StageManager.Instance.Player = null;
                 break;
         }
     }

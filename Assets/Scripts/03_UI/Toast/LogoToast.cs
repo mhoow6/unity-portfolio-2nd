@@ -14,7 +14,9 @@ public class LogoToast : Toast
 
     protected override void OnClosed()
     {
-        GameManager.Instance.LoadScene(
+        if (!GameManager.Instance.IsTestZone)
+        {
+            GameManager.Instance.LoadScene(
             SceneCode.Lobby,
             () =>
             {
@@ -25,6 +27,24 @@ public class LogoToast : Toast
             {
                 LobbyManager.Instance.Init();
             });
+        }
+        else
+        {
+            GameManager.Instance.LoadScene(
+            SceneCode.Stage0000,
+            () =>
+            {
+                StartCoroutine(FadeOutCoroutine());
+            },
+            null,
+            () =>
+            {
+                StageManager.Instance.Init(() =>
+                {
+                    GameManager.UISystem.OpenWindow(UIType.InGame);
+                });
+            });
+        }
     }
 
     public override void OnOpened()

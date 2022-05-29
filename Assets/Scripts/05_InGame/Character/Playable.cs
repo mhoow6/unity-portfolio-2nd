@@ -5,11 +5,11 @@ using DatabaseSystem;
 
 public class Playable : Character
 {
-    #region 메인메뉴 애니메이션
-    // 메인메뉴에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
+    #region 로비 애니메이션
+    // 로비에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
     public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
     bool m_IsAnimationAndDialogSet;
-    protected void SetMainMenuAnimations(string runtimeAnimatorControllerPath)
+    protected void SetLobbyAnimations(string runtimeAnimatorControllerPath)
     {
         if (m_IsAnimationAndDialogSet)
             return;
@@ -30,6 +30,11 @@ public class Playable : Character
         m_IsAnimationAndDialogSet = true;
     }
     #endregion
+
+    protected override void OnSpawn()
+    {
+        gameObject.tag = "Player";
+    }
 
     protected override void OnDamaged(Character attacker, float updateHp)
     {

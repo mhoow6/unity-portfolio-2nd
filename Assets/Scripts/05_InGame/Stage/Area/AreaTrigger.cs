@@ -5,8 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class AreaTrigger : AreaComponent
 {
+    BoxCollider m_Collider;
     protected bool m_AutoDisable;
     protected bool m_AutoWall;
+
+    protected void Awake()
+    {
+        m_Collider = GetComponent<BoxCollider>();
+        m_Collider.isTrigger = true;
+        gameObject.layer = 6;
+
+        OnAwake();
+    }
 
     protected void OnTriggerEnter(Collider other)
     {
@@ -23,5 +33,6 @@ public class AreaTrigger : AreaComponent
         gameObject.SetActive(!m_AutoDisable);
     }
 
+    protected virtual void OnAwake() { }
     protected virtual void OnAreaEnter(Collider other) { }
 }

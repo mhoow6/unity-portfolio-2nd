@@ -13,8 +13,8 @@ public class SavefileEditor : EditorWindow
     string m_PlayerDataString;
     bool m_PlayerDataSave;
     string m_textAreaString;
-
     ObjectCode m_SelectedCharacter;
+    StageRecordData m_AddStageRecord = new StageRecordData();
 
     [MenuItem("Custom Tools/Editor/Savefile Editor")]
 
@@ -43,13 +43,10 @@ public class SavefileEditor : EditorWindow
     private void Awake()
     {
         m_PlayerData = PlayerData.GetData($"{Application.persistentDataPath}/PlayerData.json");
-        m_PlayerDataSave = true;
+        m_PlayerDataSave = false;
 
         if (m_PlayerData != null)
-        {
-            m_PlayerDataString = JsonConvert.SerializeObject(m_PlayerData);
-            m_textAreaString = m_PlayerDataString;
-        }
+            UpdatePlayerData();
     }
 
     // The actual window code goes here
@@ -61,8 +58,8 @@ public class SavefileEditor : EditorWindow
         if (m_PlayerData != null)
             m_textAreaString = EditorGUILayout.TextArea(m_textAreaString, new GUILayoutOption[] { GUILayout.Height(300) });
 
-        if (GUILayout.Button("세이브파일 조회", new GUILayoutOption[] { GUILayout.Height(30) }))
-            m_PlayerData = PlayerData.GetData($"{Application.persistentDataPath}/PlayerData.json");
+        if (GUILayout.Button("세이브파일 갱신", new GUILayoutOption[] { GUILayout.Height(30) }))
+            UpdatePlayerData();
 
         m_PlayerDataSave = EditorGUILayout.Toggle("종료시 세이브 파일 저장", m_PlayerDataSave, new GUILayoutOption[] { GUILayout.Width(100) });
         #endregion
@@ -113,14 +110,28 @@ public class SavefileEditor : EditorWindow
             m_PlayerData.Save();
         }
         #endregion
+
+        GUILayout.Space(10);
+
+        #region 스테이지 기록
+        GUILayout.Label("스테이지 기록", EditorStyles.boldLabel);
+        GUILayout.Space(2);
+
+        if (GUILayout.Button("스테이지 기록 추가하기", new GUILayoutOption[] { GUILayout.Height(30) }))
+        {
+            StageRecordWizard.SetData(m_PlayerData);
+            StageRecordWizard.Open();
+        }
+            
+        #endregion
     }
-
-
 
     private void OnDestroy()
     {
         if (m_PlayerDataSave)
         {
+            UpdatePlayerData();
+
             PlayerData deserialized = JsonConvert.DeserializeObject<PlayerData>(m_textAreaString);
             Debug.Log($"{m_textAreaString}");
 
@@ -128,6 +139,12 @@ public class SavefileEditor : EditorWindow
             m_PlayerData.Save();
         }
             
+    }
+
+    void UpdatePlayerData()
+    {
+        m_PlayerDataString = JsonConvert.SerializeObject(m_PlayerData);
+        m_textAreaString = m_PlayerDataString;
     }
 }
 #endif

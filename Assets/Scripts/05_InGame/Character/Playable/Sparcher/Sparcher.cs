@@ -11,7 +11,9 @@ public class Sparcher : Playable
 
     protected override void OnSpawn()
     {
-        SetMainMenuAnimations("Sparcher/MainLobby_Sparcher");
+        base.OnSpawn();
+
+        SetLobbyAnimations("Sparcher/MainLobby_Sparcher");
 
         // SkillDatas.json
         PassiveSkill = new SparcherPassiveSkill(GetPassiveIndex(Code));

@@ -38,9 +38,9 @@ public class StageManager : GameSceneManager
             area.Init();
     }
 
-    public void Init()
+    public void Init(Action onInitalized = null)
     {
-        StartCoroutine(InitCoroutine());
+        StartCoroutine(InitCoroutine(onInitalized));
     }
 
     /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
@@ -61,7 +61,7 @@ public class StageManager : GameSceneManager
     }
 
     #region Init() 내부 메소드들
-    IEnumerator InitCoroutine()
+    IEnumerator InitCoroutine(Action onInitalized = null)
     {
         // 시네머신이 active camera를 가져오는데 1frame이 걸림.
         yield return null;
@@ -73,6 +73,8 @@ public class StageManager : GameSceneManager
 
         // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
         Areas.ForEach((a) => { a.TriggerActive = true; });
+
+        onInitalized?.Invoke();
     }
 
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary>

@@ -12,21 +12,11 @@ UserSettings/
 Assets/Scenes
 Assets/Resources
 Assets/Animation
-Assets/Customizable Skybox
-Assets/PolygonParticleFX
-Assets/SD_Project
 Assets/Plugins
-Assets/GrassRoadRace
-Assets/GUI PRO Kit - Fantasy RPG
 Assets/TextMesh Pro
 Assets/Fonts
-Assets/Polygonal Metalon
-Assets/Cartoon_Weapon_Pack
-Assets/Alstra Infinite
-Assets/Stylized_Pirate_Ship
+Assets/Unmanaged
 Assets/MeshCombineResult
-Assets/Standard Assets
-Assets/StarterAssets
 
 # Ignore File
 *.dll

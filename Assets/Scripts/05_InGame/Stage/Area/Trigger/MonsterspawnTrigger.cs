@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MonsterspawnTrigger : AreaTrigger
 {
-    private void Awake()
+    protected override void OnAwake()
     {
         m_AutoDisable = true;
         m_AutoWall = true;
