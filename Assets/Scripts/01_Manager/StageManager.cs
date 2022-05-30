@@ -65,10 +65,16 @@ public class StageManager : GameSceneManager
     {
         // 시네머신이 active camera를 가져오는데 1frame이 걸림.
         yield return null;
+
+        // BrainCam, FreeLookCam 할당
         MainCam = m_MainCam;
 
-        RegisterMissions();
-        SetSceneCode();
+        // 긴급임무를 시스템에 등록
+        var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
+        List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
+        MissionSystem.Register(questIndices);
+
+        // 유저 캐릭터 소환
         SpawnPlayer();
         
         // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
@@ -114,25 +120,6 @@ public class StageManager : GameSceneManager
             FreeLookCam.Follow = player.CurrentCharacter.transform;
             FreeLookCam.LookAt = player.CurrentCharacter.transform;
         }
-    }
-
-    /// <summary> 긴급 목표를 시스템에 등록 </summary>
-    void RegisterMissions()
-    {
-        var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
-        List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
-        MissionSystem.Register(questIndices);
-    }
-
-    /// <summary> 월드인덱스와 스테이지인덱스에 알맞는 enum 정해주기 </summary>
-    void SetSceneCode()
-    {
-        if (WorldIdx == 1 && StageIdx == 1)
-            GameManager.SceneCode = SceneCode.Stage0101;
-        else if (WorldIdx == 0 && StageIdx == 0)
-            GameManager.SceneCode = SceneCode.Stage0000;
-        else
-            GameManager.SceneCode = SceneCode.None;
     }
     #endregion
 }

@@ -95,14 +95,7 @@ public class Character : BaseObject
         }
     }
     IEnumerator m_UpdateCoroutine;
-
-    public void Init()
-    {
-        Spawn();
-        Update = true;
-    }
-
-    void Spawn()
+    public void Spawn()
     {
         // 컴포넌트 붙이기
         Animator = GetComponent<Animator>();
@@ -114,6 +107,7 @@ public class Character : BaseObject
 
         SetPropertiesFromTable();
         TryAttachToFloor();
+        Update = true;
 
         OnSpawn();
     }

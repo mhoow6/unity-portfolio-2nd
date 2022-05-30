@@ -96,15 +96,14 @@ public class InputSystem : MonoBehaviour, GameSystem
         }
 
         // È¦µå °¨Áö
-        DetectHoldInput(ref CharacterAttackInput, ref m_AttackInputTimer);
-        DetectHoldInput(ref CharacterDashInput, ref m_DashInputTimer);
-        DetectHoldInput(ref CharacterUltiInput, ref m_UltiInputTimer);
-
-        if (IsHoldInput(m_AttackInputTimer, out bool holdAttack))
+        DetectHoldInput(CharacterAttackInput, ref m_AttackInputTimer);
+        DetectHoldInput(CharacterDashInput, ref m_DashInputTimer);
+        DetectHoldInput(CharacterUltiInput, ref m_UltiInputTimer);
+        if (IsHoldInput(ref m_AttackInputTimer, out bool holdAttack))
             IsHoldAttackInput = holdAttack;
-        if (IsHoldInput(m_DashInputTimer, out bool holdDash))
+        if (IsHoldInput(ref m_DashInputTimer, out bool holdDash))
             IsHoldDashInput = holdDash;
-        if (IsHoldInput(m_UltiInputTimer, out bool holdUlti))
+        if (IsHoldInput(ref m_UltiInputTimer, out bool holdUlti))
             IsHoldUltiInput = holdUlti;
     }
 
@@ -130,7 +129,7 @@ public class InputSystem : MonoBehaviour, GameSystem
         }
     }
 
-    void DetectHoldInput(ref bool signal, ref float timer)
+    void DetectHoldInput(bool signal, ref float timer)
     {
         if (signal)
             timer += Time.deltaTime;
@@ -138,14 +137,14 @@ public class InputSystem : MonoBehaviour, GameSystem
             timer = 0f;
     }
 
-    bool IsHoldInput(float timer, out bool result)
+    bool IsHoldInput(ref float timer, out bool result)
     {
         if (timer > 1f)
         {
-            result = false;
-            return false;
+            result = true;
+            return true;
         }
-        result = true;
-        return true;
+        result = false;
+        return false;
     }
 }

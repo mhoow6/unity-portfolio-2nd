@@ -38,17 +38,17 @@ public class Player : MonoBehaviour
     {
         RegisterToManager();
 
-        // 제일 첫번째로 활성화된 것이 현재 캐릭터임
+        // 제일 첫번째 자식이 리더이다.
         for (int i = 0; i < transform.childCount; i++)
         {
             var child = transform.GetChild(i);
             var cha = child.GetComponent<Character>();
             if (cha != null)
             {
-                if (child.gameObject.activeSelf)
+                if (i == 0)
                     CurrentCharacter = cha;
 
-                cha.Init();
+                cha.Spawn();
 
                 Characters.Add(cha);
             }
