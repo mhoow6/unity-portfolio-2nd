@@ -11,11 +11,11 @@ public class LeaderPassiveInfoDisplay : Display
 
     public void SetData(ObjectCode characterCode)
     {
-        var data = JsonManager.Instance.JsonDatas[Character.GetPassiveIndex(characterCode)] as PassiveSkillable;
+        var data = JsonManager.Instance.JsonDatas[Character.GetPassiveIndex(characterCode)] as Skillable;
         if (data != null)
         {
-            m_SkillName.text = data.SkillName;
-            m_SkillDescription.text = data.SkillDescription;
+            m_SkillName.text = data.Name;
+            m_SkillDescription.text = data.Description;
         }
         else
         {

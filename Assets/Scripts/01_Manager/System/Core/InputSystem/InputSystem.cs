@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
 public class InputSystem : MonoBehaviour, GameSystem
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
+
+    #region 캐릭터
     public Vector2 CharacterMoveInput
     {
         get
@@ -17,6 +18,17 @@ public class InputSystem : MonoBehaviour, GameSystem
                 return Vector2.zero;
         }
     }
+    public bool CharacterAttackInput;
+    public bool IsHoldAttackInput { get; private set; }
+
+    public bool CharacterDashInput;
+    public bool IsHoldDashInput { get; private set; }
+
+    public bool CharacterUltiInput;
+    public bool IsHoldUltiInput { get; private set; }
+    #endregion
+
+    #region 카메라
     public Vector2 CameraRotateInput
     {
         get
@@ -60,9 +72,14 @@ public class InputSystem : MonoBehaviour, GameSystem
         }
     }
 
+    #endregion
+
     IEnumerator m_CameraRotate;
-    const float ROTATE_BREAK_SENSTIVITY = 2f;
     InputProvider m_MainController;
+    float m_AttackInputTimer = 0f;
+    float m_DashInputTimer = 0f;
+    float m_UltiInputTimer = 0f;
+    const float ROTATE_BREAK_SENSTIVITY = 2f;
     
     public void Init()
     {
@@ -77,6 +94,18 @@ public class InputSystem : MonoBehaviour, GameSystem
             if (ctrl.Input.magnitude != 0)
                 m_MainController = ctrl;
         }
+
+        // 홀드 감지
+        DetectHoldInput(ref CharacterAttackInput, ref m_AttackInputTimer);
+        DetectHoldInput(ref CharacterDashInput, ref m_DashInputTimer);
+        DetectHoldInput(ref CharacterUltiInput, ref m_UltiInputTimer);
+
+        if (IsHoldInput(m_AttackInputTimer, out bool holdAttack))
+            IsHoldAttackInput = holdAttack;
+        if (IsHoldInput(m_DashInputTimer, out bool holdDash))
+            IsHoldDashInput = holdDash;
+        if (IsHoldInput(m_UltiInputTimer, out bool holdUlti))
+            IsHoldUltiInput = holdUlti;
     }
 
     IEnumerator CameraRotateCoroutine()
@@ -99,5 +128,24 @@ public class InputSystem : MonoBehaviour, GameSystem
             }
             yield return null;
         }
+    }
+
+    void DetectHoldInput(ref bool signal, ref float timer)
+    {
+        if (signal)
+            timer += Time.deltaTime;
+        else
+            timer = 0f;
+    }
+
+    bool IsHoldInput(float timer, out bool result)
+    {
+        if (timer > 1f)
+        {
+            result = false;
+            return false;
+        }
+        result = true;
+        return true;
     }
 }

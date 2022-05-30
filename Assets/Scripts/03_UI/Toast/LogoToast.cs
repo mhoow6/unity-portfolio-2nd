@@ -70,9 +70,9 @@ public class LogoToast : Toast
 
     IEnumerator FadeOutCoroutine()
     {
-        while (m_CanvasGroup.alpha > 0.1f)
+        while (m_CanvasGroup.alpha > 0.05f)
         {
-            m_CanvasGroup.alpha = Mathf.Lerp(m_CanvasGroup.alpha, 0, Time.deltaTime);
+            m_CanvasGroup.alpha = Mathf.Lerp(m_CanvasGroup.alpha, 0, Time.deltaTime * 2f);
             yield return null;
         }
         m_CanvasGroup.alpha = 0f;

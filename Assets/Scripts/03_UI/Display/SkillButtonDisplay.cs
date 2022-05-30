@@ -5,17 +5,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SkillButtonDisplay : Display, IPointerDownHandler
+public class SkillButtonDisplay : Display, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] GameObject m_SpRoot;
     [SerializeField] Text m_SpCost;
     [SerializeField] Image m_SkillIcon;
 
     Action m_OnClicked;
+    Action m_OnExited;
 
-    public void SetData(bool useSp, Action onClick, string skillIconPath, int spCost = 0)
+    public void SetData(Action onClick, Action onExit, string skillIconPath, int spCost = 0)
     {
-        if (useSp)
+        if (spCost == 0)
         {
             m_SpRoot.gameObject.SetActive(false);
             m_SpCost.text = $"{spCost}";
@@ -27,13 +28,13 @@ public class SkillButtonDisplay : Display, IPointerDownHandler
         m_OnClicked = onClick;
     }
 
-    public void Press()
+    public void OnPointerDown(PointerEventData eventData)
     {
         m_OnClicked?.Invoke();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
-        m_OnClicked?.Invoke();
+        m_OnExited?.Invoke();
     }
 }

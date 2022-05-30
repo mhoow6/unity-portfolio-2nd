@@ -7,7 +7,7 @@ public class JumpTrigger : AreaTrigger
     [Range(1, 5), SerializeField]
     const float JUMP_TIME = 1;
 
-    private void Awake()
+    protected override void OnAwake()
     {
         m_AutoDisable = false;
         m_AutoWall = false;

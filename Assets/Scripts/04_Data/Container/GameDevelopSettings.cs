@@ -36,4 +36,13 @@ public sealed class GameDevelopSettings : ScriptableObject
     [SerializeField] string m_DatabasePath;
     public string CinemachineBlendSettingsPath => m_CinemachineBlendSettingsPath;
     [SerializeField] string m_CinemachineBlendSettingsPath;
+
+    public int UILayermask => m_UILayermask;
+    [SerializeField] int m_UILayermask;
+    public int TerrainLayermask => m_TerrainLayermask;
+    [SerializeField] int m_TerrainLayermask;
+    public int BaseObjectLayermask => m_BaseObjectLayermask;
+    [SerializeField] int m_BaseObjectLayermask;
+    public int PostProcessLayermask => m_PostProcessLayermask;
+    [SerializeField] int m_PostProcessLayermask;
 }

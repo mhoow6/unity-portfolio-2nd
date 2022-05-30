@@ -84,8 +84,8 @@ public class MainLobbySystem : MonoBehaviour
                     var character = player.CurrentCharacter as Playable;
                     if (hitInfo.collider.gameObject.Equals(character.gameObject))
                     {
-                        int random = Random.Range(0, character.AnimationsWhenUserClick.Count);
-                        AniType randomAni = character.AnimationsWhenUserClick[random];
+                        int random = Random.Range(0, character.LobbyAnimations.Count);
+                        AniType randomAni = character.LobbyAnimations[random];
 
                         player.AnimationJobs.Enqueue(randomAni);
                     }

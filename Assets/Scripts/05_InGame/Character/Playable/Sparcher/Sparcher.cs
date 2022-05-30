@@ -40,28 +40,4 @@ public class Sparcher : Playable
             proj.Shoot(transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
         }
     }
-
-    public override AniType GetAniType(int skillIndex)
-    {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-
-        if (skillIndex == GetAttackIndex(Code))
-        {
-            SparcherBasicAttackData data = origin as SparcherBasicAttackData;
-            return (AniType)data.AniType;
-        }
-        return AniType.NONE;
-    }
-
-    public override int GetSpCost(int skillIndex)
-    {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-
-        if (skillIndex == GetAttackIndex(Code))
-        {
-            SparcherBasicAttackData data = origin as SparcherBasicAttackData;
-            return 0;
-        }
-        return -1;
-    }
 }

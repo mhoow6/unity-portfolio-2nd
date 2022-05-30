@@ -110,6 +110,7 @@ public class SortieUI : UI
             return;
         }
 
+        GameManager.PlayerData.Energy -= m_EnergyCost;
         var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == m_WorldIdx && s.StageIdx == m_StageIdx);
         GameManager.Instance.LoadScene(
             row.SceneCode,

@@ -2,7 +2,17 @@ namespace DatabaseSystem
 {
     public abstract class JsonDatable
     {
-        public static string[] AutomationExcepts = new string[] { "Index", "PurposeCount", "SkillName", "SkillDescription", "QuestType" };
+        public static string[] AutomationExcepts = new string[]
+        { 
+            "Index",
+            "PurposeCount",
+            "Name",
+            "Description",
+            "QuestType",
+            "SpCost",
+            "IconPath",
+        };
+
         public int Index;
     }
 
@@ -12,10 +22,12 @@ namespace DatabaseSystem
         public int PurposeCount;
     }
 
-    public class PassiveSkillable : JsonDatable
+    public class Skillable : JsonDatable
     {
-        public string SkillName;
-        public string SkillDescription;
+        public int SpCost;
+        public string IconPath;
+        public string Name;
+        public string Description;
     }
 }
 

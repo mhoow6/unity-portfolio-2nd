@@ -1,10 +1,8 @@
 ﻿namespace DatabaseSystem
 {
-    public class SparcherBasicAttackData : JsonDatable
+    public class SparcherBasicAttackData : Skillable
     {
         public int AniType;
-        public string Name;
-        public string IconPath;
         public float DamageScale;
         public int ArrowObjectCode;
         public int ArrowLifeTime;
@@ -18,8 +16,10 @@
 
 namespace DatabaseSystem
 {
-    public class SparcherPassiveSkillData : PassiveSkillable
+    public class SparcherPassiveSkillData : Skillable
     {
+        public string SkillName;
+        public string SkillDescription;
         public float IncreaseCriticalRatio;
         public string CharacterType;
         

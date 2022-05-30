@@ -27,7 +27,6 @@ public class InGameUI : UI
         var wasd = player.gameObject.GetComponent<KeyboardController>();
         if (wasd != null)
         {
-            wasd.Dispose();
             Destroy(wasd);
 
             // 커서 다시 보이게 하기
@@ -54,7 +53,6 @@ public class InGameUI : UI
         if (Application.platform != RuntimePlatform.Android)
         {
             var wasd = player.gameObject.AddComponent<KeyboardController>();
-            wasd.ConnectButtons(m_AttackButton, m_DashButton, m_SkillButton);
             GameManager.InputSystem.Controllers.Add(wasd);
 
             // 커서도 편의상 잠궈놓자
@@ -77,6 +75,25 @@ public class InGameUI : UI
     /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
     public void SkillButtonSetup(Character character)
     {
-        
+        int attackIndex = Character.GetAttackIndex(character.Code);
+        m_AttackButton.SetData(
+            () => { GameManager.InputSystem.CharacterAttackInput = true; },
+            () => { GameManager.InputSystem.CharacterAttackInput = false; },
+            character.GetSkillIconPath(attackIndex),
+            character.GetSpCost(attackIndex));
+
+        //int dashIndex = Character.GetDashIndex(character.Code);
+        //m_AttackButton.SetData(
+        //    () => { GameManager.InputSystem.CharacterDashInput = true; },
+        //    () => { GameManager.InputSystem.CharacterDashInput = false; },
+        //    character.GetSkillIconPath(dashIndex),
+        //    character.GetSpCost(dashIndex));
+
+        //int ultiIndex = Character.GetUltimateIndex(character.Code);
+        //m_AttackButton.SetData(
+        //    () => { GameManager.InputSystem.CharacterUltiInput = true; },
+        //    () => { GameManager.InputSystem.CharacterUltiInput = false; },
+        //    character.GetSkillIconPath(ultiIndex),
+        //    character.GetSpCost(ultiIndex));
     }
 }

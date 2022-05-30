@@ -23,10 +23,11 @@ public class Player : MonoBehaviour
                 
         }
     }
+    public bool Moveable;
+
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
     public Vector3 MoveVector { get; private set; }
     public Vector3 RotateVector { get; private set; }
-    public bool Moveable;
 
     IEnumerator m_ControlCoroutine;
     IEnumerator m_GetInputCoroutine;
@@ -35,7 +36,7 @@ public class Player : MonoBehaviour
 
     public void Init()
     {
-        RegisterToGameSceneManager();
+        RegisterToManager();
 
         // 제일 첫번째로 활성화된 것이 현재 캐릭터임
         for (int i = 0; i < transform.childCount; i++)
@@ -53,7 +54,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        m_ControlCoroutine = ControlCoroutine();
+        m_ControlCoroutine = ControlCharacterCoroutine();
         m_GetInputCoroutine = GetInputCoroutine();
 
         Moveable = true;
@@ -68,7 +69,7 @@ public class Player : MonoBehaviour
 
     void OnDestroy()
     {
-        ReleaseFromGameManager();
+        ReleaseFromManager();
     }
 
     IEnumerator GetInputCoroutine()
@@ -96,7 +97,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator ControlCoroutine()
+    IEnumerator ControlCharacterCoroutine()
     {
         while (true)
         {
@@ -117,7 +118,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void RegisterToGameSceneManager()
+    void RegisterToManager()
     {
         switch (GameManager.SceneCode)
         {
@@ -130,7 +131,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ReleaseFromGameManager()
+    void ReleaseFromManager()
     {
         switch (GameManager.SceneCode)
         {

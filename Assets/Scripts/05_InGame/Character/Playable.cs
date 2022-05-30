@@ -7,16 +7,12 @@ public class Playable : Character
 {
     #region 로비 애니메이션
     // 로비에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
-    public List<AniType> AnimationsWhenUserClick { get; protected set; } = new List<AniType>();
-    bool m_IsAnimationAndDialogSet;
+    public List<AniType> LobbyAnimations { get; protected set; } = new List<AniType>();
     protected void SetLobbyAnimations(string runtimeAnimatorControllerPath)
     {
-        if (m_IsAnimationAndDialogSet)
-            return;
-
         var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
         foreach (var row in table)
-            AnimationsWhenUserClick.Add((AniType)row.AniType);
+            LobbyAnimations.Add((AniType)row.AniType);
 
         var currentScene = GameManager.SceneCode;
         var config = GameManager.GameDevelopSettings;
@@ -25,23 +21,25 @@ public class Playable : Character
             case SceneCode.Lobby:
                 Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{config.AnimationControllerResourcePath}/{runtimeAnimatorControllerPath}");
                 break;
+            default:
+                Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{config.AnimationControllerResourcePath}/Sparcher/InGame_Sparcher");
+                break;
         }
-
-        m_IsAnimationAndDialogSet = true;
     }
     #endregion
 
     protected override void OnSpawn()
     {
         gameObject.tag = "Player";
+        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
     }
 
-    protected override void OnDamaged(Character attacker, float updateHp)
+    protected override void OnDamaged(Character attacker, int damage, DamageType damageType)
     {
         StageManager.Instance.MissionSystem.ReportAll(QuestType.GET_DAMAGED);
     }
 
-    protected override void OnDead()
+    protected override void OnDead(Character attacker, int damage, DamageType damageType)
     {
         StageManager.Instance.MissionSystem.ReportAll(QuestType.INCAPCITATED);
     }

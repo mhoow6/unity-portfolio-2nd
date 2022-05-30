@@ -29,11 +29,11 @@ namespace DatabaseSystem
 
             var skilldatas = Resources.Load<TextAsset>("99_Database/Json/SkillDatas");
             JSONNode skilldatasRoot = JSONNode.Parse(skilldatas.text);
-            JSONNode sparcherbasicattackdataNode = skilldatasRoot["SparcherBasicAttackData(JsonDatable)"];
+            JSONNode sparcherbasicattackdataNode = skilldatasRoot["SparcherBasicAttackData(Skillable)"];
             SparcherBasicAttackData sparcherbasicattackdata = JsonConvert.DeserializeObject<SparcherBasicAttackData>(sparcherbasicattackdataNode.ToString());
             JsonDatas.Add(sparcherbasicattackdata.Index, sparcherbasicattackdata);
 
-            JSONNode sparcherpassiveskilldataNode = skilldatasRoot["SparcherPassiveSkillData(PassiveSkillable)"];
+            JSONNode sparcherpassiveskilldataNode = skilldatasRoot["SparcherPassiveSkillData(Skillable)"];
             SparcherPassiveSkillData sparcherpassiveskilldata = JsonConvert.DeserializeObject<SparcherPassiveSkillData>(sparcherpassiveskilldataNode.ToString());
             JsonDatas.Add(sparcherpassiveskilldata.Index, sparcherpassiveskilldata);
         }

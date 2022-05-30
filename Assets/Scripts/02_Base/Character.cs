@@ -133,7 +133,7 @@ public class Character : BaseObject
     protected virtual void OnSpawn() { }
 
     /// <summary> 캐릭터 사망시 호출 </summary>
-    protected virtual void OnDead() { }
+    protected virtual void OnDead(Character attacker, int damage, DamageType damageType) { }
 
     /// <summary> 캐릭터 살아있을 때 호출 </summary>
     protected virtual void OnLive() { }
@@ -141,6 +141,7 @@ public class Character : BaseObject
 
     #region 캐릭터 공격/스킬
     public PassiveSkill PassiveSkill;
+
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, DamageType damageType)
     {
@@ -156,7 +157,7 @@ public class Character : BaseObject
             if (Rigidbody)
                 Rigidbody.isKinematic = true;
 
-            OnDead();
+            OnDead(attacker, damage, damageType);
             return;
         }
 
@@ -169,16 +170,27 @@ public class Character : BaseObject
                 break;
         }
 
-        OnDamaged(attacker, damage);
+        OnDamaged(attacker, damage, damageType);
+    }
+    public int GetSpCost(int skillIndex)
+    {
+        var origin = JsonManager.Instance.JsonDatas[skillIndex];
+        var data = origin as Skillable;
+        return data.SpCost;
+    }
+
+    public string GetSkillIconPath(int skillIndex)
+    {
+        var origin = JsonManager.Instance.JsonDatas[skillIndex];
+        var data = origin as Skillable;
+        return data.IconPath;
     }
 
     /// <summary> 애니메이션 이벤트 함수 </summary>
     public virtual void Attack(int skillIndex) { }
-    public virtual AniType GetAniType(int skillIndex) { return AniType.NONE; }
-    public virtual int GetSpCost(int skillIndex) { return -1; }
 
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
-    protected virtual void OnDamaged(Character attacker, float updateHp) { }
+    protected virtual void OnDamaged(Character attacker, int damage, DamageType damageType) { }
     #endregion
 
     #region 데미지 계산
