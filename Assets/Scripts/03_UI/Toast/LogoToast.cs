@@ -12,7 +12,7 @@ public class LogoToast : Toast
 
     public override ToastType Type => ToastType.Logo;
 
-    protected override void OnClosed()
+    public override void OnClosed()
     {
         if (!GameManager.Instance.IsTestZone)
         {
@@ -58,14 +58,9 @@ public class LogoToast : Toast
                 m_Logo.DOColor(new Color(m_Logo.color.r, m_Logo.color.g, m_Logo.color.b, 0), 2f)
                 .OnComplete(() =>
                 {
-                    Close(false);
+                    GameManager.UISystem.CloseToast(false);
                 });
             });
-    }
-
-    public void SetData()
-    {
-        Initalize = true;
     }
 
     IEnumerator FadeOutCoroutine()

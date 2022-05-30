@@ -213,6 +213,16 @@ public class UISystem : MonoBehaviour, GameSystem
         return null;
     }
 
+    public void CloseToast(bool forceQuit)
+    {
+        GameManager.UISystem.CurrentToast.OnClosed();
+        if (forceQuit)
+        {
+            GameManager.UISystem.CurrentToast.gameObject.SetActive(false);
+            GameManager.UISystem.CurrentToast = null;
+        }
+    }
+
     [ContextMenu("# Get All Toasts")]
     void GetAllToasts()
     {
