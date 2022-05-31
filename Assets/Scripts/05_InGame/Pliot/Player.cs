@@ -107,12 +107,7 @@ public class Player : MonoBehaviour
                 // 이동가능하면 움직이자
                 Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.MoveSpeed * Time.deltaTime);
                 CurrentCharacter.Rigidbody.MovePosition(desired);
-
-                // 애니메이션
-                AnimationJobs.Enqueue(AniType.RUN_0);
             }
-            else
-                AnimationJobs.Enqueue(AniType.IDLE_0);
 
             yield return new WaitForFixedUpdate();
         }

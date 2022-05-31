@@ -24,8 +24,11 @@ public class Spawner : AreaComponent
 
             var comp = mob.GetComponent<Character>();
             if (comp != null)
+            {
+                comp.Spawn();
                 Monsters.Add(comp);
-
+            }
+            
             m_CurrentSpawnCount++;
         }
     }
@@ -41,8 +44,11 @@ public class Spawner : AreaComponent
         var mob = Instantiate(SpawnPrefab, pos);
         var comp = mob.GetComponent<Character>();
         if (comp != null)
+        {
+            comp.Spawn();
             Monsters.Add(comp);
-        
+        }
+            
         m_CurrentSpawnCount++;
     }
 

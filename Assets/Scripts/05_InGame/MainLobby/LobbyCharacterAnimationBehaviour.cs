@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuCharacterStateMachineBehaviour : AnimationBehaviour
+public class LobbyCharacterAnimationBehaviour : AnimationBehaviour
 {
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
