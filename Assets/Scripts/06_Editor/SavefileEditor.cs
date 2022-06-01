@@ -9,12 +9,16 @@ using UnityEngine;
 #if UNITY_EDITOR
 public class SavefileEditor : EditorWindow
 {
+    public static SavefileEditor Instance { get; private set; }
+
     PlayerData m_PlayerData;
     string m_PlayerDataString;
     bool m_PlayerDataSave;
     string m_textAreaString;
     ObjectCode m_SelectedCharacter;
     StageRecordData m_AddStageRecord = new StageRecordData();
+    int m_updateStageRecordWorldIndex;
+    int m_updateStageRecordStageIndex;
 
     [MenuItem("Custom Tools/Editor/Savefile Editor")]
 
@@ -47,6 +51,8 @@ public class SavefileEditor : EditorWindow
 
         if (m_PlayerData != null)
             UpdatePlayerData();
+
+        Instance = this;
     }
 
     // The actual window code goes here
@@ -57,9 +63,6 @@ public class SavefileEditor : EditorWindow
         GUILayout.Space(2);
         if (m_PlayerData != null)
             m_textAreaString = EditorGUILayout.TextArea(m_textAreaString, new GUILayoutOption[] { GUILayout.Height(300) });
-
-        if (GUILayout.Button("세이브파일 갱신", new GUILayoutOption[] { GUILayout.Height(30) }))
-            UpdatePlayerData();
 
         m_PlayerDataSave = EditorGUILayout.Toggle("종료시 세이브 파일 저장", m_PlayerDataSave, new GUILayoutOption[] { GUILayout.Width(100) });
         #endregion
@@ -119,10 +122,20 @@ public class SavefileEditor : EditorWindow
 
         if (GUILayout.Button("스테이지 기록 추가하기", new GUILayoutOption[] { GUILayout.Height(30) }))
         {
-            StageRecordWizard.SetData(m_PlayerData);
-            StageRecordWizard.Open();
+            StageRecordCreateWizard.SetData(m_PlayerData);
+            StageRecordCreateWizard.Open();
         }
-            
+
+        GUILayout.Space(1);
+
+        //m_updateStageRecordWorldIndex = EditorGUILayout.IntField("월드 인덱스", m_updateStageRecordWorldIndex);
+        //m_updateStageRecordStageIndex = EditorGUILayout.IntField("스테이지 인덱스", m_updateStageRecordStageIndex);
+        //if (GUILayout.Button("스테이지 기록 수정하기", new GUILayoutOption[] { GUILayout.Height(30) }))
+        //{
+        //    StageRecordUpdateWizard.SetData(m_PlayerData, m_updateStageRecordWorldIndex, m_updateStageRecordStageIndex);
+        //    StageRecordUpdateWizard.Open();
+        //}
+
         #endregion
     }
 
@@ -130,8 +143,6 @@ public class SavefileEditor : EditorWindow
     {
         if (m_PlayerDataSave)
         {
-            UpdatePlayerData();
-
             PlayerData deserialized = JsonConvert.DeserializeObject<PlayerData>(m_textAreaString);
             Debug.Log($"{m_textAreaString}");
 
@@ -141,7 +152,7 @@ public class SavefileEditor : EditorWindow
             
     }
 
-    void UpdatePlayerData()
+    public void UpdatePlayerData()
     {
         m_PlayerDataString = JsonConvert.SerializeObject(m_PlayerData);
         m_textAreaString = m_PlayerDataString;

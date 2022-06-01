@@ -62,7 +62,42 @@ public class Character : BaseObject
         set
         {
             int hpDelta = value - Data.Hp;
-            Data.Hp = value;
+
+            if (value <= MaxHp)
+                Data.Hp = value;
+            else
+                Data.Hp = MaxHp;
+        }
+    }
+    
+    public int MaxHp
+    {
+        get
+        {
+            var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+            return row.BaseHp + ((int)(row.BaseHp * row.HpIncreaseRatioByLevelUp) * (Data.Level - 1));
+        }
+    }
+
+    public int Sp
+    {
+        get => Data.Sp;
+        set
+        {
+            int spDelta = value - Data.Sp;
+
+            if (value <= MaxSp)
+                Data.Sp = value;
+            else
+                Data.Sp = MaxSp;
+        }
+    }
+    public int MaxSp
+    {
+        get
+        {
+            var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+            return row.BaseSp + ((int)(row.BaseSp * row.SpIncreaseRatioByLevelUp) * (Data.Level - 1));
         }
     }
 
@@ -113,7 +148,9 @@ public class Character : BaseObject
 
         SetPropertiesFromTable();
         TryAttachToFloor();
-        Update = true;
+
+        if (gameObject.activeSelf)
+            Update = true;
 
         OnSpawn();
     }

@@ -11,6 +11,7 @@ public class InGameUI : UI
     [SerializeField] SkillButtonDisplay m_AttackButton;
     [SerializeField] SkillButtonDisplay m_DashButton;
     [SerializeField] SkillButtonDisplay m_SkillButton;
+    [SerializeField] List<CharacterButtonDisplay> m_CharacterButtonDisplays = new List<CharacterButtonDisplay>();
 
     public override void OnClosed()
     {
@@ -69,11 +70,26 @@ public class InGameUI : UI
         // Canvas의 RenderMode가 Screen Space - Camera일 경우 조이스틱이 정상적으로 작동하지 않는 문제 발생
         GameManager.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-        SkillButtonSetup(player.CurrentCharacter);
+        // 스킬 버튼 세팅
+        SettingSkillButtons(player.CurrentCharacter);
+
+        // 교체 캐릭터 버튼 세팅
+        m_CharacterButtonDisplays.ForEach(button => button.gameObject.SetActive(false));
+        for (int i = 0; i < player.Characters.Count; i++)
+        {
+            var character = player.Characters[i];
+            var currentButton = m_CharacterButtonDisplays[i];
+
+            currentButton.SetData(character);
+            if (character.Equals(player.CurrentCharacter))
+                currentButton.gameObject.SetActive(false);
+            else
+                currentButton.gameObject.SetActive(true);
+        }
     }
 
     /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
-    public void SkillButtonSetup(Character character)
+    public void SettingSkillButtons(Character character)
     {
         int attackIndex = Character.GetAttackIndex(character.Code);
         m_AttackButton.SetData(

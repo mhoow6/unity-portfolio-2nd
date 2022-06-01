@@ -4,22 +4,27 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class StageRecordWizard : ScriptableWizard
+public class StageRecordCreateWizard : ScriptableWizard
 {
     static PlayerData m_PlayerData;
     public StageRecordData m_Data = new StageRecordData();
 
-    [MenuItem("Custom Tools/Editor/Stage Record Wizard")]
+    [MenuItem("Custom Tools/Editor/Stage Record Create")]
     public static void Open()
     {
-        DisplayWizard<StageRecordWizard>("스테이지 기록 추가");
+        DisplayWizard<StageRecordCreateWizard>("스테이지 기록 추가");
     }
 
     public static void SetData(PlayerData playerData) => m_PlayerData = playerData;
 
     private void OnWizardCreate()
     {
-        m_PlayerData.StageRecords.Add(m_Data);
+        if (m_PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_Data.WorldIdx && stage.StageIdx == m_Data.StageIdx) == null)
+        {
+            m_PlayerData.StageRecords.Add(m_Data);
+            SavefileEditor.Instance.UpdatePlayerData();
+        }
+            
         Debug.Log($"{m_Data.WorldIdx}-{m_Data.StageIdx}의 기록추가를 시도합니다.");
     }
 }
