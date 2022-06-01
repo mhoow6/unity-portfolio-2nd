@@ -111,10 +111,11 @@ public class SortieUI : UI
         }
 
         GameManager.PlayerData.Energy -= m_EnergyCost;
+        GameManager.UISystem.OpenWindow(UIType.SceneTransition);
         var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == m_WorldIdx && s.StageIdx == m_StageIdx);
         GameManager.Instance.LoadScene(
             row.SceneCode,
-            () => { GameManager.UISystem.OpenWindow(UIType.SceneTransition); },
+            null,
             null,
             () => { StageManager.Instance.Init(); });
     }

@@ -169,13 +169,16 @@
         PROJ_WoodenArrow = 4,
 
         /// <summary> Area 벽에 캐릭터가 닿았을 때 나오는 이펙트 </summary> ///
-        EFFECT_HexagonWall = 5,
+        EFFECT_CharacterHitWall = 5,
 
         /// <summary> 생물속성 해적(몬스터) </summary> ///
         CHAR_MonsterPirate = 6,
 
         /// <summary> 생물속성 해적(플레이어블) </summary> ///
         CHAR_Pirate = 7,
+
+        /// <summary> 캐릭터가 교체되었을 때 나오는 이펙트 </summary> ///
+        EFFECT_CharacterSwap = 8,
 
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,

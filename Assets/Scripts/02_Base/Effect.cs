@@ -22,8 +22,18 @@ public class Effect : BaseObject, IPoolable
 
     [SerializeField] protected ParticleSystem m_ParticleSystem;
 
+    /// <summary> Pool에서 파티클을 가져왔을 때 해야할 행동 </summary>
+    protected virtual void OnPoolLoaded() { }
+
     /// <summary> Pool에 파티클을 넘겨줄때 해야할 행동 </summary>
-    protected virtual void ReleaseAction() { }
+    protected virtual void OnPoolReleased() { }
+
+    protected IEnumerator AutoRelease()
+    {
+        yield return new WaitUntil(() => !m_ParticleSystem.isPlaying);
+        StageManager.Instance.PoolSystem.Release(this);
+        gameObject.SetActive(false);
+    }
 
     #region 오브젝트 풀링
     bool m_Poolable;
@@ -33,12 +43,12 @@ public class Effect : BaseObject, IPoolable
     {
         gameObject.SetActive(true);
         m_ParticleSystem.Play(true);
+        OnPoolLoaded();
     }
 
     public void OnRelease()
     {
-        StopAllCoroutines();
-        ReleaseAction();
+        OnPoolReleased();
     }
     #endregion
 }

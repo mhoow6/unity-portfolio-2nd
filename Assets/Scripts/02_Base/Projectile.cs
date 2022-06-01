@@ -26,6 +26,14 @@ public class Projectile : BaseObject, IPoolable
     #region 충돌 판정
     protected void OnTriggerEnter(Collider other)
     {
+        // 지형 충돌시 풀에게 자기 반환
+        if (other.gameObject.layer == GameManager.GameDevelopSettings.TerrainLayermask)
+        {
+            StageManager.Instance.PoolSystem.Release(this);
+            return;
+        }
+        
+        // 캐릭터와 충돌시
         var rhs = other.GetComponent<Character>();
         if (rhs != null && !other.CompareTag(m_Owner.tag))
         {

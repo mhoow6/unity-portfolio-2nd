@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class AreaWallBlockEffect : Effect
 {
+    public override ObjectCode Code => ObjectCode.EFFECT_CharacterHitWall;
     const float INVISIBLE_DURATION = 2f;
 
-    protected override void ReleaseAction()
+    protected override void OnPoolReleased()
     {
         // 서서히 사라지게 한다.
         StartCoroutine(AlphaBlendingCoroutine());

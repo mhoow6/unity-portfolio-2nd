@@ -13,8 +13,6 @@ public class Sparcher : Playable
     {
         base.OnSpawn();
 
-        SetLobbyAnimations("Sparcher/MainLobby_Sparcher");
-
         // SkillDatas.json
         PassiveSkill = new SparcherPassiveSkill(GetPassiveIndex(Code));
     }

@@ -16,16 +16,21 @@ public class SkillButtonDisplay : Display, IPointerDownHandler, IPointerUpHandle
 
     public void SetData(Action onClick, Action onExit, string skillIconPath, int spCost = 0)
     {
+        var texturePath = GameManager.GameDevelopSettings.TextureResourcePath;
+
         if (spCost == 0)
         {
             m_SpRoot.gameObject.SetActive(false);
             m_SpCost.text = $"{spCost}";
-            m_SkillIcon.sprite = Resources.Load<Sprite>($"02_Texture/{skillIconPath}");
+            m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/{skillIconPath}");
+            if (m_SkillIcon.sprite == null)
+                m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/icon_question");
         }
         else
             m_SpRoot.gameObject.SetActive(true);
 
         m_OnClicked = onClick;
+        m_OnExited = onExit;
     }
 
     public void OnPointerDown(PointerEventData eventData)

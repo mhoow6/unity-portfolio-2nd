@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DatabaseSystem;
 
 public class MainLobbySystem : MonoBehaviour
 {
@@ -106,10 +107,13 @@ public class MainLobbySystem : MonoBehaviour
         var main = GameManager.PlayerData.MainMenuCharacter;
         var resourcePath = GameManager.GameDevelopSettings.CharacterResourcePath;
 
-        var leader = Character.Get(main, player.transform, resourcePath);
+        var leader = Character.Get(main, player.transform, resourcePath) as Playable;
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition.position;
         leader.transform.rotation = PlayerSpawnPosition.rotation;
+
+        var row = TableManager.Instance.CharacterTable.Find(character => character.Code == main);
+        leader.SetLobbyAnimations(row.LobbyAnimatorPath);
 
         player.Init();
     }

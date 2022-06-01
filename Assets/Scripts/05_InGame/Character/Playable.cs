@@ -8,7 +8,7 @@ public class Playable : Character
     #region 로비 애니메이션
     // 로비에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함
     public List<AniType> LobbyAnimations { get; protected set; } = new List<AniType>();
-    protected void SetLobbyAnimations(string runtimeAnimatorControllerPath)
+    public void SetLobbyAnimations(string runtimeAnimatorControllerPath)
     {
         var table = TableManager.Instance.AniTypeDialogueTable.FindAll(row => row.ObjectCode == Code);
         foreach (var row in table)

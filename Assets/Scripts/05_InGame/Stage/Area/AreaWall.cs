@@ -36,8 +36,10 @@ public class AreaWall : AreaComponent
             {
                 var particle = sm.PoolSystem.Load<Effect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/FX_Direction_Arrows_03");
                 Vector3 characterPosition = sm.Player.CurrentCharacter.transform.position;
+                Vector3 effectSpawnPosition = characterPosition + new Vector3(0, 0.3f, 0);
+
                 m_InstantiateEffects.Add(particle);
-                particle.transform.SetPositionAndRotation(characterPosition, Quaternion.Euler(m_BlockEffectSpawnRotation));
+                particle.transform.SetPositionAndRotation(effectSpawnPosition, Quaternion.Euler(m_BlockEffectSpawnRotation));
             }
             // 가만히 있을때에 아예 없애주자
             else

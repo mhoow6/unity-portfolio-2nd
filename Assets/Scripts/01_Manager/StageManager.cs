@@ -68,6 +68,7 @@ public class StageManager : GameSceneManager
 
         // BrainCam, FreeLookCam 할당
         MainCam = m_MainCam;
+        GameManager.SceneCode = SceneCode;
 
         // 긴급임무를 시스템에 등록
         var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);

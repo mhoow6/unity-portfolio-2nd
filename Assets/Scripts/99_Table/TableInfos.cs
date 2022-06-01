@@ -42,6 +42,8 @@
 		public float BaseSpeed;
 		/// <summary> 캐릭터 초상화 이름 </summary> ///
 		public string PortraitName;
+		/// <summary> 로비에서 쓰일 애니메이션 컨트롤러 경로 </summary> ///
+		public string LobbyAnimatorPath;
 	}
 
 	public struct PlayerLevelEnergyTable

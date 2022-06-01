@@ -125,18 +125,26 @@ public class Character : BaseObject
     #endregion
 
     #region 캐릭터 기본
-    bool Update
+    public void SetUpdate(bool value)
     {
-        set
-        {
-            if (value)
-                StartCoroutine(m_UpdateCoroutine);
-            else
-                StopCoroutine(m_UpdateCoroutine);
-        }
+        if (value)
+            StartCoroutine(m_UpdateCoroutine);
+        else
+            StopCoroutine(m_UpdateCoroutine);
     }
     IEnumerator m_UpdateCoroutine;
+
     public void Spawn()
+    {
+        TryAttachToFloor();
+
+        if (gameObject.activeSelf)
+            SetUpdate(true);
+
+        OnSpawn();
+    }
+
+    void Awake()
     {
         // 컴포넌트 붙이기
         Animator = GetComponent<Animator>();
@@ -147,12 +155,11 @@ public class Character : BaseObject
         m_UpdateCoroutine = UpdateCoroutine();
 
         SetPropertiesFromTable();
-        TryAttachToFloor();
+    }
 
-        if (gameObject.activeSelf)
-            Update = true;
-
-        OnSpawn();
+    void OnDisable()
+    {
+        StopAllCoroutines();
     }
 
     IEnumerator UpdateCoroutine()

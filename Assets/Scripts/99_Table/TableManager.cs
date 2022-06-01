@@ -54,6 +54,7 @@ namespace DatabaseSystem
 				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[12]);
 				info.BaseSpeed = float.Parse(datas[13]);
 				info.PortraitName = datas[14];
+				info.LobbyAnimatorPath = datas[15];
 				
                 CharacterTable.Add(info);
                 LoadedData++;
@@ -160,8 +161,8 @@ namespace DatabaseSystem
 				info.EnergyCost = int.Parse(datas[7]);
 				info.LockContent = bool.Parse(datas[8]);
 				info.StageImage = datas[9];
-                info.SceneCode = (SceneCode)Enum.Parse(typeof(SceneCode), datas[10]);
-
+				info.SceneCode = (SceneCode)Enum.Parse(typeof(SceneCode),datas[10]);
+				
                 StageTable.Add(info);
                 LoadedData++;
             }

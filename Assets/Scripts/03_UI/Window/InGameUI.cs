@@ -6,13 +6,13 @@ using DatabaseSystem;
 public class InGameUI : UI
 {
     public override UIType Type => UIType.InGame;
+    public List<CharacterButtonDisplay> CharacterButtonDisplays = new List<CharacterButtonDisplay>();
 
     [SerializeField] VirtualJoystick m_Joystick;
     [SerializeField] SkillButtonDisplay m_AttackButton;
     [SerializeField] SkillButtonDisplay m_DashButton;
     [SerializeField] SkillButtonDisplay m_SkillButton;
-    [SerializeField] List<CharacterButtonDisplay> m_CharacterButtonDisplays = new List<CharacterButtonDisplay>();
-
+    
     public override void OnClosed()
     {
         var player = StageManager.Instance.Player;
@@ -51,15 +51,15 @@ public class InGameUI : UI
         GameManager.InputSystem.Controllers.Add(m_Joystick);
 
         // 에디터에선 키보드 컨트롤 가능하게
-        if (Application.platform != RuntimePlatform.Android)
-        {
-            var wasd = player.gameObject.AddComponent<KeyboardController>();
-            GameManager.InputSystem.Controllers.Add(wasd);
+        //if (Application.platform != RuntimePlatform.Android)
+        //{
+        //    var wasd = player.gameObject.AddComponent<KeyboardController>();
+        //    GameManager.InputSystem.Controllers.Add(wasd);
 
-            // 커서도 편의상 잠궈놓자
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        //    // 커서도 편의상 잠궈놓자
+        //    Cursor.visible = false;
+        //    Cursor.lockState = CursorLockMode.Locked;
+        //}
 
         // 유저가 캐릭터 조작가능
         player.Controlable = true;
@@ -74,11 +74,11 @@ public class InGameUI : UI
         SettingSkillButtons(player.CurrentCharacter);
 
         // 교체 캐릭터 버튼 세팅
-        m_CharacterButtonDisplays.ForEach(button => button.gameObject.SetActive(false));
+        CharacterButtonDisplays.ForEach(button => button.gameObject.SetActive(false));
         for (int i = 0; i < player.Characters.Count; i++)
         {
             var character = player.Characters[i];
-            var currentButton = m_CharacterButtonDisplays[i];
+            var currentButton = CharacterButtonDisplays[i];
 
             currentButton.SetData(character);
             if (character.Equals(player.CurrentCharacter))
