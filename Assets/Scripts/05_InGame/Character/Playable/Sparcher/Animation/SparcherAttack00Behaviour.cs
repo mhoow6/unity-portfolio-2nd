@@ -21,7 +21,10 @@ public class SparcherAttack00Behaviour : AnimationBehaviour
         {
             var find = StageManager.Instance.Monsters.Find(m => Vector3.Distance(m.transform.position, sparcher.transform.position) <= skillData.AutoTargetDetectRange);
             if (find != null)
+            {
+                sparcher.Target = find;
                 sparcher.transform.LookAt(find.transform);
+            }
         }
     }
 

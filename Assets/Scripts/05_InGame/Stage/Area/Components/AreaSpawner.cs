@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : AreaComponent
+public class AreaSpawner : AreaComponent
 {
     public int Priority;
     public GameObject SpawnPrefab;

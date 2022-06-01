@@ -184,6 +184,36 @@ public class Character : BaseObject
     #region 캐릭터 공격/스킬
     public PassiveSkill PassiveSkill;
 
+    Character m_Target;
+    public Character Target
+    {
+        get
+        {
+            return m_Target;
+        }
+        set
+        {
+            // 같은 타겟을 바라보면 락온이미지 안 띄우게 함
+            if (m_Target == null)
+            {
+                var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
+                image.SetData(value.Body);
+                image.SetUpdate(true);
+                m_Target = value;
+            }
+            else
+            {
+                if (!m_Target.Equals(value))
+                {
+                    var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
+                    image.SetData(value.Body);
+                    image.SetUpdate(true);
+                    m_Target = value;
+                }
+            }
+        }
+    }
+
     /// <summary> 애니메이션 이벤트 함수 </summary>
     public virtual void Attack(int skillIndex) { }
 
@@ -401,6 +431,7 @@ public class Character : BaseObject
 
     #region 기타
     public Transform Head;
+    public Transform Body;
 
     /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
     public bool TryAttachToFloor()

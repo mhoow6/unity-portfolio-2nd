@@ -28,7 +28,7 @@ public class Area : MonoBehaviour
 
     [SerializeField] List<AreaTrigger> m_Triggers = new List<AreaTrigger>();
     [SerializeField] List<AreaWall> m_Walls = new List<AreaWall>();
-    [SerializeField] List<Spawner> m_Spawners = new List<Spawner>();
+    [SerializeField] List<AreaSpawner> m_Spawners = new List<AreaSpawner>();
     
     bool m_Init;
 
@@ -71,16 +71,16 @@ public class Area : MonoBehaviour
 
     #region 스포너
     /// <summary> spawner가 여기에 속해있으면 True </summary> /// 
-    public bool IsSpawnerIn(Spawner spawner)
+    public bool IsSpawnerIn(AreaSpawner spawner)
     {
         return m_Spawners.Find(s => s.Equals(spawner)) != null ? true : false;
     }
 
     /// <summary> 스포너중 belongTo가 속해있는 스포너를 찾습니다. </summary> /// 
 
-    public Spawner FindSpawner(Character belongTo)
+    public AreaSpawner FindSpawner(Character belongTo)
     {
-        Spawner res = null;
+        AreaSpawner res = null;
         foreach (var spawner in m_Spawners)
         {
             foreach (var mob in spawner.Monsters)

@@ -24,9 +24,21 @@ public class SpeakerPreset : MonoBehaviour
     public void Speak(StageDialogueTable dialogue, Text speakText)
     {
         // 초상화
-        var speakerImagePath = $"{GameManager.GameDevelopSettings.TextureResourcePath}/{dialogue.NpcImage}";
-        if (m_SpeakerImagePath != speakerImagePath)
-            m_Portrait.sprite = Resources.Load<Sprite>(speakerImagePath);
+        if (dialogue.NpcName != string.Empty)
+        {
+            var speakerImagePath = $"{GameManager.GameDevelopSettings.TextureResourcePath}/{dialogue.NpcImage}";
+            if (m_SpeakerImagePath != speakerImagePath)
+                m_Portrait.sprite = Resources.Load<Sprite>(speakerImagePath);
+        }
+        // 공백이면 플레이어를 뜻함
+        else
+        {
+            var row = TableManager.Instance.CharacterTable.Find(character => character.Code == StageManager.Instance.Player.CurrentCharacter.Code);
+            var speakerImagePath = $"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}";
+            if (m_SpeakerImagePath != speakerImagePath)
+                m_Portrait.sprite = Resources.Load<Sprite>(speakerImagePath);
+        }
+        
 
         // 라벨
         m_SpeakerLabel.color = SPEAK_LABEL_COLOR;

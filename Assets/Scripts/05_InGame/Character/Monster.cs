@@ -38,7 +38,7 @@ public class Monster : Character
             manager.Monsters.Remove(this);
 
             // 자신이 태어난 스포너가 있으면 알려주기
-            Spawner spawner = null;
+            AreaSpawner spawner = null;
             foreach (var area in manager.Areas)
             {
                 spawner = area.FindSpawner(this);
