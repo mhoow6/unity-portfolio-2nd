@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 using UnityEngine.AI;
+using System;
 
 public class Character : BaseObject
 {
@@ -65,11 +66,12 @@ public class Character : BaseObject
 
             if (value <= MaxHp)
                 Data.Hp = value;
-            else
+            else if (value > MaxHp)
                 Data.Hp = MaxHp;
+
+            OnHpUpdate?.Invoke(value);
         }
     }
-    
     public int MaxHp
     {
         get
@@ -78,6 +80,7 @@ public class Character : BaseObject
             return row.BaseHp + ((int)(row.BaseHp * row.HpIncreaseRatioByLevelUp) * (Data.Level - 1));
         }
     }
+    public Action<int> OnHpUpdate;
 
     public int Sp
     {
@@ -88,8 +91,10 @@ public class Character : BaseObject
 
             if (value <= MaxSp)
                 Data.Sp = value;
-            else
+            else if (value > MaxSp)
                 Data.Sp = MaxSp;
+
+            OnSpUpdate?.Invoke(value);
         }
     }
     public int MaxSp
@@ -100,6 +105,7 @@ public class Character : BaseObject
             return row.BaseSp + ((int)(row.BaseSp * row.SpIncreaseRatioByLevelUp) * (Data.Level - 1));
         }
     }
+    public Action<int> OnSpUpdate;
 
     public float MoveSpeed
     {
@@ -354,7 +360,7 @@ public class Character : BaseObject
         float calcuatedDamage = damage;
         bool critical = false;
 
-        float random = Random.Range(0.0f, 1.0f);
+        float random = UnityEngine.Random.Range(0.0f, 1.0f);
         if (convertCriticalRate > random)
             critical = true;
         else

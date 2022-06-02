@@ -10,10 +10,21 @@ public class CharacterButtonDisplay : Display
     [SerializeField] Image m_Portrait;
     [SerializeField] Slider m_HpSlider;
     [SerializeField] Slider m_SpSlider;
+    [SerializeField] Image m_CoolTime;
+
     public Character ConnectCharacter { get; private set; }
+    const float SWAP_COOLTIME = 8f;
+    bool m_EventRegisterd;
+    bool m_IsCooldown;
 
     public void OnButtonClick()
     {
+        if (ConnectCharacter.Hp < 0)
+            return;
+
+        if (m_IsCooldown)
+            return;
+
         // 스킬버튼을 누른 캐릭터에 맞게 세팅
         var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
         inGameUi.SettingSkillButtons(ConnectCharacter);
@@ -30,6 +41,7 @@ public class CharacterButtonDisplay : Display
 
         var find = inGameUi.CharacterButtonDisplays.Find(button => button.ConnectCharacter.Equals(prevCharcter));
         find.gameObject.SetActive(true);
+        find.SetCooldownState();
 
         // 누른 캐릭터에 대한 처리
         ConnectCharacter.gameObject.SetActive(true);
@@ -59,5 +71,49 @@ public class CharacterButtonDisplay : Display
         m_SpSlider.minValue = 0;
         m_SpSlider.maxValue = character.MaxSp;
         m_SpSlider.value = character.Sp;
+
+        if (!m_EventRegisterd)
+            ConnectCharacter.OnHpUpdate += (hp) =>
+            {
+                if (hp == 0)
+                    SetDeadState();
+            };
+    }
+
+    void SetDeadState()
+    {
+        m_CoolTime.gameObject.SetActive(true);
+        m_CoolTime.fillAmount = 1f;
+    }
+
+    void SetCooldownState()
+    {
+        StartCoroutine(CoolTimeCoroutine());
+    }
+
+    IEnumerator CoolTimeCoroutine()
+    {
+        float timer = 0f;
+
+        m_IsCooldown = true;
+        m_CoolTime.gameObject.SetActive(true);
+
+        while (timer < SWAP_COOLTIME)
+        {
+            timer += Time.deltaTime;
+
+            m_CoolTime.fillAmount = 1 - (timer / SWAP_COOLTIME);
+            yield return null;
+        }
+
+        m_CoolTime.fillAmount = 0f;
+        m_IsCooldown = false;
+        m_CoolTime.gameObject.SetActive(false);
+    }
+
+    protected override void OnClosed()
+    {
+        if (ConnectCharacter != null)
+            ConnectCharacter.OnHpUpdate = null;
     }
 }
