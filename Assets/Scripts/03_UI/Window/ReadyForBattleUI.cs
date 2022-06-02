@@ -16,19 +16,14 @@ public class ReadyForBattleUI : UI
     public MissionDisplay Mission2;
     public MissionDisplay Mission3;
 
-    // 몬스터 드랍템 중 상위 티어 3개
-    public ItemDisplay Item1Display;
-    public ItemDisplay Item2Display;
-    public ItemDisplay Item3Display;
+    // UNDONE: 몬스터 드랍템 중 상위 티어 3개
 
     public Text EnergyCost;
-
     public StatusDisplay StatusDisplay;
 
     // 스테이지 정보
     int m_WorldIdx;
     int m_StageIdx;
-
 
     public override UIType Type => UIType.ReadyForBattle;
 
