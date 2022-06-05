@@ -27,11 +27,10 @@ public class CustomSliderElement : Display
     }
 
     [SerializeField] Animator m_Animator;
-    float m_Value;
+    [SerializeField, ReadOnly] float m_Value;
     float m_MinValue; // 100
     float m_MaxValue; // 300
-    float m_PrevDesired;
-    bool m_SmoothValueCoroutineStart;
+    public bool SmoothValueTasking;
 
     public float OriginWidth { get; private set; }
     bool m_OriginWidthSet;
@@ -57,16 +56,21 @@ public class CustomSliderElement : Display
     public void SmoothValue(float desired)
     {
         // 이미 SmoothValue 하고 있으면 그것을 중지시켜야 한다.
-        if (m_SmoothValueCoroutineStart)
-        {
-            Value = m_PrevDesired;
-            if (m_Animator != null)
-                m_Animator.SetBool("OnDelta", false);
-
-            StopAllCoroutines();
-        }
+        if (SmoothValueTasking)
+            StopSmoothValue();
 
         StartCoroutine(SmoothValueCoroutine(desired));
+    }
+
+    public void StopSmoothValue()
+    {
+        Value = m_Value;
+        SmoothValueTasking = false;
+
+        if (m_Animator != null)
+            m_Animator.SetBool("OnDelta", false);
+
+        StopAllCoroutines();
     }
 
     IEnumerator SmoothValueCoroutine(float desired)
@@ -76,14 +80,16 @@ public class CustomSliderElement : Display
         float prevRatio = m_Value / m_MaxValue;
         float controlRatio = prevRatio;
 
-        m_SmoothValueCoroutineStart = true;
-        m_PrevDesired = desired;
+        SmoothValueTasking = true;
+
+        // 이미 슬라이더 값은 desired으로 되어있다.
+        // 이미지만 서서히 줄어드는 것처럼 보이게 하자
         m_Value = desired;
 
         if (m_Animator != null)
             m_Animator.SetBool("OnDelta", true);
 
-        // 0.4f < 1.0f
+        yield return new WaitForSeconds(2f);
         if (desiredRatio <= prevRatio)
         {
             while (desiredRatio < controlRatio)
@@ -110,7 +116,7 @@ public class CustomSliderElement : Display
         if (m_Animator != null)
             m_Animator.SetBool("OnDelta", false);
 
-        m_SmoothValueCoroutineStart = false;
+        SmoothValueTasking = false;
         Debug.Log($"SmoothValue 종료");
     }
 }

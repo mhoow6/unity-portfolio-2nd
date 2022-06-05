@@ -41,7 +41,7 @@ public class CustomSlider : Display
             {
                 float delta = m_Value - value - m_MinValue;
                 var last = m_FrontElements.Last((element) => element.Value > 0);
-                // var deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
+                var deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
 
                 float currentValue = last.Value;
                 float expectedValue = last.Value - delta;
@@ -53,8 +53,17 @@ public class CustomSlider : Display
                     float lastValue = last.Value;
                     last.Value = 0;
 
+                    // 누군가 이미 smoothValue를 하는 경우 마무리를 지어줘야 함
+                    var smoothDeltaList = m_DeltaElements.FindAll((element) => element.SmoothValueTasking);
+                    if (smoothDeltaList != null)
+                    {
+                        foreach (var smoothDelta in smoothDeltaList)
+                            smoothDelta.StopSmoothValue();
+                    }
+                    
+
                     // 델타 변화
-                    // deltaLast.SmoothValue(0);
+                    deltaLast.SmoothValue(0);
 
                     // 남은 양
                     delta = delta - lastValue;
@@ -63,8 +72,9 @@ public class CustomSlider : Display
                     try
                     {
                         last = m_FrontElements.Last((element) => element.Value > 0);
-                        // deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
+                        deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
                     }
+                    // 못 구했다면..
                     catch (Exception e)
                     {
                         int nextSliderIndex = --m_CurrentColorIndex;
@@ -80,7 +90,7 @@ public class CustomSlider : Display
                             }
                         }
 
-                        // 더 이상의 슬라이더는 없다면 끝
+                        // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
                         if (nextSliderIndex < 0)
                             break;
 
@@ -92,16 +102,19 @@ public class CustomSlider : Display
 
                             cur.Image.color = m_SliderColors[nextSliderIndex];
                             cur.RectTransform.pivot = new Vector2(0, 0.5f);
-                            // curdelta.Image.color = m_DeltaColor;
-                            // curdelta.RectTransform.pivot = new Vector2(0, 0.5f);
+                            curdelta.Image.color = m_DeltaColor;
+                            curdelta.RectTransform.pivot = new Vector2(0, 0.5f);
 
                             float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
                             float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
 
                             cur.SetData(elementMinValue, elementMaxValue);
-                            // curdelta.SetData(elementMinValue, elementMaxValue);
+                            curdelta.SetData(elementMinValue, elementMaxValue);
                         }
+
+                        // 새로 세팅했으니 찾을 수 있을 것이다.
                         last = m_FrontElements.Last((element) => element.Value > 0);
+                        deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
                     }
                     finally
                     {
@@ -116,8 +129,13 @@ public class CustomSlider : Display
                 {
                     last.Value = expectedValue;
 
+                    // 누군가 이미 smoothValue를 하는 경우 마무리를 지어줘야 함
+                    var find = m_DeltaElements.Find((element) => element.SmoothValueTasking);
+                    if (find != null)
+                        find.StopSmoothValue();
+
                     // 델타 변화
-                    // deltaLast.SmoothValue(expectedValue);
+                    deltaLast.SmoothValue(expectedValue);
                 }
 
                 m_Value = value;
@@ -180,6 +198,7 @@ public class CustomSlider : Display
         for (int i = 0; i < m_ElementCount; i++)
         {
             var inst = Instantiate(m_ElementPrefab, m_BackgroundLayout.transform);
+            inst.name = $"Background Element ({i})";
 
             if (m_SliderColors.Length >= 2)
                 inst.Image.color = m_SliderColors[m_SliderColors.Length - 2];
@@ -194,6 +213,8 @@ public class CustomSlider : Display
         for (int i = 0; i < m_ElementCount; i++)
         {
             var inst = Instantiate(m_ElementPrefab, m_DeltaLayout.transform);
+            inst.name = $"Delta Element ({i})";
+
             inst.Image.color = m_DeltaColor;
             inst.RectTransform.pivot = new Vector2(0, 0.5f);
             m_DeltaElements.Add(inst);
@@ -203,6 +224,8 @@ public class CustomSlider : Display
         for (int i = 0; i < m_ElementCount; i++)
         {
             var inst = Instantiate(m_ElementPrefab, m_FrontLayout.transform);
+            inst.name = $"Front Element ({i})";
+
             inst.Image.color = m_SliderColors[m_SliderColors.Length - 1];
             inst.RectTransform.pivot = new Vector2(0, 0.5f);
             m_FrontElements.Add(inst);
@@ -214,31 +237,33 @@ public class CustomSlider : Display
 
     public void DestroyElements()
     {
+        // 백그라운드
+        for (int i = 0; i < m_BackElements.Count; i++)
+        {
+            var child = m_BackElements[i];
+            DestroyImmediate(child.gameObject);
+        }
+
+        // 변화량
+        for (int i = 0; i < m_DeltaElements.Count; i++)
+        {
+            var child = m_DeltaElements[i];
+            DestroyImmediate(child.gameObject);
+        }
+
+        // 실제 슬라이더
+        for (int i = 0; i < m_FrontElements.Count; i++)
+        {
+            var child = m_FrontElements[i];
+            DestroyImmediate(child.gameObject);
+        }
+
         m_BackElements.Clear();
         m_DeltaElements.Clear();
         m_FrontElements.Clear();
         m_CurrentColorIndex = 0;
 
-        // 백그라운드
-        for (int i = 0; i < m_BackgroundLayout.transform.childCount; i++)
-        {
-            var child = m_BackgroundLayout.transform.GetChild(i);
-            DestroyImmediate(child.gameObject);
-        }
-
-        // 변화량
-        for (int i = 0; i < m_DeltaLayout.transform.childCount; i++)
-        {
-            var child = m_DeltaLayout.transform.GetChild(i);
-            DestroyImmediate(child.gameObject);
-        }
-
-        // 실제 슬라이더
-        for (int i = 0; i < m_FrontLayout.transform.childCount; i++)
-        {
-            var child = m_FrontLayout.transform.GetChild(i);
-            DestroyImmediate(child.gameObject);
-        }
+        Debug.LogWarning($"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!");
 
         EditorUtility.SetDirty(this);
     }
