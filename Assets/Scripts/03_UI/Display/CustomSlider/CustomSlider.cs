@@ -27,8 +27,6 @@ public class CustomSlider : Display
     [SerializeField] HorizontalLayoutGroup m_FrontLayout;
     [SerializeField, ReadOnly] List<CustomSliderElement> m_FrontElements = new List<CustomSliderElement>();
 
-    
-
     public float Value
     {
         get
@@ -40,10 +38,10 @@ public class CustomSlider : Display
             if (value >= m_MinValue)
             {
                 float delta = m_Value - value - m_MinValue;
+
                 var last = m_FrontElements.Last((element) => element.Value > 0);
                 var deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
 
-                float currentValue = last.Value;
                 float expectedValue = last.Value - delta;
 
                 // 마지막 element의 value를 초과하는 값을 받아버릴 경우
@@ -63,7 +61,7 @@ public class CustomSlider : Display
                     
 
                     // 델타 변화
-                    deltaLast.SmoothValue(0);
+                    deltaLast.StartSmoothValue(0);
 
                     // 남은 양
                     delta = delta - lastValue;
@@ -79,17 +77,6 @@ public class CustomSlider : Display
                     {
                         int nextSliderIndex = --m_CurrentColorIndex;
 
-                        // 마지막 슬라이더인 경우 백그라운드 색 적용
-                        if (nextSliderIndex == 0)
-                        {
-                            // 백그라운드
-                            for (int i = 0; i < m_ElementCount; i++)
-                            {
-                                var back = m_BackElements[i];
-                                back.Image.color = m_BackgroundColor;
-                            }
-                        }
-
                         // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
                         if (nextSliderIndex < 0)
                             break;
@@ -99,15 +86,17 @@ public class CustomSlider : Display
                         {
                             var cur = m_FrontElements[i];
                             var curdelta = m_DeltaElements[i];
+                            var back = m_BackElements[i];
 
-                            cur.Image.color = m_SliderColors[nextSliderIndex];
-                            cur.RectTransform.pivot = new Vector2(0, 0.5f);
-                            curdelta.Image.color = m_DeltaColor;
-                            curdelta.RectTransform.pivot = new Vector2(0, 0.5f);
+                            int backgroundIndex = nextSliderIndex - 1;
+                            if (backgroundIndex >= 0)
+                                back.Image.color = m_SliderColors[backgroundIndex];
+                            else
+                                back.Image.color = m_BackgroundColor;
 
                             float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
                             float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
-
+                            cur.Image.color = m_SliderColors[nextSliderIndex];
                             cur.SetData(elementMinValue, elementMaxValue);
                             curdelta.SetData(elementMinValue, elementMaxValue);
                         }
@@ -119,7 +108,6 @@ public class CustomSlider : Display
                     finally
                     {
                         // 다시 또 재본다.
-                        currentValue = last.Value;
                         expectedValue = last.Value - delta;
                     }
                 }
@@ -135,7 +123,7 @@ public class CustomSlider : Display
                         find.StopSmoothValue();
 
                     // 델타 변화
-                    deltaLast.SmoothValue(expectedValue);
+                    deltaLast.StartSmoothValue(expectedValue);
                 }
 
                 m_Value = value;
@@ -155,7 +143,6 @@ public class CustomSlider : Display
             m_FrontLayout.enabled = !value;
         }
     }
-    
     float m_MinValue;
     float m_MaxValue;
     int m_CurrentColorIndex;
@@ -166,7 +153,7 @@ public class CustomSlider : Display
         m_SliderCount = m_SliderColors.Length;
         m_CurrentColorIndex = m_SliderColors.Length - 1;
 
-        SetData(0, 1000);
+        SetData(0, 2000);
     }
 
     private void Update()
@@ -230,7 +217,8 @@ public class CustomSlider : Display
             inst.RectTransform.pivot = new Vector2(0, 0.5f);
             m_FrontElements.Add(inst);
         }
-        
+
+        Debug.LogWarning($"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!");
 
         EditorUtility.SetDirty(this);
     }
@@ -262,8 +250,6 @@ public class CustomSlider : Display
         m_DeltaElements.Clear();
         m_FrontElements.Clear();
         m_CurrentColorIndex = 0;
-
-        Debug.LogWarning($"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!");
 
         EditorUtility.SetDirty(this);
     }

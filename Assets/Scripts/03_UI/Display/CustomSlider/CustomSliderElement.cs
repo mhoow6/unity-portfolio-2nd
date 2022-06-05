@@ -20,19 +20,18 @@ public class CustomSliderElement : Display
             float clamped = value - m_MinValue;
 
             float ratio = clamped / m_MaxValue;
-            RectTransform.sizeDelta = new Vector2(OriginWidth * ratio, RectTransform.sizeDelta.y);
+            RectTransform.sizeDelta = new Vector2(m_OriginWidth * ratio, RectTransform.sizeDelta.y);
 
             m_Value = clamped;
         }
     }
+    public bool SmoothValueTasking;
 
     [SerializeField] Animator m_Animator;
     [SerializeField, ReadOnly] float m_Value;
-    float m_MinValue; // 100
-    float m_MaxValue; // 300
-    public bool SmoothValueTasking;
-
-    public float OriginWidth { get; private set; }
+    float m_MinValue;
+    float m_MaxValue;
+    float m_OriginWidth;
     bool m_OriginWidthSet;
 
     const float VALUE_SPEED = 0.2f;
@@ -45,15 +44,15 @@ public class CustomSliderElement : Display
 
         if (!m_OriginWidthSet)
         {
-            OriginWidth = RectTransform.sizeDelta.x;
+            m_OriginWidth = RectTransform.sizeDelta.x;
             m_OriginWidthSet = true;
         }
 
         float ratio = m_Value / m_MaxValue;
-        RectTransform.sizeDelta = new Vector2(OriginWidth * ratio, RectTransform.sizeDelta.y);
+        RectTransform.sizeDelta = new Vector2(m_OriginWidth * ratio, RectTransform.sizeDelta.y);
     }
 
-    public void SmoothValue(float desired)
+    public void StartSmoothValue(float desired)
     {
         // 이미 SmoothValue 하고 있으면 그것을 중지시켜야 한다.
         if (SmoothValueTasking)
@@ -96,7 +95,7 @@ public class CustomSliderElement : Display
             {
                 controlRatio -= VALUE_SPEED * Time.deltaTime;
 
-                RectTransform.sizeDelta = new Vector2(OriginWidth * controlRatio, RectTransform.sizeDelta.y);
+                RectTransform.sizeDelta = new Vector2(m_OriginWidth * controlRatio, RectTransform.sizeDelta.y);
 
                 yield return null;
             }
@@ -107,7 +106,7 @@ public class CustomSliderElement : Display
             {
                 controlRatio += VALUE_SPEED * Time.deltaTime;
 
-                RectTransform.sizeDelta = new Vector2(OriginWidth * controlRatio, RectTransform.sizeDelta.y);
+                RectTransform.sizeDelta = new Vector2(m_OriginWidth * controlRatio, RectTransform.sizeDelta.y);
 
                 yield return null;
             }
