@@ -196,24 +196,4 @@
 
     }
 
-    public enum SceneCode
-    {
-        
-        /// <summary> 로고 씬 </summary> ///
-        Logo = 0,
-
-        /// <summary> 로비 씬 </summary> ///
-        Lobby = 1,
-
-        /// <summary> 스테이지 1-1 </summary> ///
-        Stage0101 = 2,
-
-        /// <summary> 테스터 씬 </summary> ///
-        Stage0000 = 3,
-
-        /// <summary> 예외 </summary> ///
-        None = -1,
-
-    }
-
 

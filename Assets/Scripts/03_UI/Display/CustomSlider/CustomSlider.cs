@@ -8,14 +8,17 @@ using System;
 
 public class CustomSlider : Display
 {
+    [Header("# 조절 가능")]
     [SerializeField] int m_ElementCount;
-    [SerializeField, ReadOnly] float m_Value;
-    [SerializeField] CustomSliderElement m_ElementPrefab;
-
-    [Space(10)]
     [SerializeField] Color m_BackgroundColor;
     [SerializeField] Color m_DeltaColor;
     [SerializeField] Color[] m_SliderColors;
+
+    [Header("# 개발자 옵션")]
+    [SerializeField, ReadOnly] int m_SliderCount;
+    [SerializeField, ReadOnly] int m_CurrentColorIndex;
+    [SerializeField] CustomSliderElement m_ElementPrefab;
+    [SerializeField, ReadOnly] float m_Value;
 
     [Space(10)]
     [SerializeField] HorizontalLayoutGroup m_BackgroundLayout;
@@ -97,8 +100,8 @@ public class CustomSlider : Display
                             float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
                             float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
                             cur.Image.color = m_SliderColors[nextSliderIndex];
-                            cur.SetData(elementMinValue, elementMaxValue);
-                            curdelta.SetData(elementMinValue, elementMaxValue);
+                            cur.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                            curdelta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
                         }
 
                         // 새로 세팅했으니 찾을 수 있을 것이다.
@@ -118,18 +121,23 @@ public class CustomSlider : Display
                     last.Value = expectedValue;
 
                     // 누군가 이미 smoothValue를 하는 경우 마무리를 지어줘야 함
-                    var find = m_DeltaElements.Find((element) => element.SmoothValueTasking);
-                    if (find != null)
-                        find.StopSmoothValue();
+                    var smoothDeltaList = m_DeltaElements.FindAll((element) => element.SmoothValueTasking);
+                    if (smoothDeltaList != null)
+                    {
+                        foreach (var smoothDelta in smoothDeltaList)
+                            smoothDelta.StopSmoothValue();
+                    }
 
                     // 델타 변화
                     deltaLast.StartSmoothValue(expectedValue);
                 }
 
                 m_Value = value;
+                m_OnValueUpdate?.Invoke(value);
             }
         }
     }
+    Action<float> m_OnValueUpdate;
 
     bool m_Flexible
     {
@@ -145,36 +153,54 @@ public class CustomSlider : Display
     }
     float m_MinValue;
     float m_MaxValue;
-    int m_CurrentColorIndex;
-    int m_SliderCount;
-
-    private void Start()
-    {
-        m_SliderCount = m_SliderColors.Length;
-        m_CurrentColorIndex = m_SliderColors.Length - 1;
-
-        SetData(0, 2000);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-            Value -= 100;
-    }
-
-    public void SetData(float minValue, float maxValue)
+    
+    
+    public void SetData(float minValue, float maxValue, float currentValue, int sliderCount = -1, Action<float> onValueUpdate = null)
     {
         m_MinValue = minValue;
         m_MaxValue = maxValue;
-        m_Value = maxValue;
 
-        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
-        float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
-        foreach (var delta in m_DeltaElements)
-            delta.SetData(elementMinValue, elementMaxValue);
+        float elementMaxValue = 0f; 
+        float elementMinValue = 0f;
 
-        foreach (var delta in m_FrontElements)
-            delta.SetData(elementMinValue, elementMaxValue);
+        if (sliderCount != -1)
+        {
+            if (m_SliderCount < sliderCount)
+            {
+                Color[] newArray = new Color[sliderCount];
+
+                // 몇 번씩 반복해서 추가해야 될지 카운트 계산
+                // 9 4
+                int count = sliderCount / m_SliderCount;
+                int rest = sliderCount % m_SliderCount;
+                
+                // 빈 자리 매꾸기
+                for (int i = 0; i < count; i++)
+                    Array.Copy(m_SliderColors, 0, newArray, m_SliderCount * i, m_SliderCount);
+                Array.Copy(m_SliderColors, 0, newArray, m_SliderCount * count, rest);
+            }
+
+            // 값 교체
+            m_SliderCount = sliderCount;
+        }
+
+        elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+        elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+
+        for (int i = 0; i < m_ElementCount; i++)
+        {
+            var delta = m_DeltaElements[i];
+            var front = m_FrontElements[i];
+
+            delta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+            front.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+        }
+
+        m_Value = currentValue;
+        QuickValue(currentValue);
+        m_OnValueUpdate = onValueUpdate;
+
+        m_CurrentColorIndex = m_SliderCount - 1;
     }
 
     public void CreateElements()
@@ -217,9 +243,10 @@ public class CustomSlider : Display
             inst.RectTransform.pivot = new Vector2(0, 0.5f);
             m_FrontElements.Add(inst);
         }
+        m_SliderCount = m_SliderColors.Length;
+        m_CurrentColorIndex = m_SliderColors.Length - 1;
 
         Debug.LogWarning($"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!");
-
         EditorUtility.SetDirty(this);
     }
 
@@ -249,8 +276,111 @@ public class CustomSlider : Display
         m_BackElements.Clear();
         m_DeltaElements.Clear();
         m_FrontElements.Clear();
+
+        m_SliderCount = 0;
         m_CurrentColorIndex = 0;
 
         EditorUtility.SetDirty(this);
+    }
+
+    void QuickValue(float value)
+    {
+        if (value >= m_MinValue)
+        {
+            float delta = m_Value - value - m_MinValue;
+
+            var last = m_FrontElements.Last((element) => element.Value > 0);
+            var deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
+
+            float expectedValue = last.Value - delta;
+
+            // 마지막 element의 value를 초과하는 값을 받아버릴 경우
+            while (expectedValue < 0)
+            {
+                // 마지막 element를 0으로 만든다.
+                float lastValue = last.Value;
+                last.Value = 0;
+
+                // 누군가 이미 smoothValue를 하는 경우 마무리를 지어줘야 함
+                var smoothDeltaList = m_DeltaElements.FindAll((element) => element.SmoothValueTasking);
+                if (smoothDeltaList != null)
+                {
+                    foreach (var smoothDelta in smoothDeltaList)
+                        smoothDelta.StopSmoothValue();
+                }
+
+                // 델타 변화
+                deltaLast.Value = 0;
+
+                // 남은 양
+                delta = delta - lastValue;
+
+                // 새로운 마지막을 구한다.
+                try
+                {
+                    last = m_FrontElements.Last((element) => element.Value > 0);
+                    deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
+                }
+                // 못 구했다면..
+                catch (Exception e)
+                {
+                    int nextSliderIndex = --m_CurrentColorIndex;
+
+                    // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
+                    if (nextSliderIndex < 0)
+                        break;
+
+                    // element 값 새로 세팅
+                    for (int i = 0; i < m_ElementCount; i++)
+                    {
+                        var cur = m_FrontElements[i];
+                        var curdelta = m_DeltaElements[i];
+                        var back = m_BackElements[i];
+
+                        int backgroundIndex = nextSliderIndex - 1;
+                        if (backgroundIndex >= 0)
+                            back.Image.color = m_SliderColors[backgroundIndex];
+                        else
+                            back.Image.color = m_BackgroundColor;
+
+                        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+                        float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+                        cur.Image.color = m_SliderColors[nextSliderIndex];
+                        cur.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                        curdelta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                    }
+
+                    // 새로 세팅했으니 찾을 수 있을 것이다.
+                    last = m_FrontElements.Last((element) => element.Value > 0);
+                    deltaLast = m_DeltaElements.Last((element) => element.Value > 0);
+                }
+                finally
+                {
+                    // 다시 또 재본다.
+                    expectedValue = last.Value - delta;
+                }
+            }
+
+
+            if (last != null)
+            {
+                last.Value = expectedValue;
+
+                // 누군가 이미 smoothValue를 하는 경우 마무리를 지어줘야 함
+                var smoothDeltaList = m_DeltaElements.FindAll((element) => element.SmoothValueTasking);
+                if (smoothDeltaList != null)
+                {
+                    foreach (var smoothDelta in smoothDeltaList)
+                        smoothDelta.StopSmoothValue();
+                }
+
+                // 델타 변화
+                deltaLast.Value = expectedValue;
+
+            }
+
+            m_Value = value;
+            m_OnValueUpdate?.Invoke(value);
+        }
     }
 }

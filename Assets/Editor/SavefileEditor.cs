@@ -101,6 +101,7 @@ public class SavefileEditor : EditorWindow
                     };
 
                     m_PlayerData.CharacterDatas.Add(newData);
+                    UpdatePlayerData();
                 }
             }
             else
@@ -110,7 +111,7 @@ public class SavefileEditor : EditorWindow
         if (GUILayout.Button("캐릭터 전체 삭제", new GUILayoutOption[] { GUILayout.Height(30) }))
         {
             m_PlayerData.CharacterDatas.Clear();
-            m_PlayerData.Save();
+            UpdatePlayerData();
         }
         #endregion
 
@@ -128,13 +129,11 @@ public class SavefileEditor : EditorWindow
 
         GUILayout.Space(1);
 
-        //m_updateStageRecordWorldIndex = EditorGUILayout.IntField("월드 인덱스", m_updateStageRecordWorldIndex);
-        //m_updateStageRecordStageIndex = EditorGUILayout.IntField("스테이지 인덱스", m_updateStageRecordStageIndex);
-        //if (GUILayout.Button("스테이지 기록 수정하기", new GUILayoutOption[] { GUILayout.Height(30) }))
-        //{
-        //    StageRecordUpdateWizard.SetData(m_PlayerData, m_updateStageRecordWorldIndex, m_updateStageRecordStageIndex);
-        //    StageRecordUpdateWizard.Open();
-        //}
+        if (GUILayout.Button("스테이지 기록 전체삭제", new GUILayoutOption[] { GUILayout.Height(30) }))
+        {
+            m_PlayerData.StageRecords.Clear();
+            UpdatePlayerData();
+        }
 
         #endregion
     }

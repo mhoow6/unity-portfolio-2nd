@@ -98,7 +98,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         m_CanvasGroup = GetComponent<CanvasGroup>();
     }
 
-    protected override void OnClosed()
+    private void OnDisable()
     {
         // 스케일 트위닝 도중 닫힐 경우 문제 발생 -> Scale값 복원
         BackgroundRectTransform.localScale = Vector3.one;

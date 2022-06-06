@@ -53,21 +53,19 @@ public class Character : BaseObject
     #endregion
 
     #region 캐릭터 데이터
-    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것 </summary>
-    public CharacterData Data;
     public string Name { get; private set; }
     public CharacterType Type { get; private set; }
     public int Hp
     {
-        get => Data.Hp;
+        get => m_Data.Hp;
         set
         {
-            int hpDelta = value - Data.Hp;
+            int hpDelta = value - m_Data.Hp;
 
             if (value <= MaxHp)
-                Data.Hp = value;
+                m_Data.Hp = value;
             else if (value > MaxHp)
-                Data.Hp = MaxHp;
+                m_Data.Hp = MaxHp;
 
             OnHpUpdate?.Invoke(value);
         }
@@ -77,22 +75,22 @@ public class Character : BaseObject
         get
         {
             var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-            return row.BaseHp + ((int)(row.BaseHp * row.HpIncreaseRatioByLevelUp) * (Data.Level - 1));
+            return row.BaseHp + ((int)(row.BaseHp * row.HpIncreaseRatioByLevelUp) * (m_Data.Level - 1));
         }
     }
     public Action<int> OnHpUpdate;
 
     public int Sp
     {
-        get => Data.Sp;
+        get => m_Data.Sp;
         set
         {
-            int spDelta = value - Data.Sp;
+            int spDelta = value - m_Data.Sp;
 
             if (value <= MaxSp)
-                Data.Sp = value;
+                m_Data.Sp = value;
             else if (value > MaxSp)
-                Data.Sp = MaxSp;
+                m_Data.Sp = MaxSp;
 
             OnSpUpdate?.Invoke(value);
         }
@@ -102,17 +100,17 @@ public class Character : BaseObject
         get
         {
             var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-            return row.BaseSp + ((int)(row.BaseSp * row.SpIncreaseRatioByLevelUp) * (Data.Level - 1));
+            return row.BaseSp + ((int)(row.BaseSp * row.SpIncreaseRatioByLevelUp) * (m_Data.Level - 1));
         }
     }
     public Action<int> OnSpUpdate;
 
     public float MoveSpeed
     {
-        get => Data.Speed;
+        get => m_Data.Speed;
         set
         {
-            Data.Speed = value;
+            m_Data.Speed = value;
         }
     }
 
@@ -120,14 +118,17 @@ public class Character : BaseObject
     {
         get
         {
-            return Data.Damage;
+            return m_Data.Damage;
         }
         set
         {
-            Data.Damage = value;
+            m_Data.Damage = value;
         }
 
     }
+
+    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것 </summary>
+    [SerializeField] CharacterData m_Data;
     #endregion
 
     #region 캐릭터 기본
@@ -197,27 +198,34 @@ public class Character : BaseObject
         }
         set
         {
-            // 같은 타겟을 바라보면 락온이미지 안 띄우게 함
-            if (m_Target == null)
+            Character prevTarget = m_Target;
+
+            if (m_TargetLockOnImage != null)
             {
-                var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
-                image.SetData(value.Body);
-                image.SetUpdate(true);
-                m_Target = value;
+                if (!m_TargetLockOnImage.Poolable)
+                    GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+            }
+
+            var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
+            m_TargetLockOnImage = image;
+            image.SetData(value);
+            image.SetUpdate(true);
+            m_Target = value;
+
+            if (prevTarget != null)
+            {
+                if (!prevTarget.Equals(value))
+                    OnTargetUpdate?.Invoke(value);
             }
             else
-            {
-                if (!m_Target.Equals(value))
-                {
-                    var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
-                    image.SetData(value.Body);
-                    image.SetUpdate(true);
-                    m_Target = value;
-                }
-            }
+                OnTargetUpdate?.Invoke(value);
         }
     }
     Character m_Target;
+    public Action<Character> OnTargetUpdate;
+
+    public FloatingLockOnImage AttachedLockOnImage;
+    FloatingLockOnImage m_TargetLockOnImage;
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, DamageType damageType)
@@ -272,13 +280,13 @@ public class Character : BaseObject
     #endregion
 
     #region 데미지 계산
-    /// <summary> 상대방에게 입힐 데미지를 계산합니다. </summary> ///
-    /// <returns>int: 데미지 bool: 크리티컬 여부</returns>
+    /// <summary>상대방에게 입힐 데미지를 계산합니다. </summary>
+    /// <returns>데미지, 크리티컬 여부</returns>
     public (int, bool) CalcuateDamage(Character rhs)
     {
         (int, bool) result;
         result.Item1 = CalculateTypeDamage(this, rhs);
-        result = CalculateCriticalDamage(result.Item1, Data.Critical);
+        result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
         return result;
     }
 
@@ -374,7 +382,7 @@ public class Character : BaseObject
     #endregion
 
     #region 팩토리 메소드
-    /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary> ///
+    /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary>
     public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
     {
         Character result = null;
@@ -464,9 +472,9 @@ public class Character : BaseObject
         Type = table.Type;
 
         if (record != null)
-            Data = record;
+            m_Data = record;
         else
-            Data = new CharacterData()
+            m_Data = new CharacterData()
             {
                 Code = Code,
                 Level = 1,
@@ -478,6 +486,14 @@ public class Character : BaseObject
                 Speed = table.BaseSpeed,
                 EquipWeaponData = null
             };
+    }
+
+    /// <summary> 모든 델리게이트 해제 </summary>
+    public void DisposeEvents()
+    {
+        OnHpUpdate = null;
+        OnSpUpdate = null;
+        OnTargetUpdate = null;
     }
     #endregion
 }

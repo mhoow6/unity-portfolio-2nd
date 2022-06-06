@@ -27,9 +27,9 @@ public class StatusDisplay : Display
         EnergyTextUpdate(playerData.Energy);
     }
 
-    protected override void OnClosed()
+    private void OnDisable()
     {
-        GameManager.PlayerData.OnEnergyUpdate = null;
+        GameManager.PlayerData.DisposeEvents();
     }
 
     void EnergyTextUpdate(int energy)

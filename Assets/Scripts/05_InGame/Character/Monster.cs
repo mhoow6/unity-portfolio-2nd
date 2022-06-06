@@ -54,5 +54,8 @@ public class Monster : Character
 
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
         StageManager.Instance.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
+
+        if (AttachedLockOnImage)
+            GameManager.UISystem.Pool.Release(AttachedLockOnImage);
     }
 }

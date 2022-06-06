@@ -15,9 +15,10 @@ public class FloatingLockOnImage : MonoBehaviour, IPoolable
         m_RectTransform = GetComponent<RectTransform>();
     }
 
-    public void SetData(Transform target)
+    public void SetData(Character target)
     {
-        m_Target = target;
+        m_Target = target.Body;
+        target.AttachedLockOnImage = this;
     }
 
     public void SetUpdate(bool value)

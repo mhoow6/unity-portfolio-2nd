@@ -36,11 +36,11 @@ public class CustomSliderElement : Display
 
     const float VALUE_SPEED = 0.2f;
 
-    public void SetData(float minValue, float maxValue)
+    public void SetData(float minValue, float maxValue, float value)
     {
         m_MinValue = minValue;
         m_MaxValue = maxValue;
-        m_Value = maxValue;
+        m_Value = value;
 
         if (!m_OriginWidthSet)
         {

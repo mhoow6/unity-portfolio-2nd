@@ -111,9 +111,9 @@ public class CharacterButtonDisplay : Display
         m_CoolTime.gameObject.SetActive(false);
     }
 
-    protected override void OnClosed()
+    private void OnDisable()
     {
         if (ConnectCharacter != null)
-            ConnectCharacter.OnHpUpdate = null;
+            ConnectCharacter.DisposeEvents();
     }
 }

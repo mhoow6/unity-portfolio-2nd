@@ -112,4 +112,14 @@ public class PlayerData
         FileHelper.DeleteFile(m_FilePath);
         Debug.Log("게임 데이터 삭제완료.");
     }
+
+    /// <summary> 모든 델리게이트 해제 </summary>
+    public void DisposeEvents()
+    {
+        OnEnergyUpdate = null;
+        OnExperienceUpdate = null;
+        OnGoldUpdate = null;
+        OnLevelUpdate = null;
+        OnNickNameUpdate = null;
+    }
 }
