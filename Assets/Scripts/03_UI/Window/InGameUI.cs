@@ -150,6 +150,7 @@ public class InGameUI : UI
             0,
             character.MaxHp,
             character.Hp,
+            1,
             onValueUpdate: (hp) =>
             {
                 m_HpText.text = $"{hp}/<size=36>{character.MaxHp}</size>";
@@ -166,6 +167,7 @@ public class InGameUI : UI
             0,
             character.MaxSp,
             character.Sp,
+            1,
             onValueUpdate: (sp) =>
             {
                 m_SpText.text = $"{sp} / {character.MaxSp}";
