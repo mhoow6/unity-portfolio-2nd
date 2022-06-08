@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolSystem : GameSystem
+public class PoolSystem : IGameSystem
 {
     GameObject m_Root;
     // 키: 프리팹 경로 값: 오브젝트

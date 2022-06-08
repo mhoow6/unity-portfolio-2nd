@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputSystem : MonoBehaviour, GameSystem
+public class InputSystem : MonoBehaviour, IGameSystem
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
 

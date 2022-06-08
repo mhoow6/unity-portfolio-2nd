@@ -5,7 +5,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 [Serializable]
-public class PlayerData
+public class PlayerData : IEventCallable
 {
     public Guid Guid;
     [JsonIgnore] public string NickName
@@ -113,7 +113,6 @@ public class PlayerData
         Debug.Log("게임 데이터 삭제완료.");
     }
 
-    /// <summary> 모든 델리게이트 해제 </summary>
     public void DisposeEvents()
     {
         OnEnergyUpdate = null;

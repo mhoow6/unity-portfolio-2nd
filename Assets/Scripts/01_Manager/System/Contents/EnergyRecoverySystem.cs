@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DatabaseSystem;
 using UnityEngine;
 
-public class EnergyRecoverySystem : GameSystem
+public class EnergyRecoverySystem : IGameSystem
 {
     PlayerData m_PlayerData;
     const int RECOVERY_MINUTE = 1;

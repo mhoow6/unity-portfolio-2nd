@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DatabaseSystem;
 
-public class QuestSystem : GameSystem
+public class QuestSystem : IGameSystem
 {
     // QuestIdx: RecordData
     public Dictionary<int, QuestRecordData> QuestRecords = new Dictionary<int, QuestRecordData>();

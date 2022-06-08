@@ -5,7 +5,7 @@ using DatabaseSystem;
 using UnityEngine.AI;
 using System;
 
-public class Character : BaseObject
+public class Character : BaseObject, IEventCallable
 {
     #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
@@ -282,10 +282,12 @@ public class Character : BaseObject
     #region 데미지 계산
     /// <summary>상대방에게 입힐 데미지를 계산합니다. </summary>
     /// <returns>데미지, 크리티컬 여부</returns>
-    public (int, bool) CalcuateDamage(Character rhs)
+    public (int, bool) CalcuateDamage(Character rhs, float damageScale)
     {
         (int, bool) result;
         result.Item1 = CalculateTypeDamage(this, rhs);
+        result.Item1 *= (int)damageScale;
+
         result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
         return result;
     }
@@ -488,7 +490,6 @@ public class Character : BaseObject
             };
     }
 
-    /// <summary> 모든 델리게이트 해제 </summary>
     public void DisposeEvents()
     {
         OnHpUpdate = null;

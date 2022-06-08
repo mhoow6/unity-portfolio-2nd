@@ -16,7 +16,7 @@ public class CustomSliderElement : Display
         set
         {
             // 이미지 크기 줄이기
-            float clamped = value - m_MinValue;
+            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue);
 
             float ratio = clamped / m_MaxValue;
             RectTransform.sizeDelta = new Vector2(m_OriginWidth * ratio, RectTransform.sizeDelta.y);
@@ -29,6 +29,7 @@ public class CustomSliderElement : Display
     [SerializeField, ReadOnly] float m_Value;
 
     float m_MinValue;
+    public float MaxValue => m_MaxValue;
     float m_MaxValue;
     float m_OriginWidth;
     bool m_OriginWidthSet;
@@ -37,6 +38,17 @@ public class CustomSliderElement : Display
 
     public void SetData(float minValue, float maxValue, float value)
     {
-        
+        m_MinValue = minValue;
+        m_MaxValue = maxValue;
+        m_Value = value;
+
+        if (!m_OriginWidthSet)
+        {
+            m_OriginWidth = RectTransform.sizeDelta.x;
+            m_OriginWidthSet = true;
+        }
+
+        float ratio = m_Value / m_MaxValue;
+        RectTransform.sizeDelta = new Vector2(m_OriginWidth * ratio, RectTransform.sizeDelta.y);
     }
 }

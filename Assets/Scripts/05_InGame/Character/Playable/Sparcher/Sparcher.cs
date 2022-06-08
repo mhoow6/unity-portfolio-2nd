@@ -28,7 +28,7 @@ public class Sparcher : Playable
 
             // 화살 인스턴싱
             var proj = StageManager.Instance.PoolSystem.Load<Projectile>($"{config.ProjectileResourcePath}/{data.ArrowPrefabPath}");
-            proj.SetData(this, (DamageType)data.DamageType);
+            proj.SetData(this, (DamageType)data.DamageType, data.DamageScale);
 
             // 화살의 forward가 화살촉으로 되어있지 않아 처음 인스턴싱할때 강제로 회전
             var spawnRotation = transform.eulerAngles + new Vector3(0, 90f, 0f);

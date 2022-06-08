@@ -38,9 +38,60 @@ public class CustomSlider : Display
         }
         set
         {
-            m_Value = value;
-            m_OnValueUpdate?.Invoke(value);
-            
+            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue);
+            CustomSliderElement last = null;
+            CustomSliderElement deltaLast = null;
+
+            float expectedValue = 0f;
+            float delta = m_Value - clamped;
+
+            // 게이지가 변화할 element 찾기
+            if (delta != 0)
+            {
+                (last, deltaLast) = TryGetLastElements(delta);
+                if (last != null && deltaLast != null)
+                {
+                    // 200 - 500
+                    // 200 - (-500)
+                    expectedValue = last.Value - delta;
+
+                    if (expectedValue > 0)
+                    {
+                        last.Value = expectedValue;
+                        ShowDelta(deltaLast, expectedValue, DeltaType.Slow);
+                    }
+                    // value가 감소하는 경우
+                    else
+                    {
+                        while (expectedValue < 0)
+                        {
+                            // 마지막 element를 0으로 만든다.
+                            float lastValue = last.Value;
+                            last.Value = 0;
+
+                            // 델타량 표현
+                            ShowDelta(deltaLast, 0, DeltaType.Slow);
+
+                            // 남은 양
+                            delta = delta - lastValue;
+
+                            // 게이지가 변화할 element 찾기
+                            (last, deltaLast) = TryGetLastElements(delta);
+
+                            // 더 이상 변화할 element를 못 찾을 경우 종료
+                            if (last == null && deltaLast == null)
+                                expectedValue = 0;
+                            else
+                                expectedValue = last.Value - delta;
+                        }
+                        last.Value = expectedValue;
+                        ShowDelta(deltaLast, expectedValue, DeltaType.Slow);
+                    }
+                }
+            }
+
+            m_Value = clamped;
+            m_OnValueUpdate?.Invoke(clamped);
         }
     }
     Action<float> m_OnValueUpdate;
@@ -60,9 +111,38 @@ public class CustomSlider : Display
     float m_MinValue;
     float m_MaxValue;
     
-    public void SetData(float minValue, float maxValue, float currentValue, int sliderCount, Action<float> onValueUpdate = null)
+    public void SetData(float minValue, float maxValue, float currentValue, Action<float> onValueUpdate = null)
     {
+        m_MinValue = minValue;
+        m_MaxValue = maxValue;
+
+        float elementMaxValue = 0f;
+        float elementMinValue = 0f;
         
+        elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+        elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+
+        float elementValueSum = (elementMaxValue * m_ElementCount) - (m_MaxValue - currentValue);
+
+        for (int i = 0; i < m_ElementCount; i++)
+        {
+            var delta = m_DeltaElements[i];
+            var front = m_FrontElements[i];
+
+            float temp = elementValueSum - elementMaxValue;
+            float giveValue = temp >= 0 ? elementMaxValue : elementValueSum;
+            elementValueSum -= giveValue;
+            if (elementValueSum < 0)
+                elementValueSum = 0;
+
+            delta.SetData(elementMinValue, elementMaxValue, giveValue);
+            front.SetData(elementMinValue, elementMaxValue, giveValue);
+        }
+
+        m_Value = currentValue;
+        m_OnValueUpdate = onValueUpdate;
+
+        m_CurrentColorIndex = m_SliderCount - 1;
     }
 
     public void CreateElements()
@@ -144,4 +224,70 @@ public class CustomSlider : Display
 
         EditorUtility.SetDirty(this);
     }
+
+    // UNDONE
+    void ShowDelta(CustomSliderElement deltaElement, float desiredValue, DeltaType type) { }
+
+    // 100
+    (CustomSliderElement front, CustomSliderElement delta) TryGetLastElements(float changeValue)
+    {
+        (CustomSliderElement, CustomSliderElement) result;
+        result.Item1 = null;
+        result.Item2 = null;
+
+        // 게이지가 변화할 element 찾기
+        try
+        {
+            if (changeValue > 0)
+            {
+                result.Item1 = m_FrontElements.Last((element) => element.Value > 0);
+                result.Item2 = m_DeltaElements.Last((element) => element.Value > 0);
+            }
+            else
+            {
+                result.Item1 = m_FrontElements.Last((element) => element.Value <= element.MaxValue);
+                result.Item2 = m_DeltaElements.Last((element) => element.Value <= element.MaxValue);
+            }
+        }
+        catch (Exception)
+        {
+            int nextSliderIndex = changeValue < 0 ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
+
+            // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
+            if (nextSliderIndex >= 0)
+            {
+                // element 값 새로 세팅
+                for (int i = 0; i < m_ElementCount; i++)
+                {
+                    var cur = m_FrontElements[i];
+                    var curdelta = m_DeltaElements[i];
+                    var back = m_BackElements[i];
+
+                    int backgroundIndex = nextSliderIndex - 1;
+                    if (backgroundIndex >= 0)
+                        back.Image.color = m_SliderColors[backgroundIndex];
+                    else
+                        back.Image.color = m_BackgroundColor;
+
+                    float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+                    float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+                    cur.Image.color = m_SliderColors[nextSliderIndex];
+                    cur.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                    curdelta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                }
+
+                // 다시 찾아보기
+                result.Item1 = m_FrontElements.Last((element) => element.Value > 0);
+                result.Item2 = m_DeltaElements.Last((element) => element.Value > 0);
+            }
+        }
+
+        return result;
+    }
+}
+
+enum DeltaType
+{
+    Fast,
+    Slow
 }

@@ -12,15 +12,17 @@ public class Projectile : BaseObject, IPoolable
     [SerializeField] Rigidbody m_RigidBody;
     [SerializeField] SphereCollider m_SphereCollider;
     bool m_Poolable;
+    float m_DamageScale;
 
     const float SHOOT_VELOCITY = 2f;
 
-    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
+    
 
-    public void SetData(Character owner, DamageType damageType)
+    public void SetData(Character owner, DamageType damageType, float damageScale)
     {
         m_Owner = owner;
         m_DamageType = damageType;
+        m_DamageScale = damageScale;
     }
 
     #region 충돌 판정
@@ -37,7 +39,7 @@ public class Projectile : BaseObject, IPoolable
         var rhs = other.GetComponent<Character>();
         if (rhs != null && !other.CompareTag(m_Owner.tag))
         {
-            var result = m_Owner.CalcuateDamage(rhs);
+            var result = m_Owner.CalcuateDamage(rhs, m_DamageScale);
 
             // 실제 데미지
             rhs.Damaged(m_Owner, result.Item1, DamageType.Normal);
@@ -93,6 +95,7 @@ public class Projectile : BaseObject, IPoolable
     #endregion
 
     #region 오브젝트 풀링
+    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
     public void OnLoad()
     {
         gameObject.SetActive(true);

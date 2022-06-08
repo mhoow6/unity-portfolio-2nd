@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UISystem : MonoBehaviour, GameSystem
+public class UISystem : MonoBehaviour, IGameSystem
 {
     [ReadOnly] public List<UI> Windows = new List<UI>();
     [ReadOnly] public List<Toast> Toasts = new List<Toast>();
