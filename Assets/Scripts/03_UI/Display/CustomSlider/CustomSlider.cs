@@ -48,15 +48,24 @@ public class CustomSlider : Display
             // 게이지가 변화할 element 찾기
             if (delta != 0)
             {
-                (last, deltaLast) = TryGetLastElements(delta);
+                (last, deltaLast) = TryGetValuedElements(delta);
                 if (last != null && deltaLast != null)
                 {
-                    // 200 - 500
-                    // 200 - (-500)
                     expectedValue = last.Value - delta;
 
+                    // value가 증가하는 경우
                     if (expectedValue > 0)
                     {
+                        while (expectedValue > last.MaxValue)
+                        {
+                            // 남은 양
+                            last.Value = last.MaxValue;
+
+                            // 게이지가 변화할 element 찾기
+                            (last, deltaLast) = TryGetValuedElements(delta);
+
+                            expectedValue -= last.MaxValue;
+                        }
                         last.Value = expectedValue;
                         ShowDelta(deltaLast, expectedValue, DeltaType.Slow);
                     }
@@ -76,7 +85,7 @@ public class CustomSlider : Display
                             delta = delta - lastValue;
 
                             // 게이지가 변화할 element 찾기
-                            (last, deltaLast) = TryGetLastElements(delta);
+                            (last, deltaLast) = TryGetValuedElements(delta);
 
                             // 더 이상 변화할 element를 못 찾을 경우 종료
                             if (last == null && deltaLast == null)
@@ -115,34 +124,68 @@ public class CustomSlider : Display
     {
         m_MinValue = minValue;
         m_MaxValue = maxValue;
+        m_Value = Mathf.Clamp(currentValue, m_MinValue, m_MaxValue);
+        m_OnValueUpdate = onValueUpdate;
 
-        float elementMaxValue = 0f;
-        float elementMinValue = 0f;
-        
-        elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
-        elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+        float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
 
-        float elementValueSum = currentValue / m_SliderCount;
+        // 슬라이더 element 색상
+        int colorIndex = m_SliderCount - 1;
+        for (int i = 0; i < m_SliderCount; i++)
+        {
+            float minRange = (m_MaxValue / m_SliderCount) * i;
+            float maxRange = (m_MaxValue / m_SliderCount) * (i+1);
 
+            if (currentValue >= minRange && currentValue < maxRange)
+            {
+                colorIndex = i;
+                break;
+            }
+        }
+        m_CurrentColorIndex = colorIndex;
+
+        int backgroundIndex = colorIndex - 1;
+        for (int i = 0; i < m_ElementCount; i++)
+        {
+            // 백그라운드 색상
+            var back = m_BackElements[i];
+            if (backgroundIndex >= 0)
+                back.Image.color = m_SliderColors[backgroundIndex];
+            else
+                back.Image.color = m_BackgroundColor;
+
+            // 프론트 색상
+            var front = m_FrontElements[i];
+            front.Image.color = m_SliderColors[m_CurrentColorIndex];
+        }
+
+        // 한 층의 슬라이더의 element에 적용할 value의 합
+        // colorIndex + 1은 층수를 나타냄
+        float elementValueSum = currentValue / (colorIndex + 1);
+        // 슬라이더 element 값
         for (int i = 0; i < m_ElementCount; i++)
         {
             var delta = m_DeltaElements[i];
             var front = m_FrontElements[i];
+            float elementValue = 0f;
 
-            float temp = elementValueSum - elementMaxValue;
-            float giveValue = temp >= 0 ? elementMaxValue : elementValueSum;
-            elementValueSum -= giveValue;
-            if (elementValueSum < 0)
+            if (elementValueSum - elementMaxValue >= 0)
+            {
+                elementValue = elementMaxValue;
+                elementValueSum -= elementMaxValue;
+            }
+            else
+            {
+                elementValue = elementValueSum;
                 elementValueSum = 0;
+            }
 
-            delta.SetData(elementMinValue, elementMaxValue, giveValue);
-            front.SetData(elementMinValue, elementMaxValue, giveValue);
+            delta.SetData(elementMinValue, elementMaxValue, elementValue);
+            front.SetData(elementMinValue, elementMaxValue, elementValue);
         }
 
-        m_Value = currentValue;
-        m_OnValueUpdate = onValueUpdate;
-
-        m_CurrentColorIndex = m_SliderCount - 1;
+        
     }
 
     public void CreateElements()
@@ -233,7 +276,7 @@ public class CustomSlider : Display
     /// </summary>
     /// <param name="diff">현재 슬라이더의 value랑, 슬라이더에 적용될 value와의 차이값</param>
     /// <returns></returns>
-    (CustomSliderElement front, CustomSliderElement delta) TryGetLastElements(float diff)
+    (CustomSliderElement front, CustomSliderElement delta) TryGetValuedElements(float diff)
     {
         (CustomSliderElement, CustomSliderElement) result;
         result.Item1 = null;
@@ -249,15 +292,14 @@ public class CustomSlider : Display
             }
             else
             {
-                result.Item1 = m_FrontElements.Last((element) => element.Value <= element.MaxValue);
-                result.Item2 = m_DeltaElements.Last((element) => element.Value <= element.MaxValue);
+                result.Item1 = m_FrontElements.Last((element) => element.Value < element.MaxValue);
+                result.Item2 = m_DeltaElements.Last((element) => element.Value < element.MaxValue);
             }
         }
         catch (Exception)
         {
             int nextSliderIndex = diff > 0 ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
 
-            // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
             if (nextSliderIndex >= 0)
             {
                 // element 값 새로 세팅

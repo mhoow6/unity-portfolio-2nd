@@ -40,7 +40,7 @@ public class CustomSliderElement : Display
     {
         m_MinValue = minValue;
         m_MaxValue = maxValue;
-        m_Value = value;
+        m_Value = Mathf.Clamp(value, m_MinValue, m_MaxValue);
 
         if (!m_OriginWidthSet)
         {

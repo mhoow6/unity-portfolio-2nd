@@ -87,7 +87,7 @@ public class Player : MonoBehaviour
 
                 // 회전값
                 float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
-                Vector3 angularVelocity = new Vector3(0, angle * Time.fixedDeltaTime * CHARCTER_ROTATE_SPEED, 0);
+                Vector3 angularVelocity = new Vector3(0, angle, 0);
                 RotateVector = angularVelocity;
 
                 // 이동값
