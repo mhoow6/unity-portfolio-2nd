@@ -38,7 +38,7 @@ public class CustomSlider : Display
         }
         set
         {
-            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue);
+            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue); 
             CustomSliderElement last = null;
             CustomSliderElement deltaLast = null;
 
@@ -122,7 +122,7 @@ public class CustomSlider : Display
         elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
         elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
 
-        float elementValueSum = (elementMaxValue * m_ElementCount) - (m_MaxValue - currentValue);
+        float elementValueSum = currentValue / m_SliderCount;
 
         for (int i = 0; i < m_ElementCount; i++)
         {
@@ -228,8 +228,12 @@ public class CustomSlider : Display
     // UNDONE
     void ShowDelta(CustomSliderElement deltaElement, float desiredValue, DeltaType type) { }
 
-    // 100
-    (CustomSliderElement front, CustomSliderElement delta) TryGetLastElements(float changeValue)
+    /// <summary>
+    /// Value 프로퍼티에서 필요한 함수. value를 적용시킬 마지막 element를 구합니다.
+    /// </summary>
+    /// <param name="diff">현재 슬라이더의 value랑, 슬라이더에 적용될 value와의 차이값</param>
+    /// <returns></returns>
+    (CustomSliderElement front, CustomSliderElement delta) TryGetLastElements(float diff)
     {
         (CustomSliderElement, CustomSliderElement) result;
         result.Item1 = null;
@@ -238,7 +242,7 @@ public class CustomSlider : Display
         // 게이지가 변화할 element 찾기
         try
         {
-            if (changeValue > 0)
+            if (diff > 0)
             {
                 result.Item1 = m_FrontElements.Last((element) => element.Value > 0);
                 result.Item2 = m_DeltaElements.Last((element) => element.Value > 0);
@@ -251,7 +255,7 @@ public class CustomSlider : Display
         }
         catch (Exception)
         {
-            int nextSliderIndex = changeValue < 0 ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
+            int nextSliderIndex = diff > 0 ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
 
             // 더 이상의 슬라이더는 밑에 있는 과정은 의미가 없다
             if (nextSliderIndex >= 0)
