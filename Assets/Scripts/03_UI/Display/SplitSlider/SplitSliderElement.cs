@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CustomSliderElement : Display
+public class SplitSliderElement : Display
 {
     public Image Image;
     public RectTransform RectTransform;
@@ -31,7 +31,9 @@ public class CustomSliderElement : Display
     float m_MinValue;
     public float MaxValue => m_MaxValue;
     float m_MaxValue;
+
     float m_OriginWidth;
+
     bool m_OriginWidthSet;
 
     const float VALUE_SPEED = 0.2f;
@@ -51,4 +53,5 @@ public class CustomSliderElement : Display
         float ratio = m_Value / m_MaxValue;
         RectTransform.sizeDelta = new Vector2(m_OriginWidth * ratio, RectTransform.sizeDelta.y);
     }
+
 }

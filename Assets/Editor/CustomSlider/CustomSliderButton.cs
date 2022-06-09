@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(CustomSlider))]
+[CustomEditor(typeof(SplitSlider))]
 public class CustomSliderButton : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        CustomSlider generator = (CustomSlider)target;
+        SplitSlider generator = (SplitSlider)target;
 
         if (GUILayout.Button("Create Elements", new GUILayoutOption[] { GUILayout.Height(30) }))
             generator.CreateElements();

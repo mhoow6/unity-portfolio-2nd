@@ -17,13 +17,13 @@ public class InGameUI : UI
     [SerializeField] SkillButtonDisplay m_SkillButton;
 
     [Space(10)]
-    [SerializeField] CustomSlider m_HpSlider;
+    [SerializeField] SplitSlider m_HpSlider;
     [SerializeField] Text m_HpText;
 
-    [SerializeField] CustomSlider m_SpSlider;
+    [SerializeField] SplitSlider m_SpSlider;
     [SerializeField] Text m_SpText;
 
-    [SerializeField] CustomSlider m_TargetSlider;
+    [SerializeField] SplitSlider m_TargetSlider;
     [SerializeField] Text m_TargetNameText;
 
     public override void OnClosed()

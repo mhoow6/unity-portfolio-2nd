@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEditor;
 using System;
 
-public class CustomSlider : Display
+public class SplitSlider : Display
 {
     [Header("# 조절 가능")]
     [SerializeField] int m_ElementCount;
@@ -17,18 +17,18 @@ public class CustomSlider : Display
     [Header("# 개발자 옵션")]
     [SerializeField, ReadOnly] int m_SliderCount;
     [SerializeField, ReadOnly] int m_CurrentColorIndex;
-    [SerializeField] CustomSliderElement m_ElementPrefab;
+    [SerializeField] SplitSliderElement m_ElementPrefab;
     [SerializeField, ReadOnly] float m_Value;
 
     [Space(10)]
     [SerializeField] HorizontalLayoutGroup m_BackgroundLayout;
-    [SerializeField, ReadOnly] List<CustomSliderElement> m_BackElements = new List<CustomSliderElement>();
+    [SerializeField, ReadOnly] List<SplitSliderElement> m_BackElements = new List<SplitSliderElement>();
 
     [SerializeField] HorizontalLayoutGroup m_DeltaLayout;
-    [SerializeField, ReadOnly] List<CustomSliderElement> m_DeltaElements = new List<CustomSliderElement>();
+    [SerializeField, ReadOnly] List<SplitSliderElement> m_DeltaElements = new List<SplitSliderElement>();
 
     [SerializeField] HorizontalLayoutGroup m_FrontLayout;
-    [SerializeField, ReadOnly] List<CustomSliderElement> m_FrontElements = new List<CustomSliderElement>();
+    [SerializeField, ReadOnly] List<SplitSliderElement> m_FrontElements = new List<SplitSliderElement>();
 
     public float Value
     {
@@ -39,8 +39,8 @@ public class CustomSlider : Display
         set
         {
             float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue); 
-            CustomSliderElement last = null;
-            CustomSliderElement deltaLast = null;
+            SplitSliderElement last = null;
+            SplitSliderElement deltaLast = null;
 
             float expectedValue = 0f;
             float delta = m_Value - clamped;
@@ -67,8 +67,6 @@ public class CustomSlider : Display
                             expectedValue -= last.MaxValue;
                         }
                         last.Value = expectedValue;
-                        deltaLast.Value = expectedValue;
-                        //ShowDelta(deltaLast, expectedValue, DeltaType.Slow);
                     }
                     // value가 감소하는 경우
                     else
@@ -78,10 +76,6 @@ public class CustomSlider : Display
                             // 마지막 element를 0으로 만든다.
                             float lastValue = last.Value;
                             last.Value = 0;
-
-                            // 델타량 표현
-                            deltaLast.Value = 0;
-                            //ShowDelta(deltaLast, 0, DeltaType.Slow);
 
                             // 남은 양
                             delta = delta - lastValue;
@@ -96,8 +90,6 @@ public class CustomSlider : Display
                                 expectedValue = last.Value - delta;
                         }
                         last.Value = expectedValue;
-                        deltaLast.Value = expectedValue;
-                        //ShowDelta(deltaLast, expectedValue, DeltaType.Slow);
                     }
                 }
             }
@@ -122,9 +114,11 @@ public class CustomSlider : Display
     }
     float m_MinValue;
     float m_MaxValue;
-    
+
     public void SetData(float minValue, float maxValue, float currentValue, Action<float> onValueUpdate = null)
     {
+        m_DeltaLayout.gameObject.SetActive(false);
+
         m_MinValue = minValue;
         m_MaxValue = maxValue;
         m_Value = Mathf.Clamp(currentValue, m_MinValue, m_MaxValue);
@@ -247,7 +241,11 @@ public class CustomSlider : Display
         m_SliderCount = m_SliderColors.Length;
         m_CurrentColorIndex = m_SliderColors.Length - 1;
 
-        Debug.LogWarning($"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!");
+        Debug.LogWarning(
+            $"게임 시작 전에 {m_DeltaLayout}와 {m_FrontLayout}의 Horizontal Layout Group을 반드시 꺼주세요!\n" +
+            $"현재 버젼에는 슬라이더 값 변화량 연출이 구현이 되어있지 않아. {m_DeltaLayout.name}을 비활성화합니다.");
+        m_DeltaLayout.gameObject.SetActive(false);
+
         EditorUtility.SetDirty(this);
     }
 
@@ -290,17 +288,14 @@ public class CustomSlider : Display
         EditorUtility.SetDirty(this);
     }
 
-    // UNDONE
-    void ShowDelta(CustomSliderElement deltaElement, float desiredValue, DeltaType type) { }
-
     /// <summary>
     /// Value 프로퍼티에서 필요한 함수. value를 적용시킬 마지막 element를 구합니다.
     /// </summary>
     /// <param name="diff">현재 슬라이더의 value랑, 슬라이더에 적용될 value와의 차이값</param>
     /// <returns></returns>
-    (CustomSliderElement front, CustomSliderElement delta) TryGetValuedElements(float diff)
+    (SplitSliderElement front, SplitSliderElement delta) TryGetValuedElements(float diff)
     {
-        (CustomSliderElement, CustomSliderElement) result;
+        (SplitSliderElement, SplitSliderElement) result;
         result.Item1 = null;
         result.Item2 = null;
 
@@ -309,13 +304,13 @@ public class CustomSlider : Display
         {
             if (diff > 0)
             {
-                result.Item1 = m_FrontElements.Last((element) => element.Value > 0);
-                result.Item2 = m_DeltaElements.Last((element) => element.Value > 0);
+                result.Item1 = m_FrontElements.Last(element => element.Value > 0);
+                result.Item2 = m_DeltaElements.Last(element => element.Value > 0);
             }
             else
             {
-                result.Item1 = m_FrontElements.Last((element) => element.Value > 0 && element.Value < element.MaxValue);
-                result.Item2 = m_DeltaElements.Last((element) => element.Value > 0 && element.Value < element.MaxValue);
+                result.Item1 = m_FrontElements.Last(element => element.Value > 0 && element.Value < element.MaxValue);
+                result.Item2 = m_DeltaElements.Last(element => element.Value > 0 && element.Value < element.MaxValue);
             }
         }
         // 더 이상 값을 조정할 element가 없을 경우
@@ -388,8 +383,8 @@ public class CustomSlider : Display
     }
 }
 
-enum DeltaType
+class ShowDeltaContainer
 {
-    Fast,
-    Slow
+    public SplitSliderElement DeltaElement;
+    public float EndValue;
 }
