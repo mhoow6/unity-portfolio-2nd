@@ -6,13 +6,13 @@ public class SparcherRun00Behaviour : SparcherBehaviour
 {
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (m_System.CharacterAttackInput)
+        if (m_InputSystem.CharacterAttackInput)
             m_Player.AnimationJobs.Enqueue(AniType.ATTACK_0);
-        else if (m_System.CharacterDashInput)
+        else if (m_InputSystem.CharacterDashInput)
             m_Player.AnimationJobs.Enqueue(AniType.DASH_0);
-        else if (m_System.CharacterUltiInput)
+        else if (m_InputSystem.CharacterUltiInput)
             m_Player.AnimationJobs.Enqueue(AniType.ATTACK_1);
-        else if (m_System.CharacterMoveInput.magnitude != 0 && m_Player.Moveable)
+        else if (m_InputSystem.CharacterMoveInput.magnitude != 0 && m_Player.Moveable)
             m_Player.AnimationJobs.Enqueue(AniType.RUN_0);
         else
             m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);

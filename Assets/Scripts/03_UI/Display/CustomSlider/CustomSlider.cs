@@ -164,8 +164,9 @@ public class CustomSlider : Display
         }
 
         // 한 층의 슬라이더의 element에 적용할 value의 합
-        // colorIndex + 1은 층수를 나타냄
-        float elementValueSum = currentValue / (colorIndex + 1);
+        // 나누기는 값 손실을 일으켜서 빼기로 표현
+        float elementValueSum = (elementMaxValue * m_ElementCount) - (m_MaxValue - currentValue);
+
         // 슬라이더 element 값
         for (int i = 0; i < m_ElementCount; i++)
         {

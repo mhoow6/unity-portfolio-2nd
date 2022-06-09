@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SparcherBehaviour : AnimationBehaviour
 {
-    protected InputSystem m_System;
+    protected InputSystem m_InputSystem;
     protected Player m_Player;
 
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_Player = StageManager.Instance.Player;
-        m_System = GameManager.InputSystem;
+        m_InputSystem = GameManager.InputSystem;
     }
 }
