@@ -194,6 +194,18 @@ public class CustomSlider : Display
 
     public void CreateElements()
     {
+        if (m_BackElements.Count > 0)
+        {
+            Debug.LogError($"기존의 element를 삭제하고 해주세요.");
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Debug.LogError($"게임 실행중에 슬라이더의 모양을 변경시킬 수 없습니다. 에디터 모드에서 실행해주세요.");
+            return;
+        }
+
         m_Flexible = false;
 
         // 백그라운드
@@ -241,6 +253,12 @@ public class CustomSlider : Display
 
     public void DestroyElements()
     {
+        if (Application.isPlaying)
+        {
+            Debug.LogError($"게임 실행중에 슬라이더의 모양을 변경시킬 수 없습니다. 에디터 모드에서 실행해주세요.");
+            return;
+        }
+
         // 백그라운드
         for (int i = 0; i < m_BackElements.Count; i++)
         {
