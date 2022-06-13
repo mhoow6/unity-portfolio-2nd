@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AdventureUI : UI
 {
-    public StatusDisplay StatusDisplay;
-    public List<StageDisplay> StageDisplays = new List<StageDisplay>();
+    public StatusUI StatusDisplay;
+    public List<StageUI> StageDisplays = new List<StageUI>();
 
     public override UIType Type => UIType.Adventure;
 

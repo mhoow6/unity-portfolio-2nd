@@ -10,7 +10,7 @@ public class MainLobbyUI : UI
 {
     public Text LevelNickName;
     public Slider ExperienceSlider;
-    public StatusDisplay StatusDisplay;
+    public StatusUI StatusDisplay;
 
     [SerializeField] RectTransform m_AdventureBtnRectTransform;
     [SerializeField] RectTransform m_EquipmentBtnRectTransform;

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SkillButtonDisplay : Display, IPointerDownHandler, IPointerUpHandler
+public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] GameObject m_SpRoot;
     [SerializeField] Text m_SpCost;

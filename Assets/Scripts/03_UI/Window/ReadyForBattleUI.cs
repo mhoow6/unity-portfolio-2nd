@@ -12,14 +12,14 @@ public class ReadyForBattleUI : UI
     public Text StageDescription;
 
     // 퀘스트 목표
-    public MissionDisplay Mission1;
-    public MissionDisplay Mission2;
-    public MissionDisplay Mission3;
+    public MissionDisplayUI Mission1;
+    public MissionDisplayUI Mission2;
+    public MissionDisplayUI Mission3;
 
     // UNDONE: 몬스터 드랍템 중 상위 티어 3개
 
     public Text EnergyCost;
-    public StatusDisplay StatusDisplay;
+    public StatusUI StatusDisplay;
 
     // 스테이지 정보
     int m_WorldIdx;

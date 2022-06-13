@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using DatabaseSystem;
 
-public class LeaderPassiveInfoDisplay : Display
+public class LeaderPassiveInfoUI : Display
 {
     [SerializeField] Text m_SkillName;
     [SerializeField] Text m_SkillDescription;
 
     public void SetData(ObjectCode characterCode)
     {
-        var data = JsonManager.Instance.JsonDatas[Character.GetPassiveIndex(characterCode)] as Skillable;
+        var data = JsonManager.Instance.JsonDatas[Character.GetPassiveIndex(characterCode)] as SkillDescriptable;
         if (data != null)
         {
             m_SkillName.text = data.Name;

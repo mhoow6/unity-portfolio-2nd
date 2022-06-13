@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class LogoToast : Toast
+public class LogoUI : Toast
 {
     [SerializeField] Image m_Logo;
     [SerializeField] CanvasGroup m_CanvasGroup;

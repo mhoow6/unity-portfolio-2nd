@@ -4,7 +4,7 @@ using DatabaseSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatusDisplay : Display
+public class StatusUI : Display
 {
     public Text Energy;
     public Image EnergyBackground;

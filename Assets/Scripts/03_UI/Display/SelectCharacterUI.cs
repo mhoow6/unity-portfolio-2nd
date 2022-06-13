@@ -6,7 +6,7 @@ using DatabaseSystem;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     
     [HideInInspector] public RectTransform BackgroundRectTransform;
@@ -63,8 +63,8 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
     [SerializeField] Image m_Background;
     [SerializeField] Text m_CharacterLevel;
     CanvasGroup m_CanvasGroup;
-    SelectCharacterDisplay m_Copied;
-    SelectCharacterDisplay m_Moved;
+    SelectCharacterUI m_Copied;
+    SelectCharacterUI m_Moved;
     CustomRect Rect;
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
@@ -148,7 +148,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
         if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE && m_Moved == null)
         {
             // 자기 자신 복사
-            var display = Resources.Load<SelectCharacterDisplay>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
+            var display = Resources.Load<SelectCharacterUI>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
             if (display)
             {
                 // 인스턴싱
@@ -221,7 +221,7 @@ public class SelectCharacterDisplay : Display, IPointerClickHandler, IPointerDow
                     }
 
                     // 자기 자신 복사하여
-                    var tryload = Resources.Load<SelectCharacterDisplay>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
+                    var tryload = Resources.Load<SelectCharacterUI>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
                     if (tryload)
                     {
                         // 자리 옮기는 연출을 보여줄 슬롯 인스턴싱

@@ -33,9 +33,14 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // 시간되면 알아서 IDLE로 돌아간다.
+        // 자유롭게 행동할 수 있는 시간은 애니메이션이 50% 완료된 이후
         if (m_CurrentAnimationTime > 0.5f)
-            m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);
+        {
+            if (m_InputSystem.CharacterDashInput)
+                m_Player.AnimationJobs.Enqueue(AniType.DASH_0);
+            else
+                m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);
+        }
     }
 
     protected override void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

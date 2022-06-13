@@ -8,13 +8,13 @@ using UnityEngine.UI;
 public class SortieUI : UI
 {
     public override UIType Type => UIType.Sortie;
-    public List<SelectCharacterDisplay> SelectCharacterDisplays = new List<SelectCharacterDisplay>();
+    public List<SelectCharacterUI> SelectCharacterDisplays = new List<SelectCharacterUI>();
     public RectTransform SelectCharacterGroupTransform;
     public RectTransform StageBackgroundTransform;
 
     [SerializeField] Text m_EnergyCostText;
-    [SerializeField] LeaderPassiveInfoDisplay m_LeaderPassiveInfoDisplay;
-    [SerializeField] StatusDisplay m_StatusDisplay;
+    [SerializeField] LeaderPassiveInfoUI m_LeaderPassiveInfoDisplay;
+    [SerializeField] StatusUI m_StatusDisplay;
 
     int m_WorldIdx;
     int m_StageIdx;

@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        m_UISystem.OpenToast<LogoToast>(ToastType.Logo).Initalize = true;
+        m_UISystem.OpenToast<LogoUI>(ToastType.Logo).Initalize = true;
     }
 
     private void FixedUpdate()

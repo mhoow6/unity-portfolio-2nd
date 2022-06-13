@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FloatingLockOnImage : MonoBehaviour, IPoolable
+public sealed class FloatingLockOnImage : MonoBehaviour, IPoolable
 {
     Transform m_Target;
     RectTransform m_RectTransform;

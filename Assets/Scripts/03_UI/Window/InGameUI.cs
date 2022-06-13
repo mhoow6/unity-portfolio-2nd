@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class InGameUI : UI
 {
     public override UIType Type => UIType.InGame;
-    public List<CharacterButtonDisplay> CharacterButtonDisplays = new List<CharacterButtonDisplay>();
+    public List<CharacterButtonUI> CharacterButtonDisplays = new List<CharacterButtonUI>();
 
     [SerializeField] VirtualJoystick m_Joystick;
 
     [Space(10)]
-    [SerializeField] SkillButtonDisplay m_AttackButton;
-    [SerializeField] SkillButtonDisplay m_DashButton;
-    [SerializeField] SkillButtonDisplay m_SkillButton;
+    [SerializeField] SkillButtonUI m_AttackButton;
+    [SerializeField] SkillButtonUI m_DashButton;
+    [SerializeField] SkillButtonUI m_SkillButton;
 
     [Space(10)]
     [SerializeField] SplitSlider m_HpSlider;
@@ -38,15 +38,15 @@ public class InGameUI : UI
         GameManager.InputSystem.Controllers.Remove(m_Joystick);
 
         // 에디터 버젼은 키보드 컨트롤러도 달려있음
-        var wasd = player.gameObject.GetComponent<KeyboardController>();
-        if (wasd != null)
-        {
-            Destroy(wasd);
+        //var wasd = player.gameObject.GetComponent<KeyboardController>();
+        //if (wasd != null)
+        //{
+        //    Destroy(wasd);
 
-            // 커서 다시 보이게 하기
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
+        //    // 커서 다시 보이게 하기
+        //    Cursor.visible = true;
+        //    Cursor.lockState = CursorLockMode.None;
+        //}
 
 
         // 유저가 캐릭터 조작불가능
@@ -68,15 +68,15 @@ public class InGameUI : UI
         GameManager.InputSystem.Controllers.Add(m_Joystick);
 
         // 에디터에선 키보드 컨트롤 가능하게
-        if (Application.platform != RuntimePlatform.Android)
-        {
-            var wasd = player.gameObject.AddComponent<KeyboardController>();
-            GameManager.InputSystem.Controllers.Add(wasd);
+        //if (Application.platform != RuntimePlatform.Android)
+        //{
+        //    var wasd = player.gameObject.AddComponent<KeyboardController>();
+        //    GameManager.InputSystem.Controllers.Add(wasd);
 
-            // 커서도 편의상 잠궈놓자
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        //    // 커서도 편의상 잠궈놓자
+        //    Cursor.visible = false;
+        //    Cursor.lockState = CursorLockMode.Locked;
+        //}
 
         // 유저가 캐릭터 조작가능
         player.Controlable = true;
@@ -125,15 +125,15 @@ public class InGameUI : UI
         m_AttackButton.SetData(
             () => { GameManager.InputSystem.CharacterAttackInput = true; },
             () => { GameManager.InputSystem.CharacterAttackInput = false; },
-            character.GetSkillIconPath(attackIndex),
-            character.GetSpCost(attackIndex));
+            Character.GetSkillIconPath(attackIndex),
+            Character.GetSpCost(attackIndex));
 
-        //int dashIndex = Character.GetDashIndex(character.Code);
-        //m_AttackButton.SetData(
-        //    () => { GameManager.InputSystem.CharacterDashInput = true; },
-        //    () => { GameManager.InputSystem.CharacterDashInput = false; },
-        //    character.GetSkillIconPath(dashIndex),
-        //    character.GetSpCost(dashIndex));
+        int dashIndex = Character.GetDashIndex(character.Code);
+        m_DashButton.SetData(
+            () => { GameManager.InputSystem.CharacterDashInput = true; },
+            () => { GameManager.InputSystem.CharacterDashInput = false; },
+           Character.GetSkillIconPath(dashIndex),
+           Character.GetSpCost(dashIndex));
 
         //int ultiIndex = Character.GetUltimateIndex(character.Code);
         //m_AttackButton.SetData(

@@ -258,19 +258,6 @@ public class Character : BaseObject, IEventCallable
         OnDamaged(attacker, damage, damageType);
     }
 
-    public int GetSpCost(int skillIndex)
-    {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-        var data = origin as Skillable;
-        return data.SpCost;
-    }
-
-    public string GetSkillIconPath(int skillIndex)
-    {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-        var data = origin as Skillable;
-        return data.IconPath;
-    }
 
     /// <summary> 애니메이션 이벤트 함수 </summary>
     public virtual void Attack(int skillIndex) { }
@@ -434,13 +421,34 @@ public class Character : BaseObject, IEventCallable
     /// <summary> objectCode에 맞는 대쉬 인덱스 </summary>
     public static int GetDashIndex(ObjectCode objectCode)
     {
-        return -1;
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2002;
+            default:
+                return -1;
+        }
     }
 
     /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
     public static int GetUltimateIndex(ObjectCode objectCode)
     {
         return -1;
+    }
+
+
+    public static int GetSpCost(int skillIndex)
+    {
+        var origin = JsonManager.Instance.JsonDatas[skillIndex];
+        var data = origin as Skillable;
+        return data.SpCost;
+    }
+
+    public static string GetSkillIconPath(int skillIndex)
+    {
+        var origin = JsonManager.Instance.JsonDatas[skillIndex];
+        var data = origin as Skillable;
+        return data.IconPath;
     }
     #endregion
 

@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor;
 using System;
 
+/// <summary> Version 1.0 </summary>
 public class SplitSlider : Display
 {
     [Header("# 조절 가능")]
@@ -381,10 +382,4 @@ public class SplitSlider : Display
 
         return result;
     }
-}
-
-class ShowDeltaContainer
-{
-    public SplitSliderElement DeltaElement;
-    public float EndValue;
 }

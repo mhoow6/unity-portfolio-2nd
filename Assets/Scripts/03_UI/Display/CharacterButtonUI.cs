@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DatabaseSystem;
 using UnityEngine.EventSystems;
 
-public class CharacterButtonDisplay : Display
+public class CharacterButtonUI : Display
 {
     [SerializeField] Image m_Portrait;
     [SerializeField] Slider m_HpSlider;

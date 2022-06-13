@@ -16,12 +16,21 @@
 
 namespace DatabaseSystem
 {
-    public class SparcherPassiveSkillData : Skillable
+    public class SparcherPassiveSkillData : SkillDescriptable
     {
-        public string SkillName;
-        public string SkillDescription;
         public float IncreaseCriticalRatio;
         public string CharacterType;
+        
+    }
+}
+
+namespace DatabaseSystem
+{
+    public class SparcherDashData : Skillable
+    {
+        public float DashDistance;
+        public float CoolTime;
+        public int Stack;
         
     }
 }

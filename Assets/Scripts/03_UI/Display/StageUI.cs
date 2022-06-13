@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DatabaseSystem;
 using System.Linq;
 
-public class StageDisplay : Display
+public class StageUI : Display
 {
     public Image StageImage;
     public Image[] Medals;
