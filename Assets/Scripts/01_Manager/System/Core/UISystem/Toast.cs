@@ -5,7 +5,6 @@ using UnityEngine;
 
 public enum ToastType
 {
-    BlackFade,
     Logo,
 }
 

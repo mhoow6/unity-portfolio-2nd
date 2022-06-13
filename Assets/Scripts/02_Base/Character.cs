@@ -37,7 +37,7 @@ public class Character : BaseObject, IEventCallable
 
     #region 물리
     public Rigidbody Rigidbody { get; private set; }
-    public Collider Collider { get; private set; }
+    protected Collider Collider { get; set; }
     public bool Physic
     {
         get
@@ -227,9 +227,14 @@ public class Character : BaseObject, IEventCallable
     public FloatingLockOnImage AttachedLockOnImage;
     FloatingLockOnImage m_TargetLockOnImage;
 
+    public bool Invincibility { get; set; }
+
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, DamageType damageType)
     {
+        if (Invincibility)
+            return;
+
         Hp -= damage;
 
         // 캐릭터 사망

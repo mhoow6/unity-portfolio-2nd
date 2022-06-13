@@ -6,11 +6,3 @@ public enum SceneCode
     Stage0000,
     None
 }
-
-public enum CharacterState
-{
-    Live,
-    Dead,
-    Attack,
-    Damaged
-}
