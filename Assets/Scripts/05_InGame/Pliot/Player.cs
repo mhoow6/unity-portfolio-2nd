@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Player : MonoBehaviour
 {
@@ -48,8 +49,10 @@ public class Player : MonoBehaviour
             }
         }
 
-        m_ControlCoroutine = MoveAndRotateCharacterCoroutine();
+        m_RigidbodyControlCoroutine = ControlRigidbodyCoroutine();
         m_GetInputCoroutine = GetInputCoroutine();
+        m_TransformControlCoroutine = ControlTransformCoroutine();
+        m_AgentControlCoroutine = 
 
         Moveable = true;
     }
@@ -89,12 +92,12 @@ public class Player : MonoBehaviour
             if (value)
             {
                 StartCoroutine(m_GetInputCoroutine);
-                StartCoroutine(m_ControlCoroutine);
+                StartCoroutine(m_TransformControlCoroutine);
             }
             else
             {
                 StopCoroutine(m_GetInputCoroutine);
-                StopCoroutine(m_ControlCoroutine);
+                StopCoroutine(m_TransformControlCoroutine);
             }
 
         }
@@ -103,7 +106,9 @@ public class Player : MonoBehaviour
     public Vector3 MoveVector { get; private set; }
     public Vector3 RotateVector { get; private set; }
 
-    IEnumerator m_ControlCoroutine;
+    IEnumerator m_RigidbodyControlCoroutine;
+    IEnumerator m_TransformControlCoroutine;
+    IEnumerator m_AgentControlCoroutine;
     IEnumerator m_GetInputCoroutine;
 
     const float CHARCTER_ROTATE_SPEED = 20f;
@@ -131,19 +136,78 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator MoveAndRotateCharacterCoroutine()
+    IEnumerator ControlTransformCoroutine()
+    {
+        while (true)
+        {
+            bool skip = false;
+
+            #region 예외처리
+            if (MoveVector.magnitude == 0)
+                skip = true;
+            if (!Moveable)
+                skip = true;
+            #endregion
+
+            if (!skip)
+            {
+                // 회전
+                CurrentCharacter.transform.forward = Vector3.Lerp(CurrentCharacter.transform.forward, MoveVector.normalized, Time.deltaTime * CHARCTER_ROTATE_SPEED);
+
+                // 이동
+                CurrentCharacter.transform.position += MoveVector * Time.deltaTime * CurrentCharacter.MoveSpeed;
+            }
+                
+
+            yield return null;
+        }
+    }
+
+    IEnumerator ControlRigidbodyCoroutine()
     {
         while (true)
         {
             CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(RotateVector));
-            if (MoveVector.magnitude != 0 && Moveable)
+
+            bool skip = false;
+
+            #region 예외처리
+            if (MoveVector.magnitude == 0)
+                skip = true;
+            if (!Moveable)
+                skip = true;
+            #endregion
+
+            if (!skip)
             {
                 // 이동가능하면 움직이자
-                Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.MoveSpeed * Time.deltaTime);
+                Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.MoveSpeed * Time.fixedDeltaTime);
                 CurrentCharacter.Rigidbody.MovePosition(desired);
             }
 
             yield return new WaitForFixedUpdate();
+        }
+    }
+
+    IEnumerator ControlAgentCoroutine()
+    {
+        while (true)
+        {
+            bool skip = false;
+
+            #region 예외처리
+            if (MoveVector.magnitude == 0)
+                skip = true;
+            if (!Moveable)
+                skip = true;
+            #endregion
+
+            if (!skip)
+            {
+
+            }
+
+            yield return null;
         }
     }
     #endregion
@@ -162,14 +226,17 @@ public class Player : MonoBehaviour
 
     IEnumerator SmoothlyMovingCoroutine(Vector3 destination, float desiredTime)
     {
-        float timer = 0f;
+        float t = 0f;
         SmoothlyMoving = true;
-        while (timer < desiredTime)
-        {
-            timer += Time.fixedDeltaTime;
-            CurrentCharacter.Rigidbody.position = Vector3.Lerp(CurrentCharacter.Rigidbody.position, destination, timer / desiredTime);
 
-            yield return new WaitForFixedUpdate();
+        while (t < 1)
+        {
+            t += Time.deltaTime / desiredTime;
+
+            Vector3 desired = Vector3.Lerp(CurrentCharacter.transform.position, destination, t);
+            CurrentCharacter.Agent.destination = desired;
+
+            yield return null;
         }
         SmoothlyMoving = false;
     }

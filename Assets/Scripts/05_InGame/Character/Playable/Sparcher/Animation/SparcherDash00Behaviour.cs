@@ -30,7 +30,7 @@ public class SparcherDash00Behaviour : SparcherBehaviour
         m_Player.CurrentCharacter.Invincibility = true;
         m_Player.Moveable = false;
 
-        m_Player.SmoothlyMovingTo(m_Destination, 5f);
+        m_Player.SmoothlyMovingTo(m_Destination, m_Data.ArriveTime);
     }
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

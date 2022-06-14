@@ -20,7 +20,7 @@ public class JumpTrigger : AreaTrigger
             // 컨트롤 불가능
             var player = StageManager.Instance.Player;
             player.Controlable = false;
-            player.CurrentCharacter.Physic = false;
+            player.CurrentCharacter.Physics = false;
 
             // 트리거의 forward 방향으로 캐릭터 회전
             player.CurrentCharacter.transform.forward = transform.forward;
@@ -42,7 +42,7 @@ public class JumpTrigger : AreaTrigger
             curve.Simulate(JUMP_TIME, () =>
             {
                 player.Controlable = true;
-                player.CurrentCharacter.Physic = true;
+                player.CurrentCharacter.Physics = true;
 
                 player.AnimationJobs.Enqueue(AniType.IDLE_0);
                 player.CurrentCharacter.AniSpeed = 1;
