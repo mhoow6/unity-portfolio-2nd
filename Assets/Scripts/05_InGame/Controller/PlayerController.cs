@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [ReadOnly] public Character CurrentCharacter;
     [ReadOnly] public List<Character> Characters = new List<Character>();

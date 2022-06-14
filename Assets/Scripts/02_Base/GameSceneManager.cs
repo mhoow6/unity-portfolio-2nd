@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GameSceneManager : MonoBehaviour
 {
-    public Player Player;
+    public PlayerController Player;
     public SceneCode SceneCode;
 
     #region Ä«¸Þ¶ó
