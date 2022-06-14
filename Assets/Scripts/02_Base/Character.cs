@@ -143,9 +143,6 @@ public class Character : BaseObject, IEventCallable
 
     public void Spawn()
     {
-        // 벽 뚫는 현상때문에 Transform 움직임 사용하도록 함.
-        Rigidbody.isKinematic = true;
-
         TryAttachToFloor();
 
         if (gameObject.activeSelf)

@@ -52,7 +52,6 @@ public class Player : MonoBehaviour
         m_RigidbodyControlCoroutine = ControlRigidbodyCoroutine();
         m_GetInputCoroutine = GetInputCoroutine();
         m_TransformControlCoroutine = ControlTransformCoroutine();
-        m_AgentControlCoroutine = 
 
         Moveable = true;
     }
@@ -92,12 +91,12 @@ public class Player : MonoBehaviour
             if (value)
             {
                 StartCoroutine(m_GetInputCoroutine);
-                StartCoroutine(m_TransformControlCoroutine);
+                StartCoroutine(m_RigidbodyControlCoroutine);
             }
             else
             {
                 StopCoroutine(m_GetInputCoroutine);
-                StopCoroutine(m_TransformControlCoroutine);
+                StopCoroutine(m_RigidbodyControlCoroutine);
             }
 
         }
@@ -108,7 +107,6 @@ public class Player : MonoBehaviour
 
     IEnumerator m_RigidbodyControlCoroutine;
     IEnumerator m_TransformControlCoroutine;
-    IEnumerator m_AgentControlCoroutine;
     IEnumerator m_GetInputCoroutine;
 
     const float CHARCTER_ROTATE_SPEED = 20f;
@@ -188,28 +186,6 @@ public class Player : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
-
-    IEnumerator ControlAgentCoroutine()
-    {
-        while (true)
-        {
-            bool skip = false;
-
-            #region 예외처리
-            if (MoveVector.magnitude == 0)
-                skip = true;
-            if (!Moveable)
-                skip = true;
-            #endregion
-
-            if (!skip)
-            {
-
-            }
-
-            yield return null;
-        }
-    }
     #endregion
 
     #region 목적지로 캐릭터 무조건 이동
@@ -229,14 +205,18 @@ public class Player : MonoBehaviour
         float t = 0f;
         SmoothlyMoving = true;
 
+        // 현재 캐릭터로부터 목적지까지의 거리벡터
+        Vector3 adjust = destination - CurrentCharacter.transform.position;
         while (t < 1)
         {
-            t += Time.deltaTime / desiredTime;
+            t += Time.fixedDeltaTime / desiredTime;
 
-            Vector3 desired = Vector3.Lerp(CurrentCharacter.transform.position, destination, t);
-            CurrentCharacter.Agent.destination = desired;
+            // Force가 계속해서 더해지는 현상 방지하기 위함
+            CurrentCharacter.Rigidbody.velocity = Vector3.zero;
 
-            yield return null;
+            CurrentCharacter.Rigidbody.AddForce(adjust / desiredTime, ForceMode.VelocityChange);
+
+            yield return new WaitForFixedUpdate();
         }
         SmoothlyMoving = false;
     }
