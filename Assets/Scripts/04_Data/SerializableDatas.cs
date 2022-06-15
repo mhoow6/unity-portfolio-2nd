@@ -49,5 +49,6 @@ public class WeaponData
 public class CoolTimeData
 {
     public float Value;
+    public int Stack;
     public bool Cooldown;
 }

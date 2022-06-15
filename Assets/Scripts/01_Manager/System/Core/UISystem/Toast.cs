@@ -15,6 +15,6 @@ public abstract class Toast : MonoBehaviour
     /// <summary> Toast는 Initalize가 true일때만 실행됩니다. </summary>
     public bool Initalize { get; set; }
 
-    public virtual void OnOpened() { }
-    public virtual void OnClosed() { }  
+    public abstract void OnOpened();
+    public abstract void OnClosed();
 }

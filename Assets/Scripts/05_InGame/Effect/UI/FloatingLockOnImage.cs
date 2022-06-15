@@ -18,7 +18,6 @@ public sealed class FloatingLockOnImage : MonoBehaviour, IPoolable
     public void SetData(Character target)
     {
         m_Target = target.Body;
-        target.AttachedLockOnImage = this;
     }
 
     public void SetUpdate(bool value)

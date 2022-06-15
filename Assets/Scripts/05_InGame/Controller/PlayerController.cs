@@ -5,8 +5,8 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
-    [ReadOnly] public Character CurrentCharacter;
-    [ReadOnly] public List<Character> Characters = new List<Character>();
+    [ReadOnly] public Playable CurrentCharacter;
+    [ReadOnly] public List<Playable> Characters = new List<Playable>();
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
 
     private void Update()
@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             var child = transform.GetChild(i);
-            var cha = child.GetComponent<Character>();
+            var cha = child.GetComponent<Playable>();
             if (cha != null)
             {
                 if (i == 0)
@@ -83,7 +83,9 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region 컨트롤러(디바이스) 활용하여 캐릭터 이동
+    #region 캐릭터 이동
+
+    #region 디바이스 활용
     public bool Controlable
     {
         set
@@ -220,5 +222,7 @@ public class PlayerController : MonoBehaviour
         }
         SmoothlyMoving = false;
     }
+    #endregion
+
     #endregion
 }

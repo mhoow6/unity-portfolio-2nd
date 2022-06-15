@@ -12,7 +12,7 @@ public class CharacterButtonUI : Display
     [SerializeField] Slider m_SpSlider;
     [SerializeField] Image m_CoolTime;
 
-    public Character ConnectCharacter { get; private set; }
+    public Playable ConnectCharacter { get; private set; }
     const float SWAP_COOLTIME = 8f;
     bool m_EventRegisterd;
     bool m_IsCooldown;
@@ -56,7 +56,7 @@ public class CharacterButtonUI : Display
         effect.transform.position = ConnectCharacter.transform.position;
     }
 
-    public void SetData(Character character)
+    public void SetData(Playable character)
     {
         ConnectCharacter = character;
 

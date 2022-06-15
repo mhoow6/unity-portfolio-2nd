@@ -196,4 +196,24 @@
 
     }
 
+    public enum SceneCode
+    {
+        
+        /// <summary> 로고 </summary> ///
+        Logo = 0,
+
+        /// <summary> 로비 </summary> ///
+        Lobby = 1,
+
+        /// <summary> 1-1 </summary> ///
+        Stage0101 = 2,
+
+        /// <summary> 테스트 </summary> ///
+        Stage0000 = 3,
+
+        /// <summary> 에러 </summary> ///
+        None = -1,
+
+    }
+
 

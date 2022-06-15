@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Monster : Character
 {
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
+    public NavMeshAgent Agent { get; private set; }
 
     protected override void OnSpawn()
     {
@@ -14,7 +16,7 @@ public class Monster : Character
             manager.Monsters.Add(this);
 
         gameObject.tag = "Monster";
-        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
+        Agent = GetComponent<NavMeshAgent>();
     }
 
     protected override void OnLive()
@@ -26,7 +28,7 @@ public class Monster : Character
 
     protected override void OnDamaged(Character attacker, int damage, DamageType damageType)
     {
-        Debug.Log($"{attacker.Name}에게 {Name}이(가) {damage}만큼의 데미지를 입었습니다.");
+        //Debug.Log($"{attacker.Name}에게 {Name}이(가) {damage}만큼의 데미지를 입었습니다.");
     }
 
     protected override void OnDead(Character attacker, int damage, DamageType damageType)
@@ -55,7 +57,7 @@ public class Monster : Character
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
         StageManager.Instance.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
 
-        if (AttachedLockOnImage)
-            GameManager.UISystem.Pool.Release(AttachedLockOnImage);
+        if (m_TargetLockOnImage)
+            GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
     }
 }

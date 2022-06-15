@@ -136,24 +136,22 @@ public class InGameUI : UI
         dashButtonParam.OnClick =
             () =>
             {
-                GameManager.InputSystem.CharacterDashInput = true;
-
                 var character = StageManager.Instance.Player.CurrentCharacter;
-                if (character.CurrentDashCoolTime == 0)
+                if (character.AniType >= AniType.IDLE_0 && character.AniType <= AniType.IDLE_4)
                 {
-                    // 캐릭터 쿨타임 백그라운드 연출
-                    m_DashButton.CoolTimeBackground.fillAmount = 0;
-                    character.ActiveDashCoolDown(
-                        (cooltime) =>
-                        {
-                            // 0 ~ 1
-                            m_DashButton.CoolTimeBackground.fillAmount = cooltime / character.DashCoolTime;
-                        });
+                    character.OnDashed(
+                    onStackCharge: (progress) =>
+                    {
+                        m_DashButton.CoolTimeBackground.fillAmount = 1 - progress;
+                    });
                 }
-                
             };
 
-        dashButtonParam.OnExit = () => { GameManager.InputSystem.CharacterDashInput = false; };
+        dashButtonParam.OnExit =
+            () =>
+            {
+                GameManager.InputSystem.CharacterDashInput = false;
+            };
         m_DashButton.SetData(dashButtonParam);
 
         //int ultiIndex = Character.GetUltimateIndex(character.Code);

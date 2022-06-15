@@ -31,10 +31,6 @@ public class Character : BaseObject, IEventCallable
     }
     #endregion
 
-    #region AI
-    public NavMeshAgent Agent { get; private set; }
-    #endregion
-
     #region 물리
     public Rigidbody Rigidbody { get; private set; }
     Collider Collider { get; set; }
@@ -49,6 +45,26 @@ public class Character : BaseObject, IEventCallable
             Rigidbody.isKinematic = !value;
             Collider.enabled = value;
         }
+    }
+    #endregion
+
+    #region 유니티 라이프 사이클
+    void Awake()
+    {
+        // 컴포넌트 붙이기
+        Animator = GetComponent<Animator>();
+        
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
+        m_UpdateCoroutine = UpdateCoroutine();
+
+        SetPropertiesFromTable();
+    }
+
+    void OnDisable()
+    {
+        StopAllCoroutines();
     }
     #endregion
 
@@ -132,6 +148,10 @@ public class Character : BaseObject, IEventCallable
     #endregion
 
     #region 캐릭터 기본
+    public bool Invincibility { get; set; }
+
+    #region 생존
+    IEnumerator m_UpdateCoroutine;
     public void SetUpdate(bool value)
     {
         if (value)
@@ -139,8 +159,19 @@ public class Character : BaseObject, IEventCallable
         else
             StopCoroutine(m_UpdateCoroutine);
     }
-    IEnumerator m_UpdateCoroutine;
+    IEnumerator UpdateCoroutine()
+    {
+        while (true)
+        {
+            OnLive();
+            yield return null;
+        }
+    }
+    /// <summary> 캐릭터 살아있을 때 호출 </summary>
+    protected virtual void OnLive() { }
+    #endregion
 
+    #region 탄생
     public void Spawn()
     {
         TryAttachToFloor();
@@ -151,45 +182,19 @@ public class Character : BaseObject, IEventCallable
         OnSpawn();
     }
 
-    void Awake()
-    {
-        // 컴포넌트 붙이기
-        Animator = GetComponent<Animator>();
-        Agent = GetComponent<NavMeshAgent>();
-        Rigidbody = GetComponent<Rigidbody>();
-        Collider = GetComponent<Collider>();
-        gameObject.layer = 6;
-        m_UpdateCoroutine = UpdateCoroutine();
-
-        SetPropertiesFromTable();
-    }
-
-    void OnDisable()
-    {
-        StopAllCoroutines();
-    }
-
-    IEnumerator UpdateCoroutine()
-    {
-        while (true)
-        {
-            OnLive();
-            yield return null;
-        }
-    }
-
     /// <summary> 캐릭터 스폰시 호출 </summary>
     protected virtual void OnSpawn() { }
+    #endregion
 
     /// <summary> 캐릭터 사망시 호출 </summary>
     protected virtual void OnDead(Character attacker, int damage, DamageType damageType) { }
 
-    /// <summary> 캐릭터 살아있을 때 호출 </summary>
-    protected virtual void OnLive() { }
     #endregion
 
-    #region 캐릭터 공격/스킬
+    #region 캐릭터 스킬
     public PassiveSkill PassiveSkill;
+    
+    #region 타겟
     public Character Target
     {
         get
@@ -223,11 +228,72 @@ public class Character : BaseObject, IEventCallable
     }
     Character m_Target;
     public Action<Character> OnTargetUpdate;
+    protected FloatingLockOnImage m_TargetLockOnImage;
+    #endregion
 
-    public FloatingLockOnImage AttachedLockOnImage;
-    FloatingLockOnImage m_TargetLockOnImage;
+    #region 대쉬
+    protected float m_CurrentDashStack;
+    bool m_ChargeDashStackCoroutine;
 
-    public bool Invincibility { get; set; }
+    /// <summary>
+    /// 대쉬할 때 해야하는 행동
+    /// </summary>
+    /// <param name="onDashStart">대쉬를 시작할 때 뭔가를 할 함수</param>
+    /// <param name="onStackCharge">현재 스택의 충전정도를 매개변수로 받아서 뭔가를 할 함수</param>
+    public void OnDashed(Action<float> onStackCharge = null)
+    {
+        // 스킬 데이터에서 스택이 있으면 스택을 사용하는 기술
+        var skillData = GetSkillData(GetDashIndex(Code));
+        if (skillData.Stack != 0)
+        {
+            // 스택을 다 쓰면 스킬을 사용할 수 없다.
+            if (m_CurrentDashStack == 0)
+                return;
+
+            // 스택을 사용하는 기술이면 1스택을 충전하는데 CoolTime만큼의 시간이 걸린다.
+            GameManager.InputSystem.CharacterDashInput = true;
+            m_CurrentDashStack--;
+
+            // 스택 충전 시작
+            if (!m_ChargeDashStackCoroutine)
+                StartCoroutine(ChargeDashStackCoroutine(onStackCharge));
+
+        }
+        else
+            GameManager.InputSystem.CharacterDashInput = true;
+    }
+
+    IEnumerator ChargeDashStackCoroutine(Action<float> onStackCharge = null)
+    {
+        m_ChargeDashStackCoroutine = true;
+
+        float timer = 0f;
+        float progress = 0f;
+        var skillData = GetSkillData(GetDashIndex(Code));
+        float duration = skillData.CoolTime;
+        float maxStack = skillData.Stack;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            progress = timer / duration;
+
+            onStackCharge?.Invoke(progress);
+            yield return null;
+        }
+        m_CurrentDashStack++;
+
+        m_ChargeDashStackCoroutine = false;
+
+        if (m_CurrentDashStack < maxStack)
+            StartCoroutine(ChargeDashStackCoroutine(onStackCharge));
+    }
+    #endregion
+
+    #region 공격
+    /// <summary> 애니메이션 이벤트 함수 </summary>
+    public virtual void Attack(int skillIndex) { }
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, DamageType damageType)
@@ -263,60 +329,10 @@ public class Character : BaseObject, IEventCallable
         OnDamaged(attacker, damage, damageType);
     }
 
-    /// <summary> 애니메이션 이벤트 함수 </summary>
-    public virtual void Attack(int skillIndex) { }
-
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
     protected virtual void OnDamaged(Character attacker, int damage, DamageType damageType) { }
+    #endregion
 
-    public float CurrentDashCoolTime
-    {
-        get
-        {
-            return m_DashCoolTimeData.Value;
-        }
-    }
-    public float DashCoolTime
-    {
-        get
-        {
-            var skillData = GetSkillData(GetDashIndex(Code));
-            return skillData.CoolTime;
-        }
-    }
-    CoolTimeData m_DashCoolTimeData = new CoolTimeData();
-    /// <summary> 대쉬 쿨타임 적용하기 </summary>
-    public void ActiveDashCoolDown(Action<float> onCoolTimeRunning)
-    {
-        if (!m_DashCoolTimeData.Cooldown)
-        {
-            var skillData = GetSkillData(GetDashIndex(Code));
-
-            m_DashCoolTimeData.Value = DashCoolTime;
-
-            StartCoroutine(DOCoolTimeCoroutine(m_DashCoolTimeData, skillData.CoolTime, onCoolTimeRunning));
-        }
-    }
-
-    /// <summary> 캐릭터 쿨타임 적용시 자동 호출 </summary>
-    IEnumerator DOCoolTimeCoroutine(CoolTimeData data, float duration, Action<float> onCoolTimeRunning)
-    {
-        float timer = 0f;
-        data.Cooldown = true;
-
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-
-            data.Value -= Time.deltaTime;
-            onCoolTimeRunning.Invoke(data.Value);
-
-            yield return null;
-        }
-
-        data.Value = 0;
-        data.Cooldown = false;
-    }
     #endregion
 
     #region 데미지 계산
@@ -492,9 +508,12 @@ public class Character : BaseObject, IEventCallable
 
     public static Skillable GetSkillData(int skillIndex)
     {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-        var data = origin as Skillable;
-        return data;
+        if (JsonManager.Instance.JsonDatas.TryGetValue(skillIndex, out var origin))
+        {
+            var data = origin as Skillable;
+            return data;
+        }
+        return null;
     }
     #endregion
 

@@ -31,7 +31,9 @@ public class Playable : Character
     protected override void OnSpawn()
     {
         gameObject.tag = "Player";
-        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
+
+        var dashData = GetSkillData(GetDashIndex(Code));
+        m_CurrentDashStack = dashData.Stack;
     }
 
     protected override void OnDamaged(Character attacker, int damage, DamageType damageType)
