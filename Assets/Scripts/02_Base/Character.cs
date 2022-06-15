@@ -263,12 +263,60 @@ public class Character : BaseObject, IEventCallable
         OnDamaged(attacker, damage, damageType);
     }
 
-
     /// <summary> 애니메이션 이벤트 함수 </summary>
     public virtual void Attack(int skillIndex) { }
 
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
     protected virtual void OnDamaged(Character attacker, int damage, DamageType damageType) { }
+
+    public float CurrentDashCoolTime
+    {
+        get
+        {
+            return m_DashCoolTimeData.Value;
+        }
+    }
+    public float DashCoolTime
+    {
+        get
+        {
+            var skillData = GetSkillData(GetDashIndex(Code));
+            return skillData.CoolTime;
+        }
+    }
+    CoolTimeData m_DashCoolTimeData = new CoolTimeData();
+    /// <summary> 대쉬 쿨타임 적용하기 </summary>
+    public void ActiveDashCoolDown(Action<float> onCoolTimeRunning)
+    {
+        if (!m_DashCoolTimeData.Cooldown)
+        {
+            var skillData = GetSkillData(GetDashIndex(Code));
+
+            m_DashCoolTimeData.Value = DashCoolTime;
+
+            StartCoroutine(DOCoolTimeCoroutine(m_DashCoolTimeData, skillData.CoolTime, onCoolTimeRunning));
+        }
+    }
+
+    /// <summary> 캐릭터 쿨타임 적용시 자동 호출 </summary>
+    IEnumerator DOCoolTimeCoroutine(CoolTimeData data, float duration, Action<float> onCoolTimeRunning)
+    {
+        float timer = 0f;
+        data.Cooldown = true;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            data.Value -= Time.deltaTime;
+            onCoolTimeRunning.Invoke(data.Value);
+
+            yield return null;
+        }
+
+        data.Value = 0;
+        data.Cooldown = false;
+    }
     #endregion
 
     #region 데미지 계산
@@ -442,18 +490,11 @@ public class Character : BaseObject, IEventCallable
     }
 
 
-    public static int GetSpCost(int skillIndex)
+    public static Skillable GetSkillData(int skillIndex)
     {
         var origin = JsonManager.Instance.JsonDatas[skillIndex];
         var data = origin as Skillable;
-        return data.SpCost;
-    }
-
-    public static string GetSkillIconPath(int skillIndex)
-    {
-        var origin = JsonManager.Instance.JsonDatas[skillIndex];
-        var data = origin as Skillable;
-        return data.IconPath;
+        return data;
     }
     #endregion
 

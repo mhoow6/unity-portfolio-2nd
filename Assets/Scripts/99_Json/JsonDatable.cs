@@ -2,6 +2,7 @@ namespace DatabaseSystem
 {
     public abstract class JsonDatable
     {
+        // JsonDatable을 상속받은 클래스에 새로운 필드가 추가되면, 그 필드명을 여기에 적으세요
         public readonly static string[] AutomationExcepts = new string[]
         { 
             "Index",
@@ -11,6 +12,8 @@ namespace DatabaseSystem
             "IconPath",
             "Name",
             "Description",
+            "Stack",
+            "CoolTime"
         };
 
         public int Index;
@@ -29,6 +32,8 @@ namespace DatabaseSystem
     {
         public int SpCost;
         public string IconPath;
+        public int Stack;
+        public float CoolTime;
     }
 
     public class SkillDescriptable : Skillable

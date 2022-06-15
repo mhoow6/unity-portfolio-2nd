@@ -29,8 +29,6 @@ namespace DatabaseSystem
     public class SparcherDashData : Skillable
     {
         public float DashDistance;
-        public float CoolTime;
-        public int Stack;
         public float ArriveTime;
         
     }

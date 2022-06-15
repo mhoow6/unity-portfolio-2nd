@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region 컨트롤러 활용하여 캐릭터 이동
+    #region 컨트롤러(디바이스) 활용하여 캐릭터 이동
     public bool Controlable
     {
         set

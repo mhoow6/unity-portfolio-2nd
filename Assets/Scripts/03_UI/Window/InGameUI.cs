@@ -122,18 +122,39 @@ public class InGameUI : UI
     public void SettingSkillButtons(Character character)
     {
         int attackIndex = Character.GetAttackIndex(character.Code);
-        m_AttackButton.SetData(
-            () => { GameManager.InputSystem.CharacterAttackInput = true; },
-            () => { GameManager.InputSystem.CharacterAttackInput = false; },
-            Character.GetSkillIconPath(attackIndex),
-            Character.GetSpCost(attackIndex));
+
+        SkillButtonParam attackButtonParam;
+        attackButtonParam.OnClick = () => { GameManager.InputSystem.CharacterAttackInput = true; };
+        attackButtonParam.OnExit = () => { GameManager.InputSystem.CharacterAttackInput = false; };
+        attackButtonParam.SkillData = Character.GetSkillData(attackIndex);
+        m_AttackButton.SetData(attackButtonParam);
 
         int dashIndex = Character.GetDashIndex(character.Code);
-        m_DashButton.SetData(
-            () => { GameManager.InputSystem.CharacterDashInput = true; },
-            () => { GameManager.InputSystem.CharacterDashInput = false; },
-           Character.GetSkillIconPath(dashIndex),
-           Character.GetSpCost(dashIndex));
+        SkillButtonParam dashButtonParam;
+        dashButtonParam.SkillData = Character.GetSkillData(dashIndex);
+
+        dashButtonParam.OnClick =
+            () =>
+            {
+                GameManager.InputSystem.CharacterDashInput = true;
+
+                var character = StageManager.Instance.Player.CurrentCharacter;
+                if (character.CurrentDashCoolTime == 0)
+                {
+                    // 캐릭터 쿨타임 백그라운드 연출
+                    m_DashButton.CoolTimeBackground.fillAmount = 0;
+                    character.ActiveDashCoolDown(
+                        (cooltime) =>
+                        {
+                            // 0 ~ 1
+                            m_DashButton.CoolTimeBackground.fillAmount = cooltime / character.DashCoolTime;
+                        });
+                }
+                
+            };
+
+        dashButtonParam.OnExit = () => { GameManager.InputSystem.CharacterDashInput = false; };
+        m_DashButton.SetData(dashButtonParam);
 
         //int ultiIndex = Character.GetUltimateIndex(character.Code);
         //m_AttackButton.SetData(

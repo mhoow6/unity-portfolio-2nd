@@ -44,3 +44,10 @@ public class WeaponData
     public float Damage;
     public float Critical;
 }
+
+[Serializable]
+public class CoolTimeData
+{
+    public float Value;
+    public bool Cooldown;
+}
