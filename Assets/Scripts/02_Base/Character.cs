@@ -5,7 +5,7 @@ using DatabaseSystem;
 using UnityEngine.AI;
 using System;
 
-public class Character : BaseObject, IEventCallable
+public abstract class Character : BaseObject, IEventCallable
 {
     #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
@@ -232,15 +232,13 @@ public class Character : BaseObject, IEventCallable
     #endregion
 
     #region 대쉬
-    protected float m_CurrentDashStack;
+    protected int m_CurrentDashStack;
     bool m_ChargeDashStackCoroutine;
 
     /// <summary>
     /// 대쉬할 때 해야하는 행동
     /// </summary>
-    /// <param name="onDashStart">대쉬를 시작할 때 뭔가를 할 함수</param>
-    /// <param name="onStackCharge">현재 스택의 충전정도를 매개변수로 받아서 뭔가를 할 함수</param>
-    public void OnDashed(Action<float> onStackCharge = null)
+    public void OnDashed(SkillButtonUI skillButtonUI = null)
     {
         // 스킬 데이터에서 스택이 있으면 스택을 사용하는 기술
         var skillData = GetSkillData(GetDashIndex(Code));
@@ -252,18 +250,20 @@ public class Character : BaseObject, IEventCallable
 
             // 스택을 사용하는 기술이면 1스택을 충전하는데 CoolTime만큼의 시간이 걸린다.
             GameManager.InputSystem.CharacterDashInput = true;
+
             m_CurrentDashStack--;
+            skillButtonUI.OnStackConsume();
 
             // 스택 충전 시작
             if (!m_ChargeDashStackCoroutine)
-                StartCoroutine(ChargeDashStackCoroutine(onStackCharge));
+                StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
 
         }
         else
             GameManager.InputSystem.CharacterDashInput = true;
     }
 
-    IEnumerator ChargeDashStackCoroutine(Action<float> onStackCharge = null)
+    IEnumerator ChargeDashStackCoroutine(SkillButtonUI skillButtonUI = null)
     {
         m_ChargeDashStackCoroutine = true;
 
@@ -279,15 +279,19 @@ public class Character : BaseObject, IEventCallable
 
             progress = timer / duration;
 
-            onStackCharge?.Invoke(progress);
+            if (skillButtonUI != null)
+                skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
+
             yield return null;
         }
+
         m_CurrentDashStack++;
+        skillButtonUI.OnStackCharge(m_CurrentDashStack);
 
         m_ChargeDashStackCoroutine = false;
 
         if (m_CurrentDashStack < maxStack)
-            StartCoroutine(ChargeDashStackCoroutine(onStackCharge));
+            StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
     }
     #endregion
 

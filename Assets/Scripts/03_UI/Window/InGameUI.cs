@@ -138,13 +138,7 @@ public class InGameUI : UI
             {
                 var character = StageManager.Instance.Player.CurrentCharacter;
                 if (character.AniType >= AniType.IDLE_0 && character.AniType <= AniType.IDLE_4)
-                {
-                    character.OnDashed(
-                    onStackCharge: (progress) =>
-                    {
-                        m_DashButton.CoolTimeBackground.fillAmount = 1 - progress;
-                    });
-                }
+                    character.OnDashed(m_DashButton);
             };
 
         dashButtonParam.OnExit =

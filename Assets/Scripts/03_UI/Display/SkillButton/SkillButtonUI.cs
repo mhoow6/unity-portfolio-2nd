@@ -12,6 +12,8 @@ public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
     [SerializeField] Text m_SpCost;
     [SerializeField] Image m_SkillIcon;
     public Image CoolTimeBackground;
+    public List<SkillButtonStack> SkillStacks = new List<SkillButtonStack>();
+    Stack<SkillButtonStack> m_SkillStacks = new Stack<SkillButtonStack>();
 
     Action m_OnClicked;
     Action m_OnExited;
@@ -31,15 +33,47 @@ public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
         else
             m_SpRoot.gameObject.SetActive(true);
 
+        CoolTimeBackground.fillAmount = 0;
         if (param.SkillData.CoolTime > 0)
             CoolTimeBackground.gameObject.SetActive(true);
         else
             CoolTimeBackground.gameObject.SetActive(false);
 
-        CoolTimeBackground.fillAmount = 0;
+        SkillStacks.ForEach((element) => { element.gameObject.SetActive(false); });
+        if (param.SkillData.Stack != 0)
+        {
+            int stackCount = param.SkillData.Stack;
+            for (int i = 0; i < stackCount; i++)
+            {
+                SkillStacks[i].gameObject.SetActive(true);
+                m_SkillStacks.Push(SkillStacks[i]);
+            }
+
+        }
 
         m_OnClicked = param.OnClick;
         m_OnExited = param.OnExit;
+    }
+
+    public void OnStackConsume()
+    {
+        var cur = m_SkillStacks.Pop();
+        float r = cur.Image.color.r;
+        float g = cur.Image.color.g;
+        float b = cur.Image.color.b;
+        cur.Image.color = new Color(r, g, b, 0.5f);
+    }
+
+    public void OnStackCharge(int currentStackCount)
+    {
+        var stack = SkillStacks[currentStackCount - 1];
+
+        float r = stack.Image.color.r;
+        float g = stack.Image.color.g;
+        float b = stack.Image.color.b;
+        stack.Image.color = new Color(r, g, b, 1);
+
+        m_SkillStacks.Push(stack);
     }
 
     public void OnPointerDown(PointerEventData eventData)
