@@ -6,7 +6,7 @@ using UnityEngine;
 public class AreaSpawner : AreaComponent
 {
     public int Priority;
-    public GameObject SpawnPrefab;
+    public Character SpawnPrefab;
     public int TotalSpawnCount;
     [ReadOnly, SerializeField] int m_CurrentSpawnCount;
 
@@ -21,12 +21,10 @@ public class AreaSpawner : AreaComponent
         foreach (var pos in m_SpawnPositions)
         {
             var mob = Instantiate(SpawnPrefab, pos);
-
-            var comp = mob.GetComponent<Character>();
-            if (comp != null)
+            if (mob != null)
             {
-                comp.Spawn();
-                Monsters.Add(comp);
+                mob.Spawn();
+                Monsters.Add(mob);
             }
             
             m_CurrentSpawnCount++;

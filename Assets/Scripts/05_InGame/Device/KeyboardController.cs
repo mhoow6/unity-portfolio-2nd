@@ -5,6 +5,9 @@ using UnityEngine;
 public class KeyboardController : MonoBehaviour, InputProvider
 {
     Vector2 m_Input;
+
+    public string DeviceName => "Keyboard";
+
     Vector2 InputProvider.Input => m_Input;
 
     void Update()

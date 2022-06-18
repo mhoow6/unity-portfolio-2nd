@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public sealed class FloatingDamageText : MonoBehaviour, IPoolable
 {
-    [SerializeField] TMP_Text m_Text;
+    [SerializeField] Text m_Text;
     [SerializeField] Animator m_Animator;
     RectTransform m_RectTransform;
     DummyObject m_FollowObject;

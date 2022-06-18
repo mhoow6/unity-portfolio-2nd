@@ -12,13 +12,14 @@ public class InputSystem : MonoBehaviour, IGameSystem
     {
         get
         {
-            if (m_MainController != null)
-                return m_MainController.Input;
+            if (m_CharacterController != null)
+                return m_CharacterController.Input;
             else
                 return Vector2.zero;
         }
     }
     public bool CharacterAttackInput;
+
     public bool IsHoldAttackInput { get; private set; }
 
     public bool CharacterDashInput;
@@ -75,7 +76,7 @@ public class InputSystem : MonoBehaviour, IGameSystem
     #endregion
 
     IEnumerator m_CameraRotate;
-    InputProvider m_MainController;
+    InputProvider m_CharacterController;
     float m_AttackInputTimer = 0f;
     float m_DashInputTimer = 0f;
     float m_UltiInputTimer = 0f;
@@ -92,7 +93,13 @@ public class InputSystem : MonoBehaviour, IGameSystem
         foreach (var ctrl in Controllers)
         {
             if (ctrl.Input.magnitude != 0)
-                m_MainController = ctrl;
+            {
+                if (!ctrl.Equals(m_CharacterController))
+                {
+                    Debug.Log($"현재 캐릭터 컨트롤러: {ctrl.DeviceName}");
+                    m_CharacterController = ctrl;
+                }
+            }
         }
 
         // 홀드 감지

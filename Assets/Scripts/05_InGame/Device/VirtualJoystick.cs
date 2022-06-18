@@ -16,6 +16,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     Vector2 InputProvider.Input => m_Input;
 
+    public string DeviceName => "Joystick";
+
     private void Start()
     {
         // 레버를 정확하게 가운데로 맞추기 

@@ -49,15 +49,16 @@ public abstract class Character : BaseObject, IEventCallable
     #endregion
 
     #region 유니티 라이프 사이클
-    void Awake()
+    protected void Awake()
     {
         // 컴포넌트 붙이기
         Animator = GetComponent<Animator>();
-        
         Rigidbody = GetComponent<Rigidbody>();
         Collider = GetComponent<Collider>();
+
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
-        m_UpdateCoroutine = UpdateCoroutine();
+
+        
 
         SetPropertiesFromTable();
     }
@@ -154,6 +155,9 @@ public abstract class Character : BaseObject, IEventCallable
     IEnumerator m_UpdateCoroutine;
     public void SetUpdate(bool value)
     {
+        if (m_UpdateCoroutine == null)
+            m_UpdateCoroutine = UpdateCoroutine();
+
         if (value)
             StartCoroutine(m_UpdateCoroutine);
         else
