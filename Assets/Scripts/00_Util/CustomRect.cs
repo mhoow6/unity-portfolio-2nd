@@ -18,7 +18,7 @@ public struct CustomRect
         Height = height;
     }
 
-    /// <summary> 스크린좌표계의 eventPos가 rect안에 있는지 검사합니다. </summary>
+    /// <summary> 스크린좌표계의 screenPos가 rect안에 있는지 검사합니다. </summary>
     public bool IsScreenPointInRect(Vector2 screenPos)
     {
         float minX = Center.x - (Width * 0.5f);

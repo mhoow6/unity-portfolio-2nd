@@ -16,20 +16,20 @@ public class KeyboardController : MonoBehaviour, InputProvider
 
         // 기본공격
         if (Input.GetMouseButton(0))
-            GameManager.InputSystem.CharacterAttackInput = true;
+            GameManager.InputSystem.PressAButton = true;
         else
-            GameManager.InputSystem.CharacterAttackInput = false;
+            GameManager.InputSystem.PressAButton = false;
 
         // 대쉬
         if (Input.GetKeyDown(KeyCode.LeftShift))
-            GameManager.InputSystem.CharacterDashInput = true;
+            GameManager.InputSystem.PressXButton = true;
         else
-            GameManager.InputSystem.CharacterDashInput = false;
+            GameManager.InputSystem.PressXButton = false;
 
         // 스킬
         if (Input.GetKeyDown(KeyCode.Q))
-            GameManager.InputSystem.CharacterUltiInput = true;
+            GameManager.InputSystem.PressBButton = true;
         else
-            GameManager.InputSystem.CharacterUltiInput = false;
+            GameManager.InputSystem.PressBButton = false;
     }
 }

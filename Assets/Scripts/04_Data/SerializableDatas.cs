@@ -38,9 +38,24 @@ public class CharacterData
 }
 
 [Serializable]
+public class CharacterRecordData
+{
+    public ObjectCode Code;
+    public int Level;
+    public ObjectCode EquipWeaponCode;
+}
+
+[Serializable]
 public class WeaponData
 {
     public ObjectCode Code;
     public float Damage;
     public float Critical;
+}
+
+[Serializable]
+public class WeaponRecordData
+{
+    public ObjectCode Code;
+    public int Level;
 }

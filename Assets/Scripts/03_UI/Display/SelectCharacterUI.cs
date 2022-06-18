@@ -77,14 +77,16 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
         var record = GameManager.PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
         var row = TableManager.Instance.CharacterTable.Find(c => c.Code == characterCode);
 
-        if (record != null)
+        if (record == null)
         {
-            m_CharacterLevel.text = $"Lv. {record.Level}";
-            m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}");
-            PortraitVisible = true;
-        }    
-        else
+            Debug.LogError($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
             PortraitVisible = false;
+            return;
+        }
+
+        m_CharacterLevel.text = $"Lv. {record.Level}";
+        m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}");
+        PortraitVisible = true;
     }
 
     public void LateDestroy(float duration)

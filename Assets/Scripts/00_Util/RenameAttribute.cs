@@ -12,6 +12,7 @@ public class RenameAttribute : PropertyAttribute
     }
 }
 
+#if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(RenameAttribute))]
 public class RenameEditor : PropertyDrawer
 {
@@ -20,5 +21,5 @@ public class RenameEditor : PropertyDrawer
         EditorGUI.PropertyField(position, property, new GUIContent((attribute as RenameAttribute).NewName));
     }
 }
-
+#endif
 

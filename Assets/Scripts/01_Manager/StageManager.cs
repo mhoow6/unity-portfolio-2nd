@@ -43,8 +43,19 @@ public class StageManager : GameSceneManager
         StartCoroutine(InitCoroutine(onInitalized));
     }
 
+    public void Clear()
+    {
+        // 데이터 기록
+        UpdatePlayerMissionRecords();
+
+
+
+        // 모든 콜백 이벤트 null
+        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
+    }
+
     /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
-	public void UpdatePlayerMissionRecords()
+	void UpdatePlayerMissionRecords()
     {
         var playerData = GameManager.PlayerData;
         foreach (var record in MissionSystem.QuestRecords.Values)

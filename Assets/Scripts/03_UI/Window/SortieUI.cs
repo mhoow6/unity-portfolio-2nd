@@ -25,17 +25,6 @@ public class SortieUI : UI
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
 
-        // UNDONE: 기록 데이터 새로 만들기
-        GameManager.PlayerData.StageRecords.Add(new StageRecordData()
-        {
-            WorldIdx = worldIdx,
-            StageIdx = stageIdx,
-            Clear = false,
-            CharacterLeader = ObjectCode.CHAR_Sparcher,
-            CharacterSecond = ObjectCode.NONE,
-            CharacterThird = ObjectCode.NONE,
-        });
-
         // 플레이어 데이터에서 기록 찾기
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == worldIdx && r.StageIdx == stageIdx);
         if (record != null)
@@ -120,7 +109,6 @@ public class SortieUI : UI
             () => { StageManager.Instance.Init(); });
     }
 
-    #region UI 필수 구현 메소드
     public override void OnClosed()
     {
 
@@ -130,7 +118,6 @@ public class SortieUI : UI
     {
         m_StatusDisplay.SetData();
     }
-    #endregion
 }
 public enum SelectCharacterDisplaySlot
 {

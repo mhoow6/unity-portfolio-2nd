@@ -187,6 +187,7 @@ public class SplitSlider : Display
         
     }
 
+    #if UNITY_EDITOR
     public void CreateElements()
     {
         if (m_BackElements.Count > 0)
@@ -288,6 +289,7 @@ public class SplitSlider : Display
 
         EditorUtility.SetDirty(this);
     }
+    #endif
 
     /// <summary>
     /// Value 프로퍼티에서 필요한 함수. value를 적용시킬 마지막 element를 구합니다.

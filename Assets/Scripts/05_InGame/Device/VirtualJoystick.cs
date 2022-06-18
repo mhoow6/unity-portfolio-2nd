@@ -55,11 +55,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         // 레버 이동
         Vector2 diff = eventData.position - m_Center;
 
-        // 영역을 벗어나면 반지름의 길이만큼만 레버를 움직여주자.
-        if (distance < m_Radius)
-            m_Lever.position = (diff.normalized * distance) + m_Center;
-        else
-            m_Lever.position = (diff.normalized * m_Radius) + m_Center;
+        // 무조건 조이스틱 반지름 길이만큼 이동시키기 (느리게 이동하는 거 방지)
+        m_Lever.position = (diff.normalized * m_Radius) + m_Center;
 
         // 조이스틱 백그라운드 이동
         Vector2 endPoint = new Vector2(m_Center.x, m_Center.y + m_Radius);

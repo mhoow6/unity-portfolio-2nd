@@ -64,39 +64,44 @@ public class BeizerCurve : MonoBehaviour
     #endregion
 }
 
-// 에디터와 스크립트를 같이 있게 하는 어트리뷰트
-[CanEditMultipleObjects]
-[CustomEditor(typeof(BeizerCurve))]
-public class BeizerCurveEditor : Editor
+#if UNITY_EDITOR
+namespace UnityEditor
 {
-    private void OnSceneGUI()
+    // 에디터와 스크립트를 같이 있게 하는 어트리뷰트
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(BeizerCurve))]
+    public class BeizerCurveEditor : Editor
     {
-        BeizerCurve Generator = (BeizerCurve)target;
-
-        // Set the colour of the next handle to be drawn:
-        Handles.color = Color.green;
-
-        // Scene에 Generator.P1 Gizmo를 추가
-        // Generator.P1에 다시 값을 넣음으로써 핸들링 가능
-        Generator.P1 = Handles.PositionHandle(Generator.P1, Quaternion.identity);
-        Generator.P2 = Handles.PositionHandle(Generator.P2, Quaternion.identity);
-        Generator.P3 = Handles.PositionHandle(Generator.P3, Quaternion.identity);
-        Generator.P4 = Handles.PositionHandle(Generator.P4, Quaternion.identity);
-
-        // 선 추가
-        Handles.DrawLine(Generator.P1, Generator.P2);
-        Handles.DrawLine(Generator.P3, Generator.P4);
-
-        // 50개의 베지어 선 추가
-        int detail = 50;
-        for (float i = 0; i < detail; i++)
+        private void OnSceneGUI()
         {
-            float beforeValue = i / detail;
-            float afterValue = (i+1) / detail;
-            Vector3 before = Generator.Beizered(Generator.P1, Generator.P2, Generator.P3, Generator.P4, beforeValue);
-            Vector3 after = Generator.Beizered(Generator.P1, Generator.P2, Generator.P3, Generator.P4, afterValue);
+            BeizerCurve Generator = (BeizerCurve)target;
 
-            Handles.DrawLine(before, after);
+            // Set the colour of the next handle to be drawn:
+            Handles.color = Color.green;
+
+            // Scene에 Generator.P1 Gizmo를 추가
+            // Generator.P1에 다시 값을 넣음으로써 핸들링 가능
+            Generator.P1 = Handles.PositionHandle(Generator.P1, Quaternion.identity);
+            Generator.P2 = Handles.PositionHandle(Generator.P2, Quaternion.identity);
+            Generator.P3 = Handles.PositionHandle(Generator.P3, Quaternion.identity);
+            Generator.P4 = Handles.PositionHandle(Generator.P4, Quaternion.identity);
+
+            // 선 추가
+            Handles.DrawLine(Generator.P1, Generator.P2);
+            Handles.DrawLine(Generator.P3, Generator.P4);
+
+            // 50개의 베지어 선 추가
+            int detail = 50;
+            for (float i = 0; i < detail; i++)
+            {
+                float beforeValue = i / detail;
+                float afterValue = (i + 1) / detail;
+                Vector3 before = Generator.Beizered(Generator.P1, Generator.P2, Generator.P3, Generator.P4, beforeValue);
+                Vector3 after = Generator.Beizered(Generator.P1, Generator.P2, Generator.P3, Generator.P4, afterValue);
+
+                Handles.DrawLine(before, after);
+            }
         }
     }
 }
+#endif

@@ -76,7 +76,7 @@ public class PlayerData : IEventCallable
     public ObjectCode MainMenuCharacter;
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
     public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
-    public List<CharacterData> CharacterDatas = new List<CharacterData>();
+    public List<CharacterRecordData> CharacterDatas = new List<CharacterRecordData>();
 
     public PlayerData()
     {
@@ -88,12 +88,25 @@ public class PlayerData : IEventCallable
         Gold = 0;
         AskForNickName = false;
         MainMenuCharacter = ObjectCode.CHAR_Sparcher;
+
+        // 테스트씬에 들어가기 위한 데이터
+        StageRecords.Add(new StageRecordData()
+        {
+            WorldIdx = 0,
+            StageIdx = 0,
+            CharacterLeader = ObjectCode.CHAR_Sparcher,
+            CharacterSecond = ObjectCode.NONE,
+            CharacterThird = ObjectCode.NONE,
+            Clear = false
+        });
     }
 
     public static PlayerData GetData(string saveFilePath)
     {
         m_FilePath = saveFilePath;
-        string result = FileHelper.GetStringFrom(saveFilePath);
+        string result = string.Empty;
+
+        result = FileHelper.GetStringFrom(saveFilePath);
 
         if (!string.IsNullOrEmpty(result))
             return JsonConvert.DeserializeObject<PlayerData>(result);

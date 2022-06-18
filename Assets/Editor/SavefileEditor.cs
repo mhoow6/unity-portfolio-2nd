@@ -82,25 +82,13 @@ public class SavefileEditor : EditorWindow
                 if (exist == null)
                 {
                     var data = TableManager.Instance.CharacterTable.Find(c => c.Code == m_SelectedCharacter);
-                    var newData = new CharacterData()
+
+                    m_PlayerData.CharacterDatas.Add(new CharacterRecordData()
                     {
                         Code = m_SelectedCharacter,
-                        Hp = data.BaseHp,
-                        Sp = data.BaseSp,
-                        Speed = data.BaseSpeed,
                         Level = 1,
-                        Critical = data.BaseCritical,
-                        Damage = data.BaseDamage,
-                        Defense = data.BaseDefense,
-                        EquipWeaponData = new WeaponData()
-                        {
-                            Code = ObjectCode.NONE,
-                            Critical = 0,
-                            Damage = 0
-                        }
-                    };
-
-                    m_PlayerData.CharacterDatas.Add(newData);
+                        EquipWeaponCode = ObjectCode.NONE
+                    });
                     UpdatePlayerData();
                 }
             }

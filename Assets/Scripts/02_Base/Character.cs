@@ -240,7 +240,7 @@ public abstract class Character : BaseObject, IEventCallable
     bool m_ChargeDashStackCoroutine;
 
     /// <summary>
-    /// 대쉬할 때 해야하는 행동
+    /// 대쉬버튼을 눌렀을때 호출
     /// </summary>
     public void OnDashed(SkillButtonUI skillButtonUI = null)
     {
@@ -253,8 +253,6 @@ public abstract class Character : BaseObject, IEventCallable
                 return;
 
             // 스택을 사용하는 기술이면 1스택을 충전하는데 CoolTime만큼의 시간이 걸린다.
-            GameManager.InputSystem.CharacterDashInput = true;
-
             m_CurrentDashStack--;
             skillButtonUI.OnStackConsume();
 
@@ -264,7 +262,7 @@ public abstract class Character : BaseObject, IEventCallable
 
         }
         else
-            GameManager.InputSystem.CharacterDashInput = true;
+            GameManager.InputSystem.PressXButton = true;
     }
 
     IEnumerator ChargeDashStackCoroutine(SkillButtonUI skillButtonUI = null)
@@ -555,7 +553,20 @@ public abstract class Character : BaseObject, IEventCallable
         Type = table.Type;
 
         if (record != null)
-            m_Data = record;
+        {
+            m_Data = new CharacterData()
+            {
+                Code = Code,
+                Level = record.Level,
+                Hp = (int)(table.BaseHp + (table.BaseHp * (record.Level * table.HpIncreaseRatioByLevelUp))),
+                Sp = (int)(table.BaseSp + (table.BaseSp * (record.Level * table.SpIncreaseRatioByLevelUp))),
+                Critical = (int)(table.BaseCritical + (table.BaseCritical * (record.Level * table.CriticalIncreaseRatioByLevelUp))),
+                Damage = (int)(table.BaseDamage + (table.BaseDamage * (record.Level * table.DamageIncreaseRatioByLevelUp))),
+                Defense = (int)(table.BaseDefense + (table.BaseDefense * (record.Level * table.DefenseIncreaseRatioByLevelUp))),
+                Speed = table.BaseSpeed,
+                EquipWeaponData = null
+            };
+        }
         else
             m_Data = new CharacterData()
             {

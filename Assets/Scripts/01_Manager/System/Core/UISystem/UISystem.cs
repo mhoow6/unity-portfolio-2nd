@@ -164,6 +164,7 @@ public class UISystem : MonoBehaviour, IGameSystem
         }
     }
 
+#if UNITY_EDITOR
     [ContextMenu("# Get All Windows")]
     void GetAllWindows()
     {
@@ -194,6 +195,7 @@ public class UISystem : MonoBehaviour, IGameSystem
         }
         AssetDatabase.Refresh();
     }
+#endif
     #endregion
 
     #region Toasts
@@ -222,7 +224,7 @@ public class UISystem : MonoBehaviour, IGameSystem
             GameManager.UISystem.CurrentToast = null;
         }
     }
-
+#if UNITY_EDITOR
     [ContextMenu("# Get All Toasts")]
     void GetAllToasts()
     {
@@ -253,5 +255,6 @@ public class UISystem : MonoBehaviour, IGameSystem
         }
         AssetDatabase.Refresh();
     }
+#endif
     #endregion
 }

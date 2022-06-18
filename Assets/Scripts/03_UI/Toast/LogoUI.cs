@@ -14,6 +14,7 @@ public class LogoUI : Toast
 
     public override void OnClosed()
     {
+        // 테스트 존 입장시
         if (!GameManager.Instance.IsTestZone)
         {
             GameManager.Instance.LoadScene(
@@ -27,10 +28,11 @@ public class LogoUI : Toast
             {
                 LobbyManager.Instance.Init();
             });
+            return;
         }
-        else
-        {
-            GameManager.Instance.LoadScene(
+
+
+        GameManager.Instance.LoadScene(
             SceneCode.Stage0000,
             () =>
             {
@@ -44,7 +46,6 @@ public class LogoUI : Toast
                     GameManager.UISystem.OpenWindow(UIType.InGame);
                 });
             });
-        }
     }
 
     public override void OnOpened()

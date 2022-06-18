@@ -1,13 +1,15 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class InputSystem : MonoBehaviour, IGameSystem
+public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
 
-    #region 캐릭터
+    #region 게임 입력
     public Vector2 CharacterMoveInput
     {
         get
@@ -18,18 +20,107 @@ public class InputSystem : MonoBehaviour, IGameSystem
                 return Vector2.zero;
         }
     }
-    public bool CharacterAttackInput;
+    InputProvider m_CharacterController;
 
-    public bool IsHoldAttackInput { get; private set; }
+    #region A 버튼
+    public bool PressAButton
+    {
+        get
+        {
+            return m_PressAButton;
+        }
+        set
+        {
+            m_PressAButton = value;
+            OnPressAButton?.Invoke(value);
+        }
+    }
+    bool m_PressAButton;
+    public Action<bool> OnPressAButton;
 
-    public bool CharacterDashInput;
-    public bool IsHoldDashInput { get; private set; }
-
-    public bool CharacterUltiInput;
-    public bool IsHoldUltiInput { get; private set; }
+    public bool HoldAButton
+    {
+        get
+        {
+            return m_HoldAButton;
+        }
+        private set
+        {
+            m_HoldAButton = value;
+            OnHoldAButton?.Invoke(value);
+        }
+    }
+    bool m_HoldAButton;
+    public Action<bool> OnHoldAButton;
     #endregion
 
-    #region 카메라
+    #region X 버튼
+    public bool PressXButton
+    {
+        get
+        {
+            return m_PressXButton;
+        }
+        set
+        {
+            m_PressXButton = value;
+            OnPressXButton?.Invoke(value);
+        }
+    }
+    bool m_PressXButton;
+    public Action<bool> OnPressXButton;
+    public bool HoldXButton
+    {
+        get
+        {
+            return m_HoldXButton;
+        }
+        private set
+        {
+            m_HoldXButton = value;
+            OnHoldXButton?.Invoke(value);
+        }
+    }
+    bool m_HoldXButton;
+    public Action<bool> OnHoldXButton;
+    #endregion
+
+    #region B 버튼
+    public bool PressBButton
+    {
+        get
+        {
+            return m_PressBButton;
+        }
+        set
+        {
+            m_PressBButton = value;
+            OnPressBButton?.Invoke(value);
+        }
+    }
+    bool m_PressBButton;
+    public Action<bool> OnPressBButton;
+
+    public bool HoldBButton
+    {
+        get
+        {
+            return m_HoldBButton;
+        }
+        private set
+        {
+            m_HoldBButton = value;
+            OnHoldBButton?.Invoke(value);
+        }
+    }
+
+    bool m_HoldBButton;
+    public Action<bool> OnHoldBButton;
+    #endregion
+
+    #endregion
+
+    #region 카메라 입력
     public Vector2 CameraRotateInput
     {
         get
@@ -72,19 +163,32 @@ public class InputSystem : MonoBehaviour, IGameSystem
             }     
         }
     }
-
-    #endregion
+    public float TouchSensitivity_x = 10f;
+    public float TouchSensitivity_y = 10f;
 
     IEnumerator m_CameraRotate;
-    InputProvider m_CharacterController;
+    [SerializeField] RectTransform m_CameraTouchRectTransform;
+    CustomRect m_CameraTouchRect;
+
     float m_AttackInputTimer = 0f;
     float m_DashInputTimer = 0f;
     float m_UltiInputTimer = 0f;
     const float ROTATE_BREAK_SENSTIVITY = 2f;
-    
+    #endregion
+
     public void Init()
     {
-        m_CameraRotate = CameraRotateCoroutine();
+        m_CameraRotate = MobileCameraRotateCoroutine();
+
+        // m_CameraTouchRect의 중앙 구하기
+        float centerX = Screen.width / 2;
+        float centerY = Screen.height / 2;
+        float height = m_CameraTouchRectTransform.rect.height;
+        float width = m_CameraTouchRectTransform.rect.width;
+        centerY += (height * 0.5f);
+        Vector2 center = new Vector2(centerX, centerY);
+        m_CameraTouchRect = new CustomRect(center, width, height);
+        m_CameraTouchRectTransform.gameObject.SetActive(false);
     }
 
     public void Tick()
@@ -103,18 +207,28 @@ public class InputSystem : MonoBehaviour, IGameSystem
         }
 
         // 홀드 감지
-        DetectHoldInput(CharacterAttackInput, ref m_AttackInputTimer);
-        DetectHoldInput(CharacterDashInput, ref m_DashInputTimer);
-        DetectHoldInput(CharacterUltiInput, ref m_UltiInputTimer);
+        DetectHoldInput(PressAButton, ref m_AttackInputTimer);
+        DetectHoldInput(PressXButton, ref m_DashInputTimer);
+        DetectHoldInput(PressBButton, ref m_UltiInputTimer);
         if (IsHoldInput(ref m_AttackInputTimer, out bool holdAttack))
-            IsHoldAttackInput = holdAttack;
+            HoldAButton = holdAttack;
         if (IsHoldInput(ref m_DashInputTimer, out bool holdDash))
-            IsHoldDashInput = holdDash;
+            HoldXButton = holdDash;
         if (IsHoldInput(ref m_UltiInputTimer, out bool holdUlti))
-            IsHoldUltiInput = holdUlti;
+            HoldBButton = holdUlti;
     }
 
-    IEnumerator CameraRotateCoroutine()
+    public void DisposeEvents()
+    {
+        OnPressAButton = null;
+        OnHoldAButton = null;
+        OnPressBButton = null;
+        OnHoldBButton = null;
+        OnPressXButton = null;
+        OnHoldXButton = null;
+    }
+
+    IEnumerator MobileCameraRotateCoroutine()
     {
         var activeCam = StageManager.Instance.FreeLookCam;
         float XAxisMaxSpeed = activeCam.m_XAxis.m_MaxSpeed;
@@ -122,7 +236,7 @@ public class InputSystem : MonoBehaviour, IGameSystem
 
         while (true)
         {
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(0))
             {
                 activeCam.m_XAxis.m_MaxSpeed = XAxisMaxSpeed;
                 activeCam.m_YAxis.m_MaxSpeed = YAxisMaxSpeed;
@@ -153,5 +267,38 @@ public class InputSystem : MonoBehaviour, IGameSystem
         }
         result = false;
         return false;
+    }
+
+    float HandleAxisInputDelegate(string axisName)
+    {
+        switch (axisName)
+        {
+            case "Mouse X":
+
+                if (Input.touchCount > 0)
+                {
+                    return Input.touches[0].deltaPosition.x / TouchSensitivity_x;
+                }
+                else
+                {
+                    return Input.GetAxis(axisName);
+                }
+
+            case "Mouse Y":
+                if (Input.touchCount > 0)
+                {
+                    return Input.touches[0].deltaPosition.y / TouchSensitivity_y;
+                }
+                else
+                {
+                    return Input.GetAxis(axisName);
+                }
+
+            default:
+                Debug.LogError("Input <" + axisName + "> not recognyzed.", this);
+                break;
+        }
+
+        return 0f;
     }
 }

@@ -74,7 +74,11 @@ public static class FileHelper
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
+
+            #if UNITY_EDITOR
             AssetDatabase.Refresh();
+            #endif
+
             Debug.LogError($"{notFoundMessage}");
             return false;
         }

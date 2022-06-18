@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+#if UNITY_EDITOR
     [ContextMenu("# Get Attached System")]
     void GetAttachedSystem()
     {
@@ -227,4 +228,5 @@ public class GameManager : MonoBehaviour
             m_InputSystem = inputsys;
         }
     }
+#endif
 }
