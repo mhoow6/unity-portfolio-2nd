@@ -35,9 +35,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnPressAButton?.Invoke(value);
         }
     }
-    bool m_PressAButton;
     public Action<bool> OnPressAButton;
-
     public bool HoldAButton
     {
         get
@@ -50,8 +48,11 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnHoldAButton?.Invoke(value);
         }
     }
-    bool m_HoldAButton;
     public Action<bool> OnHoldAButton;
+
+    bool m_PressAButton;
+    bool m_HoldAButton;
+    float m_AttackInputTimer = 0f;
     #endregion
 
     #region X 버튼
@@ -67,7 +68,6 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnPressXButton?.Invoke(value);
         }
     }
-    bool m_PressXButton;
     public Action<bool> OnPressXButton;
     public bool HoldXButton
     {
@@ -81,8 +81,11 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnHoldXButton?.Invoke(value);
         }
     }
-    bool m_HoldXButton;
     public Action<bool> OnHoldXButton;
+
+    bool m_PressXButton;
+    bool m_HoldXButton;
+    float m_DashInputTimer = 0f;
     #endregion
 
     #region B 버튼
@@ -98,9 +101,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnPressBButton?.Invoke(value);
         }
     }
-    bool m_PressBButton;
     public Action<bool> OnPressBButton;
-
     public bool HoldBButton
     {
         get
@@ -113,9 +114,11 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             OnHoldBButton?.Invoke(value);
         }
     }
-
-    bool m_HoldBButton;
     public Action<bool> OnHoldBButton;
+
+    bool m_PressBButton;
+    bool m_HoldBButton;
+    float m_UltiInputTimer = 0f;
     #endregion
 
     #endregion
@@ -131,7 +134,6 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             return Vector2.zero;
         }
     }
-
     public bool CameraRotatable
     {
         set
@@ -163,16 +165,16 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
             }     
         }
     }
+
     public float TouchSensitivity_x = 10f;
     public float TouchSensitivity_y = 10f;
 
+    // 외부에서 사용하는 포인터ID들. 카메라를 회전시킬 FingerId를 확실하게 식별하게 하는 용도
+    public List<int> ExternallyUsingFingerIds = new List<int>();
     IEnumerator m_CameraRotate;
     [SerializeField] RectTransform m_CameraTouchRectTransform;
     CustomRect m_CameraTouchRect;
 
-    float m_AttackInputTimer = 0f;
-    float m_DashInputTimer = 0f;
-    float m_UltiInputTimer = 0f;
     const float ROTATE_BREAK_SENSTIVITY = 2f;
     #endregion
 
@@ -181,11 +183,16 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
         m_CameraRotate = MobileCameraRotateCoroutine();
 
         // m_CameraTouchRect의 중앙 구하기
-        float centerX = Screen.width / 2;
-        float centerY = Screen.height / 2;
-        float height = m_CameraTouchRectTransform.rect.height;
-        float width = m_CameraTouchRectTransform.rect.width;
-        centerY += (height * 0.5f);
+        float centerX = Screen.width * 0.5f;
+        float centerY = Screen.height * 0.5f;
+
+        float heightRatio = m_CameraTouchRectTransform.rect.height / 1080;
+        float widthRatio = m_CameraTouchRectTransform.rect.width / 1920;
+        float width = Screen.width * widthRatio;
+        float height = Screen.height * heightRatio;
+
+        centerY += m_CameraTouchRectTransform.anchoredPosition.y;
+
         Vector2 center = new Vector2(centerX, centerY);
         m_CameraTouchRect = new CustomRect(center, width, height);
         m_CameraTouchRectTransform.gameObject.SetActive(false);
@@ -231,21 +238,47 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
     IEnumerator MobileCameraRotateCoroutine()
     {
         var activeCam = StageManager.Instance.FreeLookCam;
-        float XAxisMaxSpeed = activeCam.m_XAxis.m_MaxSpeed;
-        float YAxisMaxSpeed = activeCam.m_YAxis.m_MaxSpeed;
+        activeCam.m_XAxis.m_InputAxisName = string.Empty;
+        activeCam.m_YAxis.m_InputAxisName = string.Empty;
 
         while (true)
         {
-            if (Input.GetMouseButton(0))
+            // 카메라 터치 영역에 있는 손가락 찾기
+            // 그런데 쓰고 있는 손가락이면 안 됨
+            int fingerId = -1;
+            for (int i = 0; i < Input.touchCount; i++)
             {
-                activeCam.m_XAxis.m_MaxSpeed = XAxisMaxSpeed;
-                activeCam.m_YAxis.m_MaxSpeed = YAxisMaxSpeed;
+                Touch touch = Input.touches[i];
+
+                if (m_CameraTouchRect.IsScreenPointInRect(touch.position) && !ExternallyUsingFingerIds.Contains(i))
+                {
+                    fingerId = i;
+                    Debug.Log($"{touch.phase}");
+                    break;
+                }
             }
-            else
+
+            // 손가락의 델타포지션을 이용하여 카메라 회전하기
+            if (Input.touchCount > 0 && fingerId != -1)
             {
-                activeCam.m_XAxis.m_MaxSpeed = Mathf.Lerp(activeCam.m_XAxis.m_MaxSpeed, 0, ROTATE_BREAK_SENSTIVITY * Time.deltaTime);
-                activeCam.m_YAxis.m_MaxSpeed = Mathf.Lerp(activeCam.m_YAxis.m_MaxSpeed, 0, ROTATE_BREAK_SENSTIVITY * Time.deltaTime);
+                Debug.Log($"deltaPosition.x ({fingerId}): {Input.touches[fingerId].deltaPosition.x}");
+                Debug.Log($"deltaPosition.y ({fingerId}): {Input.touches[fingerId].deltaPosition.y}");
+
+                if (Mathf.Abs(Input.touches[fingerId].deltaPosition.x) > Mathf.Abs(Input.touches[fingerId].deltaPosition.y)) // 수평이동 값이 수직이동 값보다 클 경우
+                    activeCam.m_XAxis.Value = Input.touches[fingerId].deltaPosition.x / TouchSensitivity_x;
+                else if (Mathf.Abs(Input.touches[fingerId].deltaPosition.x) < Mathf.Abs(Input.touches[fingerId].deltaPosition.y))
+                {
+                    float value_y = Input.touches[fingerId].deltaPosition.y / TouchSensitivity_y;
+
+                    activeCam.m_YAxis.Value = Mathf.Lerp(activeCam.m_YAxis.Value, value_y, Time.deltaTime);
+                }
+                    
+
+                Debug.Log($"xAxis.Value ({fingerId}): {activeCam.m_XAxis.Value}");
+                Debug.Log($"yAxis.Value({fingerId}): {activeCam.m_YAxis.Value}");
             }
+            
+
             yield return null;
         }
     }
@@ -271,10 +304,12 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
 
     float HandleAxisInputDelegate(string axisName)
     {
+        // Start() => GetInputAxis HandleAxisInputDelegate
+        //CinemachineCore.GetInputAxis = HandleAxisInputDelegate;
+
         switch (axisName)
         {
             case "Mouse X":
-
                 if (Input.touchCount > 0)
                 {
                     return Input.touches[0].deltaPosition.x / TouchSensitivity_x;

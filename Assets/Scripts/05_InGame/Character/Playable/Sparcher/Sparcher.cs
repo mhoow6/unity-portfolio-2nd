@@ -38,4 +38,18 @@ public class Sparcher : Playable
             proj.Shoot(transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
         }
     }
+
+    protected override bool CanDash()
+    {
+        if (AniType >= AniType.JUMP_0 && AniType <= AniType.JUMP_4)
+            return false;
+
+        if (AniType >= AniType.ATTACK_0 && AniType <= AniType.ATTACK_4 || AniType >= AniType.ATTACK_5 && AniType <= AniType.ATTACK_9)
+            return false;
+
+        if (StageManager.Instance.Player.Moveable == false)
+            return false;
+
+        return true;
+    }
 }

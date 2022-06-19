@@ -149,8 +149,6 @@ public abstract class Character : BaseObject, IEventCallable
     #endregion
 
     #region 캐릭터 기본
-    public bool Invincibility { get; set; }
-
     #region 생존
     IEnumerator m_UpdateCoroutine;
     public void SetUpdate(bool value)
@@ -197,8 +195,9 @@ public abstract class Character : BaseObject, IEventCallable
 
     #region 캐릭터 스킬
     public PassiveSkill PassiveSkill;
-    
-    #region 타겟
+    public bool Invincibility { get; set; }
+
+    #region 타겟팅
     public Character Target
     {
         get
@@ -239,12 +238,9 @@ public abstract class Character : BaseObject, IEventCallable
     protected int m_CurrentDashStack;
     bool m_ChargeDashStackCoroutine;
 
-    /// <summary>
-    /// 대쉬버튼을 눌렀을때 호출
-    /// </summary>
-    public void OnDashed(SkillButtonUI skillButtonUI = null)
+    /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
+    public void Dash(SkillButtonUI skillButtonUI = null)
     {
-        // 스킬 데이터에서 스택이 있으면 스택을 사용하는 기술
         var skillData = GetSkillData(GetDashIndex(Code));
         if (skillData.Stack != 0)
         {
@@ -252,14 +248,19 @@ public abstract class Character : BaseObject, IEventCallable
             if (m_CurrentDashStack == 0)
                 return;
 
-            // 스택을 사용하는 기술이면 1스택을 충전하는데 CoolTime만큼의 시간이 걸린다.
+            // 대쉬를 하지 못하는 경우 못하게 해야한다.
+            if (CanDash() == false)
+                return;
+
+            // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
+            GameManager.InputSystem.PressXButton = true;
+
             m_CurrentDashStack--;
             skillButtonUI.OnStackConsume();
 
-            // 스택 충전 시작
+            // 스택은 한 쿨타임에 한 번만 충전가능
             if (!m_ChargeDashStackCoroutine)
                 StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
-
         }
         else
             GameManager.InputSystem.PressXButton = true;
@@ -295,6 +296,8 @@ public abstract class Character : BaseObject, IEventCallable
         if (m_CurrentDashStack < maxStack)
             StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
     }
+
+    protected virtual bool CanDash() { return false; }
     #endregion
 
     #region 공격
@@ -337,6 +340,24 @@ public abstract class Character : BaseObject, IEventCallable
 
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
     protected virtual void OnDamaged(Character attacker, int damage, DamageType damageType) { }
+    #endregion
+
+    #region 궁극기
+    protected int m_CurrentUltiStack;
+    bool m_ChargeUltiStackCoroutine;
+
+    /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
+    public void Ultimate(SkillButtonUI skillButtonUI = null)
+    {
+
+    }
+
+    IEnumerator ChargeUltimateStackCoroutine(SkillButtonUI skillButtonUI = null)
+    {
+        yield return null;
+    }
+
+    protected virtual bool CanUltimate() { return false; }
     #endregion
 
     #endregion
@@ -510,7 +531,6 @@ public abstract class Character : BaseObject, IEventCallable
     {
         return -1;
     }
-
 
     public static Skillable GetSkillData(int skillIndex)
     {

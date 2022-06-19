@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, InputProvider
 {
+    [ReadOnly] public int PointerId = -1;
+
     [SerializeField] RectTransform m_Background;
 
     [SerializeField] RectTransform m_Lever;
@@ -45,6 +47,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        PointerId = eventData.pointerId;
+        GameManager.InputSystem.ExternallyUsingFingerIds.Add(PointerId);
         m_Lever.position = eventData.position;
     }
 
@@ -87,5 +91,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         m_Lever.position = m_Background.position;
         m_Background.rotation = m_BackgroundQuaternion;
+        
+        GameManager.InputSystem.ExternallyUsingFingerIds.Remove(PointerId);
+        PointerId = -1;
     }
 }

@@ -115,13 +115,7 @@ public class InGameUI : UI
             () =>
             {
                 var character = StageManager.Instance.Player.CurrentCharacter;
-                AniType currentAniType = character.AniType;
-                Debug.Log($"{currentAniType}");
-                if (currentAniType >= AniType.IDLE_0 && currentAniType <= AniType.IDLE_4)
-                {
-                    GameManager.InputSystem.PressXButton = true;
-                    character.OnDashed(m_DashButton);
-                }
+                character.Dash(m_DashButton);
             };
 
         dashButtonParam.OnExit =
