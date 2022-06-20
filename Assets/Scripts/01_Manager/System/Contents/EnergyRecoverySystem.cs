@@ -22,9 +22,12 @@ public class EnergyRecoverySystem : IGameSystem
 
         TimeSpan interval = DateTime.Now - m_PlayerData.LastEnergyUpdateTime;
         if (interval.Minutes >= RECOVERY_MINUTE)
-        {
-            m_PlayerData.Energy++;
-            m_PlayerData.LastEnergyUpdateTime = DateTime.Now;
-        }
+            AddEnergy();
+    }
+
+    public void AddEnergy(int addEnergy = 1)
+    {
+        m_PlayerData.Energy += addEnergy;
+        m_PlayerData.LastEnergyUpdateTime = DateTime.Now;
     }
 }

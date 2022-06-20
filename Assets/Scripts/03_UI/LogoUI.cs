@@ -50,8 +50,6 @@ public class LogoUI : Toast
 
     public override void OnOpened()
     {
-        gameObject.SetActive(true);
-
         m_Logo.color = new Color(m_Logo.color.r, m_Logo.color.g, m_Logo.color.b, 0);
         m_Logo.DOColor(new Color(m_Logo.color.r, m_Logo.color.g, m_Logo.color.b, 1), 2f)
             .OnComplete(() =>
@@ -62,6 +60,12 @@ public class LogoUI : Toast
                     GameManager.UISystem.CloseToast(false);
                 });
             });
+    }
+
+    public override void OnPushed()
+    {
+        // 이렇게 하면 바로 열린다.
+        Initalize = true;
     }
 
     IEnumerator FadeOutCoroutine()

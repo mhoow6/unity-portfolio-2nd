@@ -37,14 +37,14 @@ public class UISystem : MonoBehaviour, IGameSystem
     public readonly float SCALE_TWEENING_SPEED = 0.2f;
 
     public UI CurrentWindow => m_WindowStack.Peek();
+    [SerializeField, ReadOnly] UI m_CurrentWindow;
+
     Stack<UI> m_WindowStack = new Stack<UI>();
     [SerializeField] GameObject m_BlockWindow;
     [SerializeField] GameObject m_Pool;
 
-    public Toast CurrentToast { get; set; }
+    [ReadOnly] public Toast CurrentToast;
     Queue<Toast> m_Toasts = new Queue<Toast>();
-
-    [ReadOnly] public UI OnSceneLoadingWindow;
 
     public void Init()
     {
@@ -71,6 +71,7 @@ public class UISystem : MonoBehaviour, IGameSystem
 
         SceneManager.sceneUnloaded += (Scene arg0) =>
         {
+            CloseAllWindow();
             m_WindowStack.Clear();
         };
     }
@@ -96,9 +97,12 @@ public class UISystem : MonoBehaviour, IGameSystem
             var toast = m_Toasts.Peek();
             if (toast.Initalize == true && CurrentToast == null)
             {
-                CurrentToast = toast;
+                toast.gameObject.SetActive(true);
                 toast.transform.SetAsLastSibling();
+
                 toast.OnOpened();
+
+                CurrentToast = toast;
                 m_Toasts.Dequeue();
             }
                 
@@ -107,21 +111,14 @@ public class UISystem : MonoBehaviour, IGameSystem
     }
 
     #region Windows
-    public void OpenWindow(UIType type, bool closeCurrentWindow = true)
+    public UI OpenWindow(UIType type, bool closeCurrentWindow = true)
     {
-        OpenWindow<UI>(type, closeCurrentWindow);
+        return OpenWindow<UI>(type, closeCurrentWindow);
     }
 
     public T OpenWindow<T>(UIType type, bool closeCurrentWindow = true) where T : UI
     {
         T result = null;
-
-        // 씬 로드 창이 있으면 닫아버리기
-        if (OnSceneLoadingWindow != null)
-        {
-            OnSceneLoadingWindow.gameObject.SetActive(false);
-            OnSceneLoadingWindow.OnClosed();
-        }
 
         // 지금 창은 닫자
         if (m_WindowStack.Count > 0 && closeCurrentWindow)
@@ -145,6 +142,9 @@ public class UISystem : MonoBehaviour, IGameSystem
                 result = window as T;
                 m_WindowStack.Push(window);
 
+                // 디버깅용
+                m_CurrentWindow = window;
+
                 window.OnOpened();
                 return result;
             }
@@ -158,7 +158,7 @@ public class UISystem : MonoBehaviour, IGameSystem
 
     public void CloseAllWindow()
     {
-        while (m_WindowStack.Count != 1)
+        while (m_WindowStack.Count != 0)
         {
             CloseWindow(false);
         }
@@ -166,10 +166,6 @@ public class UISystem : MonoBehaviour, IGameSystem
 
     public void CloseWindow(bool openPreviousWindow = true)
     {
-        // 마지막 창은 닫지 않는다
-        if (m_WindowStack.Count == 1)
-            return;
-
         // 현재 창 닫기
         var window = m_WindowStack.Pop();
         window.gameObject.SetActive(false);
@@ -182,6 +178,9 @@ public class UISystem : MonoBehaviour, IGameSystem
             prev.gameObject.SetActive(true);
             prev.transform.SetAsLastSibling();
             prev.OnOpened();
+
+            // 디버깅용
+            m_CurrentWindow = prev;
         }
     }
 
@@ -220,16 +219,18 @@ public class UISystem : MonoBehaviour, IGameSystem
     #endregion
 
     #region Toasts
-    public Toast OpenToast(ToastType type)
+    public Toast PushToast(ToastType type)
     {
-        return OpenToast<Toast>(type);
+        return PushToast<Toast>(type);
     }
 
-    public T OpenToast<T>(ToastType type) where T : Toast
+    public T PushToast<T>(ToastType type) where T : Toast
     {
         var toast = Toasts.Find(toast => toast.Type == type);
         if (toast != null)
         {
+            toast.Initalize = false;
+            toast.OnPushed();
             m_Toasts.Enqueue(toast);
             return toast as T;
         }
@@ -238,7 +239,10 @@ public class UISystem : MonoBehaviour, IGameSystem
 
     public void CloseToast(bool forceQuit)
     {
-        GameManager.UISystem.CurrentToast.OnClosed();
+        if (CurrentToast == null)
+            return;
+
+        CurrentToast.OnClosed();
         if (forceQuit)
         {
             GameManager.UISystem.CurrentToast.gameObject.SetActive(false);

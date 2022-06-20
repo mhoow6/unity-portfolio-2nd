@@ -62,10 +62,14 @@ public class MainLobbyUI : UI
 
     public override void OnClosed()
     {
-        LobbyManager.Instance.MainCam.gameObject.SetActive(false);
+        var lobbyManager = LobbyManager.Instance;
+        if (lobbyManager)
+        {
+            lobbyManager.MainCam.gameObject.SetActive(false);
 
-        // 캐릭터 클릭시 애니메이션 발생 시작
-        LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = false;
+            // 캐릭터 클릭시 애니메이션 발생 시작
+            lobbyManager.MainLobbySystem.CheckUserClickingTheCharacter = false;
+        }
     }
 
     public override void OnOpened()

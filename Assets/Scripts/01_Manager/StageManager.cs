@@ -47,9 +47,7 @@ public class StageManager : GameSceneManager
     {
         // 데이터 기록
         UpdatePlayerMissionRecords();
-
-
-
+        
         // 모든 콜백 이벤트 null
         BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
     }

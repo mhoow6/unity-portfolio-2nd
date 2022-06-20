@@ -105,7 +105,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                         GameManager.InputSystem.CameraRotatable = true;
                         StageManager.Instance.Player.Moveable = true;
 
-                        // UI 끄기
+                        // UI 켜기
                         GameManager.UISystem.HUD = true;
 
                         // 인게임 UI 켜기

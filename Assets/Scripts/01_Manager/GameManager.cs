@@ -77,8 +77,6 @@ public class GameManager : MonoBehaviour
 
         // PlayerData
         m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
-        AddRewardForNewbie();
-        AddDefaultStagePartyPreset();
 
         // System Init
         TableManager.Instance.LoadTable();
@@ -104,11 +102,15 @@ public class GameManager : MonoBehaviour
 
         // FixedUpdate
         m_FixedUpdate += m_EnergyRecoverySystem.Tick;
+
+        // PlayerData Init
+        AddRewardForNewbie();
+        AddDefaultStagePartyPreset();
     }
 
     private void Start()
     {
-        m_UISystem.OpenToast<LogoUI>(ToastType.Logo).Initalize = true;
+        m_UISystem.PushToast<LogoUI>(ToastType.Logo);
     }
 
     private void FixedUpdate()
@@ -193,6 +195,11 @@ public class GameManager : MonoBehaviour
                 EquipWeaponCode = ObjectCode.NONE,
             });
         }
+
+        // 에너지 지급
+        if (m_PlayerData.LastEnergyUpdateTime == DateTime.MinValue)
+            m_EnergyRecoverySystem.AddEnergy(99);
+
     }
 
     /// <summary> 스테이지 파티 프리셋 초기 세팅 </summary>

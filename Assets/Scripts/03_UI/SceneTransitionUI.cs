@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SceneTransitionUI : UI
+public class SceneTransitionUI : Toast
 {
-    public override UIType Type => UIType.SceneTransition;
+    public override ToastType Type => ToastType.SceneTransition;
 
     public override void OnClosed()
     {
-        GameManager.UISystem.OnSceneLoadingWindow = null;
+        
     }
 
     public override void OnOpened()
     {
-        GameManager.UISystem.OnSceneLoadingWindow = this;
+        
+    }
+
+    public override void OnPushed()
+    {
+        Initalize = true;
     }
 }

@@ -13,7 +13,6 @@ public enum UIType
     ReadyForBattle,
     InGame,
     Sortie,
-    SceneTransition,
     Logo,
 }
 

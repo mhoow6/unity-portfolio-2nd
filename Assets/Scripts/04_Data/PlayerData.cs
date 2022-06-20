@@ -88,8 +88,7 @@ public class PlayerData : IEventCallable
         Gold = 0;
         AskForNickName = false;
         MainMenuCharacter = ObjectCode.CHAR_Sparcher;
-
-        
+        LastEnergyUpdateTime = DateTime.MinValue;
     }
 
     public static PlayerData GetData(string saveFilePath)
