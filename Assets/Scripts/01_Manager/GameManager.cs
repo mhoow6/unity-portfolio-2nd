@@ -65,12 +65,20 @@ public class GameManager : MonoBehaviour
         m_Update = null;
         m_FixedUpdate = null;
 
-        // 스크립터블 오브젝트 로드
+        // Game Setting
+        Application.targetFrameRate = 60;
+        Screen.sleepTimeout = SleepTimeout.SystemSetting;
+
+        // Load Database
         if (!m_GameDevelopSettings)
             m_GameDevelopSettings = Resources.Load<GameDevelopSettings>("GameDevelopSettings");
         m_GameDevelopSettings.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
-        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
         GameVerison = GameDevelopSettings.GameVerison;
+
+        // PlayerData
+        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
+        AddRewardForNewbie();
+        AddDefaultStagePartyPreset();
 
         // System Init
         TableManager.Instance.LoadTable();
@@ -87,10 +95,6 @@ public class GameManager : MonoBehaviour
 
         if (InputSystem != null)
             InputSystem.Init();
-
-        // Game Setting
-        Application.targetFrameRate = 60;
-        Screen.sleepTimeout = SleepTimeout.SystemSetting;
 
         // Update
         if (m_UISystem != null)
@@ -174,6 +178,53 @@ public class GameManager : MonoBehaviour
         var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
         if (exist != null)
             PlayerData.CharacterDatas.Remove(exist);
+    }
+
+    /// <summary> 처음으로 게임에 들어온 플레이어에게 데이터 세팅 </summary>
+    void AddRewardForNewbie()
+    {
+        // 기본 캐릭터 지급
+        if (m_PlayerData.CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Sparcher) == null)
+        {
+            m_PlayerData.CharacterDatas.Add(new CharacterRecordData()
+            {
+                Code = ObjectCode.CHAR_Sparcher,
+                Level = 1,
+                EquipWeaponCode = ObjectCode.NONE,
+            });
+        }
+    }
+
+    /// <summary> 스테이지 파티 프리셋 초기 세팅 </summary>
+    void AddDefaultStagePartyPreset()
+    {
+        // 테스트씬에 들어가기 위한 데이터
+        if (m_PlayerData.StageRecords.Find(record => record.WorldIdx == 0 && record.StageIdx == 0) == null)
+        {
+            m_PlayerData.StageRecords.Add(new StageRecordData()
+            {
+                WorldIdx = 0,
+                StageIdx = 0,
+                CharacterLeader = ObjectCode.CHAR_Sparcher,
+                CharacterSecond = ObjectCode.NONE,
+                CharacterThird = ObjectCode.NONE,
+                Clear = false
+            });
+        }
+
+        // 스테이지 1-1 테스트 용도
+        if (m_PlayerData.StageRecords.Find(record => record.WorldIdx == 1 && record.StageIdx == 1) == null)
+        {
+            m_PlayerData.StageRecords.Add(new StageRecordData()
+            {
+                WorldIdx = 1,
+                StageIdx = 1,
+                CharacterLeader = ObjectCode.CHAR_Sparcher,
+                CharacterSecond = ObjectCode.NONE,
+                CharacterThird = ObjectCode.NONE,
+                Clear = false
+            });
+        }
     }
     #endregion
 
