@@ -11,6 +11,7 @@ public class SortieUI : UI
     public List<SelectCharacterUI> SelectCharacterDisplays = new List<SelectCharacterUI>();
     public RectTransform SelectCharacterGroupTransform;
     public RectTransform StageBackgroundTransform;
+    public SelectCharacterUI SelectCharacterUIPrefab;
 
     [SerializeField] Text m_EnergyCostText;
     [SerializeField] LeaderPassiveInfoUI m_LeaderPassiveInfoDisplay;

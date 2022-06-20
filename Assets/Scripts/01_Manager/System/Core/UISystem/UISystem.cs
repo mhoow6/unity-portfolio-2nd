@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class UISystem : MonoBehaviour, IGameSystem
 {
@@ -43,6 +44,8 @@ public class UISystem : MonoBehaviour, IGameSystem
     public Toast CurrentToast { get; set; }
     Queue<Toast> m_Toasts = new Queue<Toast>();
 
+    [ReadOnly] public UI OnSceneLoadingWindow;
+
     public void Init()
     {
         m_WindowStack.Clear();
@@ -65,20 +68,27 @@ public class UISystem : MonoBehaviour, IGameSystem
 
         Pool = new PoolSystem();
         Pool.Init(m_Pool);
+
+        SceneManager.sceneUnloaded += (Scene arg0) =>
+        {
+            m_WindowStack.Clear();
+        };
     }
 
     public void Tick()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (m_WindowStack.Peek().Type != UIType.MainLobby)
-                CloseWindow();
-            else
+            if (m_WindowStack.Count > 0)
             {
-                var confirm = OpenWindow<ConfirmUI>(UIType.Confirm);
-                confirm.SetData("게임을 종료하시겠습니까?", Application.Quit);
+                if (m_WindowStack.Peek().Type != UIType.MainLobby)
+                    CloseWindow();
+                else
+                {
+                    var confirm = OpenWindow<ConfirmUI>(UIType.Confirm);
+                    confirm.SetData("게임을 종료하시겠습니까?", Application.Quit);
+                }
             }
-
         }
 
         if (m_Toasts.Count > 0)
@@ -105,6 +115,13 @@ public class UISystem : MonoBehaviour, IGameSystem
     public T OpenWindow<T>(UIType type, bool closeCurrentWindow = true) where T : UI
     {
         T result = null;
+
+        // 씬 로드 창이 있으면 닫아버리기
+        if (OnSceneLoadingWindow != null)
+        {
+            OnSceneLoadingWindow.gameObject.SetActive(false);
+            OnSceneLoadingWindow.OnClosed();
+        }
 
         // 지금 창은 닫자
         if (m_WindowStack.Count > 0 && closeCurrentWindow)
@@ -149,6 +166,10 @@ public class UISystem : MonoBehaviour, IGameSystem
 
     public void CloseWindow(bool openPreviousWindow = true)
     {
+        // 마지막 창은 닫지 않는다
+        if (m_WindowStack.Count == 1)
+            return;
+
         // 현재 창 닫기
         var window = m_WindowStack.Pop();
         window.gameObject.SetActive(false);

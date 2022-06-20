@@ -11,6 +11,13 @@ public class LeaderPassiveInfoUI : Display
 
     public void SetData(ObjectCode characterCode)
     {
+        var record = GameManager.PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
+        if (record == null)
+        {
+            Debug.LogError($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
+            return;
+        }
+
         var data = JsonManager.Instance.JsonDatas[Character.GetPassiveIndex(characterCode)] as SkillDescriptable;
         if (data != null)
         {

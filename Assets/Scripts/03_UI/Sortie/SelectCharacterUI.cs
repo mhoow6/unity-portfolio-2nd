@@ -63,8 +63,10 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
     [SerializeField] Image m_Background;
     [SerializeField] Text m_CharacterLevel;
     CanvasGroup m_CanvasGroup;
+
     SelectCharacterUI m_Copied;
     SelectCharacterUI m_Moved;
+
     CustomRect Rect;
     string m_OnPointerDownColorCode = "#00FFFF";
     string m_OnPointerUpColorCode = "#FFFFFF";
@@ -149,39 +151,34 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
         var ui = GameManager.UISystem.CurrentWindow;
         if (ui.Type == UIType.Sortie && DisplayedCharacter != ObjectCode.NONE && m_Moved == null)
         {
-            // 자기 자신 복사
-            var display = Resources.Load<SelectCharacterUI>($"{GameManager.GameDevelopSettings.UIResourcePath}/Display/SelectCharacterDisplay");
-            if (display)
+            // 인스턴싱
+            var sortie = ui as SortieUI;
+            var instanitate = Instantiate(sortie.SelectCharacterUIPrefab, sortie.transform);
+            m_Copied = instanitate;
+
+            // 데이터 세팅
+            instanitate.SetData(DisplayedCharacter);
+
+            // 위치 맞추기
+            // 인스턴싱된건 layoutGroup의 자식이 아님. 따라서 layoutGroup의 x좌표만큼의 더해줘야함
+            var rt = instanitate.BackgroundRectTransform;
+            rt.anchoredPosition = new Vector3
+                (BackgroundRectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
+                sortie.SelectCharacterGroupTransform.anchoredPosition.y,
+                0);
+
+            // 색 변화
+            if (ColorUtility.TryParseHtmlString(m_OnPointerDownColorCode, out Color color))
+                instanitate.m_Background.color = color;
+
+            // layoutGroup안에 있는 display들은 awake나 start단계에서 정렬이 되지 않는다.
+            // 드래그를 시작할때 해당 display들의 rect를 초기화시키자.
+            foreach (var dis in sortie.SelectCharacterDisplays)
             {
-                // 인스턴싱
-                var sortie = ui as SortieUI;
-                var instanitate = Instantiate(display, sortie.transform);
-                m_Copied = instanitate;
-
-                // 데이터 세팅
-                instanitate.SetData(DisplayedCharacter);
-
-                // 위치 맞추기
-                // 인스턴싱된건 layoutGroup의 자식이 아님. 따라서 layoutGroup의 x좌표만큼의 더해줘야함
-                var rt = instanitate.BackgroundRectTransform;
-                rt.anchoredPosition = new Vector3
-                    (BackgroundRectTransform.anchoredPosition.x + sortie.SelectCharacterGroupTransform.anchoredPosition.x,
-                    sortie.SelectCharacterGroupTransform.anchoredPosition.y,
-                    0);
-
-                // 색 변화
-                if (ColorUtility.TryParseHtmlString(m_OnPointerDownColorCode, out Color color))
-                    instanitate.m_Background.color = color;
-
-                // layoutGroup안에 있는 display들은 awake나 start단계에서 정렬이 되지 않는다.
-                // 드래그를 시작할때 해당 display들의 rect를 초기화시키자.
-                foreach (var dis in sortie.SelectCharacterDisplays)
-                {
-                    // 스크린좌표를 활용하기 위해 뷰포트 변환
-                    var convert = GameManager.UISystem.UICamera.WorldToViewportPoint(dis.BackgroundRectTransform.position);
-                    Vector3 resolutionMultipled = new Vector3(convert.x * Screen.width, convert.y * Screen.height, 0);
-                    dis.Rect = new CustomRect(resolutionMultipled, dis.BackgroundRectTransform.rect.width, dis.BackgroundRectTransform.rect.height);
-                }
+                // 스크린좌표를 활용하기 위해 뷰포트 변환
+                var convert = GameManager.UISystem.UICamera.WorldToViewportPoint(dis.BackgroundRectTransform.position);
+                Vector3 resolutionMultipled = new Vector3(convert.x * Screen.width, convert.y * Screen.height, 0);
+                dis.Rect = new CustomRect(resolutionMultipled, dis.BackgroundRectTransform.rect.width, dis.BackgroundRectTransform.rect.height);
             }
         }
     }

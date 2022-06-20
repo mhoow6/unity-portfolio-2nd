@@ -89,16 +89,44 @@ public class PlayerData : IEventCallable
         AskForNickName = false;
         MainMenuCharacter = ObjectCode.CHAR_Sparcher;
 
-        // 테스트씬에 들어가기 위한 데이터
-        StageRecords.Add(new StageRecordData()
+        // 기본 캐릭터 지급
+        if (CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Sparcher) == null)
         {
-            WorldIdx = 0,
-            StageIdx = 0,
-            CharacterLeader = ObjectCode.CHAR_Sparcher,
-            CharacterSecond = ObjectCode.NONE,
-            CharacterThird = ObjectCode.NONE,
-            Clear = false
-        });
+            CharacterDatas.Add(new CharacterRecordData()
+            {
+                Code = ObjectCode.CHAR_Sparcher,
+                Level = 1,
+                EquipWeaponCode = ObjectCode.NONE,
+            });
+        }
+
+        // 테스트씬에 들어가기 위한 데이터
+        if (StageRecords.Find(record => record.WorldIdx == 0 && record.StageIdx == 0) == null)
+        {
+            StageRecords.Add(new StageRecordData()
+            {
+                WorldIdx = 0,
+                StageIdx = 0,
+                CharacterLeader = ObjectCode.CHAR_Sparcher,
+                CharacterSecond = ObjectCode.NONE,
+                CharacterThird = ObjectCode.NONE,
+                Clear = false
+            });
+        }
+
+        // 스테이지 1-1 테스트 용도
+        if (StageRecords.Find(record => record.WorldIdx == 1 && record.StageIdx == 1) == null)
+        {
+            StageRecords.Add(new StageRecordData()
+            {
+                WorldIdx = 1,
+                StageIdx = 1,
+                CharacterLeader = ObjectCode.CHAR_Sparcher,
+                CharacterSecond = ObjectCode.NONE,
+                CharacterThird = ObjectCode.NONE,
+                Clear = false
+            });
+        }
     }
 
     public static PlayerData GetData(string saveFilePath)

@@ -8,11 +8,11 @@ public class SceneTransitionUI : UI
 
     public override void OnClosed()
     {
-        
+        GameManager.UISystem.OnSceneLoadingWindow = null;
     }
 
     public override void OnOpened()
     {
-        
+        GameManager.UISystem.OnSceneLoadingWindow = this;
     }
 }

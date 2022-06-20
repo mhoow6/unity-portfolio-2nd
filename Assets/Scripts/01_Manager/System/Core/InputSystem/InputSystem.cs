@@ -166,16 +166,14 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
         }
     }
 
-    public float TouchSensitivity_x = 10f;
-    public float TouchSensitivity_y = 10f;
+    float TouchSensitivity_x = 10f;
+    float TouchSensitivity_y = 10f;
 
     // 외부에서 사용하는 포인터ID들. 카메라를 회전시킬 FingerId를 확실하게 식별하게 하는 용도
-    public List<int> ExternallyUsingFingerIds = new List<int>();
+    [ReadOnly] public List<int> ExternallyUsingFingerIds = new List<int>();
     IEnumerator m_CameraRotate;
     [SerializeField] RectTransform m_CameraTouchRectTransform;
     CustomRect m_CameraTouchRect;
-
-    const float ROTATE_BREAK_SENSTIVITY = 2f;
     #endregion
 
     public void Init()
