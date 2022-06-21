@@ -140,7 +140,6 @@ public class InGameUI : UI
         m_HpSlider.SetData(
             0,
             character.MaxHp,
-            character.Hp,
             onValueUpdate: (hp) =>
             {
                 m_HpText.text = $"{hp}/<size=36>{character.MaxHp}</size>";
@@ -156,7 +155,6 @@ public class InGameUI : UI
         m_SpSlider.SetData(
             0,
             character.MaxSp,
-            character.Sp,
             onValueUpdate: (sp) =>
             {
                 m_SpText.text = $"{sp} / {character.MaxSp}";
@@ -180,8 +178,8 @@ public class InGameUI : UI
         // 슬라이더 세팅
         m_TargetSlider.SetData(
             0,
-            target.MaxHp,
-            target.Hp);
+            target.MaxHp);
+        m_TargetSlider.Value = target.Hp;
 
         // 타겟의 Hp에 따라 슬라이더 값 변경
         target.OnHpUpdate +=

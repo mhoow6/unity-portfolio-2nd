@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEditor;
 using System;
 
-/// <summary> Version 1.0 </summary>
+/// <summary> Version 1.01 </summary>
 public class SplitSlider : Display
 {
     [Header("# 조절 가능")]
@@ -39,11 +39,51 @@ public class SplitSlider : Display
         }
         set
         {
-            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue); 
+            float clamped = Mathf.Clamp(value, m_MinValue, m_MaxValue);
             SplitSliderElement last = null;
             SplitSliderElement deltaLast = null;
 
-            
+            Queue<float> deltaQueue = new Queue<float>();
+
+            float delta = m_Value - clamped;
+            deltaQueue.Enqueue(delta);
+            while (deltaQueue.Count != 0)
+            {
+                (last, deltaLast) = TryGetElements(delta >= 0);
+                if (last != null)
+                {
+                    if (last.Value - delta >= m_ElementMinValue)
+                    {
+                        // element max value를 넘어서 증가하는 경우
+                        if (last.Value - delta > m_ElementMaxValue)
+                        {
+                            delta += (m_ElementMaxValue - last.Value);
+
+                            last.Value = m_ElementMaxValue;
+
+                            deltaQueue.Dequeue();
+                            deltaQueue.Enqueue(delta);
+                        }
+                        else
+                        {
+                            last.Value = last.Value - delta;
+                            deltaQueue.Dequeue();
+                        }
+                    }
+                    else if (last.Value - delta < m_ElementMinValue)
+                    {
+                        delta -= (last.Value - m_ElementMinValue);
+
+                        last.Value = m_ElementMinValue;
+
+                        deltaQueue.Dequeue();
+                        deltaQueue.Enqueue(delta);
+                    }
+
+                }
+                else
+                    break;
+            }
 
             m_Value = clamped;
             m_OnValueUpdate?.Invoke(clamped);
@@ -65,27 +105,31 @@ public class SplitSlider : Display
     }
     float m_MinValue;
     float m_MaxValue;
+    float m_ElementMinValue;
+    float m_ElementMaxValue;
 
-    public void SetData(float minValue, float maxValue, float currentValue, Action<float> onValueUpdate = null)
+    public void SetData(float minValue, float maxValue, Action<float> onValueUpdate = null)
     {
         m_DeltaLayout.gameObject.SetActive(false);
 
         m_MinValue = minValue;
         m_MaxValue = maxValue;
-        m_Value = Mathf.Clamp(currentValue, m_MinValue, m_MaxValue);
+        m_Value = maxValue;
         m_OnValueUpdate = onValueUpdate;
 
-        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
         float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+        m_ElementMinValue = elementMinValue;
+        m_ElementMaxValue = elementMaxValue;
 
         // 슬라이더 element 색상
         int colorIndex = m_SliderCount - 1;
         for (int i = 0; i < m_SliderCount; i++)
         {
             float minRange = (m_MaxValue / m_SliderCount) * i;
-            float maxRange = (m_MaxValue / m_SliderCount) * (i+1);
+            float maxRange = (m_MaxValue / m_SliderCount) * (i + 1);
 
-            if (currentValue >= minRange && currentValue < maxRange)
+            if (m_Value >= minRange && m_Value < maxRange)
             {
                 colorIndex = i;
                 break;
@@ -108,10 +152,7 @@ public class SplitSlider : Display
             front.Image.color = m_SliderColors[m_CurrentColorIndex];
         }
 
-        // 한 층의 슬라이더의 element에 적용할 value의 합
-        // 나누기는 값 손실을 일으켜서 빼기로 표현
-        float elementValueSum = (elementMaxValue * m_ElementCount) - (m_MaxValue - currentValue);
-
+        float elementValueSum = m_ElementMaxValue * m_ElementCount;
         // 슬라이더 element 값
         for (int i = 0; i < m_ElementCount; i++)
         {
@@ -133,11 +174,9 @@ public class SplitSlider : Display
             delta.SetData(elementMinValue, elementMaxValue, elementValue);
             front.SetData(elementMinValue, elementMaxValue, elementValue);
         }
-
-        
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     public void CreateElements()
     {
         if (m_BackElements.Count > 0)
@@ -239,96 +278,81 @@ public class SplitSlider : Display
 
         EditorUtility.SetDirty(this);
     }
-    #endif
+#endif
 
     /// <summary>
-    /// Value 프로퍼티에서 필요한 함수. value를 적용시킬 마지막 element를 구합니다.
+    /// Value 프로퍼티에서 필요한 함수. 값을 적용시킬 element를 구합니다.
     /// </summary>
-    /// <param name="diff">현재 슬라이더의 value랑, 슬라이더에 적용될 value와의 차이값</param>
+    /// <param name="decresing">감소하는 중이거나 변화가 없으면 true 아니면 false</param>
     /// <returns></returns>
-    (SplitSliderElement front, SplitSliderElement delta) TryGetValuedElements(float diff)
+    (SplitSliderElement front, SplitSliderElement delta) TryGetElements(bool decresing)
     {
         (SplitSliderElement, SplitSliderElement) result;
         result.Item1 = null;
         result.Item2 = null;
 
         // 게이지가 변화할 element 찾기
-        try
+        if (decresing)
         {
-            if (diff > 0)
-            {
-                result.Item1 = m_FrontElements.Last(element => element.Value > 0);
-                result.Item2 = m_DeltaElements.Last(element => element.Value > 0);
-            }
-            else
-            {
-                result.Item1 = m_FrontElements.Last(element => element.Value > 0 && element.Value < element.MaxValue);
-                result.Item2 = m_DeltaElements.Last(element => element.Value > 0 && element.Value < element.MaxValue);
-            }
+            result.Item1 = m_FrontElements.LastOrDefault(element => element.Value > m_ElementMinValue);
+            result.Item2 = m_DeltaElements.LastOrDefault(element => element.Value > m_ElementMinValue);
         }
-        // 더 이상 값을 조정할 element가 없을 경우
-        catch (Exception)
+        else
         {
-            // 값이 증가중인데, 남은 element들의 값이 0이여서 생기는 예외
-            var zeros = m_FrontElements.FindAll(element => element.Value == 0);
-            var deltaZeros = m_DeltaElements.FindAll(element => element.Value == 0);
-            if (diff < 0 && zeros.Count > 0)
-            {
-                // 그냥 뒤에껄 이용하라고 해야한다.
-                result.Item1 = zeros[0];
-                result.Item2 = deltaZeros[0];
-            }
-            else
-            {
-                int nextSliderIndex = diff > 0 ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
+            result.Item1 = m_FrontElements.FirstOrDefault(element => element.Value < m_ElementMaxValue);
+            result.Item2 = m_DeltaElements.FirstOrDefault(element => element.Value < m_ElementMaxValue);
+        }
 
-                if (nextSliderIndex >= 0)
+        // 더 이상 값을 조정할 element가 없을 경우
+        if (result.Item1 == null)
+        {
+            int nextSliderIndex = decresing ? --m_CurrentColorIndex : ++m_CurrentColorIndex;
+
+            // 새로운 색상의 슬라이더를 세팅한다.
+            if (nextSliderIndex >= 0)
+            {
+                for (int i = 0; i < m_ElementCount; i++)
                 {
+                    var cur = m_FrontElements[i];
+                    var curdelta = m_DeltaElements[i];
+                    var back = m_BackElements[i];
 
-                    for (int i = 0; i < m_ElementCount; i++)
+                    // 백그라운드 색상 초기화
+                    int backgroundIndex = nextSliderIndex - 1;
+                    if (backgroundIndex >= 0)
+                        back.Image.color = m_SliderColors[backgroundIndex];
+                    else
+                        back.Image.color = m_BackgroundColor;
+
+                    // element 색상 초기화
+                    float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
+                    float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
+                    cur.Image.color = m_SliderColors[nextSliderIndex];
+
+                    // element 값 새로 세팅
+                    if (decresing)
                     {
-                        var cur = m_FrontElements[i];
-                        var curdelta = m_DeltaElements[i];
-                        var back = m_BackElements[i];
-
-                        // 백그라운드 색상 초기화
-                        int backgroundIndex = nextSliderIndex - 1;
-                        if (backgroundIndex >= 0)
-                            back.Image.color = m_SliderColors[backgroundIndex];
-                        else
-                            back.Image.color = m_BackgroundColor;
-
-                        // element 색상 초기화
-                        float elementMaxValue = m_MaxValue / m_ElementCount / m_SliderCount;
-                        float elementMinValue = m_MinValue / m_ElementCount / m_SliderCount;
-                        cur.Image.color = m_SliderColors[nextSliderIndex];
-
-                        // element 값 새로 세팅
-                        if (diff > 0)
-                        {
-                            cur.SetData(elementMinValue, elementMaxValue, elementMaxValue);
-                            curdelta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
-                        }
-                        else
-                        {
-                            cur.SetData(elementMinValue, elementMaxValue, 0);
-                            curdelta.SetData(elementMinValue, elementMaxValue, 0);
-                        }
-                    }
-
-                    // 다시 찾아보기
-                    if (diff > 0)
-                    {
-                        result.Item1 = m_FrontElements.Last();
-                        result.Item2 = m_DeltaElements.Last();
+                        cur.SetData(elementMinValue, elementMaxValue, elementMaxValue);
+                        curdelta.SetData(elementMinValue, elementMaxValue, elementMaxValue);
                     }
                     else
                     {
-                        result.Item1 = m_FrontElements.First();
-                        result.Item2 = m_DeltaElements.First();
+                        cur.SetData(elementMinValue, elementMaxValue, elementMinValue);
+                        curdelta.SetData(elementMinValue, elementMaxValue, elementMinValue);
                     }
                 }
 
+                // 다시 찾아보기
+                if (decresing)
+                {
+                    result.Item1 = m_FrontElements.Last();
+                    result.Item2 = m_DeltaElements.Last();
+                }
+                else
+                {
+                    result.Item1 = m_FrontElements.First();
+                    result.Item2 = m_DeltaElements.First();
+                }
             }
         }
 

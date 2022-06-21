@@ -92,7 +92,7 @@ public abstract class Character : BaseObject, IEventCallable
         get
         {
             var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-            return row.BaseHp + ((int)(row.BaseHp * row.HpIncreaseRatioByLevelUp) * (m_Data.Level - 1));
+            return (int)(row.BaseHp + (row.BaseHp * (m_Data.Level * row.HpIncreaseRatioByLevelUp)));
         }
     }
     public Action<int> OnHpUpdate;
@@ -117,7 +117,7 @@ public abstract class Character : BaseObject, IEventCallable
         get
         {
             var row = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-            return row.BaseSp + ((int)(row.BaseSp * row.SpIncreaseRatioByLevelUp) * (m_Data.Level - 1));
+            return (int)(row.BaseSp + (row.BaseSp * (m_Data.Level * row.SpIncreaseRatioByLevelUp)));
         }
     }
     public Action<int> OnSpUpdate;
@@ -590,11 +590,11 @@ public abstract class Character : BaseObject, IEventCallable
             {
                 Code = Code,
                 Level = 1,
-                Hp = table.BaseHp,
-                Sp = table.BaseSp,
-                Critical = table.BaseCritical,
-                Damage = table.BaseDamage,
-                Defense = table.BaseDefense,
+                Hp = (int)(table.BaseHp + (table.BaseHp * (1 * table.HpIncreaseRatioByLevelUp))),
+                Sp = (int)(table.BaseSp + (table.BaseSp * (1 * table.SpIncreaseRatioByLevelUp))),
+                Critical = (int)(table.BaseCritical + (table.BaseCritical * (1 * table.CriticalIncreaseRatioByLevelUp))),
+                Damage = (int)(table.BaseDamage + (table.BaseDamage * (1 * table.DamageIncreaseRatioByLevelUp))),
+                Defense = (int)(table.BaseDefense + (table.BaseDefense * (1 * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
                 EquipWeaponData = null
             };
