@@ -189,7 +189,7 @@ public abstract class Character : BaseObject, IEventCallable
     #endregion
 
     /// <summary> 캐릭터 사망시 호출 </summary>
-    protected virtual void OnDead(Character attacker, int damage, DamageType damageType) { }
+    protected virtual void OnDead(Character attacker, int damage) { }
 
     #endregion
 
@@ -214,7 +214,7 @@ public abstract class Character : BaseObject, IEventCallable
                     GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
             }
 
-            var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/FloatingLockOn");
+            var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingLockOn");
             m_TargetLockOnImage = image;
             image.SetData(value);
             image.SetUpdate(true);
@@ -305,12 +305,19 @@ public abstract class Character : BaseObject, IEventCallable
     public virtual void Attack(int skillIndex) { }
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
-    public void Damaged(Character attacker, int damage, DamageType damageType)
+    public void Damaged(Character attacker, int damage, bool isCrit)
     {
         if (Invincibility)
             return;
 
+        // 데이터
         Hp -= damage;
+
+        // 데미지 텍스트
+        var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingDamage");
+        var floatingStartPoint = StageManager.Instance.MainCam.WorldToScreenPoint(Head.position);
+        damageText.SetData(damage, isCrit, floatingStartPoint, Head.position);
+        damageText.StartFloating();
 
         // 캐릭터 사망
         if (Hp <= 0)
@@ -322,24 +329,15 @@ public abstract class Character : BaseObject, IEventCallable
             if (Rigidbody)
                 Rigidbody.isKinematic = true;
 
-            OnDead(attacker, damage, damageType);
+            OnDead(attacker, damage);
             return;
         }
 
-        // TODO: 데미지 타입에 따른 애니메이션
-        switch (damageType)
-        {
-            case DamageType.Normal:
-                break;
-            case DamageType.Stiffness:
-                break;
-        }
-
-        OnDamaged(attacker, damage, damageType);
+        OnDamaged(attacker, damage, isCrit);
     }
 
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
-    protected virtual void OnDamaged(Character attacker, int damage, DamageType damageType) { }
+    protected virtual void OnDamaged(Character attacker, int damage, bool isCrit) { }
     #endregion
 
     #region 궁극기

@@ -36,12 +36,12 @@ public class Playable : Character
         m_CurrentDashStack = dashData.Stack;
     }
 
-    protected override void OnDamaged(Character attacker, int damage, DamageType damageType)
+    protected override void OnDamaged(Character attacker, int damage, bool isCrit)
     {
         StageManager.Instance.MissionSystem.ReportAll(QuestType.GET_DAMAGED);
     }
 
-    protected override void OnDead(Character attacker, int damage, DamageType damageType)
+    protected override void OnDead(Character attacker, int damage)
     {
         StageManager.Instance.MissionSystem.ReportAll(QuestType.INCAPCITATED);
     }

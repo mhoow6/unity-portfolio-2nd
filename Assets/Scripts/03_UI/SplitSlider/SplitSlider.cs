@@ -43,57 +43,7 @@ public class SplitSlider : Display
             SplitSliderElement last = null;
             SplitSliderElement deltaLast = null;
 
-            float expectedValue = 0f;
-            float delta = m_Value - clamped;
-
-            // 게이지가 변화할 element 찾기
-            if (delta != 0)
-            {
-                (last, deltaLast) = TryGetValuedElements(delta);
-                if (last != null && deltaLast != null)
-                {
-                    expectedValue = last.Value - delta;
-
-                    // value가 증가하는 경우
-                    if (expectedValue > 0)
-                    {
-                        while (expectedValue > last.MaxValue)
-                        {
-                            // 남은 양
-                            last.Value = last.MaxValue;
-
-                            // 게이지가 변화할 element 찾기
-                            (last, deltaLast) = TryGetValuedElements(delta);
-
-                            expectedValue -= last.MaxValue;
-                        }
-                        last.Value = expectedValue;
-                    }
-                    // value가 감소하는 경우
-                    else
-                    {
-                        while (expectedValue < 0)
-                        {
-                            // 마지막 element를 0으로 만든다.
-                            float lastValue = last.Value;
-                            last.Value = 0;
-
-                            // 남은 양
-                            delta = delta - lastValue;
-
-                            // 게이지가 변화할 element 찾기
-                            (last, deltaLast) = TryGetValuedElements(delta);
-
-                            // 더 이상 변화할 element를 못 찾을 경우 종료
-                            if (last == null && deltaLast == null)
-                                expectedValue = 0;
-                            else
-                                expectedValue = last.Value - delta;
-                        }
-                        last.Value = expectedValue;
-                    }
-                }
-            }
+            
 
             m_Value = clamped;
             m_OnValueUpdate?.Invoke(clamped);

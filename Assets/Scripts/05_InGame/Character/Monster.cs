@@ -26,12 +26,7 @@ public class Monster : Character
             Animator.SetInteger(ANITYPE_HASHCODE, (int)AnimationJobs.Dequeue());
     }
 
-    protected override void OnDamaged(Character attacker, int damage, DamageType damageType)
-    {
-        //Debug.Log($"{attacker.Name}에게 {Name}이(가) {damage}만큼의 데미지를 입었습니다.");
-    }
-
-    protected override void OnDead(Character attacker, int damage, DamageType damageType)
+    protected override void OnDead(Character attacker, int damage)
     {
         var manager = StageManager.Instance;
         if (manager != null)

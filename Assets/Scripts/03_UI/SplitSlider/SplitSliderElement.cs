@@ -28,6 +28,7 @@ public class SplitSliderElement : Display
     [SerializeField] Animator m_Animator;
     [SerializeField, ReadOnly] float m_Value;
 
+    public float MinValue => m_MinValue;
     float m_MinValue;
     public float MaxValue => m_MaxValue;
     float m_MaxValue;
