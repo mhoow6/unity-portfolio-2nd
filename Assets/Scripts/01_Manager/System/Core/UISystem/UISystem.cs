@@ -11,7 +11,6 @@ public class UISystem : MonoBehaviour, IGameSystem
     [ReadOnly] public List<Toast> Toasts = new List<Toast>();
 
     public PoolSystem Pool { get; private set; }
-    public EventSystem EventSystem;
 
     public Canvas Canvas;
     public Camera UICamera;
@@ -58,9 +57,6 @@ public class UISystem : MonoBehaviour, IGameSystem
 
         if (UICamera != null)
             DontDestroyOnLoad(UICamera);
-
-        if (EventSystem != null)
-            DontDestroyOnLoad(EventSystem);
 
         m_Toasts.Clear();
         foreach (var toast in Toasts)

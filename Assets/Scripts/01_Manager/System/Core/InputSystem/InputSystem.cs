@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
+    public EventSystem EventSystem;
 
     #region 게임 입력
     public Vector2 CharacterMoveInput
@@ -194,6 +195,9 @@ public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
         Vector2 center = new Vector2(centerX, centerY);
         m_CameraTouchRect = new CustomRect(center, width, height);
         m_CameraTouchRectTransform.gameObject.SetActive(false);
+
+        if (EventSystem != null)
+            DontDestroyOnLoad(EventSystem);
     }
 
     public void Tick()
