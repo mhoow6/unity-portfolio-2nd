@@ -5,7 +5,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 [Serializable]
-public class PlayerData : IEventCallable
+public class PlayerData : ISubscribable
 {
     public Guid Guid;
     [JsonIgnore] public string NickName

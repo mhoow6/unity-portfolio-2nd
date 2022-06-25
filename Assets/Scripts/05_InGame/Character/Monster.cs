@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Monster : Character
+public abstract class Monster : Character
 {
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
     public NavMeshAgent Agent { get; private set; }

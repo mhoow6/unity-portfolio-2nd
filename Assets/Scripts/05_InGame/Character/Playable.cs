@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 
-public class Playable : Character
+public abstract class Playable : Character
 {
     #region 로비 애니메이션
     // 로비에서 캐릭터 클릭시에 애니메이션이 나오도록 하는데 필요함

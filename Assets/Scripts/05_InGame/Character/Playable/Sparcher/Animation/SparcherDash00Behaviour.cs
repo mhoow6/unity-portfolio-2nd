@@ -27,7 +27,7 @@ public class SparcherDash00Behaviour : SparcherBehaviour
         if (m_Data != null)
             m_Destination = m_Player.CurrentCharacter.transform.position + (m_Player.CurrentCharacter.transform.forward * m_Data.DashDistance);
 
-        m_Player.CurrentCharacter.Invincibility = true;
+        m_Player.CurrentCharacter.Invulnerable = true;
         m_Player.Moveable = false;
 
         m_Player.SmoothlyMovingTo(m_Destination, m_Data.ArriveTime);
@@ -39,7 +39,7 @@ public class SparcherDash00Behaviour : SparcherBehaviour
 
         if (!m_Player.SmoothlyMoving)
         {
-            m_Player.CurrentCharacter.Invincibility = false;
+            m_Player.CurrentCharacter.Invulnerable = false;
             m_Player.Moveable = true;
 
             m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);

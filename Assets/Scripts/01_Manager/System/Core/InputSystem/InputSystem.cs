@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputSystem : MonoBehaviour, IGameSystem, IEventCallable
+public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
 {
     public List<InputProvider> Controllers { get; private set; } = new List<InputProvider>();
     public EventSystem EventSystem;

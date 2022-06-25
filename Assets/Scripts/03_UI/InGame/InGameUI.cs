@@ -182,7 +182,10 @@ public class InGameUI : UI
         m_TargetSlider.Value = target.Hp;
 
         // 타겟의 Hp에 따라 슬라이더 값 변경
-        target.OnHpUpdate +=
+        if (!target.TargetSliderHooked)
+        {
+            Debug.Log($"{target.name}의 Hp가 후킹되었습니다.");
+            target.OnHpUpdate +=
             (hp) =>
             {
                 if (hp > 0)
@@ -195,5 +198,8 @@ public class InGameUI : UI
                     target.DisposeEvents();
                 }
             };
+        }
+        target.TargetSliderHooked = true;
+        
     }
 }

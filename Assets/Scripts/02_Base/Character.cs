@@ -5,7 +5,7 @@ using DatabaseSystem;
 using UnityEngine.AI;
 using System;
 
-public abstract class Character : BaseObject, IEventCallable
+public abstract class Character : BaseObject, ISubscribable
 {
     #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
@@ -195,7 +195,7 @@ public abstract class Character : BaseObject, IEventCallable
 
     #region 캐릭터 스킬
     public PassiveSkill PassiveSkill;
-    public bool Invincibility { get; set; }
+    public bool Invulnerable { get; set; }
 
     #region 타겟팅
     public Character Target
@@ -232,6 +232,9 @@ public abstract class Character : BaseObject, IEventCallable
     Character m_Target;
     public Action<Character> OnTargetUpdate;
     protected FloatingLockOnImage m_TargetLockOnImage;
+
+    /// <summary> 인게임UI 타겟 슬라이더가 Hp를 후킹하고 있는지에 대한 여부 </summary>
+    public bool TargetSliderHooked;
     #endregion
 
     #region 대쉬
@@ -307,7 +310,7 @@ public abstract class Character : BaseObject, IEventCallable
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, bool isCrit)
     {
-        if (Invincibility)
+        if (Invulnerable)
             return;
 
         // 데이터
@@ -605,6 +608,7 @@ public abstract class Character : BaseObject, IEventCallable
         OnHpUpdate = null;
         OnSpUpdate = null;
         OnTargetUpdate = null;
+        TargetSliderHooked = false;
     }
     #endregion
 }

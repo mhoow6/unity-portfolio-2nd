@@ -1,4 +1,4 @@
-public interface IEventCallable
+public interface ISubscribable
 {
     public void DisposeEvents();
 }
