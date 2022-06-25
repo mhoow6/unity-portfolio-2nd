@@ -19,9 +19,22 @@ public class MeshCombine : MonoBehaviour
 
     void Start()
     {
+        MergeSameMaterialObjects();
         MeshCombineObjects();
     }
 
+    public void MergeSameMaterialObjects()
+    {
+        // Material이 같은 오브젝트들을 찾아서 자식으로 넣어주기
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        foreach (var obj in allObjects)
+        {
+            var mr = obj.GetComponent<MeshRenderer>();
+            if (mr)
+                if (mr.sharedMaterial == Material)
+                    obj.transform.SetParent(transform);
+        }
+    }
 
     public void MeshCombineObjects()
     {

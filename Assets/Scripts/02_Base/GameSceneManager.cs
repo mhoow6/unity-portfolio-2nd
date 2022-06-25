@@ -6,6 +6,9 @@ using UnityEngine;
 public abstract class GameSceneManager : MonoBehaviour
 {
     public PlayerController Player;
+
+    [Header("# 수동 기입")]
+    [SerializeField] protected Camera m_MainCam;
     public SceneCode SceneCode;
 
     #region 카메라
@@ -34,7 +37,6 @@ public abstract class GameSceneManager : MonoBehaviour
             }
         }
     }
-    [SerializeField] protected Camera m_MainCam;
 
     public CinemachineBrain BrainCam { get; private set; }
 

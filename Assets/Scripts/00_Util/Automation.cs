@@ -572,6 +572,9 @@ namespace DatabaseSystem
             throw new Exception("현재 씬에서 MeshCombine가 부착된 오브젝트를 찾을 수 없습니다.");
         }
 
+        foreach (var meshCombine in _instanceRoots)
+            meshCombine.MergeSameMaterialObjects();
+
         Mesh instanceRootMesh; // Temp
         string instancePath; // Temp
 
