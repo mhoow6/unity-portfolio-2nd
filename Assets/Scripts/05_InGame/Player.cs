@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class PlayerController : MonoBehaviour
+public class Player : MonoBehaviour
 {
     [ReadOnly] public Playable CurrentCharacter;
     [ReadOnly] public List<Playable> Characters = new List<Playable>();
@@ -125,7 +125,11 @@ public class PlayerController : MonoBehaviour
                 Vector3 cameraForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
                 Vector3 cameraRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
                 Vector3 moveVector = cameraForward * controllerInput.y + cameraRight * controllerInput.x;
-                MoveVector = moveVector;
+
+                if (Moveable)
+                    MoveVector = moveVector;
+                else
+                    MoveVector = Vector3.zero;
 
                 // 회전값
                 float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
@@ -169,16 +173,16 @@ public class PlayerController : MonoBehaviour
         {
             CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(RotateVector));
 
-            bool skip = false;
+            bool movePositionSkip = false;
 
             #region 예외처리
             if (MoveVector.magnitude == 0)
-                skip = true;
+                movePositionSkip = true;
             if (!Moveable)
-                skip = true;
+                movePositionSkip = true;
             #endregion
 
-            if (!skip)
+            if (!movePositionSkip)
             {
                 // 이동가능하면 움직이자
                 Vector3 desired = CurrentCharacter.transform.position + (MoveVector * CurrentCharacter.MoveSpeed * Time.fixedDeltaTime);

@@ -7,6 +7,14 @@ using DatabaseSystem;
 using System;
 using DG.Tweening;
 
+#region 사용 설명서
+/*
+ * 1. 프리팹
+ * WorldSpaceDialogue 루트의 1단계 자식들은 전부 비활성화 상태로 나둔다.
+ * WorldSpaceDialogue를 활성화시켰을때도 1단계 자식들이 활성화되지 않게 하기 위함.
+ */
+#endregion
+
 public class WorldSpaceDialogue : MonoBehaviour
 {
     [SerializeField] CinemachineBlenderSettings m_BlenderSettings;
@@ -14,7 +22,7 @@ public class WorldSpaceDialogue : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera m_EndBlendingCamera;
     [SerializeField] GameObject m_EndBlendingPostProcessing;
 
-    // 플레이어 방향 고정시키기
+    // 플레이어 방향 고정시키는 용도
     [SerializeField] Transform m_CharacterFixedTransform;
     // 대화가 끝나고 돌아갈 플레이어 카메라
     GameObject m_ReturnCamera;
@@ -27,11 +35,12 @@ public class WorldSpaceDialogue : MonoBehaviour
     [SerializeField] Canvas m_Canvas;
     [SerializeField] SpeakerPreset m_LeftSpeaker;
     [SerializeField] SpeakerPreset m_RightSpeaker;
-    // 어떤 Speaker가 말하고 있는가?
+
+    /// <summary> 어떤 대화자가 말하고 있는가?</summary>
     SpeakerPreset m_CurrentSpeaker;
     [SerializeField] Text m_DialogueText;
 
-    float DIALOUGE_WINDOW_TWEENING_SPEED = 0.3f;
+    const float DIALOUGE_WINDOW_TWEENING_SPEED = 0.3f;
 
     public void SetData(List<StageDialogueTable> dialogues)
     {
@@ -117,14 +126,20 @@ public class WorldSpaceDialogue : MonoBehaviour
 
     void SetBlendSetting()
     {
-        var brain = StageManager.Instance.BrainCam;
+        var sm = StageManager.Instance;
+        var brain = sm.BrainCam;
 
         // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
         GameManager.InputSystem.CameraRotatable = false;
-        StageManager.Instance.Player.Moveable = false;
+        sm.Player.Moveable = false;
         // 캐릭터 정위치
-        StageManager.Instance.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
-        StageManager.Instance.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
+        sm.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
+        sm.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
+        sm.Player.CurrentCharacter.TryAttachToFloor();
+
+        // startBlendingCamera 위치를 씬의 카메라 위치랑 동일하게 하기
+        m_StartBlendingCamera.transform.position = sm.FreeLookCam.transform.position;
+        m_StartBlendingCamera.transform.rotation = sm.FreeLookCam.transform.rotation;
 
         // 사전에 세팅한 BlenderSetting을 brain에 적용시킨다.
         brain.m_CustomBlends = m_BlenderSettings;
@@ -139,7 +154,7 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // 시작 카메라에서 플레이어 카메라로 돌아갈때 Blend 세팅
         brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_From = m_StartBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = StageManager.Instance.FreeLookCam.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = sm.FreeLookCam.name;
     }
 
     IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)

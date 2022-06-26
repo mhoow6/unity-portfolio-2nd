@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GameSceneManager : MonoBehaviour
 {
-    public PlayerController Player;
+    public Player Player;
 
     [Header("# 수동 기입")]
     [SerializeField] protected Camera m_MainCam;

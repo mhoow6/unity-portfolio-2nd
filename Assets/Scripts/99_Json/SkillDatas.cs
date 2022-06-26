@@ -1,5 +1,6 @@
 ﻿namespace DatabaseSystem
 {
+    
     public class SparcherBasicAttackData : Skillable
     {
         public int AniType;
@@ -12,24 +13,22 @@
         public int DamageType;
         
     }
-}
 
-namespace DatabaseSystem
-{
+
     public class SparcherPassiveSkillData : SkillDescriptable
     {
         public float IncreaseCriticalRatio;
         public string CharacterType;
         
     }
-}
 
-namespace DatabaseSystem
-{
+
     public class SparcherDashData : Skillable
     {
         public float DashDistance;
         public float ArriveTime;
         
     }
+
+
 }

@@ -184,7 +184,6 @@ public class InGameUI : UI
         // 타겟의 Hp에 따라 슬라이더 값 변경
         if (!target.TargetSliderHooked)
         {
-            Debug.Log($"{target.name}의 Hp가 후킹되었습니다.");
             target.OnHpUpdate +=
             (hp) =>
             {

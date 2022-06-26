@@ -96,7 +96,7 @@ public class StageManager : GameSceneManager
     /// <summary> 유저가 고른 캐릭터대로 소환 </summary>
     void SpawnPlayer()
     {
-        var player = new GameObject("Player").AddComponent<PlayerController>();
+        var player = new GameObject("Player").AddComponent<Player>();
         Player = player;
         player.gameObject.SetActive(true);
 

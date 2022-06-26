@@ -286,7 +286,7 @@ public static class Automation
         string[] separatingStrings = { "\r\n" };
 
         // Configuration
-        var scriptableObj = Resources.Load<GameDevelopSettings>("Configuration");
+        var scriptableObj = Resources.Load<GameDevelopSettings>("GameDevelopSettings");
         if (scriptableObj != null)
             scriptableObj.JsonDataCount = 0;
 
@@ -345,19 +345,24 @@ namespace DatabaseSystem
             // \r\n(캐리지리턴, 라인피트)으로 문자열 구분
             string[] lines = asset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
 
+            string namespaceFormat =
+@"namespace DatabaseSystem
+{{
+    {0}
+}}
+";
+
             // 0번째와 마지막번째의 중괄호는 파싱 시작/끝 용도 -> 생략
             // 클래스명: {
             // ...
             // }
             StringBuilder classBuilder = new StringBuilder();
             string classFormat =
-@"namespace DatabaseSystem
-{{
+@"
     public class {0} : {2}
     {{
         {1}
     }}
-}}
 ";
             StringBuilder classNameBuilder = new StringBuilder();
             StringBuilder fieldsBuilder = new StringBuilder();
@@ -371,6 +376,7 @@ namespace DatabaseSystem
                 {
                     parseTrigger = !parseTrigger;
 
+                    dataCount++;
                     // 클래스명 얻기
                     int startIdx = word.IndexOf('\"');
                     int endIdx = word.IndexOf('(');
@@ -434,12 +440,6 @@ namespace DatabaseSystem
                     {
                         if (fieldNameBuilder.ToString().Equals(f))
                         {
-                            // Configuration에 데이터 개수만 늘리기
-                            if (scriptableObj != null)
-                            {
-                                scriptableObj.JsonDataCount += 1;
-                                EditorUtility.SetDirty(scriptableObj);
-                            }
                             // 검출했으니 스킵하기 위해 true
                             find = true;
                             break;
@@ -468,8 +468,6 @@ namespace DatabaseSystem
                     else
                         field = $"public string {fieldNameBuilder};";
 
-                    // StringBuilder에 추가
-                    dataCount++;
                     // 들여쓰기 맞추기
                     fieldsBuilder.AppendLine(field);
                     fieldsBuilder.Append($"        ");
@@ -484,8 +482,11 @@ namespace DatabaseSystem
                 Debug.LogError($"{Application.dataPath}/Scripts/99_Json 에 해당하는 경로가 없습니다.");
             else
             {
+                // 최종적으로 파일에 쓰일 텍스트
+                namespaceFormat = string.Format(namespaceFormat, result);
+
                 // 파일 저장
-                FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", result.Trim());
+                FileHelper.WriteFile($"{Application.dataPath}/Scripts/99_Json/{fileName}.cs", namespaceFormat.Trim());
 
                 // Configuration에 데이터 총 갯수 저장
                 if (scriptableObj != null)

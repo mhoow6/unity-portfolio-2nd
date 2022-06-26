@@ -100,7 +100,7 @@ public class MainLobbySystem : MonoBehaviour
 
     void SpawnMainCharacter()
     {
-        var player = new GameObject("Player").AddComponent<PlayerController>();
+        var player = new GameObject("Player").AddComponent<Player>();
         player.gameObject.SetActive(true);
         player.transform.SetParent(PlayerSpawnPosition);
 
