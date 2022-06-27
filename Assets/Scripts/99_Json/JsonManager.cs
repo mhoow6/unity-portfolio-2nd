@@ -26,6 +26,10 @@ namespace DatabaseSystem
             JSONNode sparcherdashdataNode = skilldatasRoot["SparcherDashData(Skillable)"];
             SparcherDashData sparcherdashdata = JsonConvert.DeserializeObject<SparcherDashData>(sparcherdashdataNode.ToString());
             JsonDatas.Add(sparcherdashdata.Index, sparcherdashdata);
+
+            JSONNode sparcherultidataNode = skilldatasRoot["SparcherUltiData(Skillable)"];
+            SparcherUltiData sparcherultidata = JsonConvert.DeserializeObject<SparcherUltiData>(sparcherultidataNode.ToString());
+            JsonDatas.Add(sparcherultidata.Index, sparcherultidata);
         }
     }
 }

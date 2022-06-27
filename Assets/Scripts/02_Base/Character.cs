@@ -366,10 +366,10 @@ public abstract class Character : BaseObject, ISubscribable
     #region 데미지 계산
     /// <summary>상대방에게 입힐 데미지를 계산합니다. </summary>
     /// <returns>데미지, 크리티컬 여부</returns>
-    public (int, bool) CalcuateDamage(Character rhs, float damageScale)
+    public (int, bool) CalcuateDamage(Character opponent, float damageScale)
     {
         (int, bool) result;
-        result.Item1 = CalculateTypeDamage(this, rhs);
+        result.Item1 = CalculateTypeDamage(this, opponent);
         result.Item1 *= (int)damageScale;
 
         result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
@@ -530,7 +530,13 @@ public abstract class Character : BaseObject, ISubscribable
     /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
     public static int GetUltimateIndex(ObjectCode objectCode)
     {
-        return -1;
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2003;
+            default:
+                return -1;
+        }
     }
 
     public static Skillable GetSkillData(int skillIndex)

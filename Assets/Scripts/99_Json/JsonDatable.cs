@@ -34,6 +34,24 @@ namespace DatabaseSystem
         public string IconPath;
         public int Stack;
         public float CoolTime;
+
+        #region implicit/explicit operator 연산자 오버로딩 설명
+        // implicit operator bool(Skillable skill)란?
+        // Skillable s = new Skillable();
+        // bool b = s;
+        //
+        // explicit operator bool(Skillable skill)란?
+        // Skillable s = new Skillable();
+        // bool b = (Skillable)s;
+        //
+        // 둘이 동시에 쓸 수는 없다는 점을 기억하자.
+        #endregion
+        public static implicit operator bool(Skillable skill)
+        {
+            if (skill != null)
+                return true;
+            return false;
+        }
     }
 
     public class SkillDescriptable : Skillable

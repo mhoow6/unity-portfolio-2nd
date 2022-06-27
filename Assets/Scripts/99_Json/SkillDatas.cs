@@ -31,4 +31,13 @@
     }
 
 
+    public class SparcherUltiData : Skillable
+    {
+        public float DamageScale;
+        public float HitBoxRange;
+        public int MaximumHits;
+        
+    }
+
+
 }

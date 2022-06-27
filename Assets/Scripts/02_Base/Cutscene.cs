@@ -28,14 +28,13 @@ using UnityEngine.Timeline;
 [RequireComponent(typeof(PlayableDirector))]
 public abstract class Cutscene : MonoBehaviour
 {
-    public List<CinemachineVirtualCamera> cameras = new List<CinemachineVirtualCamera>();
     public bool cutSceneStart { get; private set; }
     public bool cutScenePlaying { get; private set; }
     public bool cutSceneEnd { get; private set; }
 
     protected PlayableDirector _director;
     protected SignalReceiver _signalReceiver;
-
+    
     protected void Awake()
     {
         _director = GetComponent<PlayableDirector>();
@@ -56,13 +55,25 @@ public abstract class Cutscene : MonoBehaviour
             OnCutSceneFinish();
 
             StopAllCoroutines();
-            gameObject.SetActive(false);
+
+            if (_reUsable)
+            {
+                cutSceneStart = false;
+                cutScenePlaying = false;
+                cutSceneEnd = false;
+
+                StartCoroutine(WaitingForCutsceneInput());
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         };
+
+        OnAwake();
 
         // 컷신 대기중
         StartCoroutine(WaitingForCutsceneInput());
-
-        OnAwake();
     }
 
     IEnumerator WaitingForCutsceneInput()
@@ -83,40 +94,34 @@ public abstract class Cutscene : MonoBehaviour
                     switch (output.streamName)
                     {
                         case "Cinemachine Track":
-                            _director.SetGenericBinding(output.sourceObject, CinemachineBrain);
+                            _director.SetGenericBinding(output.sourceObject, _cinemachineBrain);
                             break;
                     }
                 }
 
-                _director.Play();
-
                 OnCutSceneStart();
+                _director.Play();
 
                 yield break;
             }
+            yield return null;
         }
     }
 
     void Binding(PlayableBinding playableBinding)
     {
-        foreach (var kvp in BindingKeyValuePairs)
-        {
-            string bindingStreamName = kvp.Key;
-            GameObject bindingObject = kvp.Value;
-
-            if (playableBinding.streamName.Equals(bindingStreamName))
-            {
-                _director.SetGenericBinding(playableBinding.sourceObject, bindingObject);
-                return;
-            }
-        }
+        if (_bindingKeyValuePairs.TryGetValue(playableBinding.streamName, out var obj))
+            _director.SetGenericBinding(playableBinding.sourceObject, obj);
     }
 
-    protected abstract CinemachineBrain CinemachineBrain { get; }
-    protected abstract bool CutSceneInput();
+    protected abstract CinemachineBrain _cinemachineBrain { get; }
 
     /// <summary> Key: 트랙이름 Value: 트랙에 바인딩할 오브젝트 이름 </summary>
-    protected abstract Dictionary<string, GameObject> BindingKeyValuePairs { get; }
+    protected abstract Dictionary<string, UnityEngine.Object> _bindingKeyValuePairs { get; }
+
+    /// <summary> 컷신 재사용 여부 </summary>
+    protected abstract bool _reUsable { get; }
+    protected abstract bool CutSceneInput();
 
     protected virtual void OnCutSceneStart() { }
     protected virtual void OnCutSceneFinish() { }
