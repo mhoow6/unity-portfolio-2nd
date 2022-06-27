@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CollideHelper
+public static class UnityHelper
 {
     public static Bounds GetBoundsFromMeshFilter(MeshFilter mf)
     {
@@ -125,5 +126,22 @@ public static class CollideHelper
             screenPoint.y < 1 &&
             // FarPlane보다 가까이 있는지 확인
             obj.TrySphereCollide(cam.gameObject, cam.farClipPlane);
+    }
+
+    /// <summary>
+    /// Returns true if the object is either a null reference or has been destroyed by unity.
+    /// This will respect ISPDisposable over all else.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static bool IsNullOrDestroyed(this System.Object obj)
+    {
+        if (object.ReferenceEquals(obj, null))
+            return true;
+
+        if (obj is UnityEngine.Object)
+            return (obj as UnityEngine.Object) == null;
+
+        return false;
     }
 }

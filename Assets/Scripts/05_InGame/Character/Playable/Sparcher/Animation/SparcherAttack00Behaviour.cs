@@ -32,6 +32,8 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        base.OnAnimationUpdate(animator, stateInfo, layerIndex);
+
         // 68.6%¿¡ È­»ì ½î±â
         if (m_CurrentAnimationTime > 0.686f && !m_Shoot)
         {
@@ -47,5 +49,6 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
     protected override void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_Player.Controlable = true;
+        m_Shoot = false;
     }
 }

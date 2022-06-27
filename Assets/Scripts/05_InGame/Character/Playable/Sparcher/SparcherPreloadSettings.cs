@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Sparcher_PreloadSettings", menuName = "Sparcher Preload Settings", order = 2)]
 public class SparcherPreloadSettings : PreloadSettings
 {
-    public GameObject UltimateCutscene { get; private set; }
-    public GameObject UltimateEffect { get; private set; }
+    GameObject UltimateCutscene;
+    GameObject UltimateEffect;
 
     [Header("수동 기입")]
     [SerializeField] GameObject Prefab_UltimateCutscene;
@@ -22,12 +22,9 @@ public class SparcherPreloadSettings : PreloadSettings
 
         var sm = StageManager.Instance;
         var sparcher = sm.Player.CurrentCharacter as Sparcher;
-        
-        var cutscene = sm.PoolSystem.Load<PoolableObject>(Prefab_UltimateCutscene, sparcher.transform);
-        UltimateCutscene = cutscene.gameObject;
 
-        var effect = sm.PoolSystem.Load<PoolableObject>(Prefab_UltimateSkillEffect);
-        sm.PoolSystem.Release(effect);
-        UltimateEffect = effect.gameObject;
+        UltimateCutscene = Instantiate(Prefab_UltimateCutscene, sparcher.transform);
+        //UltimateEffect = Instantiate(Prefab_UltimateSkillEffect, sparcher.transform);
+        //UltimateEffect.gameObject.SetActive(false);
     }
 }

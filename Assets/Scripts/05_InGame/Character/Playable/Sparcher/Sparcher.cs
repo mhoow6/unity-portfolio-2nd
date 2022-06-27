@@ -62,6 +62,9 @@ public class Sparcher : Playable
         if (Sp < skillData.SpCost)
             return false;
 
+        if (m_CurrentUltiCoolTime > 0f)
+            return false;
+
         return true;
     }
 }

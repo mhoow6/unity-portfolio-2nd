@@ -9,7 +9,7 @@ public class InGameUI : UI
     public override UIType Type => UIType.InGame;
     public List<CharacterButtonUI> CharacterButtonDisplays = new List<CharacterButtonUI>();
 
-    [SerializeField] VirtualJoystick m_Joystick;
+    public VirtualJoystick Joystick;
 
     [Space(10)]
     [SerializeField] SkillButtonUI m_AttackButton;
@@ -35,7 +35,7 @@ public class InGameUI : UI
         GameManager.UISystem.Canvas.worldCamera = GameManager.UISystem.UICamera;
 
         // 컨트롤러 제외
-        GameManager.InputSystem.Controllers.Remove(m_Joystick);
+        GameManager.InputSystem.Controllers.Remove(Joystick);
 
         // 유저가 캐릭터 조작불가능
         player.Controlable = false;
@@ -53,7 +53,7 @@ public class InGameUI : UI
         var player = StageManager.Instance.Player;
 
         // 컨트롤러 추가
-        GameManager.InputSystem.Controllers.Add(m_Joystick);
+        GameManager.InputSystem.Controllers.Add(Joystick);
 
         // 유저가 캐릭터 조작가능
         player.Controlable = true;

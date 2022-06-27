@@ -28,6 +28,9 @@ public class SparcherUltimateHitbox : MonoBehaviour
         if (!(m_Data && m_Attacker))
             return;
 
+        if (other.CompareTag(m_Attacker.tag))
+            return;
+
         if (m_CurrentTriggerCount < m_Data.MaximumHits)
         {
             m_CurrentTriggerCount++;

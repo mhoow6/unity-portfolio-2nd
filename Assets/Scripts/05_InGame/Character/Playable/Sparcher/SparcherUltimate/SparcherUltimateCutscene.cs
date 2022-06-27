@@ -19,6 +19,7 @@ public class SparcherUltimateCutscene : Cutscene
     protected override bool reUsable => true;
 
     Dictionary<string, BindingData> m_BindingKeyValuePairs = new Dictionary<string, BindingData>();
+
     [SerializeField] BoxCollider m_HitBox;
 
     public void Signal_EffectOn(){ }
@@ -68,6 +69,14 @@ public class SparcherUltimateCutscene : Cutscene
         {
             BindingObject = GetComponent<SignalReceiver>(),
         });
+
+        var skillData = Character.GetSkillData(Character.GetUltimateIndex(ObjectCode.CHAR_Sparcher));
+        if (skillData)
+        {
+            var sparcherUltiData = skillData as DatabaseSystem.SparcherUltiData;
+            float range = sparcherUltiData.HitBoxRange;
+            m_HitBox.size = new Vector3(range, 1, range);
+        }
     }
 
     protected override void OnCutSceneStart()
@@ -83,6 +92,12 @@ public class SparcherUltimateCutscene : Cutscene
 
             child.gameObject.SetActive(true);
         }
+
+        // 캐릭터 못 움직이게 하기
+        GameManager.InputSystem.CameraRotatable = false;
+        StageManager.Instance.Player.Moveable = false;
+        var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
+        inGameUi.Joystick.gameObject.SetActive(false);
     }
 
     protected override void OnCutSceneFinish()
@@ -93,10 +108,10 @@ public class SparcherUltimateCutscene : Cutscene
             child.gameObject.SetActive(false);
         }
 
-        // 위치값 조절했던거 초기화 시키기
         var timelineAsset = director.playableAsset;
         foreach (var output in timelineAsset.outputs)
         {
+            // 위치값 조절했던거 초기화 시키기
             if (output.sourceObject is AnimationTrack)
             {
                 var animeTrack = output.sourceObject as AnimationTrack;
@@ -108,7 +123,14 @@ public class SparcherUltimateCutscene : Cutscene
                     animationPlayableAsset.rotation = Quaternion.identity;
                 }
             }
-            
         }
+
+        // 캐릭터 못 움직이게 하기
+        GameManager.InputSystem.CameraRotatable = true;
+        StageManager.Instance.Player.Moveable = true;
+        var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
+
+        if (!inGameUi.Joystick.IsNullOrDestroyed())
+            inGameUi.Joystick.gameObject.SetActive(true);
     }
 }

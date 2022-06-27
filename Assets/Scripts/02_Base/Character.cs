@@ -241,7 +241,7 @@ public abstract class Character : BaseObject, ISubscribable
     #endregion
 
     #region 대쉬
-    protected int m_CurrentDashStack;
+    [SerializeField, ReadOnly] protected int m_CurrentDashStack;
     protected bool m_ChargeDashStackCoroutine { get; private set; }
 
     /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
@@ -352,8 +352,9 @@ public abstract class Character : BaseObject, ISubscribable
     #endregion
 
     #region 궁극기
-    protected int m_CurrentUltiStack;
+    [SerializeField, ReadOnly] protected int m_CurrentUltiStack;
     protected bool m_ChargeUltiStackCoroutine { get; private set; }
+    [SerializeField, ReadOnly] protected float m_CurrentUltiCoolTime;
 
     /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
     public void Ultimate(SkillButtonUI skillButtonUI = null)
@@ -369,7 +370,7 @@ public abstract class Character : BaseObject, ISubscribable
             if (m_CurrentUltiStack == 0)
                 return;
 
-            // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
+            // 이 버튼을 눌러야 스킬이 나가도록 되어있음
             GameManager.InputSystem.PressBButton = true;
 
             // Sp 소비
@@ -407,13 +408,18 @@ public abstract class Character : BaseObject, ISubscribable
         {
             timer += Time.deltaTime;
 
+            // UI 표기
             progress = timer / duration;
-
             if (skillButtonUI != null)
                 skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
 
+            // 쿨타임 데이터
+            m_CurrentUltiCoolTime = duration - timer;
+
             yield return null;
         }
+        m_CurrentUltiCoolTime = 0f;
+
         if (hasStack)
         {
             m_CurrentUltiStack++;

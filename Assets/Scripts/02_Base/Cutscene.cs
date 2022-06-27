@@ -138,7 +138,7 @@ public abstract class Cutscene : MonoBehaviour
             foreach (TimelineClip clip in controlTrack.GetClips())
             {
                 ControlPlayableAsset playableClip = (ControlPlayableAsset)clip.asset;
-                director.SetReferenceValue(playableClip.sourceGameObject.exposedName, objs[index++]);
+                playableClip.prefabGameObject = objs[index++];
             }
         }
     }
@@ -153,7 +153,7 @@ public abstract class Cutscene : MonoBehaviour
     protected abstract bool CutSceneInput();
 
     /// <summary> Key: Control 트랙이름 Value: 트랙에 바인딩할 오브젝트들 </summary>
-    protected virtual Dictionary<string, List<UnityEngine.Object>> bindingControlTrackKeyValuePairs { get; }
+    protected virtual Dictionary<string, List<GameObject>> bindingControlTrackKeyValuePairs { get; } = new Dictionary<string, List<GameObject>>();
 
     /// <summary> 컷신 시작 바로 전 호출 </summary>
     protected virtual void OnCutSceneStart() { }
