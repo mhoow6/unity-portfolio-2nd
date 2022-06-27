@@ -12,8 +12,6 @@ public class SparcherIdle00Behaviour : SparcherBehaviour
             m_Player.AnimationJobs.Enqueue(AniType.ATTACK_0);
         else if (m_InputSystem.PressXButton)
             m_Player.AnimationJobs.Enqueue(AniType.DASH_0);
-        else if (m_InputSystem.PressBButton)
-            m_Player.AnimationJobs.Enqueue(AniType.ATTACK_1);
         else if (m_InputSystem.CharacterMoveInput.magnitude != 0 && m_Player.Moveable)
             m_Player.AnimationJobs.Enqueue(AniType.RUN_0);
     }

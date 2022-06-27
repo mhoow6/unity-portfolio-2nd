@@ -86,9 +86,9 @@ public class StageManager : GameSceneManager
 
         // 유저 캐릭터 소환
         SpawnPlayer();
-        
-        // 씬이 로드될때 바로 트리거를 밟을 경우를 대비하여 비활성화 시킨 트리거가 있으니 다 true로 바꾸자
-        Areas.ForEach((a) => { a.TriggerActive = true; });
+
+        // Area 구성요소 활성화시켜주기
+        Areas.ForEach(a => { a.ComponentActive = true; });
 
         onInitalized?.Invoke();
     }

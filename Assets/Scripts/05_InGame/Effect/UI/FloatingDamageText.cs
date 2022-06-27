@@ -8,7 +8,7 @@ public sealed class FloatingDamageText : MonoBehaviour, IPoolable
     [SerializeField] Text m_Text;
     [SerializeField] Animator m_Animator;
     RectTransform m_RectTransform;
-    DummyObject m_FollowObject;
+    PoolableObject m_FollowObject;
 
     int m_Damage;
     bool m_IsCrit;

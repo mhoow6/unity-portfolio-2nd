@@ -32,11 +32,11 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // 0.686%에 화살 쏘기
+        // 68.6%에 화살 쏘기
         if (m_CurrentAnimationTime > 0.686f && !m_Shoot)
         {
             m_Shoot = true;
-            m_Sparcher.Attack(Character.GetAttackIndex(m_Sparcher.Code));
+            m_Sparcher.ShootArrow();
         }
 
         // 자유롭게 행동할 수 있는 시간은 애니메이션이 98% 완료된 이후

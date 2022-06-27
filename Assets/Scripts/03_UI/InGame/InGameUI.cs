@@ -14,7 +14,7 @@ public class InGameUI : UI
     [Space(10)]
     [SerializeField] SkillButtonUI m_AttackButton;
     [SerializeField] SkillButtonUI m_DashButton;
-    [SerializeField] SkillButtonUI m_SkillButton;
+    [SerializeField] SkillButtonUI m_UltiButton;
 
     [Space(10)]
     [SerializeField] SplitSlider m_HpSlider;
@@ -109,29 +109,34 @@ public class InGameUI : UI
         int dashIndex = Character.GetDashIndex(character.Code);
         SkillButtonParam dashButtonParam;
         dashButtonParam.SkillData = Character.GetSkillData(dashIndex);
-
-
         dashButtonParam.OnClick =
             () =>
             {
                 var character = StageManager.Instance.Player.CurrentCharacter;
                 character.Dash(m_DashButton);
             };
-
         dashButtonParam.OnExit =
             () =>
             {
                 GameManager.InputSystem.PressXButton = false;
             };
-
         m_DashButton.SetData(dashButtonParam);
 
-        //int ultiIndex = Character.GetUltimateIndex(character.Code);
-        //m_AttackButton.SetData(
-        //    () => { GameManager.InputSystem.CharacterUltiInput = true; },
-        //    () => { GameManager.InputSystem.CharacterUltiInput = false; },
-        //    character.GetSkillIconPath(ultiIndex),
-        //    character.GetSpCost(ultiIndex));
+        int ultiIndex = Character.GetUltimateIndex(character.Code);
+        SkillButtonParam ultiButtonParam;
+        ultiButtonParam.SkillData = Character.GetSkillData(ultiIndex);
+        ultiButtonParam.OnClick =
+            () =>
+            {
+                var character = StageManager.Instance.Player.CurrentCharacter;
+                character.Ultimate(m_UltiButton);
+            };
+        ultiButtonParam.OnExit =
+            () =>
+            {
+                GameManager.InputSystem.PressBButton = false;
+            };
+        m_UltiButton.SetData(ultiButtonParam);
     }
 
     /// <summary> 캐릭터의 따라 HP,SP 슬라이더를 세팅합니다. </summary>
@@ -163,7 +168,7 @@ public class InGameUI : UI
         character.OnSpUpdate +=
             (sp) =>
             {
-                m_HpSlider.Value = sp;
+                m_SpSlider.Value = sp;
             };
     }
 

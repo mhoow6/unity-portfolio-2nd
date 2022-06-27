@@ -22,23 +22,28 @@ public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
     {
         var texturePath = GameManager.GameDevelopSettings.TextureResourcePath;
 
+        // SP표기
         if (param.SkillData.SpCost == 0)
-        {
             m_SpRoot.gameObject.SetActive(false);
-            m_SpCost.text = $"{param.SkillData.SpCost}";
-            m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/{param.SkillData.IconPath}");
-            if (m_SkillIcon.sprite == null)
-                m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/icon_question");
-        }
         else
+        {
             m_SpRoot.gameObject.SetActive(true);
+            m_SpCost.text = $"{param.SkillData.SpCost}";
+        }
 
+        // 스킬 아이콘
+        m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/{param.SkillData.IconPath}");
+        if (m_SkillIcon.sprite == null)
+            m_SkillIcon.sprite = Resources.Load<Sprite>($"{texturePath}/icon_question");
+
+        // 쿨타임 백그라운드
         CoolTimeBackground.fillAmount = 0;
         if (param.SkillData.CoolTime > 0)
             CoolTimeBackground.gameObject.SetActive(true);
         else
             CoolTimeBackground.gameObject.SetActive(false);
 
+        // 스택표기
         SkillStacks.ForEach((element) => { element.gameObject.SetActive(false); });
         if (param.SkillData.Stack != 0)
         {
@@ -48,7 +53,6 @@ public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
                 SkillStacks[i].gameObject.SetActive(true);
                 m_SkillStacks.Push(SkillStacks[i]);
             }
-
         }
 
         m_OnClicked = param.OnClick;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ScriptableObject", menuName = "Configuration", order = 1)]
+[CreateAssetMenu(fileName = "Game Development Settings", menuName = "Game Development Settings", order = 1)]
 public sealed class GameDevelopSettings : ScriptableObject
 {
     public int DownloadDataCount => JsonDataCount + CSVDataCount;

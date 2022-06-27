@@ -14,15 +14,16 @@ using UnityEngine.Timeline;
 
 public class SparcherUltimateCutscene : Cutscene
 {
-    protected override CinemachineBrain _cinemachineBrain => StageManager.Instance.BrainCam;
+    protected override CinemachineBrain cinemachineBrain => StageManager.Instance.BrainCam;
+    protected override Dictionary<string, BindingData> bindingKeyValuePairs => m_BindingKeyValuePairs;
+    protected override bool reUsable => true;
 
-    protected override Dictionary<string, UnityEngine.Object> _bindingKeyValuePairs => m_BindingKeyValuePairs;
-
-    protected override bool _reUsable => false;
-
-    Dictionary<string, UnityEngine.Object> m_BindingKeyValuePairs = new Dictionary<string, UnityEngine.Object>();
-
+    Dictionary<string, BindingData> m_BindingKeyValuePairs = new Dictionary<string, BindingData>();
     [SerializeField] BoxCollider m_HitBox;
+
+    public void Signal_EffectOn(){ }
+
+    public void Signal_EffectOff(){ }
 
     public void Signal_HitboxOn()
     {
@@ -37,7 +38,7 @@ public class SparcherUltimateCutscene : Cutscene
 
     protected override bool CutSceneInput()
     {
-        if (GameManager.InputSystem.PressXButton)
+        if (GameManager.InputSystem.PressBButton)
             return true;
         return false;
     }
@@ -46,11 +47,27 @@ public class SparcherUltimateCutscene : Cutscene
     {
         // 바인딩할 트랙과 오브젝트 지정하기
         var sm = StageManager.Instance;
-        var character = sm.Player.CurrentCharacter; 
+        var character = sm.Player.CurrentCharacter;
 
-        m_BindingKeyValuePairs.Add("Sparcher Animation Track", character);
-        m_BindingKeyValuePairs.Add("Sparcher Transform Track", character);
-        m_BindingKeyValuePairs.Add("Signal Track", GetComponent<SignalReceiver>());
+        m_BindingKeyValuePairs.Add("Sparcher Animation Track", new BindingData()
+        {
+            BindingObject = character.gameObject,
+            BindingTrackCallback = (track) =>
+            {
+                var animeTrack = track.sourceObject as AnimationTrack;
+                var secondTrackClips = animeTrack.GetClips();
+                foreach (var clip in secondTrackClips)
+                {
+                    var animationPlayableAsset = clip.asset as AnimationPlayableAsset;
+                    animationPlayableAsset.position = character.transform.position;
+                    animationPlayableAsset.rotation = character.transform.rotation;
+                }
+            }
+        });
+        m_BindingKeyValuePairs.Add("Signal Track", new BindingData()
+        {
+            BindingObject = GetComponent<SignalReceiver>(),
+        });
     }
 
     protected override void OnCutSceneStart()
@@ -74,6 +91,24 @@ public class SparcherUltimateCutscene : Cutscene
         {
             var child = transform.GetChild(i);
             child.gameObject.SetActive(false);
+        }
+
+        // 위치값 조절했던거 초기화 시키기
+        var timelineAsset = director.playableAsset;
+        foreach (var output in timelineAsset.outputs)
+        {
+            if (output.sourceObject is AnimationTrack)
+            {
+                var animeTrack = output.sourceObject as AnimationTrack;
+                var secondTrackClips = animeTrack.GetClips();
+                foreach (var clip in secondTrackClips)
+                {
+                    var animationPlayableAsset = clip.asset as AnimationPlayableAsset;
+                    animationPlayableAsset.position = Vector3.zero;
+                    animationPlayableAsset.rotation = Quaternion.identity;
+                }
+            }
+            
         }
     }
 }

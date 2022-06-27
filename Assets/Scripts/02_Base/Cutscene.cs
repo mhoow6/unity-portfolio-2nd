@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using System;
 
 #region PlayableDirector Summary
 /*
@@ -28,41 +29,42 @@ using UnityEngine.Timeline;
 [RequireComponent(typeof(PlayableDirector))]
 public abstract class Cutscene : MonoBehaviour
 {
-    public bool cutSceneStart { get; private set; }
-    public bool cutScenePlaying { get; private set; }
-    public bool cutSceneEnd { get; private set; }
+    public bool CutSceneStart { get; private set; }
+    public bool CutScenePlaying { get; private set; }
+    public bool CutSceneEnd { get; private set; }
 
-    protected PlayableDirector _director;
-    protected SignalReceiver _signalReceiver;
+    protected PlayableDirector director;
+    SignalReceiver _signalReceiver;
     
     protected void Awake()
     {
-        _director = GetComponent<PlayableDirector>();
+        director = GetComponent<PlayableDirector>();
         _signalReceiver = GetComponent<SignalReceiver>();
 
         // 바인딩 정보 초기화
-        var timelineAsset = _director.playableAsset;
+        var timelineAsset = director.playableAsset;
         foreach (var output in timelineAsset.outputs)
-            _director.ClearGenericBinding(output.sourceObject);
+            director.ClearGenericBinding(output.sourceObject);
 
         // 컷신 마무리시 이벤트
-        _director.stopped += (director) =>
+        director.stopped += (director) =>
         {
-            cutSceneStart = true;
-            cutScenePlaying = false;
-            cutSceneEnd = true;
+            CutSceneStart = true;
+            CutScenePlaying = false;
+            CutSceneEnd = true;
 
             OnCutSceneFinish();
 
             StopAllCoroutines();
 
-            if (_reUsable)
+            if (reUsable)
             {
-                cutSceneStart = false;
-                cutScenePlaying = false;
-                cutSceneEnd = false;
+                CutSceneStart = false;
+                CutScenePlaying = false;
+                CutSceneEnd = false;
 
-                StartCoroutine(WaitingForCutsceneInput());
+                if (gameObject.activeSelf)
+                    StartCoroutine(WaitingForCutsceneInput());
             }
             else
             {
@@ -80,27 +82,28 @@ public abstract class Cutscene : MonoBehaviour
     {
         while (true)
         {
-            if (CutSceneInput() && !cutSceneStart)
+            if (CutSceneInput() && !CutSceneStart)
             {
-                cutSceneStart = true;
-                cutScenePlaying = true;
-                cutSceneEnd = false;
+                CutSceneStart = true;
+                CutScenePlaying = true;
+                CutSceneEnd = false;
 
-                var timelineAsset = _director.playableAsset;
+                var timelineAsset = director.playableAsset;
                 foreach (var output in timelineAsset.outputs)
                 {
                     Binding(output);
+                    BindingControlTrack(output);
 
                     switch (output.streamName)
                     {
                         case "Cinemachine Track":
-                            _director.SetGenericBinding(output.sourceObject, _cinemachineBrain);
+                            director.SetGenericBinding(output.sourceObject, cinemachineBrain);
                             break;
                     }
                 }
 
                 OnCutSceneStart();
-                _director.Play();
+                director.Play();
 
                 yield break;
             }
@@ -110,20 +113,58 @@ public abstract class Cutscene : MonoBehaviour
 
     void Binding(PlayableBinding playableBinding)
     {
-        if (_bindingKeyValuePairs.TryGetValue(playableBinding.streamName, out var obj))
-            _director.SetGenericBinding(playableBinding.sourceObject, obj);
+        if (bindingKeyValuePairs == null)
+            return;
+
+        if (bindingKeyValuePairs.TryGetValue(playableBinding.streamName, out var obj))
+        {
+            director.SetGenericBinding(playableBinding.sourceObject, obj.BindingObject);
+            obj.BindingTrackCallback?.Invoke(playableBinding);
+        }
+            
     }
 
-    protected abstract CinemachineBrain _cinemachineBrain { get; }
+    void BindingControlTrack(PlayableBinding playableBinding)
+    {
+        if (!(playableBinding.sourceObject is ControlTrack))
+            return;
+        if (bindingControlTrackKeyValuePairs == null)
+            return;
+
+        ControlTrack controlTrack = (ControlTrack)playableBinding.sourceObject;
+        if (bindingControlTrackKeyValuePairs.TryGetValue(playableBinding.streamName, out var objs))
+        {
+            int index = 0;
+            foreach (TimelineClip clip in controlTrack.GetClips())
+            {
+                ControlPlayableAsset playableClip = (ControlPlayableAsset)clip.asset;
+                director.SetReferenceValue(playableClip.sourceGameObject.exposedName, objs[index++]);
+            }
+        }
+    }
+
+    protected abstract CinemachineBrain cinemachineBrain { get; }
 
     /// <summary> Key: 트랙이름 Value: 트랙에 바인딩할 오브젝트 이름 </summary>
-    protected abstract Dictionary<string, UnityEngine.Object> _bindingKeyValuePairs { get; }
+    protected abstract Dictionary<string, BindingData> bindingKeyValuePairs { get; }
 
     /// <summary> 컷신 재사용 여부 </summary>
-    protected abstract bool _reUsable { get; }
+    protected abstract bool reUsable { get; }
     protected abstract bool CutSceneInput();
 
+    /// <summary> Key: Control 트랙이름 Value: 트랙에 바인딩할 오브젝트들 </summary>
+    protected virtual Dictionary<string, List<UnityEngine.Object>> bindingControlTrackKeyValuePairs { get; }
+
+    /// <summary> 컷신 시작 바로 전 호출 </summary>
     protected virtual void OnCutSceneStart() { }
+
+    /// <summary> 컷신 끝난 후 바로 호출 </summary>
     protected virtual void OnCutSceneFinish() { }
     protected virtual void OnAwake() { }
+}
+
+public struct BindingData
+{
+    public UnityEngine.Object BindingObject;
+    public Action<PlayableBinding> BindingTrackCallback;
 }

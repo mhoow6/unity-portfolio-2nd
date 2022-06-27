@@ -178,6 +178,9 @@ public abstract class Character : BaseObject, ISubscribable
     {
         TryAttachToFloor();
 
+        if (Preloads)
+            Preloads.Instantitate();
+
         if (gameObject.activeSelf)
             SetUpdate(true);
 
@@ -239,11 +242,15 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 대쉬
     protected int m_CurrentDashStack;
-    bool m_ChargeDashStackCoroutine;
+    protected bool m_ChargeDashStackCoroutine { get; private set; }
 
     /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
     public void Dash(SkillButtonUI skillButtonUI = null)
     {
+        // 대쉬를 하지 못하는 경우 못하게 해야한다.
+        if (CanDash() == false)
+            return;
+
         var skillData = GetSkillData(GetDashIndex(Code));
         if (skillData.Stack != 0)
         {
@@ -251,12 +258,11 @@ public abstract class Character : BaseObject, ISubscribable
             if (m_CurrentDashStack == 0)
                 return;
 
-            // 대쉬를 하지 못하는 경우 못하게 해야한다.
-            if (CanDash() == false)
-                return;
-
             // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
             GameManager.InputSystem.PressXButton = true;
+
+            // Sp 소비
+            Sp -= skillData.SpCost;
 
             m_CurrentDashStack--;
             skillButtonUI.OnStackConsume();
@@ -266,7 +272,12 @@ public abstract class Character : BaseObject, ISubscribable
                 StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
         }
         else
+        {
             GameManager.InputSystem.PressXButton = true;
+
+            Sp -= skillData.SpCost;
+        }
+            
     }
 
     IEnumerator ChargeDashStackCoroutine(SkillButtonUI skillButtonUI = null)
@@ -303,10 +314,7 @@ public abstract class Character : BaseObject, ISubscribable
     protected virtual bool CanDash() { return false; }
     #endregion
 
-    #region 공격
-    /// <summary> 애니메이션 이벤트 함수 </summary>
-    public virtual void Attack(int skillIndex) { }
-
+    #region 피격
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, bool isCrit)
     {
@@ -345,17 +353,77 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 궁극기
     protected int m_CurrentUltiStack;
-    bool m_ChargeUltiStackCoroutine;
+    protected bool m_ChargeUltiStackCoroutine { get; private set; }
 
     /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
     public void Ultimate(SkillButtonUI skillButtonUI = null)
     {
+        // 대쉬를 하지 못하는 경우 못하게 해야한다.
+        if (CanUltimate() == false)
+            return;
 
+        var skillData = GetSkillData(GetUltimateIndex(Code));
+        if (skillData.Stack != 0)
+        {
+            // 스택을 다 쓰면 스킬을 사용할 수 없다.
+            if (m_CurrentUltiStack == 0)
+                return;
+
+            // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
+            GameManager.InputSystem.PressBButton = true;
+
+            // Sp 소비
+            Sp -= skillData.SpCost;
+
+            m_CurrentUltiStack--;
+            skillButtonUI.OnStackConsume();
+
+            // 스택은 한 쿨타임에 한 번만 충전가능
+            if (!m_ChargeDashStackCoroutine)
+                StartCoroutine(ChargeUltimateStackCoroutine(skillButtonUI));
+        }
+        else
+        {
+            GameManager.InputSystem.PressBButton = true;
+
+            Sp -= skillData.SpCost;
+
+            StartCoroutine(ChargeUltimateStackCoroutine(false, skillButtonUI));
+        }
     }
 
-    IEnumerator ChargeUltimateStackCoroutine(SkillButtonUI skillButtonUI = null)
+    IEnumerator ChargeUltimateStackCoroutine(bool hasStack = true, SkillButtonUI skillButtonUI = null)
     {
-        yield return null;
+        if (hasStack)
+            m_ChargeUltiStackCoroutine = true;
+
+        float timer = 0f;
+        float progress = 0f;
+        var skillData = GetSkillData(GetUltimateIndex(Code));
+        float duration = skillData.CoolTime;
+        float maxStack = skillData.Stack;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            progress = timer / duration;
+
+            if (skillButtonUI != null)
+                skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
+
+            yield return null;
+        }
+        if (hasStack)
+        {
+            m_CurrentUltiStack++;
+            skillButtonUI.OnStackCharge(m_CurrentDashStack);
+
+            m_ChargeUltiStackCoroutine = false;
+
+            if (m_CurrentDashStack < maxStack)
+                StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
+        }
     }
 
     protected virtual bool CanUltimate() { return false; }
@@ -553,6 +621,7 @@ public abstract class Character : BaseObject, ISubscribable
     #region 기타
     public Transform Head;
     public Transform Body;
+    public PreloadSettings Preloads;
 
     /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
     public bool TryAttachToFloor()

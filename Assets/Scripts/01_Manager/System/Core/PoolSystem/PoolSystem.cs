@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PoolSystem : IGameSystem
@@ -16,7 +17,7 @@ public class PoolSystem : IGameSystem
     public void Tick() { }
 
     #region 더미 오브젝트 풀링
-    public DummyObject LoadDummyObject()
+    public PoolableObject LoadDummyObject()
     {
         if (m_PoolMap.TryGetValue(DUMMY_OBJECT_NAME, out var list))
         {
@@ -25,7 +26,7 @@ public class PoolSystem : IGameSystem
             {
                 find.OnLoad();
                 find.Poolable = false;
-                return find as DummyObject;
+                return find as PoolableObject;
             }
             else
                 return LoadPrimitiveDummyObject(list);
@@ -34,9 +35,9 @@ public class PoolSystem : IGameSystem
             return LoadPrimitiveDummyObject(list);
     }
 
-    DummyObject LoadPrimitiveDummyObject(List<IPoolable> pool)
+    PoolableObject LoadPrimitiveDummyObject(List<IPoolable> pool)
     {
-        var load = new GameObject(DUMMY_OBJECT_NAME).AddComponent<DummyObject>();
+        var load = new GameObject(DUMMY_OBJECT_NAME).AddComponent<PoolableObject>();
         load.transform.SetParent(m_Root.transform);
 
         load.OnLoad();
@@ -67,15 +68,73 @@ public class PoolSystem : IGameSystem
                 find.Poolable = false;
                 return find as T;
             }
-                
-            else
-                return LoadFromResourceFolder<T>(prefabPath, list);
         }
-        else
-            return LoadFromResourceFolder<T>(prefabPath, list);
+        
+        return InstantaitePrefab<T>(prefabPath, list);
     }
 
-    T LoadFromResourceFolder<T>(string prefabPath, List<IPoolable> pool) where T : Component, IPoolable
+    public T Load<T>(GameObject prefab, Transform parent = null) where T : Component, IPoolable
+    {
+        string prefabName = prefab.name.EraseBracketInName();
+        if (m_PoolMap.TryGetValue(prefabName, out var list))
+        {
+            var find = list.Find(obj => obj.Poolable);
+            if (find != null)
+            {
+                find.OnLoad();
+                find.Poolable = false;
+                return find as T;
+            }
+        }
+
+        return InstantiatePrefab<T>(prefab, list, parent);
+    }
+
+    public IPoolable Load(GameObject prefab, Transform parent = null)
+    {
+        string prefabName = prefab.name.EraseBracketInName();
+        if (m_PoolMap.TryGetValue(prefabName, out var list))
+        {
+            var find = list.Find(obj => obj.Poolable);
+            if (find != null)
+            {
+                find.OnLoad();
+                find.Poolable = false;
+                return find;
+            }
+        }
+
+        return InstantiatePrefab<PoolableObject>(prefab, list, parent);
+    }
+
+    T InstantiatePrefab<T>(GameObject prefab, List<IPoolable> pool, Transform parent = null) where T : Component, IPoolable
+    {
+        var _inst = UnityEngine.Object.Instantiate(prefab);
+        T inst = null;
+
+        if (_inst.GetComponent<T>() == null)
+            inst = _inst.AddComponent<T>();
+
+        if (parent)
+            inst.transform.SetParent(parent);
+        else
+            inst.transform.SetParent(m_Root.transform);
+
+        inst.name = inst.name.EraseBracketInName();
+        inst.OnLoad();
+        inst.Poolable = false;
+
+        if (pool == null)
+        {
+            pool = new List<IPoolable>();
+            m_PoolMap.Add(inst.name, pool);
+        }
+
+        pool.Add(inst);
+        return inst as T;
+    }
+
+    T InstantaitePrefab<T>(string prefabPath, List<IPoolable> pool) where T : Component, IPoolable
     {
         var load = Resources.Load<T>(prefabPath);
         if (load != null)

@@ -16,11 +16,13 @@ public class Area : MonoBehaviour
                 m_Walls.ForEach(w => w.gameObject.SetActive(false));
         }
     }
-    public bool TriggerActive
+    public bool ComponentActive
     {
         set
         {
-            m_Triggers.ForEach((t) => t.gameObject.SetActive(value));
+            m_Walls.ForEach(w => w.gameObject.SetActive(value));
+            m_Triggers.ForEach(t => t.gameObject.SetActive(value));
+            m_Spawners.ForEach(s => s.gameObject.SetActive(value));
         }
     }
 

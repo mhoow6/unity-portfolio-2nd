@@ -25,8 +25,6 @@ public class SparcherUltimateHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"{other.gameObject.name}¿Ã »£√‚({++m_CurrentTriggerCount})");
-
         if (!(m_Data && m_Attacker))
             return;
 
