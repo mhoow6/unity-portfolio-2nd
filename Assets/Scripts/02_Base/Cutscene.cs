@@ -34,6 +34,13 @@ public abstract class Cutscene : MonoBehaviour
     public bool CutSceneEnd { get; private set; }
 
     protected PlayableDirector director;
+
+    /// <summary>
+    /// 컨트롤 트랙의 프리팹들이 보관되어있는 자료구조.<br/>
+    /// 다른 트랙들에서 오브젝트가 바인딩 되고 나서 가져온다.<br/>
+    /// </summary>
+    protected Dictionary<string, List<GameObject>> controlTrackPrefabs = new Dictionary<string, List<GameObject>>();
+
     SignalReceiver _signalReceiver;
     
     protected void Awake()
@@ -92,7 +99,7 @@ public abstract class Cutscene : MonoBehaviour
                 foreach (var output in timelineAsset.outputs)
                 {
                     Binding(output);
-                    BindingControlTrack(output);
+                    GetControlTrackPrefabs(output);
 
                     switch (output.streamName)
                     {
@@ -124,22 +131,21 @@ public abstract class Cutscene : MonoBehaviour
             
     }
 
-    void BindingControlTrack(PlayableBinding playableBinding)
+    void GetControlTrackPrefabs(PlayableBinding playableBinding)
     {
         if (!(playableBinding.sourceObject is ControlTrack))
             return;
-        if (bindingControlTrackKeyValuePairs == null)
+
+        if (controlTrackPrefabs.Count > 0)
             return;
 
         ControlTrack controlTrack = (ControlTrack)playableBinding.sourceObject;
-        if (bindingControlTrackKeyValuePairs.TryGetValue(playableBinding.streamName, out var objs))
+        List<GameObject> prefabs = new List<GameObject>();
+        controlTrackPrefabs.Add(playableBinding.streamName, prefabs);
+        foreach (TimelineClip clip in controlTrack.GetClips())
         {
-            int index = 0;
-            foreach (TimelineClip clip in controlTrack.GetClips())
-            {
-                ControlPlayableAsset playableClip = (ControlPlayableAsset)clip.asset;
-                playableClip.prefabGameObject = objs[index++];
-            }
+            ControlPlayableAsset playableClip = (ControlPlayableAsset)clip.asset;
+            prefabs.Add(playableClip.prefabGameObject);
         }
     }
 
@@ -151,9 +157,6 @@ public abstract class Cutscene : MonoBehaviour
     /// <summary> 컷신 재사용 여부 </summary>
     protected abstract bool reUsable { get; }
     protected abstract bool CutSceneInput();
-
-    /// <summary> Key: Control 트랙이름 Value: 트랙에 바인딩할 오브젝트들 </summary>
-    protected virtual Dictionary<string, List<GameObject>> bindingControlTrackKeyValuePairs { get; } = new Dictionary<string, List<GameObject>>();
 
     /// <summary> 컷신 시작 바로 전 호출 </summary>
     protected virtual void OnCutSceneStart() { }

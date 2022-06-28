@@ -15,26 +15,53 @@ using UnityEngine.Timeline;
 public class SparcherUltimateCutscene : Cutscene
 {
     protected override CinemachineBrain cinemachineBrain => StageManager.Instance.BrainCam;
-    protected override Dictionary<string, BindingData> bindingKeyValuePairs => m_BindingKeyValuePairs;
+    protected override Dictionary<string, BindingData> bindingKeyValuePairs => _bindingKeyValuePairs;
     protected override bool reUsable => true;
 
-    Dictionary<string, BindingData> m_BindingKeyValuePairs = new Dictionary<string, BindingData>();
+    Dictionary<string, BindingData> _bindingKeyValuePairs = new Dictionary<string, BindingData>();
 
-    [SerializeField] BoxCollider m_HitBox;
+    [SerializeField] BoxCollider _hitBox;
+    GameObject _ultimateEffect;
 
-    public void Signal_EffectOn(){ }
+    public void Signal_EffectOn()
+    {
+        // Control Track의 프리팹 대신 미리 로드된 오브젝트를 사용해 이펙트를 보여준다.
+        var sparcher = StageManager.Instance.Player.CurrentCharacter as Sparcher;
+        if (sparcher.Preloads == null)
+            return;
 
-    public void Signal_EffectOff(){ }
+        var preloads = sparcher.Preloads as SparcherPreloadSettings;
+        if (preloads.UltimateEffect == null)
+            return;
+
+        var preloadEffect = preloads.UltimateEffect;
+        var trackPrefab = controlTrackPrefabs["Effect Track"][0];
+        if (preloadEffect.name.EraseBracketInName().Equals(trackPrefab.name.EraseBracketInName()))
+        {
+            _ultimateEffect = preloadEffect;
+            preloadEffect.gameObject.SetActive(true);
+            preloadEffect.transform.position = _hitBox.transform.position;
+        }
+    }
+
+    public void Signal_EffectOff()
+    {
+        // Control Track의 프리팹 대신 미리 로드된 오브젝트를 사용
+        if (_ultimateEffect == null)
+            return;
+
+        _ultimateEffect.gameObject.SetActive(false);
+    }
 
     public void Signal_HitboxOn()
     {
-        m_HitBox.gameObject.SetActive(true);
-        m_HitBox.enabled = true;
+        _hitBox.gameObject.SetActive(true);
+        _hitBox.enabled = true;
     }
 
     public void Signal_HitboxOff()
     {
-        m_HitBox.enabled = false;
+        _hitBox.enabled = false;
     }
 
     protected override bool CutSceneInput()
@@ -50,7 +77,7 @@ public class SparcherUltimateCutscene : Cutscene
         var sm = StageManager.Instance;
         var character = sm.Player.CurrentCharacter;
 
-        m_BindingKeyValuePairs.Add("Sparcher Animation Track", new BindingData()
+        _bindingKeyValuePairs.Add("Sparcher Animation Track", new BindingData()
         {
             BindingObject = character.gameObject,
             BindingTrackCallback = (track) =>
@@ -65,17 +92,18 @@ public class SparcherUltimateCutscene : Cutscene
                 }
             }
         });
-        m_BindingKeyValuePairs.Add("Signal Track", new BindingData()
+        _bindingKeyValuePairs.Add("Signal Track", new BindingData()
         {
             BindingObject = GetComponent<SignalReceiver>(),
         });
 
+        // 히트박스 조정
         var skillData = Character.GetSkillData(Character.GetUltimateIndex(ObjectCode.CHAR_Sparcher));
         if (skillData)
         {
             var sparcherUltiData = skillData as DatabaseSystem.SparcherUltiData;
             float range = sparcherUltiData.HitBoxRange;
-            m_HitBox.size = new Vector3(range, 1, range);
+            _hitBox.size = new Vector3(range, 1, range);
         }
     }
 
@@ -87,7 +115,7 @@ public class SparcherUltimateCutscene : Cutscene
             var child = transform.GetChild(i);
 
             // 예외
-            if (child.Equals(m_HitBox.transform))
+            if (child.Equals(_hitBox.transform))
                 continue;
 
             child.gameObject.SetActive(true);
