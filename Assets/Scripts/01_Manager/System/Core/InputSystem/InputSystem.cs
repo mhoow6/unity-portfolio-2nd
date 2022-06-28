@@ -263,21 +263,24 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
             // 손가락의 델타포지션을 이용하여 카메라 회전하기
             if (Input.touchCount > 0 && fingerId != -1)
             {
-                Debug.Log($"deltaPosition.x ({fingerId}): {Input.touches[fingerId].deltaPosition.x}");
-                Debug.Log($"deltaPosition.y ({fingerId}): {Input.touches[fingerId].deltaPosition.y}");
+                float deltaPosition_x = Input.touches[fingerId].deltaPosition.x;
+                float deltaPosition_y = Input.touches[fingerId].deltaPosition.y;
 
-                if (Mathf.Abs(Input.touches[fingerId].deltaPosition.x) > Mathf.Abs(Input.touches[fingerId].deltaPosition.y)) // 수평이동 값이 수직이동 값보다 클 경우
+                //Debug.Log($"deltaPosition.x ({fingerId}): {Input.touches[fingerId].deltaPosition.x}");
+                //Debug.Log($"deltaPosition.y ({fingerId}): {Input.touches[fingerId].deltaPosition.y}");
+
+                if (Mathf.Abs(deltaPosition_x) > Mathf.Abs(deltaPosition_y)) // 수평이동 값이 수직이동 값보다 클 경우
                     activeCam.m_XAxis.Value = Input.touches[fingerId].deltaPosition.x / TouchSensitivity_x;
-                else if (Mathf.Abs(Input.touches[fingerId].deltaPosition.x) < Mathf.Abs(Input.touches[fingerId].deltaPosition.y))
+                else if (Mathf.Abs(deltaPosition_x) < Mathf.Abs(deltaPosition_y))
                 {
-                    float value_y = Input.touches[fingerId].deltaPosition.y / TouchSensitivity_y;
+                    float value_y = deltaPosition_y / TouchSensitivity_y;
 
                     activeCam.m_YAxis.Value = Mathf.Lerp(activeCam.m_YAxis.Value, value_y, Time.deltaTime);
                 }
                     
 
-                Debug.Log($"xAxis.Value ({fingerId}): {activeCam.m_XAxis.Value}");
-                Debug.Log($"yAxis.Value({fingerId}): {activeCam.m_YAxis.Value}");
+                //Debug.Log($"xAxis.Value ({fingerId}): {activeCam.m_XAxis.Value}");
+                //Debug.Log($"yAxis.Value ({fingerId}): {activeCam.m_YAxis.Value}");
             }
             
 

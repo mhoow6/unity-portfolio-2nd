@@ -129,17 +129,20 @@ public class WorldSpaceDialogue : MonoBehaviour
         var sm = StageManager.Instance;
         var brain = sm.BrainCam;
 
-        // 예외 방지를 위해 카메라와 캐릭터 움직임 끄기
+        // 예외 방지를 위해 카메라와 
         GameManager.InputSystem.CameraRotatable = false;
+        // 시작할때 카메라 위치 조정하기
+        sm.FreeLookCam.transform.SetPositionAndRotation(m_StartBlendingCamera.transform.position, m_StartBlendingCamera.transform.rotation);
+
+        // 캐릭터 움직임 끄기
         sm.Player.Moveable = false;
         // 캐릭터 정위치
-        sm.Player.CurrentCharacter.transform.position = m_CharacterFixedTransform.position;
-        sm.Player.CurrentCharacter.transform.rotation = m_CharacterFixedTransform.rotation;
+        sm.Player.CurrentCharacter.transform.SetPositionAndRotation(m_CharacterFixedTransform.position, m_CharacterFixedTransform.rotation);
         sm.Player.CurrentCharacter.TryAttachToFloor();
 
         // startBlendingCamera 위치를 씬의 카메라 위치랑 동일하게 하기
-        m_StartBlendingCamera.transform.position = sm.FreeLookCam.transform.position;
-        m_StartBlendingCamera.transform.rotation = sm.FreeLookCam.transform.rotation;
+        //m_StartBlendingCamera.transform.position = sm.FreeLookCam.transform.position;
+        //m_StartBlendingCamera.transform.rotation = sm.FreeLookCam.transform.rotation;
 
         // 사전에 세팅한 BlenderSetting을 brain에 적용시킨다.
         brain.m_CustomBlends = m_BlenderSettings;

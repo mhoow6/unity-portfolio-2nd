@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     [Rename("닉네임 묻기 스킵")] public bool AskForNickNameSkip;
     [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
     [Rename("인게임 테스트 환경")] public bool IsTestZone;
+    [Rename("모바일에서 로그 보여주기")] public bool DebugLog;
 
     private void Awake()
     {
@@ -68,6 +69,12 @@ public class GameManager : MonoBehaviour
         // Game Setting
         Application.targetFrameRate = 60;
         Screen.sleepTimeout = SleepTimeout.SystemSetting;
+
+#if UNITY_EDITOR
+        Debug.unityLogger.logEnabled = true;
+#else
+        Debug.unityLogger.logEnabled = DebugLog ? true : false;
+#endif
 
         // Load Database
         if (!m_GameDevelopSettings)

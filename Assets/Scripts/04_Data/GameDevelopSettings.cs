@@ -36,7 +36,6 @@ public sealed class GameDevelopSettings : ScriptableObject
     [SerializeField] string m_DatabasePath;
     public string CinemachineBlendSettingsPath => m_CinemachineBlendSettingsPath;
     [SerializeField] string m_CinemachineBlendSettingsPath;
-
     public float SceneTransitionWaitingTime => m_SceneTransitionWaitingTime;
     [SerializeField] float m_SceneTransitionWaitingTime;
 

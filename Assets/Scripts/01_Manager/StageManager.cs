@@ -105,6 +105,7 @@ public class StageManager : GameSceneManager
 
         // --------------------------------------------------------------------------------------------------------
 
+        // 깜빡하고 프리로드존 안 만들었으면 기본값으로 만들어주기
         if (PreloadZone == null)
         {
             var _preloadZone = new GameObject();
