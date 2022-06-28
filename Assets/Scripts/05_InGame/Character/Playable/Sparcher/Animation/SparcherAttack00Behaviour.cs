@@ -18,7 +18,7 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Sparcher.Code)] as SparcherBasicAttackData;
 
         // 오토 타겟팅이 켜져있으면 공격거리내의 몬스터에게 몸이 회전한다.
-        if (GameManager.Instance.AutoTargeting)
+        if (GameManager.GameSettings.AutoTargeting)
         {
             var ordered = StageManager.Instance.Monsters.OrderBy(m => Vector3.Distance(m.transform.position, m_Sparcher.transform.position)).ToList();
             var find = ordered.Find(m => Vector3.Distance(m.transform.position, m_Sparcher.transform.position) <= skillData.AutoTargetDetectRange);
@@ -41,8 +41,8 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
             m_Sparcher.Attack();
         }
 
-        // 자유롭게 행동할 수 있는 시간은 애니메이션이 98% 완료된 이후
-        if (m_CurrentAnimationTime > 0.98f)
+        // 자유롭게 행동할 수 있는 시간은 애니메이션이 80% 완료된 이후
+        if (m_CurrentAnimationTime > 0.80f)
             m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);
     }
 

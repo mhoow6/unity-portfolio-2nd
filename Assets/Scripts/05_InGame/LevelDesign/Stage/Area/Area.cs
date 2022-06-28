@@ -11,18 +11,31 @@ public class Area : MonoBehaviour
         set
         {
             if (value)
-                m_Walls.ForEach(w => w.gameObject.SetActive(true));
+                m_Walls.ForEach(element => element.gameObject.SetActive(true));
             else
-                m_Walls.ForEach(w => w.gameObject.SetActive(false));
+                m_Walls.ForEach(element => element.gameObject.SetActive(false));
         }
     }
-    public bool ComponentActive
+
+    public bool Trigger
     {
         set
         {
-            m_Walls.ForEach(w => w.gameObject.SetActive(value));
-            m_Triggers.ForEach(t => t.gameObject.SetActive(value));
-            m_Spawners.ForEach(s => s.gameObject.SetActive(value));
+            if (value)
+                m_Triggers.ForEach(element => element.gameObject.SetActive(true));
+            else
+                m_Triggers.ForEach(element => element.gameObject.SetActive(false));
+        }
+    }
+
+    public bool Spawner
+    {
+        set
+        {
+            if (value)
+                m_Spawners.ForEach(element => element.gameObject.SetActive(true));
+            else
+                m_Spawners.ForEach(element => element.gameObject.SetActive(false));
         }
     }
 

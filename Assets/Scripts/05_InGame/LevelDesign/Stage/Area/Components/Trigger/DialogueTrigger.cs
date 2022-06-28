@@ -6,6 +6,7 @@ using DatabaseSystem;
 public class DialogueTrigger : AreaTrigger
 {
     [SerializeField] WorldSpaceDialogue m_WorldSpaceDialogue;
+    [SerializeField] GameObject m_DialogueEndActiveObject;
 
     protected override void OnAreaEnter(Collider other)
     {
@@ -18,7 +19,10 @@ public class DialogueTrigger : AreaTrigger
         if (m_WorldSpaceDialogue)
         {
             m_WorldSpaceDialogue.gameObject.SetActive(true);
-            m_WorldSpaceDialogue.SetData(datas);
+            m_WorldSpaceDialogue.SetData(datas, () =>
+            {
+                m_DialogueEndActiveObject.SetActive(true);
+            });
         }
             
     }

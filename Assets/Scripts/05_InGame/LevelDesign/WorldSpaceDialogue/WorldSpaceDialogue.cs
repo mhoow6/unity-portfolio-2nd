@@ -36,16 +36,19 @@ public class WorldSpaceDialogue : MonoBehaviour
     [SerializeField] SpeakerPreset m_LeftSpeaker;
     [SerializeField] SpeakerPreset m_RightSpeaker;
 
-    /// <summary> 어떤 대화자가 말하고 있는가?</summary>
+    /// <summary> 어떤 대화자가 말하고 있는가? </summary>
     SpeakerPreset m_CurrentSpeaker;
     [SerializeField] Text m_DialogueText;
 
     const float DIALOUGE_WINDOW_TWEENING_SPEED = 0.3f;
 
-    public void SetData(List<StageDialogueTable> dialogues)
+    Action m_DialogueEndCallback;
+
+    public void SetData(List<StageDialogueTable> dialogues, Action dialogueEndCallback = null)
     {
         // 대화목록 세팅
         m_Dialogues = dialogues;
+        m_DialogueEndCallback = dialogueEndCallback;
 
         // Blend 세팅
         SetBlendSetting();
@@ -119,6 +122,8 @@ public class WorldSpaceDialogue : MonoBehaviour
 
                         // 인게임 UI 켜기
                         GameManager.UISystem.OpenWindow(UIType.InGame);
+
+                        m_DialogueEndCallback?.Invoke();
                     }));
             }
         }

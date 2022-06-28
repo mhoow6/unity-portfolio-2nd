@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 public class LoadingTitleUI : UI
 {
     [SerializeField] GameObject m_LoadingObject;
-    [SerializeField] Slider m_LoadingSlider;
+    [SerializeField] SplitSlider m_LoadingSlider;
     [SerializeField] Text m_LoadingPercent;
     [SerializeField] Text m_RestTime;
     [SerializeField] GameObject m_LoadingCompleteObject;
@@ -36,7 +36,10 @@ public class LoadingTitleUI : UI
 
         // 다운로드 해야할 데이터 양 가져오기
         m_NeedToLoadDataCount = GameManager.GameDevelopSettings.DownloadDataCount;
-        m_LoadingSlider.maxValue = m_NeedToLoadDataCount;
+
+        // 슬라이더 값 조정
+        m_LoadingSlider.SetData(0, m_NeedToLoadDataCount);
+        m_LoadingSlider.Value = 0;
 
         // 로딩타이틀 연출시작
         LobbyManager.Instance.LoadingTitleSystem.Init(this);
@@ -53,7 +56,7 @@ public class LoadingTitleUI : UI
         m_PredictRestTime = 0;
         m_LoadingPercent.text = string.Format("{0:00.00}", 0);
         m_RestTime.text = "00:00";
-        m_LoadingSlider.value = 0;
+        m_LoadingSlider.Value = 0;
         IsLoadingComplete = false;
     }
 
@@ -71,7 +74,7 @@ public class LoadingTitleUI : UI
         {
             m_DownloadDataPerSecond = Random.Range(minValue, maxValue);
             m_TotalDownloadDataCount += m_DownloadDataPerSecond;
-            m_LoadingSlider.value = m_TotalDownloadDataCount;
+            m_LoadingSlider.Value = m_TotalDownloadDataCount;
 
             // 백분율
             float ratio = (float)m_TotalDownloadDataCount / m_NeedToLoadDataCount;

@@ -449,6 +449,10 @@ public abstract class Character : BaseObject, ISubscribable
         result.Item1 *= (int)damageScale;
 
         result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
+
+        if (GameManager.GameSettings.OneShotKill)
+            result.Item1 = 999999999;
+
         return result;
     }
 

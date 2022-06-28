@@ -28,16 +28,22 @@ public class SparcherUltimateHitbox : MonoBehaviour
         if (!(m_Data && m_Attacker))
             return;
 
+        // 시전자 자신은 맞지 않음
         if (other.CompareTag(m_Attacker.tag))
+            return;
+
+        // BaseObject끼리의 충돌만 허용
+        if (other.gameObject.layer.CompareTo(m_Attacker.gameObject.layer) != 0)
             return;
 
         if (m_CurrentTriggerCount < m_Data.MaximumHits)
         {
-            m_CurrentTriggerCount++;
-
+            // 몬스터에게맞 충돌이 허용
             Character victim = StageManager.Instance.Monsters.Find(mob => mob.gameObject.Equals(other.gameObject));
             if (victim)
             {
+                m_CurrentTriggerCount++;
+                m_Attacker.Target = victim;
                 var damageData = m_Attacker.CalcuateDamage(victim, m_Data.DamageScale);
                 victim.Damaged(m_Attacker, damageData.Item1, damageData.Item2);
             }

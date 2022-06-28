@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public static bool Initialized;
 
     // Data
     public static PlayerData PlayerData => Instance.m_PlayerData;
@@ -26,10 +27,8 @@ public class GameManager : MonoBehaviour
         }
     }
     SceneCode m_SceneCode;
+
     
-    // Setting
-    public static bool Initialized;
-    public bool AutoTargeting;
 
     // System
     public static UISystem UISystem => Instance.m_UISystem;
@@ -47,10 +46,11 @@ public class GameManager : MonoBehaviour
     Action m_Update;
     Action m_FixedUpdate;
 
-    // Scriptable Object
-    [Header("# 스크립터블 오브젝트")]
+    [Header("# 게임 설정")]
     [SerializeField] GameDevelopSettings m_GameDevelopSettings;
     public static GameDevelopSettings GameDevelopSettings => Instance.m_GameDevelopSettings;
+    [SerializeField] GameSettings m_GameSettings;
+    public static GameSettings GameSettings => Instance.m_GameSettings;
 
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
@@ -67,7 +67,14 @@ public class GameManager : MonoBehaviour
         m_FixedUpdate = null;
 
         // Game Setting
-        Application.targetFrameRate = 60;
+        GameSettings gs = new GameSettings()
+        {
+            AutoTargeting = true,
+            TargetFrameRate = 60
+        };
+        m_GameSettings = gs;
+
+        Application.targetFrameRate = GameSettings.TargetFrameRate;
         Screen.sleepTimeout = SleepTimeout.SystemSetting;
 
 #if UNITY_EDITOR
@@ -294,4 +301,12 @@ public class GameManager : MonoBehaviour
         }
     }
 #endif
+}
+
+[Serializable]
+public struct GameSettings
+{
+    public bool AutoTargeting;
+    public int TargetFrameRate;
+    public bool OneShotKill;
 }

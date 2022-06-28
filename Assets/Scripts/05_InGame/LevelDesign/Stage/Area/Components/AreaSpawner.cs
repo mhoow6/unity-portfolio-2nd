@@ -5,49 +5,55 @@ using UnityEngine;
 
 public class AreaSpawner : AreaComponent
 {
+    [Header("# 수동기입")]
     public int Priority;
     public Character SpawnPrefab;
+
+    [Tooltip("스폰트리거 작동시 처음에 나올 몬스터의 수")]
+    public int FirstSpawnCount;
+
+    [Tooltip("최종적으로 나올 처음에 나올 몬스터의 수")]
     public int TotalSpawnCount;
     [ReadOnly, SerializeField] int m_CurrentSpawnCount;
-
-    [HideInInspector] public List<Character> Monsters = new List<Character>();
     [SerializeField] List<Transform> m_SpawnPositions = new List<Transform>();
 
-    const float m_SPAWN_COOLTIME = 3f;
+    [HideInInspector] public List<Character> Monsters = new List<Character>();
+    const float SPAWN_COOLTIME = 3f;
+
+    private void Awake()
+    {
+        if (TotalSpawnCount < FirstSpawnCount)
+            FirstSpawnCount = TotalSpawnCount;
+    }
 
     /// <summary> 스폰 지점들에서 몬스터들이 소환됩니다. </summary> ///
     public void SpawnMonsters()
     {
-        foreach (var pos in m_SpawnPositions)
-        {
-            var mob = Instantiate(SpawnPrefab, pos);
-            if (mob != null)
-            {
-                mob.Spawn();
-                Monsters.Add(mob);
-            }
-            
-            m_CurrentSpawnCount++;
-        }
+        StartCoroutine(SpawnMonsterCoroutine(FirstSpawnCount));
     }
 
     /// <summary> 스폰 지점중 랜덤한 곳에서 몬스터가 소환됩니다. </summary> ///
-    IEnumerator SpawnMonsterCoroutine()
+    IEnumerator SpawnMonsterCoroutine(int count = 1)
     {
-        int random = UnityEngine.Random.Range(0, m_SpawnPositions.Count);
-        var pos = m_SpawnPositions[random];
+        yield return new WaitForSeconds(SPAWN_COOLTIME);
 
-        yield return new WaitForSeconds(m_SPAWN_COOLTIME);
-
-        var mob = Instantiate(SpawnPrefab, pos);
-        var comp = mob.GetComponent<Character>();
-        if (comp != null)
+        while (count != 0)
         {
-            comp.Spawn();
-            Monsters.Add(comp);
+            int random = UnityEngine.Random.Range(0, m_SpawnPositions.Count);
+            var pos = m_SpawnPositions[random];
+
+            var mob = Instantiate(SpawnPrefab, pos);
+            var comp = mob.GetComponent<Character>();
+            if (comp != null)
+            {
+                comp.Spawn();
+                Monsters.Add(comp);
+            }
+
+            m_CurrentSpawnCount++;
+
+            count--;
         }
-            
-        m_CurrentSpawnCount++;
     }
 
     public void NotifyDead(Character deadObj)

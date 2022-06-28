@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 public class MainLobbyUI : UI
 {
     public Text LevelNickName;
-    public Slider ExperienceSlider;
+    public SplitSlider ExperienceSlider;
     public StatusUI StatusDisplay;
 
     [SerializeField] RectTransform m_AdventureBtnRectTransform;
@@ -21,7 +21,7 @@ public class MainLobbyUI : UI
 
     // 이 값을 수정할 경우 LevelNickName의 rectTransform도 수정해야함.
     const int LEVELNICKNAME_TWEEN_DELTA = 50;
-    const float TWEEN_DURATION = 0.5f;
+    const float EXPERIENCE_VALUE_TWEEN_DURATION = 2.0f;
 
     public override UIType Type => UIType.MainLobby;
 
@@ -101,18 +101,31 @@ public class MainLobbyUI : UI
         LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";
         // 트위닝 효과
         LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
-        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, TWEEN_DURATION);
+        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, Time.deltaTime);
 
         // 경험치 슬라이더
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == playerData.Level).MaxExperience;
-        ExperienceSlider.value = 0;
-        ExperienceSlider.maxValue = maxExperience;
-        ExperienceSlider.DOValue(playerData.Experience, TWEEN_DURATION);
+        ExperienceSlider.SetData(0, maxExperience);
+        ExperienceSlider.Value = 0;
+        StartCoroutine(ExperienceSliderDOValueCoroutine(playerData.Experience));
 
         // 에너지, 돈
         StatusDisplay.SetData();
 
         // 캐릭터 클릭시 애니메이션 발생 시작
         LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = true;
+    }
+
+    IEnumerator ExperienceSliderDOValueCoroutine(float endValue)
+    {
+        float timer = 0f;
+        while (timer < EXPERIENCE_VALUE_TWEEN_DURATION)
+        {
+            timer += Time.deltaTime;
+            ExperienceSlider.Value = Mathf.Lerp(ExperienceSlider.Value, endValue, timer / EXPERIENCE_VALUE_TWEEN_DURATION);
+
+            yield return null;
+        }
+        ExperienceSlider.Value = endValue;
     }
 }
