@@ -38,7 +38,7 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         if (m_CurrentAnimationTime > 0.686f && !m_Shoot)
         {
             m_Shoot = true;
-            m_Sparcher.ShootArrow();
+            m_Sparcher.Attack();
         }
 
         // 자유롭게 행동할 수 있는 시간은 애니메이션이 98% 완료된 이후

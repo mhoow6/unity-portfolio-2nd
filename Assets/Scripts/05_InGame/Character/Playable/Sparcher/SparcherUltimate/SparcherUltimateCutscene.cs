@@ -26,6 +26,7 @@ public class SparcherUltimateCutscene : Cutscene
     public void Signal_EffectOn()
     {
         // Control Track의 프리팹 대신 미리 로드된 오브젝트를 사용해 이펙트를 보여준다.
+        // ※ Control Track은 Mute 상태로 있어야 함.
         var sparcher = StageManager.Instance.Player.CurrentCharacter as Sparcher;
         if (sparcher.Preloads == null)
             return;

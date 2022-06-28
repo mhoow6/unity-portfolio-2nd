@@ -14,6 +14,7 @@ public class StageManager : GameSceneManager
     public int StageIdx;
     public Vector3 PlayerSpawnPosition;
     public List<Area> Areas = new List<Area>();
+    public Transform PreloadZone;
 
     [Header("# 자동 기입")]
     [ReadOnly] public List<Character> Monsters = new List<Character>();
@@ -21,6 +22,9 @@ public class StageManager : GameSceneManager
     // 시스템
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
+
+    Queue<PreloadParam> m_ReservedForPreloading = new Queue<PreloadParam>();
+    Queue<GameObject> m_Preloaded = new Queue<GameObject>();
 
     void Awake()
     {
@@ -69,7 +73,6 @@ public class StageManager : GameSceneManager
         }
     }
 
-    #region Init() 내부 메소드들
     IEnumerator InitCoroutine(Action onInitalized = null)
     {
         // 시네머신이 active camera를 가져오는데 1frame이 걸림.
@@ -79,23 +82,16 @@ public class StageManager : GameSceneManager
         MainCam = m_MainCam;
         GameManager.SceneCode = SceneCode;
 
+        // --------------------------------------------------------------------------------------------------------
+
         // 긴급임무를 시스템에 등록
         var stageData = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
         List<int> questIndices = new List<int>() { stageData.Quest1Idx, stageData.Quest2Idx, stageData.Quest3Idx };
         MissionSystem.Register(questIndices);
 
+        // --------------------------------------------------------------------------------------------------------
+
         // 유저 캐릭터 소환
-        SpawnPlayer();
-
-        // Area 구성요소 활성화시켜주기
-        Areas.ForEach(a => { a.ComponentActive = true; });
-
-        onInitalized?.Invoke();
-    }
-
-    /// <summary> 유저가 고른 캐릭터대로 소환 </summary>
-    void SpawnPlayer()
-    {
         var player = new GameObject("Player").AddComponent<Player>();
         Player = player;
         player.gameObject.SetActive(true);
@@ -124,14 +120,81 @@ public class StageManager : GameSceneManager
         }
 
         player.Init();
+
+        // --------------------------------------------------------------------------------------------------------
+
         // 메인카메라가 현재 캐릭터에 바라보게끔 하기
         if (FreeLookCam)
         {
             FreeLookCam.Follow = player.CurrentCharacter.transform;
             FreeLookCam.LookAt = player.CurrentCharacter.transform;
         }
+
+        // --------------------------------------------------------------------------------------------------------
+
+        // 프리로드 오브젝트 처리
+        yield return StartCoroutine(ProcessingPreloads());
+
+        // --------------------------------------------------------------------------------------------------------
+
+        // Area 구성요소 활성화시켜주기
+        Areas.ForEach(a => { a.ComponentActive = true; });
+
+        // --------------------------------------------------------------------------------------------------------
+
+        onInitalized?.Invoke();
+    }
+
+    #region 프리로드
+    public void ReservingPreload(PreloadParam param)
+    {
+        m_ReservedForPreloading.Enqueue(param);
+    }
+
+    /// <summary> 프리로드된 오브젝트에 대한 처리 </summary>
+    IEnumerator ProcessingPreloads()
+    {
+        while (m_ReservedForPreloading.Count != 0)
+        {
+            var param = m_ReservedForPreloading.Dequeue();
+            GameObject _gameObject = param.PreloadPrefab;
+            GameObject gameObject = Instantiate(_gameObject, PreloadZone);
+
+            ParticleSystem ps = gameObject.GetComponent<ParticleSystem>();
+            if (ps)
+                yield return StartCoroutine(ProcessingPreloadParticle(ps, param.OnProcessCompletedCallback));
+            else
+                yield return StartCoroutine(ProcessingPreloadGameObject(gameObject));
+        }
+
+        yield return null;
+    }
+
+    IEnumerator ProcessingPreloadParticle(ParticleSystem ps, Action<GameObject> onProcessCompletedCallback = null)
+    {
+        yield return null;
+        ps.Clear(true);
+        ps.gameObject.SetActive(false);
+        m_Preloaded.Enqueue(ps.gameObject);
+
+        onProcessCompletedCallback?.Invoke(ps.gameObject);
+    }
+
+    IEnumerator ProcessingPreloadGameObject(GameObject go, Action<GameObject> onProcessCompletedCallback = null)
+    {
+        yield return null;
+        go.SetActive(false);
+        m_Preloaded.Enqueue(go);
+
+        onProcessCompletedCallback?.Invoke(go);
     }
     #endregion
+}
+
+public struct PreloadParam
+{
+    public GameObject PreloadPrefab;
+    public Action<GameObject> OnProcessCompletedCallback;
 }
 
 #if UNITY_EDITOR

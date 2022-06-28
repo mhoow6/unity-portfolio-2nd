@@ -17,7 +17,7 @@ public class Sparcher : Playable
         PassiveSkill = new SparcherPassiveSkill(GetPassiveIndex(Code));
     }
 
-    public void ShootArrow()
+    public override void Attack()
     {
         var origin = JsonManager.Instance.JsonDatas[GetAttackIndex(Code)];
         SparcherBasicAttackData data = origin as SparcherBasicAttackData;

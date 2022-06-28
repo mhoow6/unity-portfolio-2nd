@@ -14,14 +14,13 @@ public class LogoUI : Toast
 
     public override void OnClosed()
     {
-        // 테스트 존 입장시
         if (!GameManager.Instance.IsTestZone)
         {
             GameManager.Instance.LoadScene(
             SceneCode.Lobby,
             () =>
             {
-                StartCoroutine(FadeOutCoroutine());
+                StartCoroutine(AutoCloseCoroutine());
             },
             null,
             () =>
@@ -31,18 +30,21 @@ public class LogoUI : Toast
             return;
         }
 
-
+        // 테스트 존 입장시
         GameManager.Instance.LoadScene(
             SceneCode.Stage0000,
             () =>
             {
-                StartCoroutine(FadeOutCoroutine());
+                gameObject.SetActive(false);
+                GameManager.UISystem.CurrentToast = null;
+                GameManager.UISystem.PushToast(ToastType.SceneTransition).Initalize = true;
             },
             null,
             () =>
             {
                 StageManager.Instance.Init(() =>
                 {
+                    GameManager.UISystem.CloseToast(true);
                     GameManager.UISystem.OpenWindow(UIType.InGame);
                 });
             });
@@ -50,6 +52,7 @@ public class LogoUI : Toast
 
     public override void OnOpened()
     {
+        // 로고 페이드 인/아웃
         m_Logo.color = new Color(m_Logo.color.r, m_Logo.color.g, m_Logo.color.b, 0);
         m_Logo.DOColor(new Color(m_Logo.color.r, m_Logo.color.g, m_Logo.color.b, 1), 2f)
             .OnComplete(() =>
@@ -68,7 +71,7 @@ public class LogoUI : Toast
         Initalize = true;
     }
 
-    IEnumerator FadeOutCoroutine()
+    IEnumerator AutoCloseCoroutine()
     {
         while (m_CanvasGroup.alpha > 0.05f)
         {
@@ -77,6 +80,7 @@ public class LogoUI : Toast
         }
         m_CanvasGroup.alpha = 0f;
 
+        // LogoUI는 밑의 있는 코드로 수동으로 꺼줘야 한다.
         gameObject.SetActive(false);
         GameManager.UISystem.CurrentToast = null;
     }

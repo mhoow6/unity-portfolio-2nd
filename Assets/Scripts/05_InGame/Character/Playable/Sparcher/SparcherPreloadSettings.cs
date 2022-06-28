@@ -18,7 +18,18 @@ public class SparcherPreloadSettings : PreloadSettings
         var sparcher = sm.Player.CurrentCharacter as Sparcher;
 
         UltimateCutscene = Instantiate(Prefab_UltimateCutscene, sparcher.transform);
-        UltimateEffect = Instantiate(Prefab_UltimateSkillEffect, sparcher.transform);
-        UltimateEffect.gameObject.SetActive(false);
+
+        if (sm.PreloadZone)
+        {
+            sm.ReservingPreload(new PreloadParam()
+            {
+                PreloadPrefab = Prefab_UltimateSkillEffect,
+                OnProcessCompletedCallback = (gameObject) =>
+                {
+                    UltimateEffect = gameObject;
+                }
+            });
+        }
     }
+
 }

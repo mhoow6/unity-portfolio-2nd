@@ -314,7 +314,9 @@ public abstract class Character : BaseObject, ISubscribable
     protected virtual bool CanDash() { return false; }
     #endregion
 
-    #region 피격
+    #region 공격
+    public virtual void Attack() { }
+
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, bool isCrit)
     {
