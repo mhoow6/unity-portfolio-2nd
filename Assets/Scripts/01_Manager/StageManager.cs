@@ -24,7 +24,6 @@ public class StageManager : GameSceneManager
     public MissionSystem MissionSystem;
 
     Queue<PreloadParam> m_ReservedForPreloading = new Queue<PreloadParam>();
-    Queue<GameObject> m_Preloaded = new Queue<GameObject>();
 
     void Awake()
     {
@@ -42,37 +41,11 @@ public class StageManager : GameSceneManager
             area.Init();
     }
 
+    #region 초기화
     public void Init(Action onInitalized = null)
     {
         StartCoroutine(InitCoroutine(onInitalized));
     }
-
-    public void Clear()
-    {
-        // 데이터 기록
-        UpdatePlayerMissionRecords();
-        
-        // 모든 콜백 이벤트 null
-        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
-    }
-
-    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
-	void UpdatePlayerMissionRecords()
-    {
-        var playerData = GameManager.PlayerData;
-        foreach (var record in MissionSystem.QuestRecords.Values)
-        {
-            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
-            if (exist == null)
-                playerData.QuestRecords.Add(record);
-            else
-            {
-                exist.SuccessCount = record.SuccessCount;
-                exist.Clear = record.Clear;
-            }
-        }
-    }
-
     IEnumerator InitCoroutine(Action onInitalized = null)
     {
         // 시네머신이 active camera를 가져오는데 1frame이 걸림.
@@ -132,6 +105,13 @@ public class StageManager : GameSceneManager
 
         // --------------------------------------------------------------------------------------------------------
 
+        if (PreloadZone == null)
+        {
+            var _preloadZone = new GameObject();
+            _preloadZone.transform.position = new Vector3(2000f, 0, 2000f);
+            PreloadZone = _preloadZone.transform;
+        }
+
         // 프리로드 오브젝트 처리
         yield return StartCoroutine(ProcessingPreloads());
 
@@ -144,6 +124,35 @@ public class StageManager : GameSceneManager
 
         onInitalized?.Invoke();
     }
+    #endregion
+
+    #region 스테이지 클리어시
+    public void StageClear()
+    {
+        // 데이터 기록
+        UpdatePlayerMissionRecords();
+
+        // 모든 콜백 이벤트 null
+        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
+    }
+
+    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
+	void UpdatePlayerMissionRecords()
+    {
+        var playerData = GameManager.PlayerData;
+        foreach (var record in MissionSystem.QuestRecords.Values)
+        {
+            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+            if (exist == null)
+                playerData.QuestRecords.Add(record);
+            else
+            {
+                exist.SuccessCount = record.SuccessCount;
+                exist.Clear = record.Clear;
+            }
+        }
+    }
+    #endregion
 
     #region 프리로드
     public void ReservingPreload(PreloadParam param)
@@ -172,10 +181,9 @@ public class StageManager : GameSceneManager
 
     IEnumerator ProcessingPreloadParticle(ParticleSystem ps, Action<GameObject> onProcessCompletedCallback = null)
     {
-        yield return null;
+        yield return new WaitForSeconds(GameManager.GameDevelopSettings.SceneTransitionWaitingTime);
         ps.Clear(true);
         ps.gameObject.SetActive(false);
-        m_Preloaded.Enqueue(ps.gameObject);
 
         onProcessCompletedCallback?.Invoke(ps.gameObject);
     }
@@ -184,7 +192,6 @@ public class StageManager : GameSceneManager
     {
         yield return null;
         go.SetActive(false);
-        m_Preloaded.Enqueue(go);
 
         onProcessCompletedCallback?.Invoke(go);
     }

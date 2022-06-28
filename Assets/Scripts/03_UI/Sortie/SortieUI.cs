@@ -105,20 +105,23 @@ public class SortieUI : UI
         var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == m_WorldIdx && s.StageIdx == m_StageIdx);
         GameManager.Instance.LoadScene(
             row.SceneCode,
-            onPrevSceneLoading: () => { GameManager.UISystem.PushToast(ToastType.SceneTransition); },
+            onPrevSceneLoading:
+            () =>
+            {
+                GameManager.UISystem.PushToast(ToastType.SceneTransition);
+            },
             null,
             onSceneLoaded:
             () =>
             {
-                GameManager.UISystem.CloseToast(true);
-                StageManager.Instance.Init(); 
+                StageManager.Instance.Init(() =>
+                {
+                    GameManager.UISystem.CloseToast(true);
+                }); 
             });
     }
 
-    public override void OnClosed()
-    {
-
-    }
+    public override void OnClosed(){ }
 
     public override void OnOpened()
     {

@@ -37,6 +37,9 @@ public sealed class GameDevelopSettings : ScriptableObject
     public string CinemachineBlendSettingsPath => m_CinemachineBlendSettingsPath;
     [SerializeField] string m_CinemachineBlendSettingsPath;
 
+    public float SceneTransitionWaitingTime => m_SceneTransitionWaitingTime;
+    [SerializeField] float m_SceneTransitionWaitingTime;
+
     public int UILayermask => m_UILayermask;
     [SerializeField] int m_UILayermask;
     public int TerrainLayermask => m_TerrainLayermask;

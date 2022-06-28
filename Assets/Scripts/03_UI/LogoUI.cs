@@ -37,7 +37,7 @@ public class LogoUI : Toast
             {
                 gameObject.SetActive(false);
                 GameManager.UISystem.CurrentToast = null;
-                GameManager.UISystem.PushToast(ToastType.SceneTransition).Initalize = true;
+                GameManager.UISystem.PushToast(ToastType.SceneTransition);
             },
             null,
             () =>

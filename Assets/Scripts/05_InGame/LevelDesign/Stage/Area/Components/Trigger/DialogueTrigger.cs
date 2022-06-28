@@ -13,7 +13,6 @@ public class DialogueTrigger : AreaTrigger
         int worldIdx = StageManager.Instance.WorldIdx;
         int stageIdx = StageManager.Instance.StageIdx;
 
-
         var datas = TableManager.Instance.StageDialogueTable.FindAll(d => d.WorldIdx == worldIdx && d.StageIdx == stageIdx && d.AreaIdx == m_AreaIdx);
 
         if (m_WorldSpaceDialogue)

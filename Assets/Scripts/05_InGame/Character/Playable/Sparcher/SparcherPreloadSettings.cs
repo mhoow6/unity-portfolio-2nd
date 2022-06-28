@@ -15,6 +15,9 @@ public class SparcherPreloadSettings : PreloadSettings
     public override void Instantitate()
     {
         var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
         var sparcher = sm.Player.CurrentCharacter as Sparcher;
 
         UltimateCutscene = Instantiate(Prefab_UltimateCutscene, sparcher.transform);
