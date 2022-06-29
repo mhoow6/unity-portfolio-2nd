@@ -13,7 +13,9 @@ public class WorldViewUI : Display
     protected override void OnAwake()
     {
         m_ScrollRect = GetComponent<ScrollRect>();
-        m_ScrollRectNormalizedPosition = Vector2.negativeInfinity;
+
+        // 초기화 값
+        m_ScrollRectNormalizedPosition = Vector2.down;
     }
 
     private void OnDisable()
@@ -24,7 +26,7 @@ public class WorldViewUI : Display
     public void SetData(int worldIdx)
     {
         // 스테이지의 처음 부분을 보게끔 하자.
-        if (m_ScrollRectNormalizedPosition == Vector2.negativeInfinity)
+        if (m_ScrollRectNormalizedPosition == Vector2.down)
             m_ScrollRect.normalizedPosition = Vector2.zero;
         else
             m_ScrollRect.normalizedPosition = m_ScrollRectNormalizedPosition;

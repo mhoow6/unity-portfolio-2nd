@@ -141,9 +141,9 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         {
             if (value)
             {
-                if (Application.platform == RuntimePlatform.Android)
-                    StartCoroutine(m_CameraRotate);
-
+#if !(UNITY_EDITOR)
+                StartCoroutine(m_CameraRotate);
+#endif
                 var freelookCam = StageManager.Instance.FreeLookCam;
                 if (freelookCam)
                 {
@@ -153,9 +153,9 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
             }
             else
             {
-                if (Application.platform == RuntimePlatform.Android)
-                    StopCoroutine(m_CameraRotate);
-
+#if !(UNITY_EDITOR)
+                StopCoroutine(m_CameraRotate);
+#endif
                 var freelookCam = StageManager.Instance.FreeLookCam;
                 if (freelookCam)
                 {
@@ -175,7 +175,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
     IEnumerator m_CameraRotate;
     [SerializeField] RectTransform m_CameraTouchRectTransform;
     CustomRect m_CameraTouchRect;
-    #endregion
+#endregion
 
     public void Init()
     {
@@ -255,7 +255,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
                 if (m_CameraTouchRect.IsScreenPointInRect(touch.position) && !ExternallyUsingFingerIds.Contains(i))
                 {
                     fingerId = i;
-                    Debug.Log($"{touch.phase}");
+                    //Debug.Log($"{touch.phase}");
                     break;
                 }
             }
@@ -277,7 +277,6 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
 
                     activeCam.m_YAxis.Value = Mathf.Lerp(activeCam.m_YAxis.Value, value_y, Time.deltaTime);
                 }
-                    
 
                 //Debug.Log($"xAxis.Value ({fingerId}): {activeCam.m_XAxis.Value}");
                 //Debug.Log($"yAxis.Value ({fingerId}): {activeCam.m_YAxis.Value}");
@@ -305,40 +304,5 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         }
         result = false;
         return false;
-    }
-
-    float HandleAxisInputDelegate(string axisName)
-    {
-        // Start() => GetInputAxis HandleAxisInputDelegate
-        //CinemachineCore.GetInputAxis = HandleAxisInputDelegate;
-
-        switch (axisName)
-        {
-            case "Mouse X":
-                if (Input.touchCount > 0)
-                {
-                    return Input.touches[0].deltaPosition.x / TouchSensitivity_x;
-                }
-                else
-                {
-                    return Input.GetAxis(axisName);
-                }
-
-            case "Mouse Y":
-                if (Input.touchCount > 0)
-                {
-                    return Input.touches[0].deltaPosition.y / TouchSensitivity_y;
-                }
-                else
-                {
-                    return Input.GetAxis(axisName);
-                }
-
-            default:
-                Debug.LogError("Input <" + axisName + "> not recognyzed.", this);
-                break;
-        }
-
-        return 0f;
     }
 }
