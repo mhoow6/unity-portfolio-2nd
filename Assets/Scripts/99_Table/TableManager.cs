@@ -162,6 +162,7 @@ namespace DatabaseSystem
 				info.LockContent = bool.Parse(datas[8]);
 				info.StageImage = datas[9];
 				info.SceneCode = (SceneCode)Enum.Parse(typeof(SceneCode),datas[10]);
+				info.WorldPrefabName = datas[11];
 				
                 StageTable.Add(info);
                 LoadedData++;

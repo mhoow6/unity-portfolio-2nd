@@ -62,6 +62,7 @@ public class MainLobbyUI : UI
 
     public override void OnClosed()
     {
+        StopAllCoroutines();
         var lobbyManager = LobbyManager.Instance;
         if (lobbyManager)
         {
@@ -99,9 +100,6 @@ public class MainLobbyUI : UI
 
         // 레벨과 닉네임
         LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";
-        // 트위닝 효과
-        LevelNickName.rectTransform.anchoredPosition = m_OriginNickNameAnchoredPosition;
-        LevelNickName.rectTransform.DOAnchorPosX(LevelNickName.rectTransform.anchoredPosition.x + LEVELNICKNAME_TWEEN_DELTA, Time.deltaTime);
 
         // 경험치 슬라이더
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(info => info.Level == playerData.Level).MaxExperience;

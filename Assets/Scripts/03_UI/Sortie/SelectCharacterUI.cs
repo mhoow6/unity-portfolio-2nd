@@ -8,8 +8,7 @@ using DG.Tweening;
 
 public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    
-    [HideInInspector] public RectTransform BackgroundRectTransform;
+    public RectTransform BackgroundRectTransform => rectTransform;
     public bool PortraitVisible
     {
         get
@@ -96,9 +95,8 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
         StartCoroutine(DestroyCoroutine(duration));
     }
 
-    private void Awake()
+    protected override void OnAwake()
     {
-        BackgroundRectTransform = GetComponent<RectTransform>();
         m_CanvasGroup = GetComponent<CanvasGroup>();
     }
 

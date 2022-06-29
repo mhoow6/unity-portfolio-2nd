@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
     }
     SceneCode m_SceneCode;
 
-    
-
     // System
     public static UISystem UISystem => Instance.m_UISystem;
     [SerializeField] UISystem m_UISystem;

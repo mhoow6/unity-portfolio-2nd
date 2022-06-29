@@ -132,6 +132,8 @@
 		public string StageImage;
 		/// <summary> Enum </summary> ///
 		public SceneCode SceneCode;
+		/// <summary> 스테이지 프리팹 이름 </summary> ///
+		public string WorldPrefabName;
 	}
 
 }

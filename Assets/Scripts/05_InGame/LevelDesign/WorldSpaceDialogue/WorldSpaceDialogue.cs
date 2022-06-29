@@ -219,8 +219,7 @@ public class WorldSpaceDialogue : MonoBehaviour
         blendDoneCallback?.Invoke();
     }
 
-    // 첫 대화자 세팅
-    // SetData에서 Invoke으로 호출
+    /// <summary> 첫 대화자 세팅. SetData에서 Invoke으로 호출 </summary>
     void DialogueSetting()
     {
         // 대화창 키기
