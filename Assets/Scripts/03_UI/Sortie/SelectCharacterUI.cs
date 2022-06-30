@@ -80,7 +80,7 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
 
         if (record == null)
         {
-            Debug.LogError($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
+            Debug.LogWarning($"{characterCode}에 해당하는 캐릭터가 플레이어 데이터에 없습니다.");
             PortraitVisible = false;
             return;
         }

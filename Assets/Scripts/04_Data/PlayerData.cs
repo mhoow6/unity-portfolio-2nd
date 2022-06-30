@@ -96,7 +96,7 @@ public class PlayerData : ISubscribable
         m_FilePath = saveFilePath;
         string result = string.Empty;
 
-        result = StringHelper.GetStringFrom(saveFilePath);
+        result = FileHelper.GetStringFrom(saveFilePath);
 
         if (!string.IsNullOrEmpty(result))
             return JsonConvert.DeserializeObject<PlayerData>(result);

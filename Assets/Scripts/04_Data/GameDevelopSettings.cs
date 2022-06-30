@@ -12,6 +12,9 @@ public sealed class GameDevelopSettings : ScriptableObject
     public string SaveFilePath;
     
     public string GameVerison => m_GameVerison;
+
+    // ----------------------------------------------------------------------
+
     [Header("# 수동 기입")]
     [SerializeField] string m_GameVerison;
     public string MaterialResourcePath => m_MaterialResourcePath;
@@ -36,10 +39,14 @@ public sealed class GameDevelopSettings : ScriptableObject
     [SerializeField] string m_DatabasePath;
     public string CinemachineBlendSettingsPath => m_CinemachineBlendSettingsPath;
     [SerializeField] string m_CinemachineBlendSettingsPath;
+    public string SoundPath => m_SoundPath;
+    [SerializeField] string m_SoundPath;
 
+    // ----------------------------------------------------------------------
     public float SceneTransitionWaitingTime => m_SceneTransitionWaitingTime;
     [SerializeField] float m_SceneTransitionWaitingTime;
 
+    // ----------------------------------------------------------------------
     public int UILayermask => m_UILayermask;
     [SerializeField] int m_UILayermask;
     public int TerrainLayermask => m_TerrainLayermask;

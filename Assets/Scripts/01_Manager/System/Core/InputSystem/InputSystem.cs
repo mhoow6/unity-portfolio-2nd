@@ -11,17 +11,20 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
     public EventSystem EventSystem;
 
     #region 게임 입력
-    public Vector2 CharacterMoveInput
+    InputProvider m_MainController;
+
+    #region 스틱
+    public Vector2 LeftStickInput
     {
         get
         {
-            if (m_CharacterController != null)
-                return m_CharacterController.Input;
+            if (m_MainController != null)
+                return m_MainController.Input;
             else
                 return Vector2.zero;
         }
     }
-    InputProvider m_CharacterController;
+    #endregion
 
     #region A 버튼
     public bool PressAButton
@@ -53,7 +56,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
 
     bool m_PressAButton;
     bool m_HoldAButton;
-    float m_AttackInputTimer = 0f;
+    float m_InputATimer = 0f;
     #endregion
 
     #region X 버튼
@@ -86,7 +89,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
 
     bool m_PressXButton;
     bool m_HoldXButton;
-    float m_DashInputTimer = 0f;
+    float m_InputXTimer = 0f;
     #endregion
 
     #region B 버튼
@@ -119,7 +122,40 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
 
     bool m_PressBButton;
     bool m_HoldBButton;
-    float m_UltiInputTimer = 0f;
+    float m_InputBTimer = 0f;
+    #endregion
+
+    #region Y 버튼
+    public bool PressYButton
+    {
+        get
+        {
+            return m_PressYButton;
+        }
+        set
+        {
+            m_PressYButton = value;
+            OnPressYButton?.Invoke(value);
+        }
+    }
+    public Action<bool> OnPressYButton;
+    public bool HoldYButton
+    {
+        get
+        {
+            return m_HoldYButton;
+        }
+        private set
+        {
+            m_HoldYButton = value;
+            OnHoldYButton?.Invoke(value);
+        }
+    }
+    public Action<bool> OnHoldYButton;
+
+    bool m_PressYButton;
+    bool m_HoldYButton;
+    float m_InputYTimer = 0f;
     #endregion
 
     #endregion
@@ -181,7 +217,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
     {
         m_CameraRotate = MobileCameraRotateCoroutine();
 
-        // m_CameraTouchRect의 중앙 구하기
+        // 터치 가능 영역 구하기
         float centerX = Screen.width * 0.5f;
         float centerY = Screen.height * 0.5f;
 
@@ -196,6 +232,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         m_CameraTouchRect = new CustomRect(center, width, height);
         m_CameraTouchRectTransform.gameObject.SetActive(false);
 
+        // 이벤트 시스템은 항상 있어야해
         if (EventSystem != null)
             DontDestroyOnLoad(EventSystem);
     }
@@ -207,24 +244,19 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         {
             if (ctrl.Input.magnitude != 0)
             {
-                if (!ctrl.Equals(m_CharacterController))
+                if (!ctrl.Equals(m_MainController))
                 {
-                    Debug.Log($"현재 캐릭터 컨트롤러: {ctrl.DeviceName}");
-                    m_CharacterController = ctrl;
+                    Debug.Log($"현재 메인 컨트롤러: {ctrl.DeviceName}");
+                    m_MainController = ctrl;
                 }
             }
         }
 
         // 홀드 감지
-        DetectHoldInput(PressAButton, ref m_AttackInputTimer);
-        DetectHoldInput(PressXButton, ref m_DashInputTimer);
-        DetectHoldInput(PressBButton, ref m_UltiInputTimer);
-        if (IsHoldInput(ref m_AttackInputTimer, out bool holdAttack))
-            HoldAButton = holdAttack;
-        if (IsHoldInput(ref m_DashInputTimer, out bool holdDash))
-            HoldXButton = holdDash;
-        if (IsHoldInput(ref m_UltiInputTimer, out bool holdUlti))
-            HoldBButton = holdUlti;
+        HoldAButton = DetectHoldInput(PressAButton, ref m_InputATimer);
+        HoldXButton = DetectHoldInput(PressXButton, ref m_InputXTimer);
+        HoldBButton = DetectHoldInput(PressBButton, ref m_InputBTimer);
+        HoldYButton = DetectHoldInput(PressYButton, ref m_InputYTimer);
     }
 
     public void DisposeEvents()
@@ -287,22 +319,20 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         }
     }
 
-    void DetectHoldInput(bool signal, ref float timer)
+    bool DetectHoldInput(bool inputSignal, ref float inputTimer)
     {
-        if (signal)
-            timer += Time.deltaTime;
-        else
-            timer = 0f;
-    }
+        bool result = false;
 
-    bool IsHoldInput(ref float timer, out bool result)
-    {
-        if (timer > 1f)
-        {
+        if (inputSignal)
+            inputTimer += Time.deltaTime;
+        else
+            inputTimer = 0f;
+
+        if (inputTimer > 1f)
             result = true;
-            return true;
-        }
-        result = false;
-        return false;
+        else
+            result = false;
+
+        return result;
     }
 }

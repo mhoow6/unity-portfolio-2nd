@@ -10,9 +10,11 @@ public class SparcherRun00Behaviour : SparcherBehaviour
             m_Player.AnimationJobs.Enqueue(AniType.ATTACK_0);
         else if (m_InputSystem.PressXButton)
             m_Player.AnimationJobs.Enqueue(AniType.DASH_0);
-        else if (m_InputSystem.CharacterMoveInput.magnitude != 0 && m_Player.Moveable)
+        else if (m_InputSystem.LeftStickInput.magnitude != 0 && m_Player.Moveable)
             m_Player.AnimationJobs.Enqueue(AniType.RUN_0);
-        else
+        else if (m_InputSystem.PressYButton)
+            m_Player.AnimationJobs.Enqueue(AniType.JUMP_0);
+        else if (m_InputSystem.LeftStickInput.magnitude == 0)
             m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);
     }
 }

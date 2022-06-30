@@ -430,7 +430,7 @@ namespace DatabaseSystem
                     // 필드명 얻기
                     StringBuilder fieldNameBuilder = new StringBuilder();
                     int startIdx = word.IndexOf('\"');
-                    int endIdx = StringHelper.FindSpecificChar(word, '\"', 2);
+                    int endIdx = FileHelper.FindSpecificChar(word, '\"', 2);
                     for (int j = startIdx + 1; j < endIdx; j++)
                         fieldNameBuilder.Append(word[j]);
 
@@ -450,8 +450,8 @@ namespace DatabaseSystem
                         
                     // 필드 타입 얻기
                     StringBuilder fieldDataBuilder = new StringBuilder();
-                    startIdx = StringHelper.FindSpecificChar(word, '\"', 3);
-                    endIdx = StringHelper.FindSpecificChar(word, '\"', 4);
+                    startIdx = FileHelper.FindSpecificChar(word, '\"', 3);
+                    endIdx = FileHelper.FindSpecificChar(word, '\"', 4);
                     for (int j = startIdx + 1; j < endIdx; j++)
                         fieldDataBuilder.Append(word[j]);
 

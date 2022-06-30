@@ -323,6 +323,15 @@ public abstract class Character : BaseObject, ISubscribable
         if (Invulnerable)
             return;
 
+        // 플레이어 자신인 경우
+        if (attacker.Equals(StageManager.Instance.Player.CurrentCharacter))
+        {
+            if (GameManager.CheatSettings.GodMode)
+                damage = 0;
+        }
+
+        // ----------------------------------------------------------
+
         // 데이터
         Hp -= damage;
 
@@ -437,6 +446,14 @@ public abstract class Character : BaseObject, ISubscribable
     protected virtual bool CanUltimate() { return false; }
     #endregion
 
+    #region 점프
+    public void Jump()
+    {
+        // 이 버튼을 눌러야 점프가 나가도록 되어있음
+        GameManager.InputSystem.PressYButton = true;
+    }
+    #endregion
+
     #endregion
 
     #region 데미지 계산
@@ -450,7 +467,7 @@ public abstract class Character : BaseObject, ISubscribable
 
         result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
 
-        if (GameManager.GameSettings.OneShotKill)
+        if (GameManager.CheatSettings.OneShotKill)
             result.Item1 = 999999999;
 
         return result;

@@ -17,24 +17,33 @@ public class WarningUI : UI
         MessageText.text = message;
     }
 
+    public void OnBackgroundClick()
+    {
+        GameManager.UISystem.CloseWindow();
+    }
+
     public override void OnClosed()
     {
-        var sys = GameManager.UISystem;
-        sys.BlockRaycast = false;
+        //var sys = GameManager.UISystem;
+        //sys.BlockRaycast = false;
+
+        StopAllCoroutines();
     }
 
     public override void OnOpened()
     {
         var sys = GameManager.UISystem;
-        sys.BlockRaycast = true;
+        //sys.BlockRaycast = true;
 
         RectTransform.localScale = new Vector3(1, 0, 1);
         RectTransform.DOScaleY(1f, sys.SCALE_TWEENING_SPEED);
-        Invoke("AutoClose", 3f);
+        StartCoroutine(AutoCloseCoroutine());
     }
 
-    void AutoClose()
+    IEnumerator AutoCloseCoroutine()
     {
+        yield return new WaitForSeconds(3f);
+
         var sys = GameManager.UISystem;
         if (sys.CurrentWindow.Type == UIType.Warning)
         {

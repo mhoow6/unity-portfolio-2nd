@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameSettings m_GameSettings;
     public static GameSettings GameSettings => Instance.m_GameSettings;
 
+    [SerializeField] CheatSettings m_CheatSettings;
+    public static CheatSettings CheatSettings => Instance.m_CheatSettings;
+
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
     [Rename("닉네임 묻기 스킵")] public bool AskForNickNameSkip;
@@ -299,12 +302,4 @@ public class GameManager : MonoBehaviour
         }
     }
 #endif
-}
-
-[Serializable]
-public struct GameSettings
-{
-    public bool AutoTargeting;
-    public int TargetFrameRate;
-    public bool OneShotKill;
 }

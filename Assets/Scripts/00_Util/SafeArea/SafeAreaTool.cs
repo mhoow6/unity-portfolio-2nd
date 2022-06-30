@@ -17,7 +17,7 @@ namespace Mhoow6.SafeArea
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
             if (screenSize.x <= Screen.safeArea.size.x && screenSize.y <= Screen.safeArea.size.y)
             {
-                Debug.LogWarning($"Editor 환경에서 SafeAreaTool의 기능은 작동하지 않습니다.");
+                Debug.LogWarning($"스크린 사이즈보다 SafeArea가 큰 경우, SafeArea Tool을 종료합니다.");
                 enabled = false;
                 return;
             }

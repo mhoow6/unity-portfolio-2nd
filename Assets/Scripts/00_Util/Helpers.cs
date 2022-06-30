@@ -39,7 +39,7 @@ public static class FileHelper
             for (int i = 0; i < parent.transform.childCount; i++)
             {
                 streamWriter.WriteLine(
-                    StringHelper.EraseBracketInName(parent.transform.GetChild(i).name) + "," +
+                    FileHelper.EraseBracketInName(parent.transform.GetChild(i).name) + "," +
                     parent.transform.GetChild(i).position.x + "," +
                     parent.transform.GetChild(i).position.y + "," +
                     parent.transform.GetChild(i).position.z + "," +
@@ -55,7 +55,7 @@ public static class FileHelper
         else
         {
             streamWriter.WriteLine(
-                    StringHelper.EraseBracketInName(parent.name) + "," +
+                    FileHelper.EraseBracketInName(parent.name) + "," +
                     parent.transform.position.x + "," +
                     parent.transform.position.y + "," +
                     parent.transform.position.z + "," +
@@ -85,10 +85,7 @@ public static class FileHelper
         return true;
     }
     #endregion
-}
 
-public static class StringHelper
-{
     #region 문자열 처리
     public static List<string> GetStringsFromByCSVFormat(string filePath)
     {
@@ -150,7 +147,7 @@ public static class StringHelper
         }
         catch (FileNotFoundException)
         {
-            Debug.LogError($"{filePath}을 찾을 수 없습니다.");
+            Debug.LogWarning($"{filePath}을 찾을 수 없습니다.");
         }
 
         return lines;

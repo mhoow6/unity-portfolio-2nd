@@ -117,7 +117,7 @@ public class Player : MonoBehaviour
         while (true)
         {
             // 캐릭터 움직이기
-            var controllerInput = GameManager.InputSystem.CharacterMoveInput;
+            var controllerInput = GameManager.InputSystem.LeftStickInput;
             var cam = StageManager.Instance.MainCam;
             if (cam != null)
             {
@@ -126,15 +126,21 @@ public class Player : MonoBehaviour
                 Vector3 cameraRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
                 Vector3 moveVector = cameraForward * controllerInput.y + cameraRight * controllerInput.x;
 
-                if (Moveable)
-                    MoveVector = moveVector;
-                else
-                    MoveVector = Vector3.zero;
-
                 // 회전값
                 float angle = Vector3.SignedAngle(CurrentCharacter.transform.forward, moveVector, Vector3.up);
                 Vector3 angularVelocity = new Vector3(0, angle, 0);
-                RotateVector = angularVelocity;
+
+                // 인풋 벡터
+                if (Moveable)
+                {
+                    MoveVector = moveVector;
+                    RotateVector = angularVelocity;
+                }
+                else
+                {
+                    MoveVector = Vector3.zero;
+                    RotateVector = Vector3.zero;
+                }
             }
             yield return null;
         }

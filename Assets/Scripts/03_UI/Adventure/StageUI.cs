@@ -20,7 +20,11 @@ public class StageUI : Display
 
     public void OnVeilBtnClick()
     {
-        var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning);
+        // 스크롤뷰 위치 저장
+        var adventure = GameManager.UISystem.CurrentWindow as AdventureUI;
+        adventure.WorldView.SaveScrollRectPosition();
+
+        var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
         string message = string.Empty;
 
         if (m_IsStageLocked)

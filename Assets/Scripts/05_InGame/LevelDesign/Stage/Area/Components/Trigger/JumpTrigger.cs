@@ -17,18 +17,20 @@ public class JumpTrigger : AreaTrigger
     {
         if (other.CompareTag("Player"))
         {
-            // 컨트롤 불가능
+            
             var player = StageManager.Instance.Player;
-            player.Moveable = false;
-            player.Controlable = false;
-            player.CurrentCharacter.Physics = false;
 
             // 트리거의 forward 방향으로 캐릭터 회전
             player.CurrentCharacter.transform.forward = transform.forward;
 
-            // 점프 애니메이션 강제로
-            player.AnimationJobs.Enqueue(AniType.JUMP_0);
+            // 점프
+            player.CurrentCharacter.Jump();
             player.CurrentCharacter.AniSpeed = 1 / m_JumpTime;
+
+            // 컨트롤 불가능
+            player.Moveable = false;
+            player.Controlable = false;
+            player.CurrentCharacter.Physics = false;
 
             // 시뮬레이션 데이터 세팅
             BeizerCurve curve = GetComponent<BeizerCurve>();
@@ -41,6 +43,8 @@ public class JumpTrigger : AreaTrigger
                 player.Controlable = true;
                 player.CurrentCharacter.Physics = true;
 
+                // 점프 끝
+                GameManager.InputSystem.PressYButton = false;
                 player.AnimationJobs.Enqueue(AniType.IDLE_0);
                 player.CurrentCharacter.AniSpeed = 1;
 

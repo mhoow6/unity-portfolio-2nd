@@ -59,3 +59,17 @@ public class WeaponRecordData
     public ObjectCode Code;
     public int Level;
 }
+
+[Serializable]
+public struct GameSettings
+{
+    public bool AutoTargeting;
+    public int TargetFrameRate;
+}
+
+[Serializable]
+public struct CheatSettings
+{
+    public bool GodMode;
+    public bool OneShotKill;
+}
