@@ -18,10 +18,9 @@ public class Projectile : BaseObject, IPoolable
 
     
 
-    public void SetData(Character owner, DamageType damageType, float damageScale)
+    public void SetData(Character owner, float damageScale)
     {
         m_Owner = owner;
-        m_DamageType = damageType;
         m_DamageScale = damageScale;
     }
 

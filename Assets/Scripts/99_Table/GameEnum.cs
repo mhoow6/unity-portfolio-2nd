@@ -180,6 +180,9 @@
         /// <summary> 캐릭터가 교체되었을 때 나오는 이펙트 </summary> ///
         EFFECT_CharacterSwap = 8,
 
+        /// <summary> 대포알 </summary> ///
+        PROJ_CanonBullet = 9,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

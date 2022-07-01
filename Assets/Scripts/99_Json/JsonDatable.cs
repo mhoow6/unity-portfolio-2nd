@@ -13,7 +13,9 @@ namespace DatabaseSystem
             "Name",
             "Description",
             "Stack",
-            "CoolTime"
+            "CoolTime",
+            "DamageScale",
+            "ActorCode",
         };
 
         public int Index;
@@ -34,6 +36,7 @@ namespace DatabaseSystem
         public string IconPath;
         public int Stack;
         public float CoolTime;
+        public float DamageScale;
 
         #region implicit/explicit operator 연산자 오버로딩 설명
         // implicit operator bool(Skillable skill)란?
@@ -58,6 +61,13 @@ namespace DatabaseSystem
     {
         public string Name;
         public string Description;
+    }
+    #endregion
+
+    #region AI
+    public class Behaviorable : JsonDatable
+    {
+        public int ActorCode;
     }
     #endregion
 }

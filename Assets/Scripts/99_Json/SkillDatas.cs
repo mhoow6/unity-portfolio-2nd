@@ -4,13 +4,11 @@
     public class SparcherBasicAttackData : Skillable
     {
         public int AniType;
-        public float DamageScale;
         public int ArrowObjectCode;
         public int ArrowLifeTime;
         public int ArrowMoveSpeed;
         public string ArrowPrefabPath;
         public float AutoTargetDetectRange;
-        public int DamageType;
         
     }
 
@@ -33,9 +31,17 @@
 
     public class SparcherUltiData : Skillable
     {
-        public float DamageScale;
         public float HitBoxRange;
         public int MaximumHits;
+        
+    }
+
+
+    public class MonsterPirateAttackData : Skillable
+    {
+        public int BulletObjectCode;
+        public int BulletSpeed;
+        public int BulletLifeTime;
         
     }
 

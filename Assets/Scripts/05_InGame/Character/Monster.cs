@@ -3,11 +3,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using DatabaseSystem;
 
 public abstract class Monster : Character
 {
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
+
+    #region AI
     public NavMeshAgent Agent { get; private set; }
+    public Behaviorable BehaviorData { get; private set; }
+
+    public static Behaviorable GetBehaviorData(ObjectCode objectCode)
+    {
+        Behaviorable result = null;
+
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_MonsterPirate:
+                result = JsonManager.Instance.JsonDatas[4000] as Behaviorable;
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    }
+    #endregion
+
+    public void LookAtLerp(Quaternion desired, Action onLookAtCallback = null)
+    {
+        StartCoroutine(LookAtLerpCoroutine(desired, 3f, onLookAtCallback));
+    }
+
+    IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action onLookAtCallback = null)
+    {
+        // LookAt의 대상과의 각도를 구해
+        float diff = Quaternion.Angle(transform.rotation, desired);
+
+        // 그 각도에서 Time.deltaTime을 나눠
+        float timer = 0f;
+        while (timer < rotateTime)
+        {
+            timer += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(transform.rotation, desired, timer);
+
+            yield return null;
+        }
+        transform.rotation = desired;
+
+        onLookAtCallback?.Invoke();
+    }
 
     protected override void OnSpawn()
     {
@@ -16,12 +61,15 @@ public abstract class Monster : Character
             manager.Monsters.Add(this);
 
         gameObject.tag = "Monster";
+
         Agent = GetComponent<NavMeshAgent>();
+
+        // BehaviorData 가져오기
+        BehaviorData = GetBehaviorData(Code);
     }
 
     protected override void OnLive()
     {
-        // 여기에서 프레임별로 애니메이션을 하나씩 받아오도록 처리
         if (AnimationJobs.Count > 0)
             Animator.SetInteger(ANITYPE_HASHCODE, (int)AnimationJobs.Dequeue());
     }

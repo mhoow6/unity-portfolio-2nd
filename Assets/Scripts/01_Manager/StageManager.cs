@@ -54,6 +54,7 @@ public class StageManager : GameSceneManager
         // BrainCam, FreeLookCam วาด็
         MainCam = m_MainCam;
         GameManager.SceneCode = SceneCode;
+        GameManager.InputSystem.CameraRotatable = false;
 
         // --------------------------------------------------------------------------------------------------------
 
@@ -128,6 +129,7 @@ public class StageManager : GameSceneManager
         // --------------------------------------------------------------------------------------------------------
 
         onInitalized?.Invoke();
+        GameManager.InputSystem.CameraRotatable = true;
     }
     #endregion
 

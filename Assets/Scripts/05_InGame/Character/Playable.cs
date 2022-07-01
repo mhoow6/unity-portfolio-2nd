@@ -28,6 +28,19 @@ public abstract class Playable : Character
     }
     #endregion
 
+    protected override void OnTargetSet(Character target)
+    {
+        if (m_TargetLockOnImage != null)
+        {
+            if (!m_TargetLockOnImage.Poolable)
+                GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+        }
+
+        var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingLockOn");
+        m_TargetLockOnImage = image;
+        image.SetData(target);
+    }
+
     protected override void OnSpawn()
     {
         gameObject.tag = "Player";

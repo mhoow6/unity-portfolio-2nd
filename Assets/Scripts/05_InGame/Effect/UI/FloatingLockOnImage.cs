@@ -15,17 +15,15 @@ public sealed class FloatingLockOnImage : MonoBehaviour, IPoolable
         m_RectTransform = GetComponent<RectTransform>();
     }
 
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
     public void SetData(Character target)
     {
         m_Target = target.Body;
-    }
-
-    public void SetUpdate(bool value)
-    {
-        if (value)
-            StartCoroutine(UpdateCoroutine());
-        else
-            StopAllCoroutines();
+        StartCoroutine(UpdateCoroutine());
     }
 
     IEnumerator UpdateCoroutine()

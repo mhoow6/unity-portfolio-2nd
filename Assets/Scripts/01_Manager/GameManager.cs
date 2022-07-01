@@ -104,7 +104,6 @@ public class GameManager : MonoBehaviour
         m_EnergyRecoverySystem.Init();
 
         m_AchievementSystem = new AchievementSystem();
-        AchievementSystem.Init(JsonManager.Instance);
 
         if (InputSystem != null)
             InputSystem.Init();

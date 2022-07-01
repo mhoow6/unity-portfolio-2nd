@@ -8,6 +8,7 @@ public class AreaSpawner : AreaComponent
     [Header("# 수동기입")]
     public int Priority;
     public Character SpawnPrefab;
+    public bool NoRequireTargetSearch;
 
     [Tooltip("스폰트리거 작동시 처음에 나올 몬스터의 수")]
     public int FirstSpawnCount;
@@ -47,11 +48,15 @@ public class AreaSpawner : AreaComponent
             if (comp != null)
             {
                 comp.Spawn();
+                comp.name = $"{comp.name.EraseBracketInName()} ({m_CurrentSpawnCount+1})";
+
                 Monsters.Add(comp);
             }
 
-            m_CurrentSpawnCount++;
+            if (NoRequireTargetSearch)
+                comp.Target = StageManager.Instance.Player.CurrentCharacter;
 
+            m_CurrentSpawnCount++;
             count--;
         }
     }

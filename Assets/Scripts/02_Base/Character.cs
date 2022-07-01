@@ -209,20 +209,8 @@ public abstract class Character : BaseObject, ISubscribable
         }
         set
         {
+            // 이전타겟과 다른 타겟이 세팅되었다?
             Character prevTarget = m_Target;
-
-            if (m_TargetLockOnImage != null)
-            {
-                if (!m_TargetLockOnImage.Poolable)
-                    GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
-            }
-
-            var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingLockOn");
-            m_TargetLockOnImage = image;
-            image.SetData(value);
-            image.SetUpdate(true);
-            m_Target = value;
-
             if (prevTarget != null)
             {
                 if (!prevTarget.Equals(value))
@@ -230,6 +218,10 @@ public abstract class Character : BaseObject, ISubscribable
             }
             else
                 OnTargetUpdate?.Invoke(value);
+
+            // 타겟이 세팅되었다
+            OnTargetSet(value);
+            m_Target = value;
         }
     }
     Character m_Target;
@@ -238,6 +230,8 @@ public abstract class Character : BaseObject, ISubscribable
 
     /// <summary> 인게임UI 타겟 슬라이더가 Hp를 후킹하고 있는지에 대한 여부 </summary>
     public bool TargetSliderHooked;
+
+    protected virtual void OnTargetSet(Character target) { }
     #endregion
 
     #region 대쉬
@@ -607,6 +601,8 @@ public abstract class Character : BaseObject, ISubscribable
         {
             case ObjectCode.CHAR_Sparcher:
                 return 2000;
+            case ObjectCode.CHAR_MonsterPirate:
+                return 2004;
             default:
                 return -1;
         }
