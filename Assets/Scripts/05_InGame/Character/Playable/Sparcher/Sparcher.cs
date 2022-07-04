@@ -7,16 +7,6 @@ public class Sparcher : Playable
 {
     public override ObjectCode Code => ObjectCode.CHAR_Sparcher;
 
-    [SerializeField] Transform m_ArrowSpawnPosition;
-
-    protected override void OnSpawn()
-    {
-        base.OnSpawn();
-
-        // SkillDatas.json
-        PassiveSkill = new SparcherPassiveSkill(GetPassiveIndex(Code));
-    }
-
     public override void Attack()
     {
         var origin = JsonManager.Instance.JsonDatas[GetAttackIndex(Code)];
@@ -35,7 +25,7 @@ public class Sparcher : Playable
         proj.Shoot(transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
     }
 
-    protected override bool CanDash()
+    public override bool CanDash()
     {
         if (AniType >= AniType.JUMP_0 && AniType <= AniType.JUMP_4)
             return false;
@@ -49,7 +39,7 @@ public class Sparcher : Playable
         return true;
     }
 
-    protected override bool CanUltimate()
+    public override bool CanUltimate()
     {
         var skillData = GetSkillData(GetUltimateIndex(Code));
 
@@ -67,4 +57,17 @@ public class Sparcher : Playable
 
         return true;
     }
+
+    // -----------------------------------------------------------------------
+
+    protected override void OnSpawn()
+    {
+        base.OnSpawn();
+
+        // SkillDatas.json
+        PassiveSkill = new SparcherPassiveSkill(GetPassiveIndex(Code));
+    }
+    // -----------------------------------------------------------------------
+
+    [SerializeField] Transform m_ArrowSpawnPosition;
 }

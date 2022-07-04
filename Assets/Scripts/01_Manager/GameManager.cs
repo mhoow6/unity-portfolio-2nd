@@ -6,7 +6,7 @@ using System;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public sealed class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public static bool Initialized;

@@ -7,8 +7,6 @@ using DatabaseSystem;
 
 public abstract class Monster : Character
 {
-    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
-
     #region AI
     public NavMeshAgent Agent { get; private set; }
     public Behaviorable BehaviorData { get; private set; }
@@ -30,29 +28,14 @@ public abstract class Monster : Character
     }
     #endregion
 
+    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
+
     public void LookAtLerp(Quaternion desired, Action onLookAtCallback = null)
     {
         StartCoroutine(LookAtLerpCoroutine(desired, 3f, onLookAtCallback));
     }
 
-    IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action onLookAtCallback = null)
-    {
-        // LookAt의 대상과의 각도를 구해
-        float diff = Quaternion.Angle(transform.rotation, desired);
-
-        // 그 각도에서 Time.deltaTime을 나눠
-        float timer = 0f;
-        while (timer < rotateTime)
-        {
-            timer += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(transform.rotation, desired, timer);
-
-            yield return null;
-        }
-        transform.rotation = desired;
-
-        onLookAtCallback?.Invoke();
-    }
+    // -----------------------------------------------------------------------
 
     protected override void OnSpawn()
     {
@@ -102,5 +85,26 @@ public abstract class Monster : Character
 
         if (m_TargetLockOnImage)
             GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+    }
+
+    // -----------------------------------------------------------------------
+
+    IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action onLookAtCallback = null)
+    {
+        // LookAt의 대상과의 각도를 구해
+        float diff = Quaternion.Angle(transform.rotation, desired);
+
+        // 그 각도에서 Time.deltaTime을 나눠
+        float timer = 0f;
+        while (timer < rotateTime)
+        {
+            timer += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(transform.rotation, desired, timer);
+
+            yield return null;
+        }
+        transform.rotation = desired;
+
+        onLookAtCallback?.Invoke();
     }
 }

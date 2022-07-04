@@ -20,7 +20,26 @@ public class Effect : BaseObject, IPoolable
         }
     }
 
+    #region 오브젝트 풀링
+    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
+    public void OnLoad()
+    {
+        gameObject.SetActive(true);
+        m_ParticleSystem.Play(true);
+        OnPoolLoaded();
+    }
+
+    public void OnRelease()
+    {
+        OnPoolReleased();
+    }
+    #endregion
+
+    // -----------------------------------------------------------------------
+
     [SerializeField] protected ParticleSystem m_ParticleSystem;
+
+    #region 오브젝트 풀링
 
     /// <summary> Pool에서 파티클을 가져왔을 때 해야할 행동 </summary>
     protected virtual void OnPoolLoaded() { }
@@ -34,21 +53,11 @@ public class Effect : BaseObject, IPoolable
         StageManager.Instance.PoolSystem.Release(this);
         gameObject.SetActive(false);
     }
+    #endregion 오브젝트 풀링
+
+    // -----------------------------------------------------------------------
 
     #region 오브젝트 풀링
     bool m_Poolable;
-    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
-
-    public void OnLoad()
-    {
-        gameObject.SetActive(true);
-        m_ParticleSystem.Play(true);
-        OnPoolLoaded();
-    }
-
-    public void OnRelease()
-    {
-        OnPoolReleased();
-    }
     #endregion
 }

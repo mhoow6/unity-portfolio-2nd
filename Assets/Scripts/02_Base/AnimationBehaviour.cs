@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class AnimationBehaviour : StateMachineBehaviour
 {
-    protected float m_CurrentAnimationTime;
-    protected virtual AniType m_AniType { get; }
-
-    protected virtual void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
-    protected virtual void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
-    protected virtual void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
-
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         OnAnimationEnter(animator, stateInfo, layerIndex);
@@ -26,4 +19,12 @@ public class AnimationBehaviour : StateMachineBehaviour
     {
         OnAnimationExit(animator, stateInfo, layerIndex);
     }
+
+    // -----------------------------------------------------------------------
+
+    protected float m_CurrentAnimationTime;
+    protected virtual AniType m_AniType { get; }
+    protected virtual void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
+    protected virtual void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
+    protected virtual void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { }
 }

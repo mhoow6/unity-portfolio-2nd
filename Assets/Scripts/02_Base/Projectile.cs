@@ -6,23 +6,44 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider),(typeof(Rigidbody)))]
 public class Projectile : BaseObject, IPoolable
 {
-    protected Character m_Owner;
-    protected DamageType m_DamageType;
-
-    [SerializeField] Rigidbody m_RigidBody;
-    [SerializeField] SphereCollider m_SphereCollider;
-    bool m_Poolable;
-    float m_DamageScale;
-
-    const float SHOOT_VELOCITY = 2f;
-
-    
-
     public void SetData(Character owner, float damageScale)
     {
         m_Owner = owner;
         m_DamageScale = damageScale;
     }
+
+    #region 투사체 발사
+    public void Shoot(Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
+    {
+        switch (trajectoryType)
+        {
+            case TrajectoryType.Straight:
+                StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+    #region 오브젝트 풀링
+    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
+    public void OnLoad()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void OnRelease()
+    {
+        StopAllCoroutines();
+        gameObject.SetActive(false);
+    }
+    #endregion
+
+    // -----------------------------------------------------------------------
+
+    protected Character m_Owner;
+    protected DamageType m_DamageType;
 
     #region 충돌 판정
     protected void OnTriggerEnter(Collider other)
@@ -33,7 +54,7 @@ public class Projectile : BaseObject, IPoolable
             StageManager.Instance.PoolSystem.Release(this);
             return;
         }
-        
+
         // 캐릭터와 충돌시
         var rhs = other.GetComponent<Character>();
         if (rhs != null && !other.CompareTag(m_Owner.tag))
@@ -49,23 +70,19 @@ public class Projectile : BaseObject, IPoolable
             StageManager.Instance.PoolSystem.Release(this);
         }
     }
-
     protected virtual void OnCollide(Collider other) { }
     #endregion
 
-    #region 투사체 발사
-    public void Shoot(Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
-    {
-        switch (trajectoryType)
-        {
-            case TrajectoryType.Straight:
-                StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
-                break;
-            default:
-                break;
-        }
-    }
+    // -----------------------------------------------------------------------
 
+    [SerializeField] Rigidbody m_RigidBody;
+    [SerializeField] SphereCollider m_SphereCollider;
+
+    float m_DamageScale;
+
+    const float SHOOT_VELOCITY = 2f;
+
+    #region 투사체 발사
     IEnumerator ShootStraightCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
     {
         float timer = 0f;
@@ -88,17 +105,7 @@ public class Projectile : BaseObject, IPoolable
     #endregion
 
     #region 오브젝트 풀링
-    public bool Poolable { get => m_Poolable; set => m_Poolable = value; }
-    public void OnLoad()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void OnRelease()
-    {
-        StopAllCoroutines();
-        gameObject.SetActive(false);
-    }
+    bool m_Poolable;
     #endregion
 }
 

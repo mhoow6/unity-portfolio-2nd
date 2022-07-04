@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LobbyManager : GameSceneManager
+public sealed class LobbyManager : GameSceneManager
 {
     public static LobbyManager Instance { get; private set; }
 

@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using DatabaseSystem;
 
-public class StageManager : GameSceneManager
+public sealed class StageManager : GameSceneManager
 {
     public static StageManager Instance { get; private set; }
 

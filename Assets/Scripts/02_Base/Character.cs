@@ -33,7 +33,6 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 물리
     public Rigidbody Rigidbody { get; private set; }
-    Collider Collider { get; set; }
     public bool Physics
     {
         get
@@ -45,27 +44,6 @@ public abstract class Character : BaseObject, ISubscribable
             Rigidbody.isKinematic = !value;
             Collider.enabled = value;
         }
-    }
-    #endregion
-
-    #region 유니티 라이프 사이클
-    protected void Awake()
-    {
-        // 컴포넌트 붙이기
-        Animator = GetComponent<Animator>();
-        Rigidbody = GetComponent<Rigidbody>();
-        Collider = GetComponent<Collider>();
-
-        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
-
-        
-
-        SetPropertiesFromTable();
-    }
-
-    void OnDisable()
-    {
-        StopAllCoroutines();
     }
     #endregion
 
@@ -144,61 +122,66 @@ public abstract class Character : BaseObject, ISubscribable
 
     }
 
-    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것 </summary>
-    [SerializeField] CharacterData m_Data;
-    #endregion
-
-    #region 캐릭터 기본
-    #region 생존
-    IEnumerator m_UpdateCoroutine;
-    public void SetUpdate(bool value)
+    /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
+    public static int GetPassiveIndex(ObjectCode objectCode)
     {
-        if (m_UpdateCoroutine == null)
-            m_UpdateCoroutine = UpdateCoroutine();
-
-        if (value)
-            StartCoroutine(m_UpdateCoroutine);
-        else
-            StopCoroutine(m_UpdateCoroutine);
-    }
-    IEnumerator UpdateCoroutine()
-    {
-        while (true)
+        switch (objectCode)
         {
-            OnLive();
-            yield return null;
+            case ObjectCode.CHAR_Sparcher:
+                return 2001;
+            default:
+                return -1;
         }
     }
-    /// <summary> 캐릭터 살아있을 때 호출 </summary>
-    protected virtual void OnLive() { }
-    #endregion
 
-    #region 탄생
-    public void Spawn()
+    /// <summary> objectCode에 맞는 기본공격 인덱스 </summary>
+    public static int GetAttackIndex(ObjectCode objectCode)
     {
-        TryAttachToFloor();
-
-        if (Preloads)
-            Preloads.Instantitate();
-
-        if (gameObject.activeSelf)
-            SetUpdate(true);
-
-        OnSpawn();
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2000;
+            case ObjectCode.CHAR_MonsterPirate:
+                return 2004;
+            default:
+                return -1;
+        }
     }
 
-    /// <summary> 캐릭터 스폰시 호출 </summary>
-    protected virtual void OnSpawn() { }
+    /// <summary> objectCode에 맞는 대쉬 인덱스 </summary>
+    public static int GetDashIndex(ObjectCode objectCode)
+    {
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2002;
+            default:
+                return -1;
+        }
+    }
+
+    /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
+    public static int GetUltimateIndex(ObjectCode objectCode)
+    {
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                return 2003;
+            default:
+                return -1;
+        }
+    }
+
+    public static Skillable GetSkillData(int skillIndex)
+    {
+        if (JsonManager.Instance.JsonDatas.TryGetValue(skillIndex, out var origin))
+        {
+            var data = origin as Skillable;
+            return data;
+        }
+        return null;
+    }
     #endregion
-
-    /// <summary> 캐릭터 사망시 호출 </summary>
-    protected virtual void OnDead(Character attacker, int damage) { }
-
-    #endregion
-
-    #region 캐릭터 스킬
-    public PassiveSkill PassiveSkill;
-    public bool Invulnerable { get; set; }
 
     #region 타겟팅
     public Character Target
@@ -224,91 +207,13 @@ public abstract class Character : BaseObject, ISubscribable
             m_Target = value;
         }
     }
-    Character m_Target;
     public Action<Character> OnTargetUpdate;
-    protected FloatingLockOnImage m_TargetLockOnImage;
-
     /// <summary> 인게임UI 타겟 슬라이더가 Hp를 후킹하고 있는지에 대한 여부 </summary>
     public bool TargetSliderHooked;
-
-    protected virtual void OnTargetSet(Character target) { }
     #endregion
 
-    #region 대쉬
-    [SerializeField, ReadOnly] protected int m_CurrentDashStack;
-    protected bool m_ChargeDashStackCoroutine { get; private set; }
-
-    /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
-    public void Dash(SkillButtonUI skillButtonUI = null)
-    {
-        // 대쉬를 하지 못하는 경우 못하게 해야한다.
-        if (CanDash() == false)
-            return;
-
-        var skillData = GetSkillData(GetDashIndex(Code));
-        if (skillData.Stack != 0)
-        {
-            // 스택을 다 쓰면 스킬을 사용할 수 없다.
-            if (m_CurrentDashStack == 0)
-                return;
-
-            // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
-            GameManager.InputSystem.PressXButton = true;
-
-            // Sp 소비
-            Sp -= skillData.SpCost;
-
-            m_CurrentDashStack--;
-            skillButtonUI.OnStackConsume();
-
-            // 스택은 한 쿨타임에 한 번만 충전가능
-            if (!m_ChargeDashStackCoroutine)
-                StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
-        }
-        else
-        {
-            GameManager.InputSystem.PressXButton = true;
-
-            Sp -= skillData.SpCost;
-        }
-            
-    }
-
-    IEnumerator ChargeDashStackCoroutine(SkillButtonUI skillButtonUI = null)
-    {
-        m_ChargeDashStackCoroutine = true;
-
-        float timer = 0f;
-        float progress = 0f;
-        var skillData = GetSkillData(GetDashIndex(Code));
-        float duration = skillData.CoolTime;
-        float maxStack = skillData.Stack;
-
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-
-            progress = timer / duration;
-
-            if (skillButtonUI != null)
-                skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
-
-            yield return null;
-        }
-
-        m_CurrentDashStack++;
-        skillButtonUI.OnStackCharge(m_CurrentDashStack);
-
-        m_ChargeDashStackCoroutine = false;
-
-        if (m_CurrentDashStack < maxStack)
-            StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
-    }
-
-    protected virtual bool CanDash() { return false; }
-    #endregion
-
-    #region 공격
+    #region 캐릭터 공격/피격
+    public bool Invulnerable { get; set; }
     public virtual void Attack() { }
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
@@ -351,103 +256,15 @@ public abstract class Character : BaseObject, ISubscribable
 
         OnDamaged(attacker, damage, isCrit);
     }
-
-    /// <summary> Damaged 호출 시 해야할 행동 </summary>
-    protected virtual void OnDamaged(Character attacker, int damage, bool isCrit) { }
     #endregion
 
-    #region 궁극기
-    [SerializeField, ReadOnly] protected int m_CurrentUltiStack;
-    protected bool m_ChargeUltiStackCoroutine { get; private set; }
-    [SerializeField, ReadOnly] protected float m_CurrentUltiCoolTime;
-
-    /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
-    public void Ultimate(SkillButtonUI skillButtonUI = null)
-    {
-        // 대쉬를 하지 못하는 경우 못하게 해야한다.
-        if (CanUltimate() == false)
-            return;
-
-        var skillData = GetSkillData(GetUltimateIndex(Code));
-        if (skillData.Stack != 0)
-        {
-            // 스택을 다 쓰면 스킬을 사용할 수 없다.
-            if (m_CurrentUltiStack == 0)
-                return;
-
-            // 이 버튼을 눌러야 스킬이 나가도록 되어있음
-            GameManager.InputSystem.PressBButton = true;
-
-            // Sp 소비
-            Sp -= skillData.SpCost;
-
-            m_CurrentUltiStack--;
-            skillButtonUI.OnStackConsume();
-
-            // 스택은 한 쿨타임에 한 번만 충전가능
-            if (!m_ChargeDashStackCoroutine)
-                StartCoroutine(ChargeUltimateStackCoroutine(skillButtonUI));
-        }
-        else
-        {
-            GameManager.InputSystem.PressBButton = true;
-
-            Sp -= skillData.SpCost;
-
-            StartCoroutine(ChargeUltimateStackCoroutine(false, skillButtonUI));
-        }
-    }
-
-    IEnumerator ChargeUltimateStackCoroutine(bool hasStack = true, SkillButtonUI skillButtonUI = null)
-    {
-        if (hasStack)
-            m_ChargeUltiStackCoroutine = true;
-
-        float timer = 0f;
-        float progress = 0f;
-        var skillData = GetSkillData(GetUltimateIndex(Code));
-        float duration = skillData.CoolTime;
-        float maxStack = skillData.Stack;
-
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-
-            // UI 표기
-            progress = timer / duration;
-            if (skillButtonUI != null)
-                skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
-
-            // 쿨타임 데이터
-            m_CurrentUltiCoolTime = duration - timer;
-
-            yield return null;
-        }
-        m_CurrentUltiCoolTime = 0f;
-
-        if (hasStack)
-        {
-            m_CurrentUltiStack++;
-            skillButtonUI.OnStackCharge(m_CurrentDashStack);
-
-            m_ChargeUltiStackCoroutine = false;
-
-            if (m_CurrentDashStack < maxStack)
-                StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
-        }
-    }
-
-    protected virtual bool CanUltimate() { return false; }
+    #region 캐릭터 대쉬
+    public int CurrentDashStack;
+    public virtual bool CanDash() { return false; }
     #endregion
 
-    #region 점프
-    public void Jump()
-    {
-        // 이 버튼을 눌러야 점프가 나가도록 되어있음
-        GameManager.InputSystem.PressYButton = true;
-    }
-    #endregion
-
+    #region 캐릭터 점프
+    public virtual void Jump() { }
     #endregion
 
     #region 데미지 계산
@@ -466,7 +283,135 @@ public abstract class Character : BaseObject, ISubscribable
 
         return result;
     }
+    #endregion
 
+    public PassiveSkill PassiveSkill;
+    public PreloadSettings Preloads;
+
+    public Transform Head;
+    public Transform Body;
+
+    /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
+    public bool TryAttachToFloor()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hitInfo;
+
+        int layermask = 1 << LayerMask.NameToLayer("Terrain");
+
+        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
+        {
+            transform.position = hitInfo.point;
+            return true;
+        }
+        return false;
+    }
+
+    public void DisposeEvents()
+    {
+        OnHpUpdate = null;
+        OnSpUpdate = null;
+        OnTargetUpdate = null;
+        TargetSliderHooked = false;
+    }
+
+    public void Spawn()
+    {
+        TryAttachToFloor();
+
+        if (Preloads)
+            Preloads.Instantitate();
+
+        if (gameObject.activeSelf)
+            SetUpdate(true);
+
+        OnSpawn();
+    }
+
+    public void SetUpdate(bool value)
+    {
+        if (m_UpdateCoroutine == null)
+            m_UpdateCoroutine = UpdateCoroutine();
+
+        if (value)
+            StartCoroutine(m_UpdateCoroutine);
+        else
+            StopCoroutine(m_UpdateCoroutine);
+    }
+
+    /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary>
+    public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
+    {
+        Character result = null;
+        switch (objectCode)
+        {
+            case ObjectCode.CHAR_Sparcher:
+                var tryload = Resources.Load<Sparcher>($"{resourcePath}/sparcher");
+                if (tryload)
+                    result = Instantiate(tryload, parent);
+                break;
+            case ObjectCode.CHAR_GreenSpider:
+                break;
+            case ObjectCode.CHAR_PurpleSpider:
+                break;
+            case ObjectCode.CHAR_Dummy:
+                break;
+            case ObjectCode.CHAR_MonsterPirate:
+                break;
+        }
+        return result;
+    }
+
+    // -----------------------------------------------------------------------
+
+    #region 캐릭터 공격/피격
+    /// <summary> Damaged 호출 시 해야할 행동 </summary>
+    protected virtual void OnDamaged(Character attacker, int damage, bool isCrit) { }
+    #endregion
+
+    #region 타겟팅
+    protected FloatingLockOnImage m_TargetLockOnImage;
+
+    protected virtual void OnTargetSet(Character target) { }
+    #endregion
+
+    protected void Awake()
+    {
+        // 컴포넌트 붙이기
+        Animator = GetComponent<Animator>();
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+
+        gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
+
+        SetPropertiesFromTable();
+    }
+
+    /// <summary> 캐릭터 살아있을 때 호출 </summary>
+    protected virtual void OnLive() { }
+
+    /// <summary> 캐릭터 스폰시 호출 </summary>
+    protected virtual void OnSpawn() { }
+
+    /// <summary> 캐릭터 사망시 호출 </summary>
+    protected virtual void OnDead(Character attacker, int damage) { }
+
+    // -----------------------------------------------------------------------
+
+    #region 물리
+    Collider Collider { get; set; }
+    #endregion
+
+    #region 캐릭터 데이터
+    /// <summary> 기록용 데이터. Data를 통하여 값을 변경하는 행위는 가급적 하지 말 것 </summary>
+    [SerializeField] CharacterData m_Data;
+    #endregion
+
+    #region 타겟팅
+    Character m_Target;
+    #endregion
+
+    #region 데미지 계산
     /// <summary>
     /// 속성별로 적용되는 데미지를 계산합니다.
     /// </summary>
@@ -558,110 +503,20 @@ public abstract class Character : BaseObject, ISubscribable
     }
     #endregion
 
-    #region 팩토리 메소드
-    /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary>
-    public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
+    IEnumerator m_UpdateCoroutine;
+
+    void OnDisable()
     {
-        Character result = null;
-        switch (objectCode)
-        {
-            case ObjectCode.CHAR_Sparcher:
-                var tryload = Resources.Load<Sparcher>($"{resourcePath}/sparcher");
-                if (tryload)
-                    result = Instantiate(tryload, parent);
-                break;
-            case ObjectCode.CHAR_GreenSpider:
-                break;
-            case ObjectCode.CHAR_PurpleSpider:
-                break;
-            case ObjectCode.CHAR_Dummy:
-                break;
-            case ObjectCode.CHAR_MonsterPirate:
-                break;
-        }
-        return result;
+        StopAllCoroutines();
     }
 
-    /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
-    public static int GetPassiveIndex(ObjectCode objectCode)
+    IEnumerator UpdateCoroutine()
     {
-        switch (objectCode)
+        while (true)
         {
-            case ObjectCode.CHAR_Sparcher:
-                return 2001;
-            default:
-                return -1;
+            OnLive();
+            yield return null;
         }
-    }
-
-    /// <summary> objectCode에 맞는 기본공격 인덱스 </summary>
-    public static int GetAttackIndex(ObjectCode objectCode)
-    {
-        switch (objectCode)
-        {
-            case ObjectCode.CHAR_Sparcher:
-                return 2000;
-            case ObjectCode.CHAR_MonsterPirate:
-                return 2004;
-            default:
-                return -1;
-        }
-    }
-
-    /// <summary> objectCode에 맞는 대쉬 인덱스 </summary>
-    public static int GetDashIndex(ObjectCode objectCode)
-    {
-        switch (objectCode)
-        {
-            case ObjectCode.CHAR_Sparcher:
-                return 2002;
-            default:
-                return -1;
-        }
-    }
-
-    /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
-    public static int GetUltimateIndex(ObjectCode objectCode)
-    {
-        switch (objectCode)
-        {
-            case ObjectCode.CHAR_Sparcher:
-                return 2003;
-            default:
-                return -1;
-        }
-    }
-
-    public static Skillable GetSkillData(int skillIndex)
-    {
-        if (JsonManager.Instance.JsonDatas.TryGetValue(skillIndex, out var origin))
-        {
-            var data = origin as Skillable;
-            return data;
-        }
-        return null;
-    }
-    #endregion
-
-    #region 기타
-    public Transform Head;
-    public Transform Body;
-    public PreloadSettings Preloads;
-
-    /// <summary> 땅바닥에 캐릭터 위치 정확하게 놓기 </summary>
-    public bool TryAttachToFloor()
-    {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hitInfo;
-
-        int layermask = 1 << LayerMask.NameToLayer("Terrain");
-
-        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
-        {
-            transform.position = hitInfo.point;
-            return true;
-        }
-        return false;
     }
 
     /// <summary> 테이블로부터 데이터 세팅 </summary>
@@ -702,13 +557,4 @@ public abstract class Character : BaseObject, ISubscribable
                 EquipWeaponData = null
             };
     }
-
-    public void DisposeEvents()
-    {
-        OnHpUpdate = null;
-        OnSpUpdate = null;
-        OnTargetUpdate = null;
-        TargetSliderHooked = false;
-    }
-    #endregion
 }

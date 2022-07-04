@@ -33,6 +33,8 @@ public abstract class Cutscene : MonoBehaviour
     public bool CutScenePlaying { get; private set; }
     public bool CutSceneEnd { get; private set; }
 
+    // -----------------------------------------------------------------------
+
     protected PlayableDirector director;
 
     /// <summary>
@@ -41,8 +43,6 @@ public abstract class Cutscene : MonoBehaviour
     /// </summary>
     protected Dictionary<string, List<GameObject>> controlTrackPrefabs = new Dictionary<string, List<GameObject>>();
 
-    SignalReceiver _signalReceiver;
-    
     protected void Awake()
     {
         director = GetComponent<PlayableDirector>();
@@ -85,6 +85,26 @@ public abstract class Cutscene : MonoBehaviour
         StartCoroutine(WaitingForCutsceneInput());
     }
 
+    protected abstract CinemachineBrain cinemachineBrain { get; }
+
+    /// <summary> Key: 트랙이름 Value: 트랙에 바인딩할 오브젝트 이름 </summary>
+    protected abstract Dictionary<string, BindingData> bindingKeyValuePairs { get; }
+
+    /// <summary> 컷신 재사용 여부 </summary>
+    protected abstract bool reUsable { get; }
+    protected abstract bool CutSceneInput();
+
+    /// <summary> 컷신 시작 바로 전 호출 </summary>
+    protected virtual void OnCutSceneStart() { }
+
+    /// <summary> 컷신 끝난 후 바로 호출 </summary>
+    protected virtual void OnCutSceneFinish() { }
+    protected virtual void OnAwake() { }
+
+    // -----------------------------------------------------------------------
+
+    SignalReceiver _signalReceiver;
+    
     IEnumerator WaitingForCutsceneInput()
     {
         while (true)
@@ -149,21 +169,6 @@ public abstract class Cutscene : MonoBehaviour
         }
     }
 
-    protected abstract CinemachineBrain cinemachineBrain { get; }
-
-    /// <summary> Key: 트랙이름 Value: 트랙에 바인딩할 오브젝트 이름 </summary>
-    protected abstract Dictionary<string, BindingData> bindingKeyValuePairs { get; }
-
-    /// <summary> 컷신 재사용 여부 </summary>
-    protected abstract bool reUsable { get; }
-    protected abstract bool CutSceneInput();
-
-    /// <summary> 컷신 시작 바로 전 호출 </summary>
-    protected virtual void OnCutSceneStart() { }
-
-    /// <summary> 컷신 끝난 후 바로 호출 </summary>
-    protected virtual void OnCutSceneFinish() { }
-    protected virtual void OnAwake() { }
 }
 
 public struct BindingData
