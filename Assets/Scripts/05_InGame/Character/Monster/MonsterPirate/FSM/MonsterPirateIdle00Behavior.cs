@@ -25,13 +25,14 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
 
             float halfAngle = m_BehaviorData.EnemyDetectAngle * 0.5f * Mathf.Deg2Rad;
             float decisionTime = m_BehaviorData.BehaviorDecisionTime;
+            float attackRange = m_AttackData.BulletSpeed * m_AttackData.BulletLifeTime;
 
             // 공격범위 안에 있는 경우
             if (Mathf.Cos(halfAngle) < Vector3.Dot(forward, fromNormal))
             {
                 // 사정거리 안에 있는 경우
                 // ps.거리 = 속력 * 시간
-                if (Vector3.SqrMagnitude(fromMeToTarget) < Mathf.Pow(m_AttackData.BulletSpeed * m_AttackData.BulletLifeTime, 2))
+                if (Vector3.SqrMagnitude(fromMeToTarget) <= Mathf.Pow(attackRange, 2))
                 {
                     // 계속 타겟을 쳐다보면서 공격준비 단계에 돌입한다.
                     m_Self.LookAtUntil(m_Self.Target.transform, () =>
@@ -64,8 +65,8 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                         {
                             Debug.Log($"{m_Self.name}이 생각을 끝냄. (판단: 뛰어가기)");
 
-                            // 공격
-                            m_Self.GoingTo(m_Self.Target.transform.position);
+                            Vector3 stopPosition = m_Self.Target.transform.position - (fromNormal * attackRange);
+                            m_Self.GoingTo(stopPosition);
                         }
                     });
                 }
