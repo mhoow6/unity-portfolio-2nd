@@ -42,7 +42,7 @@ public abstract class Monster : Character
         StartCoroutine(LookAtLerpCoroutine(desired, rotateTime, lookAtDoneCallback));
     }
 
-    public void LookAtUntil(Transform target, Action doSomething)
+    public void LookAtWith(Transform target, Action doSomething)
     {
         transform.LookAt(target);
         doSomething?.Invoke();
@@ -64,7 +64,7 @@ public abstract class Monster : Character
         gameObject.tag = "Monster";
 
         Agent = GetComponent<NavMeshAgent>();
-        Agent.updateRotation = false;
+        Agent.updateRotation = true;
 
         // BehaviorData 가져오기
         BehaviorData = GetBehaviorData(Code);
@@ -116,10 +116,6 @@ public abstract class Monster : Character
     #region LookAt
     IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action lookAtDoneCallback = null)
     {
-        // LookAt의 대상과의 각도를 구해
-        float diff = Quaternion.Angle(transform.rotation, desired);
-
-        // 그 각도에서 Time.deltaTime을 나눠
         float timer = 0f;
         while (timer < rotateTime)
         {

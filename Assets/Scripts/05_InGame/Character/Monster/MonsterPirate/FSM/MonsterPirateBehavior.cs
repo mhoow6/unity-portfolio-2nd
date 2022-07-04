@@ -8,6 +8,7 @@ public class MonsterPirateBehavior : AnimationBehaviour
     protected MonsterPirate m_Self;
     protected MonsterPirateBehaviorData m_BehaviorData;
     protected MonsterPirateAttackData m_AttackData;
+    protected float m_DecisionTimer;
 
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -17,5 +18,9 @@ public class MonsterPirateBehavior : AnimationBehaviour
             m_BehaviorData = m_Self.BehaviorData as MonsterPirateBehaviorData;
             m_AttackData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Self.Code)] as MonsterPirateAttackData;
         }
+
+        m_DecisionTimer = 0f;
     }
 }
+
+
