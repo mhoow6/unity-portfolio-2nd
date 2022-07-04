@@ -26,16 +26,34 @@ public abstract class Monster : Character
 
         return result;
     }
+
+    public void GoingTo(Vector3 posiiton)
+    {
+        Agent.SetDestination(posiiton);
+        OnGoingTo(posiiton);
+    }
     #endregion
 
     public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
 
-    public void LookAtLerp(Quaternion desired, Action onLookAtCallback = null)
+    #region LookAt
+    public void LookAtLerp(Quaternion desired, float rotateTime = 3f, Action lookAtDoneCallback = null)
     {
-        StartCoroutine(LookAtLerpCoroutine(desired, 3f, onLookAtCallback));
+        StartCoroutine(LookAtLerpCoroutine(desired, rotateTime, lookAtDoneCallback));
     }
 
+    public void LookAtUntil(Transform target, Action doSomething)
+    {
+        transform.LookAt(target);
+        doSomething?.Invoke();
+    }
+    #endregion
+
     // -----------------------------------------------------------------------
+
+    #region AI
+    protected virtual void OnGoingTo(Vector3 position) { }
+    #endregion
 
     protected override void OnSpawn()
     {
@@ -46,9 +64,15 @@ public abstract class Monster : Character
         gameObject.tag = "Monster";
 
         Agent = GetComponent<NavMeshAgent>();
+        Agent.updateRotation = false;
 
         // BehaviorData 가져오기
         BehaviorData = GetBehaviorData(Code);
+        Agent.speed = MoveSpeed;
+        OnMoveSpeedUpdate += (speed) =>
+        {
+            Agent.speed = speed;
+        };
     }
 
     protected override void OnLive()
@@ -89,7 +113,8 @@ public abstract class Monster : Character
 
     // -----------------------------------------------------------------------
 
-    IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action onLookAtCallback = null)
+    #region LookAt
+    IEnumerator LookAtLerpCoroutine(Quaternion desired, float rotateTime, Action lookAtDoneCallback = null)
     {
         // LookAt의 대상과의 각도를 구해
         float diff = Quaternion.Angle(transform.rotation, desired);
@@ -99,12 +124,13 @@ public abstract class Monster : Character
         while (timer < rotateTime)
         {
             timer += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(transform.rotation, desired, timer);
+            transform.rotation = Quaternion.Lerp(transform.rotation, desired, timer / rotateTime);
 
             yield return null;
         }
         transform.rotation = desired;
 
-        onLookAtCallback?.Invoke();
+        lookAtDoneCallback?.Invoke();
     }
+    #endregion
 }

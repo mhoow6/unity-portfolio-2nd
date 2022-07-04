@@ -106,8 +106,10 @@ public abstract class Character : BaseObject, ISubscribable
         set
         {
             m_Data.Speed = value;
+            OnMoveSpeedUpdate?.Invoke(value);
         }
     }
+    public Action<float> OnMoveSpeedUpdate;
 
     public int Damage
     {
@@ -305,14 +307,6 @@ public abstract class Character : BaseObject, ISubscribable
             return true;
         }
         return false;
-    }
-
-    public void DisposeEvents()
-    {
-        OnHpUpdate = null;
-        OnSpUpdate = null;
-        OnTargetUpdate = null;
-        TargetSliderHooked = false;
     }
 
     public void Spawn()
@@ -556,5 +550,16 @@ public abstract class Character : BaseObject, ISubscribable
                 Speed = table.BaseSpeed,
                 EquipWeaponData = null
             };
+    }
+
+    // -----------------------------------------------------------------------
+
+    public void DisposeEvents()
+    {
+        OnHpUpdate = null;
+        OnSpUpdate = null;
+        OnTargetUpdate = null;
+        TargetSliderHooked = false;
+        OnMoveSpeedUpdate = null;
     }
 }

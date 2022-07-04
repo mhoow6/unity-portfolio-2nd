@@ -23,7 +23,6 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private void Start()
     {
         m_JoystickRectTransfom = GetComponent<RectTransform>();
-        Debug.Log($"{m_JoystickRectTransfom.anchoredPosition}");
 
         m_Center = m_Background.anchoredPosition;
         m_Radius = m_Background.rect.width * 0.5f;

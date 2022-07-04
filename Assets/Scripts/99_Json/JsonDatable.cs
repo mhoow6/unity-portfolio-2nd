@@ -16,6 +16,7 @@ namespace DatabaseSystem
             "CoolTime",
             "DamageScale",
             "ActorCode",
+            "BehaviorDecisionTime",
         };
 
         public int Index;
@@ -68,6 +69,7 @@ namespace DatabaseSystem
     public class Behaviorable : JsonDatable
     {
         public int ActorCode;
+        public float BehaviorDecisionTime;
     }
     #endregion
 }
