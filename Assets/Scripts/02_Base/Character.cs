@@ -282,6 +282,9 @@ public abstract class Character : BaseObject, ISubscribable
         var critResult = CalculateCriticalDamage(damage, m_Data.Critical);
         damage = critResult.Item1;
 
+        // 계산된 데미지에 스케일 적용
+        damage *= damageScale;
+
         // 치트
         if (GameManager.CheatSettings.OneShotKill)
             result.Damage = 999999999;

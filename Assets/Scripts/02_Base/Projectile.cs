@@ -18,7 +18,7 @@ public class Projectile : BaseObject, IPoolable
         StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
     }
 
-    public void ShootParabola(Vector3 startPosition, Vector3 endPosition, float height, int lifeTime)
+    public void ShootParabola(Vector3 startPosition, Vector3 endPosition, float height, float lifeTime)
     {
         StartCoroutine(ShootParabolaCoroutine(startPosition, endPosition, height, lifeTime));
     }
@@ -96,7 +96,7 @@ public class Projectile : BaseObject, IPoolable
         StageManager.Instance.PoolSystem.Release(this);
     }
 
-    IEnumerator ShootParabolaCoroutine(Vector3 startPosition, Vector3 endPosition, float height, int lifeTime)
+    IEnumerator ShootParabolaCoroutine(Vector3 startPosition, Vector3 endPosition, float height, float lifeTime)
     {
         float timer = 0f;
         m_RigidBody.isKinematic = false;

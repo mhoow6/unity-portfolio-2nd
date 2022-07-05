@@ -34,8 +34,6 @@ public abstract class Monster : Character
     }
     #endregion
 
-    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
-
     #region LookAt
     public void LookAtLerp(Quaternion desired, float rotateTime = 3f, Action lookAtDoneCallback = null)
     {
@@ -48,6 +46,8 @@ public abstract class Monster : Character
         doSomething?.Invoke();
     }
     #endregion
+
+    public FixedQueue<AniType> AnimationJobs { get; private set; } = new FixedQueue<AniType>(1);
 
     // -----------------------------------------------------------------------
 
@@ -104,6 +104,9 @@ public abstract class Monster : Character
         // 죽는 애니메이션
         AnimationJobs.Enqueue(AniType.DEAD_0);
 
+        // 시간이 지나서 자동으로 사라지도록 함
+        StartCoroutine(OnDeadCoroutine());
+
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
         StageManager.Instance.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
 
@@ -127,6 +130,26 @@ public abstract class Monster : Character
         transform.rotation = desired;
 
         lookAtDoneCallback?.Invoke();
+    }
+    #endregion
+
+    #region 몬스터 사망시
+    float m_DeathTimer;
+    const float INVISIBLE_TIME = 3f;
+
+    IEnumerator OnDeadCoroutine()
+    {
+        while (true)
+        {
+            m_DeathTimer += Time.deltaTime;
+            if (m_DeathTimer > INVISIBLE_TIME)
+            {
+                Destroy(gameObject);
+                m_DeathTimer = 0f;
+                yield break;
+            }
+            yield return null;
+        }
     }
     #endregion
 }

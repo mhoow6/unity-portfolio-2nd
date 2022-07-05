@@ -8,6 +8,8 @@ public class SparcherIdle00Behaviour : SparcherBehaviour
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        base.OnAnimationUpdate(animator, stateInfo, layerIndex);
+
         if (m_InputSystem.PressAButton)
             m_Player.AnimationJobs.Enqueue(AniType.ATTACK_0);
         else if (m_InputSystem.PressXButton)

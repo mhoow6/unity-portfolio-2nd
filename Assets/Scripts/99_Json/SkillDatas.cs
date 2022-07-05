@@ -42,6 +42,7 @@
         public int BulletObjectCode;
         public int BulletSpeed;
         public int BulletLifeTime;
+        public float BulletShootHeight;
         
     }
 

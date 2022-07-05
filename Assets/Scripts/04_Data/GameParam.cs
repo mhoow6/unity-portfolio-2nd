@@ -1,3 +1,4 @@
+using DatabaseSystem;
 using System;
 using UnityEngine;
 
@@ -11,4 +12,11 @@ public struct PreloadParam
 {
     public GameObject PreloadPrefab;
     public Action<GameObject> OnProcessCompletedCallback;
+}
+
+public struct SkillButtonParam
+{
+    public Action OnClick;
+    public Action OnExit;
+    public Skillable SkillData;
 }

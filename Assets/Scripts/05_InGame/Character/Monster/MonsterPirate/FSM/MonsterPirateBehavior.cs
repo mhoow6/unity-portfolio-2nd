@@ -21,4 +21,10 @@ public class MonsterPirateBehavior : AnimationBehaviour
 
         m_DecisionTimer = 0f;
     }
+
+    protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (m_Self.Hp <= 0)
+            m_Self.AnimationJobs.Enqueue(AniType.DEAD_0);
+    }
 }

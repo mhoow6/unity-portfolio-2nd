@@ -60,7 +60,7 @@ public class NickNameInputUI : ConfirmUI
         }
 
         // Æ¯¼ö¹®ÀÚ °Ë»ç
-        if (Regex.IsMatch(InputField.text, @"[^a-zA-Z0-9°¡-ÆR]"))
+        if (Regex.IsMatch(InputField.text, @"[^0-9a-zA-Z]+"))
         {
             var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
             warning.SetData("Æ¯¼ö¹®ÀÚ¸¦ Æ÷ÇÔ½ÃÅ³ ¼ö ¾ø½À´Ï´Ù.");

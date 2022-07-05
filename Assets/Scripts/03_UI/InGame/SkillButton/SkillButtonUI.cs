@@ -90,10 +90,3 @@ public class SkillButtonUI : Display, IPointerDownHandler, IPointerUpHandler
         m_OnExited?.Invoke();
     }
 }
-
-public struct SkillButtonParam
-{
-    public Action OnClick;
-    public Action OnExit;
-    public Skillable SkillData;
-}

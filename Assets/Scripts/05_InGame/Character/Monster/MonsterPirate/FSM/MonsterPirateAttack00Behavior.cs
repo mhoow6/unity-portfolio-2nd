@@ -16,7 +16,7 @@ public class MonsterPirateAttack00Behavior : MonsterPirateBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
-        // 68.6%¿¡ È­»ì ½î±â
+        // 35%Âë¿¡ ´ëÆ÷½î±â
         if (m_CurrentAnimationTime > 0.35f && !m_Shoot)
         {
             m_Shoot = true;
