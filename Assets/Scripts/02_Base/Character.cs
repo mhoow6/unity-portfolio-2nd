@@ -271,17 +271,24 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 데미지 계산
     /// <summary>상대방에게 입힐 데미지를 계산합니다. </summary>
-    /// <returns>데미지, 크리티컬 여부</returns>
-    public (int, bool) CalcuateDamage(Character opponent, float damageScale)
+    public DamageResult CalcuateDamage(Character opponent, float damageScale)
     {
-        (int, bool) result;
-        result.Item1 = CalculateTypeDamage(this, opponent);
-        result.Item1 *= (int)damageScale;
+        DamageResult result;
 
-        result = CalculateCriticalDamage(result.Item1, m_Data.Critical);
+        // 데미지 계산 순서
+        float damage;
+        damage = CalculateTypeDamage(this, opponent);
 
+        var critResult = CalculateCriticalDamage(damage, m_Data.Critical);
+        damage = critResult.Item1;
+
+        // 치트
         if (GameManager.CheatSettings.OneShotKill)
-            result.Item1 = 999999999;
+            result.Damage = 999999999;
+
+        // 결과
+        result.Damage = (int)damage;
+        result.IsCrit = critResult.Item2;
 
         return result;
     }
@@ -412,13 +419,13 @@ public abstract class Character : BaseObject, ISubscribable
     /// <param name="lhs">자신</param>
     /// <param name="rhs">상대방</param>
     /// <returns>계산된 데미지</returns>
-    int CalculateTypeDamage(Character lhs, Character rhs)
+    float CalculateTypeDamage(Character lhs, Character rhs)
     {
         // 내 속성이 상대방에게 유리한 속성일 경우 30% 추뎀,
         // 내 속성이 상대방에게 불리한 속성일 경우 30%의 데미지만 입힐 수 있음
         // 내 속성과 상대방에게 어떠한 이점이 없을 경우 데미지는 그대로
 
-        int result = 0;
+        float result = 0;
         float bonusRatio = 1;
 
         switch (lhs.Type)
@@ -430,7 +437,7 @@ public abstract class Character : BaseObject, ISubscribable
                         bonusRatio = 1f;
                         break;
                     case CharacterType.Machine:
-                        bonusRatio = 0.3f;
+                        bonusRatio = 1f;
                         break;
                     case CharacterType.Supernatural:
                         bonusRatio = 1.3f;
@@ -449,7 +456,7 @@ public abstract class Character : BaseObject, ISubscribable
                         bonusRatio = 1f;
                         break;
                     case CharacterType.Supernatural:
-                        bonusRatio = 0.3f;
+                        bonusRatio = 1f;
                         break;
                 }
                 break;
@@ -457,7 +464,7 @@ public abstract class Character : BaseObject, ISubscribable
                 switch (rhs.Type)
                 {
                     case CharacterType.Biology:
-                        bonusRatio = 0.3f;
+                        bonusRatio = 1f;
                         break;
                     case CharacterType.Machine:
                         bonusRatio = 1.3f;
@@ -469,7 +476,7 @@ public abstract class Character : BaseObject, ISubscribable
                 break;
         }
 
-        result = (int)(lhs.Damage * bonusRatio);
+        result = lhs.Damage * bonusRatio;
 
         return result;
     }
@@ -478,7 +485,7 @@ public abstract class Character : BaseObject, ISubscribable
     /// 치명타 확률을 포함한 최종 데미지를 계산합니다.
     /// </summary>
     /// <returns>float: 데미지 bool: 크리티컬</returns>
-    (int, bool) CalculateCriticalDamage(float damage, float criticalRate)
+    (float, bool) CalculateCriticalDamage(float damage, float criticalRate)
     {
         float convertCriticalRate = criticalRate * 0.01f;
         float calcuatedDamage = damage;
@@ -493,7 +500,7 @@ public abstract class Character : BaseObject, ISubscribable
         if (critical)
             calcuatedDamage *= 2;
 
-        return ((int)calcuatedDamage, critical);
+        return (calcuatedDamage, critical);
     }
     #endregion
 

@@ -17,19 +17,31 @@ public class MonsterPirate : Monster
 
     public void ShootBullet()
     {
-        // 발사 이펙트를 불러온다.
+        // 발사하는 순간 이펙트
         var effectPath = GameManager.GameDevelopSettings.EffectResourcePath;
         var projPath = GameManager.GameDevelopSettings.ProjectileResourcePath;
         var effect = StageManager.Instance.PoolSystem.Load<MonsterPirateBulletFiredEffect>($"{effectPath}/MonsterPirate_BulletFired");
         effect.transform.SetPositionAndRotation(BulletFiredPosition.position, BulletFiredPosition.rotation);
 
-        // 탄을 포물선의 궤도로 쏜다.
+        // 포탄
         var bullet = StageManager.Instance.PoolSystem.Load<MonsterPirateBullet>($"{projPath}/MonsterPirate_Bullet");
-        bullet.transform.SetPositionAndRotation(BulletFiredPosition.position, BulletFiredPosition.rotation);
+        bullet.transform.SetPositionAndRotation(BulletFiredPosition.position, transform.rotation);
 
         var attackData = GetSkillData(GetAttackIndex(ObjectCode.CHAR_MonsterPirate)) as MonsterPirateAttackData;
         bullet.SetData(this, attackData.DamageScale);
-        bullet.Shoot(transform.forward + Vector3.up, TrajectoryType.Parabola, attackData.BulletSpeed, attackData.BulletLifeTime);
+
+        // 포물선 시작지점
+        Vector3 parabolaStartPosition = bullet.transform.position;
+        // 포물선 끝지점
+        Vector3 parabolaEndPosition = bullet.transform.position + (bullet.transform.forward * attackData.BulletLifeTime * attackData.BulletSpeed);
+        // 포탄이 닿을 오브젝트 감지
+        Ray ray = new Ray(parabolaEndPosition, Vector3.down);
+        RaycastHit hitInfo;
+        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+            parabolaEndPosition = hitInfo.point;
+
+        // 탄을 포물선의 궤도로 쏜다.
+        bullet.ShootParabola(parabolaStartPosition, parabolaEndPosition, 2f, attackData.BulletSpeed);
     }
 
     // -----------------------------------------------------------------------

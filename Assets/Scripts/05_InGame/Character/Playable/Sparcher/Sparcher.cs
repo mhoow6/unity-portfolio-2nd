@@ -22,7 +22,7 @@ public class Sparcher : Playable
         proj.transform.SetPositionAndRotation(m_ArrowSpawnPosition.position, Quaternion.Euler(spawnRotation));
 
         // 화살 발사
-        proj.Shoot(transform.forward, TrajectoryType.Straight, data.ArrowMoveSpeed, data.ArrowLifeTime);
+        proj.ShootStraight(transform.forward, data.ArrowMoveSpeed, data.ArrowLifeTime);
     }
 
     public override bool CanDash()

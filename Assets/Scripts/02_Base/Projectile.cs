@@ -13,19 +13,14 @@ public class Projectile : BaseObject, IPoolable
     }
 
     #region 투사체 발사
-    public void Shoot(Vector3 direction, TrajectoryType trajectoryType, float moveSpeed, int lifeTime)
+    public void ShootStraight(Vector3 direction, float moveSpeed, int lifeTime)
     {
-        switch (trajectoryType)
-        {
-            case TrajectoryType.Straight:
-                StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
-                break;
-            case TrajectoryType.Parabola:
-                StartCoroutine(ShootParabolaCoroutine(direction, moveSpeed, lifeTime));
-                break;
-            default:
-                break;
-        }
+        StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
+    }
+
+    public void ShootParabola(Vector3 startPosition, Vector3 endPosition, float height, int lifeTime)
+    {
+        StartCoroutine(ShootParabolaCoroutine(startPosition, endPosition, height, lifeTime));
     }
     #endregion
 
@@ -65,7 +60,7 @@ public class Projectile : BaseObject, IPoolable
             var result = m_Owner.CalcuateDamage(rhs, m_DamageScale);
 
             // 실제 데미지
-            rhs.Damaged(m_Owner, result.Item1, result.Item2);
+            rhs.Damaged(m_Owner, result.Damage, result.IsCrit);
 
             OnCollide(other);
 
@@ -101,15 +96,16 @@ public class Projectile : BaseObject, IPoolable
         StageManager.Instance.PoolSystem.Release(this);
     }
 
-    IEnumerator ShootParabolaCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
+    IEnumerator ShootParabolaCoroutine(Vector3 startPosition, Vector3 endPosition, float height, int lifeTime)
     {
         float timer = 0f;
         m_RigidBody.isKinematic = false;
-        m_RigidBody.useGravity = true;
-        m_RigidBody.velocity = direction.normalized * moveSpeed * SHOOT_VELOCITY;
+        m_RigidBody.useGravity = false;
         while (timer < lifeTime)
         {
             timer += Time.fixedDeltaTime;
+
+            m_RigidBody.position = MathParabola.Parabola(startPosition, endPosition, height, timer / lifeTime);
 
             yield return new WaitForFixedUpdate();
         }

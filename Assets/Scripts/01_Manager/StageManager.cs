@@ -213,12 +213,6 @@ public sealed class StageManager : GameSceneManager
     #endregion
 }
 
-public struct PreloadParam
-{
-    public GameObject PreloadPrefab;
-    public Action<GameObject> OnProcessCompletedCallback;
-}
-
 #if UNITY_EDITOR
 [CanEditMultipleObjects]
 [CustomEditor(typeof(StageManager))]
