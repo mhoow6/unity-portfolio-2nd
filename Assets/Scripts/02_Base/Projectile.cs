@@ -41,7 +41,6 @@ public class Projectile : BaseObject, IPoolable
     // -----------------------------------------------------------------------
 
     protected Character m_Owner;
-    protected DamageType m_DamageType;
 
     #region 충돌 판정
     protected void OnTriggerEnter(Collider other)

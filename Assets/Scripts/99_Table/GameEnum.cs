@@ -191,17 +191,6 @@
 
     }
 
-    public enum DamageType
-    {
-        
-        /// <summary> 경직이 되지 않는 유형 </summary> ///
-        Normal = 0,
-
-        /// <summary> 경직이 되는 유형 </summary> ///
-        Stiffness = 1,
-
-    }
-
     public enum SceneCode
     {
         
