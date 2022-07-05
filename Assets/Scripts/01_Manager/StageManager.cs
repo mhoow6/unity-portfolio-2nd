@@ -24,10 +24,12 @@ public sealed class StageManager : GameSceneManager
     public MissionSystem MissionSystem;
 
     Queue<PreloadParam> m_ReservedForPreloading = new Queue<PreloadParam>();
+    bool m_Init;
 
     void Awake()
     {
         Instance = this;
+        m_Init = false;
 
         // 시스템 Init
         PoolSystem = new PoolSystem();
@@ -130,6 +132,7 @@ public sealed class StageManager : GameSceneManager
 
         onInitalized?.Invoke();
         GameManager.InputSystem.CameraRotatable = true;
+        m_Init = true;
     }
     #endregion
 
@@ -164,6 +167,11 @@ public sealed class StageManager : GameSceneManager
     #region 프리로드
     public void ReservingPreload(PreloadParam param)
     {
+        if (m_Init)
+        {
+            Debug.LogWarning($"게임이 시작된 이후에 {param.PreloadPrefab.name}을 프리로드 할려고 하고있습니다.");
+            return;
+        }
         m_ReservedForPreloading.Enqueue(param);
     }
 

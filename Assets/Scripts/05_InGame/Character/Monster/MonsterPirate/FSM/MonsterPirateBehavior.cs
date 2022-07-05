@@ -22,5 +22,3 @@ public class MonsterPirateBehavior : AnimationBehaviour
         m_DecisionTimer = 0f;
     }
 }
-
-

@@ -20,6 +20,9 @@ public class Projectile : BaseObject, IPoolable
             case TrajectoryType.Straight:
                 StartCoroutine(ShootStraightCoroutine(direction, moveSpeed, lifeTime));
                 break;
+            case TrajectoryType.Parabola:
+                StartCoroutine(ShootParabolaCoroutine(direction, moveSpeed, lifeTime));
+                break;
             default:
                 break;
         }
@@ -91,7 +94,7 @@ public class Projectile : BaseObject, IPoolable
         m_RigidBody.velocity = direction.normalized * moveSpeed * SHOOT_VELOCITY;
         while (timer < lifeTime)
         {
-            timer += Time.deltaTime;
+            timer += Time.fixedDeltaTime;
 
             yield return new WaitForFixedUpdate();
         }
@@ -100,7 +103,17 @@ public class Projectile : BaseObject, IPoolable
 
     IEnumerator ShootParabolaCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
     {
-        yield return null;
+        float timer = 0f;
+        m_RigidBody.isKinematic = false;
+        m_RigidBody.useGravity = true;
+        m_RigidBody.velocity = direction.normalized * moveSpeed * SHOOT_VELOCITY;
+        while (timer < lifeTime)
+        {
+            timer += Time.fixedDeltaTime;
+
+            yield return new WaitForFixedUpdate();
+        }
+        StageManager.Instance.PoolSystem.Release(this);
     }
     #endregion
 
@@ -115,6 +128,5 @@ public enum TrajectoryType
     /// <summary> 직선 </summary>
     Straight,
     /// <summary> 포물선 </summary>
-    [Obsolete]
     Parabola
 }

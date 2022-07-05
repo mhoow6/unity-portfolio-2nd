@@ -183,6 +183,9 @@
         /// <summary> 대포알 </summary> ///
         PROJ_CanonBullet = 9,
 
+        /// <summary> 대포발사 이펙트 </summary> ///
+        Effect_CanonBulletFired = 10,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

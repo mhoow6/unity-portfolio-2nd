@@ -5,10 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Sparcher_PreloadSettings", menuName = "Sparcher Preload Settings", order = 2)]
 public class SparcherPreloadSettings : PreloadSettings
 {
-    public GameObject UltimateCutscene;
-    public GameObject UltimateEffect;
+    [HideInInspector] public GameObject UltimateCutscene;
+    [HideInInspector] public GameObject UltimateEffect;
 
-    [Header("수동 기입")]
     [SerializeField] GameObject Prefab_UltimateCutscene;
     [SerializeField] GameObject Prefab_UltimateSkillEffect;
 

@@ -90,30 +90,10 @@ public class PoolSystem : IGameSystem
         return InstantiatePrefab<T>(prefab, list, parent);
     }
 
-    public IPoolable Load(GameObject prefab, Transform parent = null)
-    {
-        string prefabName = prefab.name.EraseBracketInName();
-        if (m_PoolMap.TryGetValue(prefabName, out var list))
-        {
-            var find = list.Find(obj => obj.Poolable);
-            if (find != null)
-            {
-                find.OnLoad();
-                find.Poolable = false;
-                return find;
-            }
-        }
-
-        return InstantiatePrefab<PoolableObject>(prefab, list, parent);
-    }
-
     T InstantiatePrefab<T>(GameObject prefab, List<IPoolable> pool, Transform parent = null) where T : Component, IPoolable
     {
         var _inst = UnityEngine.Object.Instantiate(prefab);
         T inst = null;
-
-        if (_inst.GetComponent<T>() == null)
-            inst = _inst.AddComponent<T>();
 
         if (parent)
             inst.transform.SetParent(parent);

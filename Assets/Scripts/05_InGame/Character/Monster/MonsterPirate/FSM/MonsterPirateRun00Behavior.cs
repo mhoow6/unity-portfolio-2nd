@@ -17,7 +17,13 @@ public class MonsterPirateRun00Behavior : MonsterPirateBehavior
         {
             // 타겟을 공격해야하는 경우
             if (m_Self.Target != null)
-                m_Self.AnimationJobs.Enqueue(AniType.IDLE_0);
+            {
+                if (m_Self.Decision != MonsterPirateDecision.Attack)
+                {
+                    m_Self.AnimationJobs.Enqueue(AniType.IDLE_0);
+                    m_Self.Decision = MonsterPirateDecision.Attack;
+                }
+            }
         }
             
     }
