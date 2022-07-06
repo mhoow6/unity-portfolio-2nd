@@ -60,13 +60,13 @@ public class NickNameInputUI : ConfirmUI
         }
 
         // 특수문자 검사
-        if (Regex.IsMatch(InputField.text, @"[^0-9a-zA-Z]+"))
-        {
-            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
-            warning.SetData("특수문자를 포함시킬 수 없습니다.");
-            InputField.text = string.Empty;
-            return false;
-        }    
+        //if (Regex.IsMatch(InputField.text, @"[^0-9a-zA-Z]+"))
+        //{
+        //    var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+        //    warning.SetData("특수문자를 포함시킬 수 없습니다.");
+        //    InputField.text = string.Empty;
+        //    return false;
+        //}    
 
         // 비속어 검사
         var table = TableManager.Instance.SlangTable;

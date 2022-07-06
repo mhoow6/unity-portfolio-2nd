@@ -6,6 +6,7 @@ public class MonsterPirateBulletFiredEffect : Effect
 {
     protected override void OnPoolLoaded()
     {
-        StartCoroutine(AutoRelease());
+        if (gameObject.activeSelf)
+            StartCoroutine(AutoRelease());
     }
 }

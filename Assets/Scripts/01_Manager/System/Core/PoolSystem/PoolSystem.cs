@@ -93,7 +93,7 @@ public class PoolSystem : IGameSystem
     T InstantiatePrefab<T>(GameObject prefab, List<IPoolable> pool, Transform parent = null) where T : Component, IPoolable
     {
         var _inst = UnityEngine.Object.Instantiate(prefab);
-        T inst = null;
+        T inst = _inst.GetComponent<T>();
 
         if (parent)
             inst.transform.SetParent(parent);

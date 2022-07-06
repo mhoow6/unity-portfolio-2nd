@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Sparcher_PreloadSettings", menuName = "Sparcher Preload Settings", order = 2)]
+[CreateAssetMenu(fileName = "Sparcher_PreloadSettings", menuName = "Preload/Sparcher Preload Settings", order = 2)]
 public class SparcherPreloadSettings : PreloadSettings
 {
     [HideInInspector] public GameObject UltimateCutscene;

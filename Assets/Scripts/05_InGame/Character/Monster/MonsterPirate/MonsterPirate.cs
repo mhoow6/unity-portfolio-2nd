@@ -17,14 +17,14 @@ public class MonsterPirate : Monster
 
     public void ShootBullet()
     {
+        var preload = Preloads as MonsterPiratePreloadSettings;
+
         // 발사하는 순간 이펙트
-        var effectPath = GameManager.GameDevelopSettings.EffectResourcePath;
-        var projPath = GameManager.GameDevelopSettings.ProjectileResourcePath;
-        var effect = StageManager.Instance.PoolSystem.Load<MonsterPirateBulletFiredEffect>($"{effectPath}/MonsterPirate_BulletFired");
+        var effect = StageManager.Instance.PoolSystem.Load<MonsterPirateBulletFiredEffect>(preload.Prefab_BulletFired);
         effect.transform.SetPositionAndRotation(BulletFiredPosition.position, BulletFiredPosition.rotation);
 
         // 포탄
-        var bullet = StageManager.Instance.PoolSystem.Load<MonsterPirateBullet>($"{projPath}/MonsterPirate_Bullet");
+        var bullet = StageManager.Instance.PoolSystem.Load<MonsterPirateBullet>(preload.Prefab_Bullet);
         bullet.transform.SetPositionAndRotation(BulletFiredPosition.position, transform.rotation);
 
         var attackData = GetSkillData(GetAttackIndex(ObjectCode.CHAR_MonsterPirate)) as MonsterPirateAttackData;
