@@ -119,16 +119,16 @@ public abstract class Monster : Character
         string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
         if (randomPoint >= 50 || GameManager.CheatSettings.DropRecoveryItemClearly)
         {
-            var spDropItem = manager.PoolSystem.Load<SpRecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
-            var hpDropItem = manager.PoolSystem.Load<HpRecoveryItem>($"{interactablePath}/DropItem_HpRecovery");
+            var spDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_SpRecovery");
+            var hpDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_HpRecovery");
 
             ThrowDropItem(spDropItem, 0.2f);
             ThrowDropItem(hpDropItem, 0.2f);
         }
 
         // 100%확률로 골드 드랍
-        var goldDropItem = manager.PoolSystem.Load<GoldDropItem>($"{interactablePath}/DropItem_Gold");
-        ThrowDropItem(goldDropItem);
+        var goldDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Gold");
+        ThrowDropItem(goldDropItem, 0.1f);
 
         // 100% 확률로 스테이지 아이템 리스트 중 하나를 드랍
         var stageDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Box");
