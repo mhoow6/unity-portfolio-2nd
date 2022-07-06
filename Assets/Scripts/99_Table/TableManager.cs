@@ -9,11 +9,13 @@ namespace DatabaseSystem
 		public int LoadedData { get; private set; } = 0;
 		public List<AniTypeDialogueTable> AniTypeDialogueTable = new List<AniTypeDialogueTable>();
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
+		public List<HpRecoveryItemTable> HpRecoveryItemTable = new List<HpRecoveryItemTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
+		public List<SpRecoveryItemTable> SpRecoveryItemTable = new List<SpRecoveryItemTable>();
 		public List<StageDialogueTable> StageDialogueTable = new List<StageDialogueTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
 		public void LoadTable()
@@ -57,6 +59,21 @@ namespace DatabaseSystem
 				info.LobbyAnimatorPath = datas[15];
 				
                 CharacterTable.Add(info);
+                LoadedData++;
+            }
+        
+            var HpRecoveryItemTableTextasset = Resources.Load<TextAsset>("99_Database/Table/HpRecoveryItemTable");
+            string[] HpRecoveryItemTableLines = HpRecoveryItemTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < HpRecoveryItemTableLines.Length; i++)
+            {
+                string[] datas = HpRecoveryItemTableLines[i].Split(',');
+                HpRecoveryItemTable info;
+                info.ItemIdx = int.Parse(datas[0]);
+				info.MinUseLevel = int.Parse(datas[1]);
+				info.MaxUseLevel = int.Parse(datas[2]);
+				info.HpRecoveryPoint = int.Parse(datas[3]);
+				
+                HpRecoveryItemTable.Add(info);
                 LoadedData++;
             }
         
@@ -122,6 +139,21 @@ namespace DatabaseSystem
                 info.SlangWord = datas[0];
 				
                 SlangTable.Add(info);
+                LoadedData++;
+            }
+        
+            var SpRecoveryItemTableTextasset = Resources.Load<TextAsset>("99_Database/Table/SpRecoveryItemTable");
+            string[] SpRecoveryItemTableLines = SpRecoveryItemTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < SpRecoveryItemTableLines.Length; i++)
+            {
+                string[] datas = SpRecoveryItemTableLines[i].Split(',');
+                SpRecoveryItemTable info;
+                info.ItemIdx = int.Parse(datas[0]);
+				info.MinUseLevel = int.Parse(datas[1]);
+				info.MaxUseLevel = int.Parse(datas[2]);
+				info.SpRecoveryPoint = int.Parse(datas[3]);
+				
+                SpRecoveryItemTable.Add(info);
                 LoadedData++;
             }
         

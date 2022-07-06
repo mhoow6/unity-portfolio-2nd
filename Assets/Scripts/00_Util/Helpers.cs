@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-
+using System.Threading.Tasks;
+using System.Threading;
 public static class FileHelper
 {
     #region 파일 읽기/쓰기/삭제
@@ -329,4 +330,22 @@ public static class UnityHelper
 
         return false;
     }
+
+    /// <summary>
+    /// position에서 밑으로 Raycast를 합니다.
+    /// </summary>
+    public static bool RaycastDown(this Vector3 position, out Vector3 hitPoint)
+    {
+        // 포탄이 닿을 오브젝트 감지
+        Ray ray = new Ray(position, Vector3.down);
+        RaycastHit hitInfo;
+        if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+        {
+            hitPoint = hitInfo.point;
+            return true;
+        }
+        hitPoint = Vector3.zero;
+        return false;
+    }
+
 }

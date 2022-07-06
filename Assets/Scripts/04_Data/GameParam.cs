@@ -20,3 +20,11 @@ public struct SkillButtonParam
     public Action OnExit;
     public Skillable SkillData;
 }
+
+public struct MoveInParabolaParam
+{
+    public Vector3 StartPosition;
+    public Vector3 EndPosition;
+    public float Height;
+    public float SimulateTime;
+}

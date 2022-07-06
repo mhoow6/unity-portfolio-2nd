@@ -84,6 +84,7 @@ public abstract class Monster : Character
     protected override void OnDead(Character attacker, int damage)
     {
         var manager = StageManager.Instance;
+
         if (manager != null)
         {
             // 스테이지 매니저의 몬스터 리스트에서 삭제
@@ -112,6 +113,47 @@ public abstract class Monster : Character
 
         if (m_TargetLockOnImage)
             GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+
+        // 50%확률로 SP,HP 회복아이템 드랍
+        int randomPoint = UnityEngine.Random.Range(0, 100);
+        if (randomPoint >= 50 || GameManager.CheatSettings.DropRecoveryItemClearly)
+        {
+            string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
+
+            var spDropItem = manager.PoolSystem.Load<SpRecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
+            var hpDropItem = manager.PoolSystem.Load<HpRecoveryItem>($"{interactablePath}/DropItem_HpRecovery");
+
+            Vector3 dropItemStartPosition = transform.position;
+            dropItemStartPosition = new Vector3(dropItemStartPosition.x, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z);
+
+            // 2m 반경안의 랜덤한 곳에 놓기
+            Vector3 spDropItemEndPosition = Vector3.zero;
+            float spRadius = UnityEngine.Random.Range(-2, 2);
+            spDropItemEndPosition = new Vector3(dropItemStartPosition.x + spRadius, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z + spRadius);
+
+            Vector3 hpDropItemEndPosition = Vector3.zero;
+            float hpRadius = UnityEngine.Random.Range(-2, 2);
+            hpDropItemEndPosition = new Vector3(dropItemStartPosition.x + hpRadius, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z + hpRadius);
+
+            MoveInParabolaParam spDropItemParam = new MoveInParabolaParam()
+            {
+                StartPosition = dropItemStartPosition,
+                EndPosition = spDropItemEndPosition,
+                Height = 0.3f,
+                SimulateTime = 1f
+            };
+
+            MoveInParabolaParam hpDropItemParam = new MoveInParabolaParam()
+            {
+                StartPosition = dropItemStartPosition,
+                EndPosition = hpDropItemEndPosition,
+                Height = 0.3f,
+                SimulateTime = 1f
+            };
+
+            spDropItem.MoveInParabola(spDropItemParam);
+            hpDropItem.MoveInParabola(hpDropItemParam);
+        }
     }
 
     // -----------------------------------------------------------------------

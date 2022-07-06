@@ -186,6 +186,18 @@
         /// <summary> 대포발사 이펙트 </summary> ///
         Effect_CanonBulletFired = 10,
 
+        /// <summary> Sp를 회복하게 하는 아이템 (필드드랍) </summary> ///
+        ITEM_SPRecoveryDrop = 11,
+
+        /// <summary> Sp를 회복하게 하는 아이템 (전투시스템) </summary> ///
+        ITEM_SPRecovery = 12,
+
+        /// <summary> Hp를 회복하게 하는 아이템 (필드드랍) </summary> ///
+        ITEM_HPRecoveryDrop = 13,
+
+        /// <summary> Hp를 회복하게 하는 아이템 (전투시스템) </summary> ///
+        ITEM_HPRecovery = 14,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

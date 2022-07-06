@@ -117,7 +117,7 @@ public class Projectile : BaseObject, IPoolable
     #endregion
 }
 
-/// <summary> 투사체 궤적 타입 </summary> ///
+/// <summary> 투사체 궤적 타입 </summary>
 public enum TrajectoryType
 {
     /// <summary> 직선 </summary>

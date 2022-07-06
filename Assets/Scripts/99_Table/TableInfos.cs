@@ -46,6 +46,18 @@
 		public string LobbyAnimatorPath;
 	}
 
+	public struct HpRecoveryItemTable
+	{
+		/// <summary> 아이템 IDX </summary> ///
+		public int ItemIdx;
+		/// <summary> 아이템을 쓸 수 있는 최소 캐릭터 레벨 </summary> ///
+		public int MinUseLevel;
+		/// <summary> 아이템이 쓸 수 있는 최대 캐릭터 레벨 </summary> ///
+		public int MaxUseLevel;
+		/// <summary> HP 회복량 </summary> ///
+		public int HpRecoveryPoint;
+	}
+
 	public struct PlayerLevelEnergyTable
 	{
 		/// <summary> 레벨 </summary> ///
@@ -84,6 +96,18 @@
 	{
 		/// <summary> 비속어 단어 </summary> ///
 		public string SlangWord;
+	}
+
+	public struct SpRecoveryItemTable
+	{
+		/// <summary> 아이템 IDX </summary> ///
+		public int ItemIdx;
+		/// <summary> 아이템을 쓸 수 있는 최소 캐릭터 레벨 </summary> ///
+		public int MinUseLevel;
+		/// <summary> 아이템이 쓸 수 있는 최대 캐릭터 레벨 </summary> ///
+		public int MaxUseLevel;
+		/// <summary> SP 회복량 </summary> ///
+		public int SpRecoveryPoint;
 	}
 
 	public struct StageDialogueTable

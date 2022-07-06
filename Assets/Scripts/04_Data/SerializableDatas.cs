@@ -71,4 +71,5 @@ public struct CheatSettings
 {
     public bool GodMode;
     public bool OneShotKill;
+    public bool DropRecoveryItemClearly;
 }

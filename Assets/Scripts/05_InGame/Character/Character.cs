@@ -124,6 +124,18 @@ public abstract class Character : BaseObject, ISubscribable
 
     }
 
+    public int Level
+    {
+        get
+        {
+            return m_Data.Level;
+        }
+        set
+        {
+            m_Data.Level = value;
+        }
+    }
+
     /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
     public static int GetPassiveIndex(ObjectCode objectCode)
     {
@@ -224,9 +236,17 @@ public abstract class Character : BaseObject, ISubscribable
         if (Invulnerable)
             return;
 
-        // 플레이어 자신인 경우
-        if (attacker.Equals(StageManager.Instance.Player.CurrentCharacter))
+        // 플레이어 치트
+        var player = StageManager.Instance.Player.CurrentCharacter;
+        var victim = this;
+        if (attacker.Equals(player))
         {
+            if (GameManager.CheatSettings.OneShotKill)
+                damage = 999999999;
+        }
+        if (victim.Equals(player))
+        {
+
             if (GameManager.CheatSettings.GodMode)
                 damage = 0;
         }
@@ -284,10 +304,6 @@ public abstract class Character : BaseObject, ISubscribable
 
         // 계산된 데미지에 스케일 적용
         damage *= damageScale;
-
-        // 치트
-        if (GameManager.CheatSettings.OneShotKill)
-            result.Damage = 999999999;
 
         // 결과
         result.Damage = (int)damage;
