@@ -22,4 +22,5 @@ public abstract class BaseObject : MonoBehaviour
             yield return null;
         }
     }
+
 }

@@ -34,9 +34,6 @@ public abstract class DropItem : Item, IPoolable
         if (sm == null)
             return;
 
-        // 벽에 닿으면 그 자리에 멈추도록 해야함
-        
-
         // 플레이어말고는 먹지 못하도록 하자
         if (!other.CompareTag(sm.Player.CurrentCharacter.tag))
             return;

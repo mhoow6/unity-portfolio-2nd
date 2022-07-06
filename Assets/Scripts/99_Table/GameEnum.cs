@@ -189,14 +189,17 @@
         /// <summary> Sp를 회복하게 하는 아이템 (필드드랍) </summary> ///
         ITEM_SPRecoveryDrop = 11,
 
-        /// <summary> Sp를 회복하게 하는 아이템 (전투시스템) </summary> ///
-        ITEM_SPRecovery = 12,
-
         /// <summary> Hp를 회복하게 하는 아이템 (필드드랍) </summary> ///
-        ITEM_HPRecoveryDrop = 13,
+        ITEM_HPRecoveryDrop = 12,
 
-        /// <summary> Hp를 회복하게 하는 아이템 (전투시스템) </summary> ///
-        ITEM_HPRecovery = 14,
+        /// <summary> 스테이지에서 얻을 수 있는 골드 (필드드랍) </summary> ///
+        ITEM_GoldDrop = 13,
+
+        /// <summary> 캐릭터 레벨업 아이템 </summary> ///
+        ITEM_CharacterLevelUpChip = 14,
+
+        /// <summary> 무기 레벨업 아이템 </summary> ///
+        ITEM_WeaponLevelUpChip = 15,
 
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,

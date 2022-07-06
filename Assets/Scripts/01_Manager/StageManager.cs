@@ -23,7 +23,10 @@ public sealed class StageManager : GameSceneManager
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
 
-    Queue<PreloadParam> m_ReservedForPreloading = new Queue<PreloadParam>();
+    public List<ObjectCode> StageDropItems = new List<ObjectCode>(5);
+    public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
+
+    Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
     bool m_Init;
 
     void Awake()
@@ -130,6 +133,26 @@ public sealed class StageManager : GameSceneManager
 
         // --------------------------------------------------------------------------------------------------------
 
+        // 스테이지 아이템 리스트 세팅
+        var dropData = TableManager.Instance.StageDropItemTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
+
+        if (dropData.DropItem1Code != ObjectCode.NONE)
+            StageDropItems.Add(dropData.DropItem1Code);
+
+        if (dropData.DropItem2Code != ObjectCode.NONE)
+            StageDropItems.Add(dropData.DropItem2Code);
+
+        if (dropData.DropItem3Code != ObjectCode.NONE)
+            StageDropItems.Add(dropData.DropItem3Code);
+
+        if (dropData.DropItem4Code != ObjectCode.NONE)
+            StageDropItems.Add(dropData.DropItem4Code);
+
+        if (dropData.DropItem5Code != ObjectCode.NONE)
+            StageDropItems.Add(dropData.DropItem5Code);
+
+        // --------------------------------------------------------------------------------------------------------
+
         onInitalized?.Invoke();
         GameManager.InputSystem.CameraRotatable = true;
         m_Init = true;
@@ -172,15 +195,15 @@ public sealed class StageManager : GameSceneManager
             Debug.LogWarning($"게임이 시작된 이후에 {param.PreloadPrefab.name}을 프리로드 할려고 하고있습니다.");
             return;
         }
-        m_ReservedForPreloading.Enqueue(param);
+        m_PreloadQueue.Enqueue(param);
     }
 
     /// <summary> 프리로드된 오브젝트에 대한 처리 </summary>
     IEnumerator ProcessingPreloads()
     {
-        while (m_ReservedForPreloading.Count != 0)
+        while (m_PreloadQueue.Count != 0)
         {
-            var param = m_ReservedForPreloading.Dequeue();
+            var param = m_PreloadQueue.Dequeue();
             GameObject _gameObject = param.PreloadPrefab;
             GameObject gameObject = Instantiate(_gameObject, PreloadZone);
 

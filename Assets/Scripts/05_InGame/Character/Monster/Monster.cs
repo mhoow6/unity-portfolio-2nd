@@ -116,44 +116,23 @@ public abstract class Monster : Character
 
         // 50%확률로 SP,HP 회복아이템 드랍
         int randomPoint = UnityEngine.Random.Range(0, 100);
+        string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
         if (randomPoint >= 50 || GameManager.CheatSettings.DropRecoveryItemClearly)
         {
-            string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
-
             var spDropItem = manager.PoolSystem.Load<SpRecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
             var hpDropItem = manager.PoolSystem.Load<HpRecoveryItem>($"{interactablePath}/DropItem_HpRecovery");
 
-            Vector3 dropItemStartPosition = transform.position;
-            dropItemStartPosition = new Vector3(dropItemStartPosition.x, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z);
-
-            // 2m 반경안의 랜덤한 곳에 놓기
-            Vector3 spDropItemEndPosition = Vector3.zero;
-            float spRadius = UnityEngine.Random.Range(-2, 2);
-            spDropItemEndPosition = new Vector3(dropItemStartPosition.x + spRadius, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z + spRadius);
-
-            Vector3 hpDropItemEndPosition = Vector3.zero;
-            float hpRadius = UnityEngine.Random.Range(-2, 2);
-            hpDropItemEndPosition = new Vector3(dropItemStartPosition.x + hpRadius, dropItemStartPosition.y + 0.2f, dropItemStartPosition.z + hpRadius);
-
-            MoveInParabolaParam spDropItemParam = new MoveInParabolaParam()
-            {
-                StartPosition = dropItemStartPosition,
-                EndPosition = spDropItemEndPosition,
-                Height = 0.3f,
-                SimulateTime = 1f
-            };
-
-            MoveInParabolaParam hpDropItemParam = new MoveInParabolaParam()
-            {
-                StartPosition = dropItemStartPosition,
-                EndPosition = hpDropItemEndPosition,
-                Height = 0.3f,
-                SimulateTime = 1f
-            };
-
-            spDropItem.MoveInParabola(spDropItemParam);
-            hpDropItem.MoveInParabola(hpDropItemParam);
+            ThrowDropItem(spDropItem, 0.2f);
+            ThrowDropItem(hpDropItem, 0.2f);
         }
+
+        // 100%확률로 골드 드랍
+        var goldDropItem = manager.PoolSystem.Load<GoldDropItem>($"{interactablePath}/DropItem_Gold");
+        ThrowDropItem(goldDropItem);
+
+        // 100% 확률로 스테이지 아이템 리스트 중 하나를 드랍
+        var stageDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Box");
+        ThrowDropItem(stageDropItem);
     }
 
     // -----------------------------------------------------------------------
@@ -194,4 +173,22 @@ public abstract class Monster : Character
         }
     }
     #endregion
+
+    void ThrowDropItem(DropItem dropItem, float adjustHeight = 0f)
+    {
+        Vector3 dropStartPosition = transform.position;
+        dropStartPosition = new Vector3(dropStartPosition.x, dropStartPosition.y + adjustHeight, dropStartPosition.z);
+        Vector3 dropEndPosition = Vector3.zero;
+        float itemRadius = UnityEngine.Random.Range(-2, 2);
+        dropEndPosition = new Vector3(dropStartPosition.x + itemRadius, dropStartPosition.y, dropStartPosition.z + itemRadius);
+        MoveInParabolaParam itemParam = new MoveInParabolaParam()
+        {
+            StartPosition = dropStartPosition,
+            EndPosition = dropEndPosition,
+            Height = 0.3f,
+            SimulateTime = 1f
+        };
+
+        dropItem.MoveInParabola(itemParam);
+    }
 }

@@ -17,6 +17,7 @@ namespace DatabaseSystem
 		public List<SlangTable> SlangTable = new List<SlangTable>();
 		public List<SpRecoveryItemTable> SpRecoveryItemTable = new List<SpRecoveryItemTable>();
 		public List<StageDialogueTable> StageDialogueTable = new List<StageDialogueTable>();
+		public List<StageDropItemTable> StageDropItemTable = new List<StageDropItemTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
 		public void LoadTable()
 		{
@@ -174,6 +175,26 @@ namespace DatabaseSystem
 				info.Dialogue = datas[8];
 				
                 StageDialogueTable.Add(info);
+                LoadedData++;
+            }
+        
+            var StageDropItemTableTextasset = Resources.Load<TextAsset>("99_Database/Table/StageDropItemTable");
+            string[] StageDropItemTableLines = StageDropItemTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < StageDropItemTableLines.Length; i++)
+            {
+                string[] datas = StageDropItemTableLines[i].Split(',');
+                StageDropItemTable info;
+                info.WorldIdx = int.Parse(datas[0]);
+				info.StageIdx = int.Parse(datas[1]);
+				info.MinGoldDropValue = int.Parse(datas[2]);
+				info.MaxGoldDropValue = int.Parse(datas[3]);
+				info.DropItem1Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[4]);
+				info.DropItem2Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[5]);
+				info.DropItem3Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[6]);
+				info.DropItem4Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[7]);
+				info.DropItem5Code = (ObjectCode)Enum.Parse(typeof(ObjectCode),datas[8]);
+				
+                StageDropItemTable.Add(info);
                 LoadedData++;
             }
         

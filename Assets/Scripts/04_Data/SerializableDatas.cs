@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class StageRecordData
@@ -72,4 +73,28 @@ public struct CheatSettings
     public bool GodMode;
     public bool OneShotKill;
     public bool DropRecoveryItemClearly;
+}
+
+[Serializable]
+public struct StageResultData
+{
+    public int Gold;
+    public int Score;
+    public List<StageRewardItemData> Rewards;
+    public TimeSpan Duration;
+
+    public StageResultData(List<StageRewardItemData> rewardList)
+    {
+        Rewards = rewardList;
+        Gold = 0;
+        Score = 0;
+        Duration = default(TimeSpan);
+    }
+}
+
+[Serializable]
+public struct StageRewardItemData
+{
+    public ObjectCode Code;
+    public int Quantity;
 }

@@ -132,6 +132,28 @@
 		public string Dialogue;
 	}
 
+	public struct StageDropItemTable
+	{
+		/// <summary> 월드 IDX </summary> ///
+		public int WorldIdx;
+		/// <summary> 스테이지 IDX </summary> ///
+		public int StageIdx;
+		/// <summary> 드랍하는 골드의 최소값 </summary> ///
+		public int MinGoldDropValue;
+		/// <summary> 드랍하는 골드의 최대값 </summary> ///
+		public int MaxGoldDropValue;
+		/// <summary> 드랍하는 아이템1 코드 </summary> ///
+		public ObjectCode DropItem1Code;
+		/// <summary> 드랍하는 아이템2 코드 </summary> ///
+		public ObjectCode DropItem2Code;
+		/// <summary> 드랍하는 아이템3 코드 </summary> ///
+		public ObjectCode DropItem3Code;
+		/// <summary> 드랍하는 아이템4 코드 </summary> ///
+		public ObjectCode DropItem4Code;
+		/// <summary> 드랍하는 아이템5 코드 </summary> ///
+		public ObjectCode DropItem5Code;
+	}
+
 	public struct StageTable
 	{
 		/// <summary> 월드 IDX </summary> ///
