@@ -78,11 +78,11 @@ public class UISystem : MonoBehaviour, IGameSystem
         {
             if (m_WindowStack.Count > 0)
             {
-                if (m_WindowStack.Peek().Type != UIType.MainLobby)
+                if (m_WindowStack.Count > 1)
                     CloseWindow();
                 else
                 {
-                    var confirm = OpenWindow<ConfirmUI>(UIType.Confirm);
+                    var confirm = OpenWindow<ConfirmUI>(UIType.Confirm, false);
                     confirm.SetData("게임을 종료하시겠습니까?", Application.Quit);
                 }
             }

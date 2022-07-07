@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 public class PlayerData : ISubscribable
 {
     public Guid Guid;
+
+    // --------------------------------------------------------------------
+
     [JsonIgnore] public string NickName
     {
         get => m_NickName;
@@ -69,14 +72,21 @@ public class PlayerData : ISubscribable
     [JsonProperty] int m_Gold;
     [JsonIgnore] public Action<int> OnGoldUpdate;
 
-    [JsonIgnore] static string m_FilePath;
+    // --------------------------------------------------------------------
 
     public bool AskForNickName;
+
+    // --------------------------------------------------------------------
 
     public ObjectCode MainMenuCharacter;
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
     public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
     public List<CharacterRecordData> CharacterDatas = new List<CharacterRecordData>();
+
+    // --------------------------------------------------------------------
+
+    [JsonIgnore] static string m_FilePath;
+    [JsonProperty] DateTime LastGameConnectTime;
 
     public PlayerData()
     {
@@ -105,6 +115,8 @@ public class PlayerData : ISubscribable
 
     public void Save()
     {
+        LastGameConnectTime = DateTime.Now;
+
         var saveData = JsonConvert.SerializeObject(this);
         FileHelper.WriteFile(m_FilePath, saveData);
         Debug.Log($"게임 데이터 저장완료. 저장경로 {m_FilePath}");

@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEngine;
 
 
-#if UNITY_EDITOR
 public class SavefileEditor : EditorWindow
 {
     public static SavefileEditor Instance { get; private set; }
@@ -62,7 +61,7 @@ public class SavefileEditor : EditorWindow
         GUILayout.Label("세이브 파일", EditorStyles.boldLabel);
         GUILayout.Space(2);
         if (m_PlayerData != null)
-            m_textAreaString = EditorGUILayout.TextArea(m_textAreaString, new GUILayoutOption[] { GUILayout.Height(300) });
+            m_textAreaString = EditorGUILayout.TextArea(m_textAreaString.BeautifyJson(), GUILayout.ExpandHeight(true));
 
         m_PlayerDataSave = EditorGUILayout.Toggle("종료시 세이브 파일 저장", m_PlayerDataSave, new GUILayoutOption[] { GUILayout.Width(100) });
         #endregion
@@ -145,4 +144,3 @@ public class SavefileEditor : EditorWindow
         m_textAreaString = m_PlayerDataString;
     }
 }
-#endif

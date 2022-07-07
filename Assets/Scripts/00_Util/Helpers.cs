@@ -6,6 +6,9 @@ using UnityEditor;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 public static class FileHelper
 {
     #region 파일 읽기/쓰기/삭제
@@ -185,6 +188,12 @@ public static class FileHelper
         }
 
         return indices[oridinal - 1];
+    }
+
+    public static string BeautifyJson(this string jsonString)
+    {
+        string beautifiedJson = JValue.Parse(jsonString).ToString(Formatting.Indented);
+        return beautifiedJson;
     }
     #endregion
 }
