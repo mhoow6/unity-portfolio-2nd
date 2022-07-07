@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using DatabaseSystem;
+using System.Linq;
 
 public abstract class Monster : Character
 {
@@ -172,15 +173,57 @@ public abstract class Monster : Character
             yield return null;
         }
     }
-    #endregion
 
     void ThrowDropItem(DropItem dropItem, float adjustHeight = 0f)
     {
         Vector3 dropStartPosition = transform.position;
         dropStartPosition = new Vector3(dropStartPosition.x, dropStartPosition.y + adjustHeight, dropStartPosition.z);
-        Vector3 dropEndPosition = Vector3.zero;
-        float itemRadius = UnityEngine.Random.Range(-2, 2);
-        dropEndPosition = new Vector3(dropStartPosition.x + itemRadius, dropStartPosition.y, dropStartPosition.z + itemRadius);
+
+        bool colliderCheck = false;
+        Vector3 dropEndPosition = dropStartPosition;
+        float itemDropDistance = UnityEngine.Random.Range(-2, 2);
+        dropEndPosition = new Vector3(dropStartPosition.x + itemDropDistance, dropStartPosition.y, dropStartPosition.z + itemDropDistance);
+
+        // 경로의 점들을 체크해서, 뭔가에 부딪히게 되면 해당 좌표에서 밑으로 ray를 쏴서 그 위치에 닿게 해야한다.
+        int layermask = GameManager.GameDevelopSettings.TerrainLayermask;
+        float timer = 0f;
+        int coordinateInPathCount = 0;
+
+        BoxCollider dropItemCollider = dropItem.GetComponent<BoxCollider>();
+        float colliderMaxSize = dropItemCollider.size.x;
+        if (colliderMaxSize < dropItemCollider.size.y)
+            colliderMaxSize = dropItemCollider.size.y;
+
+        if (colliderMaxSize < dropItemCollider.size.z)
+            colliderMaxSize = dropItemCollider.size.z;
+
+
+        while (colliderCheck == false)
+        {
+            timer += Time.deltaTime;
+            coordinateInPathCount++;
+
+            if (coordinateInPathCount < 10)
+                continue;
+
+            Vector3 position = MathParabola.Parabola(dropStartPosition, dropEndPosition, 0.3f, timer / 1f);
+
+            // 콜라이더의 최대 사이즈 반경으로 감지
+            var hitColliders = UnityEngine.Physics.OverlapSphere(position, colliderMaxSize, 1 << layermask);
+
+            if (hitColliders.Length > 0)
+            {
+                colliderCheck = true;
+                if (position.RaycastDown(out Vector3 groundPoint))
+                    dropEndPosition = groundPoint;
+
+                break;
+            }
+
+            if (timer > 1f)
+                colliderCheck = true;
+        }
+
         MoveInParabolaParam itemParam = new MoveInParabolaParam()
         {
             StartPosition = dropStartPosition,
@@ -188,7 +231,9 @@ public abstract class Monster : Character
             Height = 0.3f,
             SimulateTime = 1f
         };
-
         dropItem.MoveInParabola(itemParam);
     }
+    #endregion
+
+
 }

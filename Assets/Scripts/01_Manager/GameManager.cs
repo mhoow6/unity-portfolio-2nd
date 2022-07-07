@@ -82,6 +82,7 @@ public sealed class GameManager : MonoBehaviour
         Debug.unityLogger.logEnabled = true;
 #else
         Debug.unityLogger.logEnabled = DebugLog ? true : false;
+        m_CheatSettings = new CheatSettings();
 #endif
 
         // Load Database
