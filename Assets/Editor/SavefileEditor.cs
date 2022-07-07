@@ -13,23 +13,27 @@ public class SavefileEditor : EditorWindow
     PlayerData m_PlayerData;
     string m_PlayerDataString;
     bool m_PlayerDataSave;
+
     string m_textAreaString;
+    Vector3 m_PlayerDataScrollPos;
+
     ObjectCode m_SelectedCharacter;
+
     StageRecordData m_AddStageRecord = new StageRecordData();
     int m_updateStageRecordWorldIndex;
     int m_updateStageRecordStageIndex;
+
+    const int WINDOW_WIDTH = 800;
+    const int WINDOW_HEIGHT = 800;
 
     [MenuItem("Custom Tools/Editor/Savefile Editor")]
 
     public static void Init()
     {
-        const int width = 800;
-        const int height = 800;
+        var x = (Screen.currentResolution.width - WINDOW_WIDTH) / 2;
+        var y = (Screen.currentResolution.height - WINDOW_HEIGHT) / 2;
 
-        var x = (Screen.currentResolution.width - width) / 2;
-        var y = (Screen.currentResolution.height - height) / 2;
-
-        GetWindow<SavefileEditor>().position = new Rect(x, y, width, height);
+        GetWindow<SavefileEditor>().position = new Rect(x, y, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         EditorStyles.boldLabel.fontSize = 14;
         EditorStyles.textField.fontSize = 14;
@@ -61,7 +65,12 @@ public class SavefileEditor : EditorWindow
         GUILayout.Label("세이브 파일", EditorStyles.boldLabel);
         GUILayout.Space(2);
         if (m_PlayerData != null)
-            m_textAreaString = EditorGUILayout.TextArea(m_textAreaString.BeautifyJson(), GUILayout.ExpandHeight(true));
+        {
+            m_PlayerDataScrollPos = EditorGUILayout.BeginScrollView(m_PlayerDataScrollPos, GUILayout.Width(WINDOW_WIDTH), GUILayout.Height(400));
+            m_textAreaString = EditorGUILayout.TextArea(m_textAreaString.BeautifyJson());
+            GUILayout.EndScrollView();
+        }
+            
 
         m_PlayerDataSave = EditorGUILayout.Toggle("종료시 세이브 파일 저장", m_PlayerDataSave, new GUILayoutOption[] { GUILayout.Width(100) });
         #endregion
@@ -123,6 +132,7 @@ public class SavefileEditor : EditorWindow
         }
 
         #endregion
+
     }
 
     private void OnDestroy()

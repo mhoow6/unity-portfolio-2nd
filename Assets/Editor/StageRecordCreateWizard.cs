@@ -24,7 +24,5 @@ public class StageRecordCreateWizard : ScriptableWizard
             m_PlayerData.StageRecords.Add(m_Data);
             SavefileEditor.Instance.UpdatePlayerData();
         }
-            
-        Debug.Log($"{m_Data.WorldIdx}-{m_Data.StageIdx}의 기록추가를 시도합니다.");
     }
 }
