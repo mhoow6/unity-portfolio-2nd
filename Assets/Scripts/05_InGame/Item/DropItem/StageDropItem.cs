@@ -17,10 +17,19 @@ public class StageDropItem : DropItem
 
         int randomIdx = UnityEngine.Random.Range(0, sm.StageDropItems.Count - 1);
         ObjectCode dropItemCode = sm.StageDropItems[randomIdx];
-        sm.StageResult.Rewards.Add(new StageRewardItemData()
+
+        var exist = sm.StageResult.Rewards.Find(reward => reward.Code == dropItemCode);
+        if (exist != null)
         {
-            Code = dropItemCode,
-            Quantity = 1
-        });
+            exist.Quantity++;
+        }
+        else
+        {
+            sm.StageResult.Rewards.Add(new StageRewardItemData()
+            {
+                Code = dropItemCode,
+                Quantity = 1
+            });
+        }
     }
 }

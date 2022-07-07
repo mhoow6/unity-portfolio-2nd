@@ -93,7 +93,7 @@ public struct StageResultData
 }
 
 [Serializable]
-public struct StageRewardItemData
+public class StageRewardItemData
 {
     public ObjectCode Code;
     public int Quantity;
