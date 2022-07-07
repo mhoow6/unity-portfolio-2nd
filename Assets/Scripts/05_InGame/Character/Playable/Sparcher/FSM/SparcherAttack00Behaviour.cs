@@ -13,7 +13,6 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
     {
         base.OnAnimationEnter(animator, stateInfo, layerIndex);
 
-        m_Player = StageManager.Instance.Player;
         m_Player.Controlable = false;
         var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Self.Code)] as SparcherBasicAttackData;
 
@@ -38,12 +37,15 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         if (m_CurrentAnimationTime > 0.686f && !m_Shoot)
         {
             m_Shoot = true;
-            m_Self.Attack();
+            m_Self.ShootArrow();
         }
 
         // 자유롭게 행동할 수 있는 시간은 애니메이션이 80% 완료된 이후
         if (m_CurrentAnimationTime > 0.80f)
+        {
             m_Player.AnimationJobs.Enqueue(AniType.IDLE_0);
+        }
+            
     }
 
     protected override void OnAnimationExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

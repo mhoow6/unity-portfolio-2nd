@@ -47,11 +47,11 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                             else if (m_DecisionTimer > decisionTime)
                             {
                                 // АјАн
-                                m_Self.Attack();
+                                m_Self.SetAttackBehavior();
                             }
 
                             if (m_Self.Decision == MonsterPirateDecision.Attack)
-                                m_Self.Attack();
+                                m_Self.SetAttackBehavior();
                         });
                     }
                     else
@@ -65,7 +65,7 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                             else if (m_DecisionTimer > decisionTime)
                             {
                                 Vector3 stopPosition = m_Self.Target.transform.position - (fromTargetNormalized * attackRange);
-                                m_Self.GoingTo(stopPosition);
+                                m_Self.SetWalkBehavior(stopPosition);
                             }
                         });
                     }

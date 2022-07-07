@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -201,21 +202,21 @@ public class Player : MonoBehaviour
     #endregion
 
     #region 목적지로 캐릭터 무조건 이동
-    public bool SmoothlyMoving { get; private set; }
+    bool m_SmoothlyMoving;
 
     /// <summary> 목적지로 캐릭터가 정해진 시간안에 이동하게 합니다. </summary>
-    public void SmoothlyMovingTo(Vector3 destination, float desiredTime)
+    public void SmoothlyMovingTo(Vector3 destination, float desiredTime, Action onArriveCallback = null)
     {
-        if (SmoothlyMoving)
+        if (m_SmoothlyMoving)
             return;
 
-        StartCoroutine(SmoothlyMovingCoroutine(destination, desiredTime));
+        StartCoroutine(SmoothlyMovingCoroutine(destination, desiredTime, onArriveCallback));
     }
 
-    IEnumerator SmoothlyMovingCoroutine(Vector3 destination, float desiredTime)
+    IEnumerator SmoothlyMovingCoroutine(Vector3 destination, float desiredTime, Action onArriveCallback = null)
     {
         float t = 0f;
-        SmoothlyMoving = true;
+        m_SmoothlyMoving = true;
 
         // 현재 캐릭터로부터 목적지까지의 거리벡터
         Vector3 adjust = destination - CurrentCharacter.transform.position;
@@ -230,7 +231,8 @@ public class Player : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
-        SmoothlyMoving = false;
+        m_SmoothlyMoving = false;
+        onArriveCallback?.Invoke();
     }
     #endregion
 

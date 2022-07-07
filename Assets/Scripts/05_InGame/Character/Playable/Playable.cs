@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
+using System;
 
 public abstract class Playable : Character
 {
@@ -28,6 +29,19 @@ public abstract class Playable : Character
     }
     #endregion
 
+    #region 캐릭터 공격
+    /// <summary> 공격버튼(A) 대신 이걸 호출하여 대쉬를 한다. </summary>
+    public void Attack(SkillButtonUI skillButtonUI = null)
+    {
+        if (CanAttack() == false)
+            return;
+
+        GameManager.InputSystem.PressAButton = true;
+    }
+
+    public virtual bool CanAttack() { return true; }
+    #endregion
+
     #region 캐릭터 대쉬
     /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
     public void Dash(SkillButtonUI skillButtonUI = null)
@@ -40,7 +54,7 @@ public abstract class Playable : Character
         if (skillData.Stack != 0)
         {
             // 스택을 다 쓰면 스킬을 사용할 수 없다.
-            if (CurrentDashStack == 0)
+            if (m_CurrentDashStack == 0)
                 return;
 
             // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
@@ -49,12 +63,16 @@ public abstract class Playable : Character
             // Sp 소비
             Sp -= skillData.SpCost;
 
-            CurrentDashStack--;
-            skillButtonUI.OnStackConsume();
+            m_CurrentDashStack--;
 
-            // 스택은 한 쿨타임에 한 번만 충전가능
-            if (!m_ChargeDashStackCoroutine)
-                StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
+            if (skillButtonUI)
+            {
+                skillButtonUI.OnStackConsume();
+
+                // 스택은 한 쿨타임에 한 번만 충전가능
+                if (!m_ChargeDashStackCoroutine)
+                    StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
+            }
         }
         else
         {
@@ -64,6 +82,8 @@ public abstract class Playable : Character
         }
 
     }
+
+    public virtual bool CanDash() { return true; }
     #endregion
 
     #region 캐릭터 궁극기
@@ -88,11 +108,15 @@ public abstract class Playable : Character
             Sp -= skillData.SpCost;
 
             m_CurrentUltiStack--;
-            skillButtonUI.OnStackConsume();
 
-            // 스택은 한 쿨타임에 한 번만 충전가능
-            if (!m_ChargeUltiStackCoroutine)
-                StartCoroutine(ChargeUltimateStackCoroutine(skillButtonUI));
+            if (skillButtonUI)
+            {
+                skillButtonUI.OnStackConsume();
+
+                // 스택은 한 쿨타임에 한 번만 충전가능
+                if (!m_ChargeUltiStackCoroutine)
+                    StartCoroutine(ChargeUltimateStackCoroutine(skillButtonUI));
+            }
         }
         else
         {
@@ -104,19 +128,27 @@ public abstract class Playable : Character
         }
     }
 
-    public virtual bool CanUltimate() { return false; }
+    public virtual bool CanUltimate() { return true; }
     #endregion
 
+    #region 캐릭터 점프
     /// <summary> 점프버튼(Y) 대신 이걸 호출하여 궁극기를 한다. </summary>
-    public override void Jump()
+    public void Jump(SkillButtonUI skillButtonUI = null)
     {
+        if (CanJump() == false)
+            return;
+
         // 이 버튼을 눌러야 점프가 나가도록 되어있음
         GameManager.InputSystem.PressYButton = true;
     }
 
+    public virtual bool CanJump() { return true; }
+    #endregion
+
     // -----------------------------------------------------------------------
 
     #region 캐릭터 대쉬
+    [SerializeField, ReadOnly] protected int m_CurrentDashStack;
     protected bool m_ChargeDashStackCoroutine { get; private set; }
     protected IEnumerator ChargeDashStackCoroutine(SkillButtonUI skillButtonUI = null)
     {
@@ -140,12 +172,12 @@ public abstract class Playable : Character
             yield return null;
         }
 
-        CurrentDashStack++;
-        skillButtonUI.OnStackCharge(CurrentDashStack);
+        m_CurrentDashStack++;
+        skillButtonUI.OnStackCharge(m_CurrentDashStack);
 
         m_ChargeDashStackCoroutine = false;
 
-        if (CurrentDashStack < maxStack)
+        if (m_CurrentDashStack < maxStack)
             StartCoroutine(ChargeDashStackCoroutine(skillButtonUI));
     }
     #endregion
@@ -154,43 +186,7 @@ public abstract class Playable : Character
     [SerializeField, ReadOnly] protected int m_CurrentUltiStack;
     protected bool m_ChargeUltiStackCoroutine { get; private set; }
     [SerializeField, ReadOnly] protected float m_CurrentUltiCoolTime;
-    #endregion
-
-    protected override void OnTargetSet(Character target)
-    {
-        if (m_TargetLockOnImage != null)
-        {
-            if (!m_TargetLockOnImage.Poolable)
-                GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
-        }
-
-        var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingLockOn");
-        m_TargetLockOnImage = image;
-        image.SetData(target);
-    }
-
-    protected override void OnSpawn()
-    {
-        gameObject.tag = "Player";
-
-        var dashData = GetSkillData(GetDashIndex(Code));
-        CurrentDashStack = dashData.Stack;
-    }
-
-    protected override void OnDamaged(Character attacker, int damage, bool isCrit)
-    {
-        StageManager.Instance.MissionSystem.ReportAll(QuestType.GET_DAMAGED);
-    }
-
-    protected override void OnDead(Character attacker, int damage)
-    {
-        StageManager.Instance.MissionSystem.ReportAll(QuestType.INCAPCITATED);
-    }
-
-    // -----------------------------------------------------------------------
-
-    #region 캐릭터 궁극기
-    IEnumerator ChargeUltimateStackCoroutine(bool hasStack = true, SkillButtonUI skillButtonUI = null)
+    protected IEnumerator ChargeUltimateStackCoroutine(bool hasStack = true, SkillButtonUI skillButtonUI = null)
     {
         if (hasStack)
             m_ChargeUltiStackCoroutine = true;
@@ -220,13 +216,47 @@ public abstract class Playable : Character
         if (hasStack)
         {
             m_CurrentUltiStack++;
-            skillButtonUI.OnStackCharge(CurrentDashStack);
+            skillButtonUI.OnStackCharge(m_CurrentUltiStack);
 
             m_ChargeUltiStackCoroutine = false;
 
-            if (CurrentDashStack < maxStack)
+            if (m_CurrentUltiStack < maxStack)
                 StartCoroutine(ChargeUltimateStackCoroutine(skillButtonUI));
         }
     }
     #endregion
+
+    protected override void OnTargetSet(Character target)
+    {
+        if (m_TargetLockOnImage != null)
+        {
+            if (!m_TargetLockOnImage.Poolable)
+                GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+        }
+
+        var image = GameManager.UISystem.Pool.Load<FloatingLockOnImage>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingLockOn");
+        m_TargetLockOnImage = image;
+        image.SetData(target);
+    }
+
+    protected override void OnSpawn()
+    {
+        gameObject.tag = "Player";
+
+        var dashData = GetSkillData(GetDashIndex(Code));
+        m_CurrentDashStack = dashData.Stack;
+    }
+
+    protected override void OnDamaged(Character attacker, int damage, bool isCrit)
+    {
+        StageManager.Instance.MissionSystem.ReportAll(QuestType.GET_DAMAGED);
+    }
+
+    protected override void OnDead(Character attacker, int damage)
+    {
+        StageManager.Instance.MissionSystem.ReportAll(QuestType.INCAPCITATED);
+    }
+
+    // -----------------------------------------------------------------------
+
 }

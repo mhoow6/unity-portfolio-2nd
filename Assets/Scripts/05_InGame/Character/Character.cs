@@ -10,6 +10,8 @@ public abstract class Character : BaseObject, ISubscribable
     #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
     public readonly int ANISPEED_HASHCODE = Animator.StringToHash("AniSpeed");
+    public int AnimatorBaseLayerIndex { get; private set; }
+
     public Animator Animator { get; private set; }
     public float AniSpeed
     {
@@ -226,9 +228,8 @@ public abstract class Character : BaseObject, ISubscribable
     public bool TargetSliderHooked;
     #endregion
 
-    #region 캐릭터 공격/피격
+    #region 캐릭터 피격
     public bool Invulnerable { get; set; }
-    public virtual void Attack() { }
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
     public void Damaged(Character attacker, int damage, bool isCrit)
@@ -278,15 +279,6 @@ public abstract class Character : BaseObject, ISubscribable
 
         OnDamaged(attacker, damage, isCrit);
     }
-    #endregion
-
-    #region 캐릭터 대쉬
-    public int CurrentDashStack;
-    public virtual bool CanDash() { return false; }
-    #endregion
-
-    #region 캐릭터 점프
-    public virtual void Jump() { }
     #endregion
 
     #region 데미지 계산
@@ -402,6 +394,7 @@ public abstract class Character : BaseObject, ISubscribable
         Rigidbody = GetComponent<Rigidbody>();
         Collider = GetComponent<Collider>();
 
+        AnimatorBaseLayerIndex = Animator.GetLayerIndex("Base Layer");
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
 
         SetPropertiesFromTable();

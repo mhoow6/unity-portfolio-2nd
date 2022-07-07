@@ -28,11 +28,13 @@ public abstract class Monster : Character
         return result;
     }
 
-    public void GoingTo(Vector3 posiiton)
+    public void SetWalkBehavior(Vector3 posiiton)
     {
         Agent.SetDestination(posiiton);
-        OnGoingTo(posiiton);
+        OnSetWalkBehavior(posiiton);
     }
+
+    public virtual void SetAttackBehavior() { }
     #endregion
 
     #region LookAt
@@ -53,7 +55,7 @@ public abstract class Monster : Character
     // -----------------------------------------------------------------------
 
     #region AI
-    protected virtual void OnGoingTo(Vector3 position) { }
+    protected virtual void OnSetWalkBehavior(Vector3 position) { }
     #endregion
 
     protected override void OnSpawn()

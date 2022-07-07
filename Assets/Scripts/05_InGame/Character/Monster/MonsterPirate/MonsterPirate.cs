@@ -9,10 +9,10 @@ public class MonsterPirate : Monster
     public MonsterPirateDecision Decision;
     public Transform BulletFiredPosition;
 
-    public override void Attack()
+    public override void SetAttackBehavior()
     {
         AnimationJobs.Enqueue(AniType.ATTACK_0);
-        Decision = MonsterPirateDecision.None;
+        Decision = MonsterPirateDecision.Attack;
     }
 
     public void ShootBullet()
@@ -59,7 +59,7 @@ public class MonsterPirate : Monster
 
     // -----------------------------------------------------------------------
 
-    protected override void OnGoingTo(Vector3 position)
+    protected override void OnSetWalkBehavior(Vector3 position)
     {
         AnimationJobs.Enqueue(AniType.RUN_0);
         Decision = MonsterPirateDecision.None;

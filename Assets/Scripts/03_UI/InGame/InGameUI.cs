@@ -101,10 +101,18 @@ public class InGameUI : UI
         int attackIndex = Character.GetAttackIndex(character.Code);
 
         SkillButtonParam attackButtonParam;
-        attackButtonParam.OnClick = () => { GameManager.InputSystem.PressAButton = true; };
-        attackButtonParam.OnExit = () => { GameManager.InputSystem.PressAButton = false; };
+        attackButtonParam.OnClick = () =>
+        {
+            var character = StageManager.Instance.Player.CurrentCharacter;
+            character.Attack(m_AttackButton);
+        };
+        attackButtonParam.OnExit = () =>
+        {
+            GameManager.InputSystem.PressAButton = false;
+        };
         attackButtonParam.SkillData = Character.GetSkillData(attackIndex);
         m_AttackButton.SetData(attackButtonParam);
+
 
         int dashIndex = Character.GetDashIndex(character.Code);
         SkillButtonParam dashButtonParam;
@@ -121,6 +129,7 @@ public class InGameUI : UI
                 GameManager.InputSystem.PressXButton = false;
             };
         m_DashButton.SetData(dashButtonParam);
+
 
         int ultiIndex = Character.GetUltimateIndex(character.Code);
         SkillButtonParam ultiButtonParam;

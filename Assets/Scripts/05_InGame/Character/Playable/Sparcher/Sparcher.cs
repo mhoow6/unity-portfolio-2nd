@@ -7,7 +7,7 @@ public class Sparcher : Playable
 {
     public override ObjectCode Code => ObjectCode.CHAR_Sparcher;
 
-    public override void Attack()
+    public void ShootArrow()
     {
         var origin = JsonManager.Instance.JsonDatas[GetAttackIndex(Code)];
         SparcherBasicAttackData data = origin as SparcherBasicAttackData;
@@ -27,13 +27,23 @@ public class Sparcher : Playable
 
     public override bool CanDash()
     {
-        if (AniType >= AniType.JUMP_0 && AniType <= AniType.JUMP_4)
+        // 애니메이션이 전환중일 경우 정상동작이 안 됨
+        if (Animator.IsInTransition(AnimatorBaseLayerIndex))
             return false;
 
-        if (AniType >= AniType.ATTACK_0 && AniType <= AniType.ATTACK_4 || AniType >= AniType.ATTACK_5 && AniType <= AniType.ATTACK_9)
+        var player = StageManager.Instance.Player;
+        AniType currentAni = AniType;
+
+        if (currentAni >= AniType.JUMP_0 && currentAni <= AniType.JUMP_4)
             return false;
 
-        if (StageManager.Instance.Player.Moveable == false)
+        if (currentAni >= AniType.ATTACK_0 && currentAni <= AniType.ATTACK_4 || currentAni >= AniType.ATTACK_5 && currentAni <= AniType.ATTACK_9)
+            return false;
+
+        if (currentAni >= AniType.DASH_0 && currentAni <= AniType.DASH_4)
+            return false;
+
+        if (player.Moveable == false)
             return false;
 
         return true;
@@ -41,12 +51,17 @@ public class Sparcher : Playable
 
     public override bool CanUltimate()
     {
-        var skillData = GetSkillData(GetUltimateIndex(Code));
-
-        if (AniType >= AniType.JUMP_0 && AniType <= AniType.JUMP_4)
+        // 애니메이션이 전환중일 경우 정상동작이 안 됨
+        if (Animator.IsInTransition(AnimatorBaseLayerIndex))
             return false;
 
-        if (AniType >= AniType.ATTACK_0 && AniType <= AniType.ATTACK_4 || AniType >= AniType.ATTACK_5 && AniType <= AniType.ATTACK_9)
+        var skillData = GetSkillData(GetUltimateIndex(Code));
+        AniType currentAni = AniType;
+
+        if (currentAni >= AniType.JUMP_0 && currentAni <= AniType.JUMP_4)
+            return false;
+
+        if (currentAni >= AniType.ATTACK_0 && currentAni <= AniType.ATTACK_4 || currentAni >= AniType.ATTACK_5 && currentAni <= AniType.ATTACK_9)
             return false;
 
         if (Sp < skillData.SpCost)
