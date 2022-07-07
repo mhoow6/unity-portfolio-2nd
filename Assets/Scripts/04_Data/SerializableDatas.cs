@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class StageRecordData
@@ -70,9 +71,17 @@ public struct GameSettings
 [Serializable]
 public struct CheatSettings
 {
+    [Tooltip("플레이어가 무적이 됩니다.")]
     public bool GodMode;
+
+    [Tooltip("플레이어가 한 방에 적을 죽일 수 있습니다.")]
     public bool OneShotKill;
-    public bool DropRecoveryItemClearly;
+
+    [Tooltip("100% 확률로 드롭 아이템을 얻습니다.")]
+    public bool DropItem100Percent;
+
+    [Tooltip("SP나 쿨타임 소비 없이 스킬을 쓸 수 있습니다.")]
+    public bool FreeSkill;
 }
 
 [Serializable]

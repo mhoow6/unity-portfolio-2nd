@@ -209,8 +209,8 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
     // 외부에서 사용하는 포인터ID들. 카메라를 회전시킬 FingerId를 확실하게 식별하게 하는 용도
     [ReadOnly] public List<int> ExternallyUsingFingerIds = new List<int>();
     IEnumerator m_CameraRotate;
-    [SerializeField] RectTransform m_CameraTouchRectTransform;
-    CustomRect m_CameraTouchRect;
+    [SerializeField] RectTransform m_CameraNoTouchArea;
+    CustomRect m_CameraNoTouchRect;
 #endregion
 
     public void Init()
@@ -218,19 +218,17 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         m_CameraRotate = MobileCameraRotateCoroutine();
 
         // 터치 가능 영역 구하기
-        float centerX = Screen.width * 0.5f;
-        float centerY = Screen.height * 0.5f;
+        float centerX = 250f;
+        float centerY = 250f;
 
-        float heightRatio = m_CameraTouchRectTransform.rect.height / 1080;
-        float widthRatio = m_CameraTouchRectTransform.rect.width / 1920;
+        float heightRatio = m_CameraNoTouchArea.rect.height / 1080;
+        float widthRatio = m_CameraNoTouchArea.rect.width / 1920;
         float width = Screen.width * widthRatio;
         float height = Screen.height * heightRatio;
 
-        centerY += m_CameraTouchRectTransform.anchoredPosition.y;
-
         Vector2 center = new Vector2(centerX, centerY);
-        m_CameraTouchRect = new CustomRect(center, width, height);
-        m_CameraTouchRectTransform.gameObject.SetActive(false);
+        m_CameraNoTouchRect = new CustomRect(center, width, height);
+        m_CameraNoTouchArea.gameObject.SetActive(false);
 
         // 이벤트 시스템은 항상 있어야해
         if (EventSystem != null)
@@ -284,7 +282,7 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
             {
                 Touch touch = Input.touches[i];
 
-                if (m_CameraTouchRect.IsScreenPointInRect(touch.position) && !ExternallyUsingFingerIds.Contains(i))
+                if (!m_CameraNoTouchRect.IsScreenPointInRect(touch.position) && !ExternallyUsingFingerIds.Contains(i))
                 {
                     fingerId = i;
                     //Debug.Log($"{touch.phase}");

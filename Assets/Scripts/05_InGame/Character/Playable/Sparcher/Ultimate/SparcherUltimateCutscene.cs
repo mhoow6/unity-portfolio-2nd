@@ -25,6 +25,8 @@ public class SparcherUltimateCutscene : Cutscene
 
     public void Signal_EffectOn()
     {
+        Debug.Log("이펙트 ON");
+
         // Control Track의 프리팹 대신 미리 로드된 오브젝트를 사용해 이펙트를 보여준다.
         // ※ Control Track은 Mute 상태로 있어야 함.
         var sparcher = StageManager.Instance.Player.CurrentCharacter as Sparcher;
@@ -47,6 +49,8 @@ public class SparcherUltimateCutscene : Cutscene
 
     public void Signal_EffectOff()
     {
+        Debug.Log("이펙트 OFF");
+
         // Control Track의 프리팹 대신 미리 로드된 오브젝트를 사용
         if (_ultimateEffect == null)
             return;
@@ -56,12 +60,16 @@ public class SparcherUltimateCutscene : Cutscene
 
     public void Signal_HitboxOn()
     {
+        Debug.Log("히트박스 ON");
+
         _hitBox.gameObject.SetActive(true);
         _hitBox.enabled = true;
     }
 
     public void Signal_HitboxOff()
     {
+        Debug.Log("히트박스 OFF");
+
         _hitBox.enabled = false;
     }
 

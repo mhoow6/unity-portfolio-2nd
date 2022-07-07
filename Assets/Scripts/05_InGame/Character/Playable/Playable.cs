@@ -90,6 +90,15 @@ public abstract class Playable : Character
     /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
     public void Ultimate(SkillButtonUI skillButtonUI = null)
     {
+        // 치트
+        if (GameManager.CheatSettings.FreeSkill)
+        {
+            GameManager.InputSystem.PressBButton = true;
+            return;
+        }
+
+        // --------------------------------------------------
+
         // 대쉬를 하지 못하는 경우 못하게 해야한다.
         if (CanUltimate() == false)
             return;
