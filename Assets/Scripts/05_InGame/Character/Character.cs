@@ -159,6 +159,8 @@ public abstract class Character : BaseObject, ISubscribable
                 return 2000;
             case ObjectCode.CHAR_MonsterPirate:
                 return 2004;
+            case ObjectCode.CHAR_MonsterMushroom:
+                return 2005;
             default:
                 return -1;
         }

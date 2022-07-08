@@ -201,6 +201,9 @@
         /// <summary> 무기 레벨업 아이템 </summary> ///
         ITEM_WeaponLevelUpChip = 15,
 
+        /// <summary> 이능속성 보스 버섯 </summary> ///
+        CHAR_MonsterMushroom = 16,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

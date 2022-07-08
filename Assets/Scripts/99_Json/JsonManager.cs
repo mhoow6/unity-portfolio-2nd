@@ -19,6 +19,10 @@ namespace DatabaseSystem
             MonsterPirateBehaviorData monsterpiratebehaviordata = JsonConvert.DeserializeObject<MonsterPirateBehaviorData>(monsterpiratebehaviordataNode.ToString());
             JsonDatas.Add(monsterpiratebehaviordata.Index, monsterpiratebehaviordata);
 
+            JSONNode monstermushroombehaviordataNode = behaviordatasRoot["MonsterMushroomBehaviorData(Behaviorable)"];
+            MonsterMushroomBehaviorData monstermushroombehaviordata = JsonConvert.DeserializeObject<MonsterMushroomBehaviorData>(monstermushroombehaviordataNode.ToString());
+            JsonDatas.Add(monstermushroombehaviordata.Index, monstermushroombehaviordata);
+
             var skilldatas = Resources.Load<TextAsset>("99_Database/Json/SkillDatas");
             JSONNode skilldatasRoot = JSONNode.Parse(skilldatas.text);
             JSONNode sparcherbasicattackdataNode = skilldatasRoot["SparcherBasicAttackData(Skillable)"];
@@ -40,6 +44,10 @@ namespace DatabaseSystem
             JSONNode monsterpirateattackdataNode = skilldatasRoot["MonsterPirateAttackData(Skillable)"];
             MonsterPirateAttackData monsterpirateattackdata = JsonConvert.DeserializeObject<MonsterPirateAttackData>(monsterpirateattackdataNode.ToString());
             JsonDatas.Add(monsterpirateattackdata.Index, monsterpirateattackdata);
+
+            JSONNode monstermushroomattackdataNode = skilldatasRoot["MonsterMushroomAttackData(Skillable)"];
+            MonsterMushroomAttackData monstermushroomattackdata = JsonConvert.DeserializeObject<MonsterMushroomAttackData>(monstermushroomattackdataNode.ToString());
+            JsonDatas.Add(monstermushroomattackdata.Index, monstermushroomattackdata);
         }
     }
 }

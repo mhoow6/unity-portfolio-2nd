@@ -34,7 +34,15 @@ public abstract class Monster : Character
         OnSetWalkBehavior(posiiton);
     }
 
-    public virtual void SetAttackBehavior() { }
+    public void SetAttackBehavior()
+    {
+        OnSetAttackBehavior();
+    }
+
+    public void SetIdleBehavior()
+    {
+        OnSetIdleBehavior();
+    }
     #endregion
 
     #region LookAt
@@ -56,6 +64,8 @@ public abstract class Monster : Character
 
     #region AI
     protected virtual void OnSetWalkBehavior(Vector3 position) { }
+    protected virtual void OnSetAttackBehavior() { }
+    protected virtual void OnSetIdleBehavior() { }
     #endregion
 
     protected override void OnSpawn()
@@ -236,6 +246,4 @@ public abstract class Monster : Character
         dropItem.MoveInParabola(itemParam);
     }
     #endregion
-
-
 }

@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 
-public class MonsterPirate : Monster
+public sealed class MonsterPirate : Monster
 {
     public override ObjectCode Code => ObjectCode.CHAR_MonsterPirate;
     public MonsterPirateDecision Decision;
     public Transform BulletFiredPosition;
-
-    public override void SetAttackBehavior()
-    {
-        AnimationJobs.Enqueue(AniType.ATTACK_0);
-        Decision = MonsterPirateDecision.Attack;
-    }
 
     public void ShootBullet()
     {
@@ -62,7 +56,13 @@ public class MonsterPirate : Monster
     protected override void OnSetWalkBehavior(Vector3 position)
     {
         AnimationJobs.Enqueue(AniType.RUN_0);
-        Decision = MonsterPirateDecision.None;
+        Decision = MonsterPirateDecision.Walk;
+    }
+
+    protected override void OnSetAttackBehavior()
+    {
+        AnimationJobs.Enqueue(AniType.ATTACK_0);
+        Decision = MonsterPirateDecision.Attack;
     }
 }
 

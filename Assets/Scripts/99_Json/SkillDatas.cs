@@ -47,4 +47,10 @@
     }
 
 
+    public class MonsterMushroomAttackData : Skillable
+    {
+        
+    }
+
+
 }

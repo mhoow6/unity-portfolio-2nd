@@ -10,4 +10,13 @@
     }
 
 
+    public class MonsterMushroomBehaviorData : Behaviorable
+    {
+        public float EnemyDetectRange;
+        public float EnemyDetectAngle;
+        public float EnemyLookAtSpeed;
+        
+    }
+
+
 }
