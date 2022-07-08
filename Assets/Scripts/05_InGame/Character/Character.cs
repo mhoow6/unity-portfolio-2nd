@@ -227,7 +227,7 @@ public abstract class Character : BaseObject, ISubscribable
     }
     public Action<Character> OnTargetUpdate;
     /// <summary> 인게임UI 타겟 슬라이더가 Hp를 후킹하고 있는지에 대한 여부 </summary>
-    public bool TargetSliderHooked;
+    [HideInInspector] public bool TargetSliderHooked;
     #endregion
 
     #region 캐릭터 피격

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 
-public sealed class MonsterMushroom : Boss, IStageClearable
+public sealed class MonsterMushroom : Boss
 {
     public override ObjectCode Code => ObjectCode.CHAR_MonsterMushroom;
     public MonsterMushroomDecision Decision;
@@ -34,15 +34,6 @@ public sealed class MonsterMushroom : Boss, IStageClearable
     }
     #endregion
 
-    #region Interface
-    public bool HowToClear()
-    {
-        if (Hp <= 0)
-            return true;
-
-        return false;
-    }
-    #endregion
 
     // -----------------------------------------------------------------------
 

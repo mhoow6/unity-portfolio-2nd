@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpRecoveryItem : DropItem
+public class SpRecoveryItem : RecoveryItem
 {
     public override ObjectCode Code => ObjectCode.ITEM_SPRecoveryDrop;
 
@@ -17,6 +17,6 @@ public class SpRecoveryItem : DropItem
 
         int playerLevel = sm.Player.CurrentCharacter.Level;
         var itemData = TableManager.Instance.SpRecoveryItemTable.Find(item => item.MinUseLevel <= playerLevel && playerLevel <= item.MaxUseLevel);
-        sm.Player.CurrentCharacter.Sp += itemData.SpRecoveryPoint;
+        sm.Player.CurrentCharacter.Sp += (itemData.SpRecoveryPoint * m_RecoveryScale);
     }
 }

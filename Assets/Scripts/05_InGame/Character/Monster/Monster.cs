@@ -132,8 +132,10 @@ public abstract class Monster : Character
         string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
         if (randomPoint >= 50 || GameManager.CheatSettings.DropItem100Percent)
         {
-            var spDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_SpRecovery");
-            var hpDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_HpRecovery");
+            var spDropItem = manager.PoolSystem.Load<RecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
+            spDropItem.SetData(this);
+            var hpDropItem = manager.PoolSystem.Load<RecoveryItem>($"{interactablePath}/DropItem_HpRecovery");
+            hpDropItem.SetData(this);
 
             ThrowDropItem(spDropItem, 0.2f);
             ThrowDropItem(hpDropItem, 0.2f);
