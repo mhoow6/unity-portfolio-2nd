@@ -30,6 +30,9 @@ public class AreaSpawner : AreaComponent
     /// <summary> 스폰 지점들에서 몬스터들이 소환됩니다. </summary> ///
     public void SpawnMonsters()
     {
+        if (m_CurrentSpawnCount == TotalSpawnCount)
+            return;
+
         StartCoroutine(SpawnMonsterCoroutine(FirstSpawnCount));
     }
 

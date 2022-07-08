@@ -319,7 +319,7 @@ public abstract class Character : BaseObject, ISubscribable
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hitInfo;
 
-        int layermask = 1 << LayerMask.NameToLayer("Terrain");
+        int layermask = 1 << GameManager.GameDevelopSettings.TerrainLayermask;
 
         if (UnityEngine.Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layermask))
         {

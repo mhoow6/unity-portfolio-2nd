@@ -37,6 +37,11 @@ public sealed class MonsterMushroom : Boss
 
     // -----------------------------------------------------------------------
 
+    protected override void OnLive()
+    {
+        Debug.Log($"트랜스폼 포지션: {transform.position}");
+    }
+
     #region AI
     protected override void OnSetWalkBehavior(Vector3 position)
     {

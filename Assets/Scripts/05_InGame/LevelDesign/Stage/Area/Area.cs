@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Area : MonoBehaviour
+public class Area : MonoBehaviour, IAlarmReactable
 {
     public int Index => AreaIdx;
     [SerializeField] int AreaIdx;
@@ -114,4 +114,19 @@ public class Area : MonoBehaviour
         }
     }
     #endregion
+
+    public void React(AlarmEvent alarmEvent)
+    {
+        switch (alarmEvent)
+        {
+            case AlarmEvent.NONE:
+                break;
+            case AlarmEvent.SpawnBoss:
+                var bossSpawner = m_Spawners.Find(spawner => spawner is BossSpawner);
+                bossSpawner.SpawnMonsters();
+                break;
+            default:
+                break;
+        }
+    }
 }
