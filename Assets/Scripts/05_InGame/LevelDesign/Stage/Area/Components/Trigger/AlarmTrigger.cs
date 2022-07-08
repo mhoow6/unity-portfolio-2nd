@@ -20,9 +20,8 @@ public class AlarmTrigger : AreaTrigger
         var sm = StageManager.Instance;
 
         // 알람 효과 발생
-        var alarmVolume = sm.PoolSystem.Load<AlarmVolume>($"{GameManager.GameDevelopSettings.EffectResourcePath}/AlarmTrigger_AlarmVolume");
-        alarmVolume.transform.SetParent(other.transform);
-        alarmVolume.Alarm(() =>
+        var alarmUI = GameManager.UISystem.PushToast<BossWarningUI>(ToastType.BossWarning);
+        alarmUI.SetData(() =>
         {
             var area = sm.Areas.Find(a => a.Index == m_AreaIdx);
             if (area != null)

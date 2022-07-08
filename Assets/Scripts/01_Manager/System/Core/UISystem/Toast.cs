@@ -7,6 +7,7 @@ public enum ToastType
 {
     Logo,
     SceneTransition,
+    BossWarning,
 }
 
 public abstract class Toast : MonoBehaviour
