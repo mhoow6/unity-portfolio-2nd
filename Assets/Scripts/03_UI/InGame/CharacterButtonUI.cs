@@ -34,6 +34,7 @@ public class CharacterButtonUI : Display
         prevCharcter.gameObject.SetActive(false);
         player.CurrentCharacter = ConnectCharacter;
 
+        // 기존 캐릭터 버튼을 켜준다.
         var find = inGameUi.CharacterButtonDisplays.Find(button => button.ConnectCharacter.Equals(prevCharcter));
         find.gameObject.SetActive(true);
 

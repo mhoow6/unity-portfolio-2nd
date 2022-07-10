@@ -113,7 +113,8 @@ namespace DatabaseSystem
                 info.Index = int.Parse(datas[0]);
 				info.Positive = bool.Parse(datas[1]);
 				info.Type = (QuestType)Enum.Parse(typeof(QuestType),datas[2]);
-				info.PurposeCount = int.Parse(datas[3]);
+				info.Target = int.Parse(datas[3]);
+				info.PurposeCount = int.Parse(datas[4]);
 				
                 QuestTable.Add(info);
                 LoadedData++;

@@ -32,6 +32,7 @@ public sealed class GameManager : MonoBehaviour
     public static UISystem UISystem => Instance.m_UISystem;
     [SerializeField] UISystem m_UISystem;
 
+    public static EnergyRecoverySystem EnergyRecoverySystem => Instance.m_EnergyRecoverySystem;
     EnergyRecoverySystem m_EnergyRecoverySystem;
 
     public static AchievementSystem AchievementSystem => Instance.m_AchievementSystem;
@@ -39,6 +40,8 @@ public sealed class GameManager : MonoBehaviour
 
     public static InputSystem InputSystem => Instance.m_InputSystem;
     [SerializeField] InputSystem m_InputSystem;
+
+    DataInitializeSystem m_DataInitializeSystem;
 
     // Update Handler
     Action m_Update;
@@ -67,6 +70,8 @@ public sealed class GameManager : MonoBehaviour
         m_Update = null;
         m_FixedUpdate = null;
 
+        // ---------------------------------------------------
+
         // Game Setting
         GameSettings gs = new GameSettings()
         {
@@ -85,14 +90,20 @@ public sealed class GameManager : MonoBehaviour
         m_CheatSettings = new CheatSettings();
 #endif
 
+        // ---------------------------------------------------
+
         // Load Database
         if (!m_GameDevelopSettings)
             m_GameDevelopSettings = Resources.Load<GameDevelopSettings>("GameDevelopSettings");
         m_GameDevelopSettings.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
         GameVerison = GameDevelopSettings.GameVerison;
 
+        // ---------------------------------------------------
+
         // PlayerData
         m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
+
+        // ---------------------------------------------------
 
         // System Init
         TableManager.Instance.LoadTable();
@@ -109,18 +120,26 @@ public sealed class GameManager : MonoBehaviour
         if (InputSystem != null)
             InputSystem.Init();
 
+        m_DataInitializeSystem = new DataInitializeSystem();
+        m_DataInitializeSystem.Init();
+
+        // ---------------------------------------------------
+
         // Update
         if (m_UISystem != null)
             m_Update += m_UISystem.Tick;
         if (InputSystem != null)
             m_Update += InputSystem.Tick;
 
+        // ---------------------------------------------------
+
         // FixedUpdate
         m_FixedUpdate += m_EnergyRecoverySystem.Tick;
 
-        // PlayerData Init
-        AddRewardForNewbie();
-        AddDefaultStagePartyPreset();
+        // ---------------------------------------------------
+
+        // PlayerData Initialize
+        m_DataInitializeSystem.Initalize(m_PlayerData);
     }
 
     private void Start()
@@ -143,112 +162,6 @@ public sealed class GameManager : MonoBehaviour
         if (!NoAutoSavePlayerData)
             PlayerData.Save();
     }
-
-    #region 플레이어 데이터
-    /// <summary> 업적 시스템에 기록된 업적 기록을 플레이어 데이터에 업데이트 </summary>
-	public void UpdatePlayerAchievementRecords()
-    {
-        foreach (var map in m_AchievementSystem.QuestRecords)
-        {
-            var questRecord = map.Value;
-            var exist = PlayerData.QuestRecords.Find(r => r.QuestIdx == questRecord.QuestIdx);
-            if (exist == null)
-                PlayerData.QuestRecords.Add(questRecord);
-            else
-            {
-                exist.SuccessCount = questRecord.SuccessCount;
-                exist.Clear = questRecord.Clear;
-            }
-        }
-    }
-
-    /// <summary> characterCode에 해당하는 캐릭터를 얻습니다. </summary>
-    public void AddPlayerCharacter(ObjectCode characterCode)
-    {
-        var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
-        if (exist == null)
-        {
-            var data = TableManager.Instance.CharacterTable.Find(c => c.Code == characterCode);
-            var newData = new CharacterData()
-            {
-                Code = characterCode,
-                Hp = data.BaseHp,
-                Sp = data.BaseSp,
-                Speed = data.BaseSpeed,
-                Level = 1,
-                Critical = data.BaseCritical,
-                Damage = data.BaseDamage,
-                Defense = data.BaseDefense,
-                EquipWeaponData = new WeaponData()
-                {
-                    Code = ObjectCode.NONE,
-                    Critical = 0,
-                    Damage = 0
-                }
-            };
-        }
-    }
-
-    /// <summary> characterCode에 해당하는 캐릭터를 없앱니다. </summary>
-    public void RemovePlayerCharacter(ObjectCode characterCode)
-    {
-        var exist = PlayerData.CharacterDatas.Find(c => c.Code == characterCode);
-        if (exist != null)
-            PlayerData.CharacterDatas.Remove(exist);
-    }
-
-    /// <summary> 처음으로 게임에 들어온 플레이어에게 데이터 세팅 </summary>
-    void AddRewardForNewbie()
-    {
-        // 기본 캐릭터 지급
-        if (m_PlayerData.CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Sparcher) == null)
-        {
-            m_PlayerData.CharacterDatas.Add(new CharacterRecordData()
-            {
-                Code = ObjectCode.CHAR_Sparcher,
-                Level = 1,
-                EquipWeaponCode = ObjectCode.NONE,
-            });
-        }
-
-        // 에너지 지급
-        if (m_PlayerData.LastEnergyUpdateTime == DateTime.MinValue)
-            m_EnergyRecoverySystem.AddEnergy(99);
-
-    }
-
-    /// <summary> 스테이지 파티 프리셋 초기 세팅 </summary>
-    void AddDefaultStagePartyPreset()
-    {
-        // 테스트씬에 들어가기 위한 데이터
-        if (m_PlayerData.StageRecords.Find(record => record.WorldIdx == 0 && record.StageIdx == 0) == null)
-        {
-            m_PlayerData.StageRecords.Add(new StageRecordData()
-            {
-                WorldIdx = 0,
-                StageIdx = 0,
-                CharacterLeader = ObjectCode.CHAR_Sparcher,
-                CharacterSecond = ObjectCode.NONE,
-                CharacterThird = ObjectCode.NONE,
-                Clear = false
-            });
-        }
-
-        // 스테이지 1-1 테스트 용도
-        if (m_PlayerData.StageRecords.Find(record => record.WorldIdx == 1 && record.StageIdx == 1) == null)
-        {
-            m_PlayerData.StageRecords.Add(new StageRecordData()
-            {
-                WorldIdx = 1,
-                StageIdx = 1,
-                CharacterLeader = ObjectCode.CHAR_Sparcher,
-                CharacterSecond = ObjectCode.NONE,
-                CharacterThird = ObjectCode.NONE,
-                Clear = false
-            });
-        }
-    }
-    #endregion
 
     #region 씬 로드
     public void LoadScene(SceneCode scene, Action onPrevSceneLoading = null, Action onSceneLoading = null, Action onSceneLoaded = null)

@@ -82,6 +82,8 @@
 		public bool Positive;
 		/// <summary> 퀘스트 종류 </summary> ///
 		public QuestType Type;
+		/// <summary> 퀘스트 타겟 코드 </summary> ///
+		public int Target;
 		/// <summary> 목표 카운트 </summary> ///
 		public int PurposeCount;
 	}
@@ -176,7 +178,7 @@
 		public bool LockContent;
 		/// <summary> 스테이지 썸네일 이름 </summary> ///
 		public string StageImage;
-		/// <summary> Enum </summary> ///
+		/// <summary> GameEnum.csv 참고 </summary> ///
 		public SceneCode SceneCode;
 		/// <summary> 스테이지 프리팹 이름 </summary> ///
 		public string WorldPrefabName;

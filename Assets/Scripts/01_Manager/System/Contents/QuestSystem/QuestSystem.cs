@@ -85,10 +85,24 @@ public class QuestSystem : IGameSystem
         {
 			if (kvp.Value.Type == type)
 				Report(kvp.Key, addCount);
-        }
+		}
     }
 
-    public void Init()
+	public void ReportAll(QuestType type, int target, int addCount = 1)
+	{
+		foreach (var kvp in QuestRecords)
+		{
+			if (kvp.Value.Type == type)
+			{
+				var row = TableManager.Instance.QuestTable.Find(q => q.Index == kvp.Key);
+				if (row.Target == target)
+					Report(kvp.Key, addCount);
+			}
+
+		}
+	}
+
+	public void Init()
     {
 
     }
