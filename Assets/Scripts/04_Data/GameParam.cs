@@ -28,3 +28,9 @@ public struct MoveInParabolaParam
     public float Height;
     public float SimulateTime;
 }
+
+public struct IsTargetInParam
+{
+    public float AttackAngle;
+    public float AttackRange;
+}

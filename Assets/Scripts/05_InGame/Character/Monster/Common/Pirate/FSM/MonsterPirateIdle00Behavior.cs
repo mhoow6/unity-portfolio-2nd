@@ -19,10 +19,10 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
-        if (m_Self.Target != null)
+        if (m_Pirate.Target != null)
         {
-            Vector3 forward = m_Self.transform.forward;
-            Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
+            Vector3 forward = m_Pirate.transform.forward;
+            Vector3 fromTarget = (m_Pirate.Target.transform.position - m_Pirate.transform.position);
             Vector3 fromTargetNormalized = fromTarget.normalized;
 
             float halfAngle = m_BehaviorData.EnemyDetectAngle * 0.5f * Mathf.Deg2Rad;
@@ -39,7 +39,7 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                     if (Mathf.Round(Vector3.SqrMagnitude(fromTarget)) <= Mathf.Pow(attackRange, 2))
                     {
                         // 계속 타겟을 쳐다보면서 공격준비 단계에 돌입한다.
-                        m_Self.LookAtWith(m_Self.Target.transform, () =>
+                        m_Pirate.LookAtWith(m_Pirate.Target.transform, () =>
                         {
                             Debug.Log($"해적이 생각하는 시간: {m_DecisionTimer}");
 
@@ -49,22 +49,22 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                             else if (m_DecisionTimer > decisionTime)
                             {
                                 // 공격
-                                m_Self.SetAttackBehavior();
+                                m_Pirate.SetAttackBehavior();
                             }
                         });
                     }
                     else
                     {
                         // 계속 타겟을 쳐다보면서 타겟한테 갈 준비를 한다.
-                        m_Self.LookAtWith(m_Self.Target.transform, () =>
+                        m_Pirate.LookAtWith(m_Pirate.Target.transform, () =>
                         {
                             // 생각할 시간 측정
                             if (m_DecisionTimer <= decisionTime)
                                 m_DecisionTimer += Time.deltaTime;
                             else if (m_DecisionTimer > decisionTime)
                             {
-                                Vector3 stopPosition = m_Self.Target.transform.position - (fromTargetNormalized * attackRange);
-                                m_Self.SetWalkBehavior(stopPosition);
+                                Vector3 stopPosition = m_Pirate.Target.transform.position - (fromTargetNormalized * attackRange);
+                                m_Pirate.SetWalkBehavior(stopPosition);
                             }
                         });
                     }
@@ -76,7 +76,7 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
             {
                 m_LookAtLerp = true;
                 
-                m_Self.LookAtLerp(Quaternion.LookRotation(fromTarget), 1f,
+                m_Pirate.LookAtLerp(Quaternion.LookRotation(fromTarget), 1f,
                     () =>
                     {
                         m_FirstLookAt = true;

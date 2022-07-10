@@ -20,11 +20,11 @@ public class MonsterPirateAttack00Behavior : MonsterPirateBehavior
         if (m_CurrentAnimationTime > 0.35f && !m_Shoot)
         {
             m_Shoot = true;
-            m_Self.ShootBullet();
+            m_Pirate.ShootBullet();
         }
 
         // 돌아가기
         if (m_CurrentAnimationTime > 0.80f)
-            m_Self.AnimationJobs.Enqueue(AniType.IDLE_0);
+            m_Pirate.AnimationJobs.Enqueue(AniType.IDLE_0);
     }
 }

@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 
-public class MonsterMushroomBehavior : AnimationBehaviour
+public class MonsterMushroomBehavior : CharacterBehavior
 {
-    protected MonsterMushroom m_Self;
+    protected MonsterMushroom m_Mushroom;
     protected MonsterMushroomBehaviorData m_BehaviorData;
     protected MonsterMushroomAttackData m_AttackData;
     protected float m_DecisionTimer;
 
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (m_Self == null)
+        base.OnAnimationEnter(animator, stateInfo, layerIndex);
+
+        if (m_Mushroom == null)
         {
-            m_Self = animator.GetComponent<MonsterMushroom>();
-            m_BehaviorData = m_Self.BehaviorData as MonsterMushroomBehaviorData;
-            m_AttackData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Self.Code)] as MonsterMushroomAttackData;
+            m_Mushroom = animator.GetComponent<MonsterMushroom>();
+            m_BehaviorData = m_Mushroom.BehaviorData as MonsterMushroomBehaviorData;
+            m_AttackData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Mushroom.Code)] as MonsterMushroomAttackData;
         }
 
         m_DecisionTimer = 0f;
@@ -24,7 +26,9 @@ public class MonsterMushroomBehavior : AnimationBehaviour
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (m_Self.Hp <= 0)
-            m_Self.AnimationJobs.Enqueue(AniType.DEAD_0);
+        base.OnAnimationUpdate(animator, stateInfo, layerIndex);
+
+        if (m_Mushroom.Hp <= 0)
+            m_Mushroom.AnimationJobs.Enqueue(AniType.DEAD_0);
     }
 }

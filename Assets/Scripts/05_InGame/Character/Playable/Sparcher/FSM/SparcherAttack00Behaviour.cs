@@ -14,17 +14,17 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         base.OnAnimationEnter(animator, stateInfo, layerIndex);
 
         m_Player.Controlable = false;
-        var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Self.Code)] as SparcherBasicAttackData;
+        var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Sparcher.Code)] as SparcherBasicAttackData;
 
         // 오토 타겟팅이 켜져있으면 공격거리내의 몬스터에게 몸이 회전한다.
         if (GameManager.GameSettings.AutoTargeting)
         {
-            var ordered = StageManager.Instance.Monsters.OrderBy(m => Vector3.Distance(m.transform.position, m_Self.transform.position)).ToList();
-            var find = ordered.Find(m => Vector3.Distance(m.transform.position, m_Self.transform.position) <= skillData.AutoTargetDetectRange);
+            var ordered = StageManager.Instance.Monsters.OrderBy(m => Vector3.Distance(m.transform.position, m_Sparcher.transform.position)).ToList();
+            var find = ordered.Find(m => Vector3.Distance(m.transform.position, m_Sparcher.transform.position) <= skillData.AutoTargetDetectRange);
             if (find != null)
             {
-                m_Self.Target = find;
-                m_Self.transform.LookAt(find.transform);
+                m_Sparcher.Target = find;
+                m_Sparcher.transform.LookAt(find.transform);
             }
         }
     }
@@ -37,7 +37,7 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         if (m_CurrentAnimationTime > 0.686f && !m_Shoot)
         {
             m_Shoot = true;
-            m_Self.ShootArrow();
+            m_Sparcher.ShootArrow();
         }
 
         // 자유롭게 행동할 수 있는 시간은 애니메이션이 80% 완료된 이후

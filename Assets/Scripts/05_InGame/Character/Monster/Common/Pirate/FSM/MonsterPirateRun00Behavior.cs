@@ -13,14 +13,14 @@ public class MonsterPirateRun00Behavior : MonsterPirateBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
-        if (m_Self.Agent.pathEndPosition == m_Self.transform.position)
+        if (m_Pirate.Agent.pathEndPosition == m_Pirate.transform.position)
         {
             // 타겟을 공격해야하는 경우
-            if (m_Self.Target != null)
+            if (m_Pirate.Target != null)
             {
                 // SetAttackBehavior()가 두 번이상 호출되는 것을 방지하기 위해 조건문
-                if (m_Self.Decision != MonsterPirateDecision.Attack)
-                    m_Self.SetAttackBehavior();
+                if (m_Pirate.Decision != MonsterPirateDecision.Attack)
+                    m_Pirate.SetAttackBehavior();
             }
         }
             
