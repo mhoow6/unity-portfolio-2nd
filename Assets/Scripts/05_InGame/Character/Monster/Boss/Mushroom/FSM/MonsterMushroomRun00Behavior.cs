@@ -10,7 +10,7 @@ public class MonsterMushroomRun00Behavior : MonsterMushroomBehavior
 
         Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
         Vector3 endPosition = m_Self.Target.transform.position;
-        endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_Attack01Data.AttackDistance);
+        endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_BehaviorData.TargetKeepDistance);
         m_Mushroom.Agent.SetDestination(endPosition);
 
         if (m_Mushroom.Agent.pathEndPosition.Similar(m_Mushroom.transform.position))

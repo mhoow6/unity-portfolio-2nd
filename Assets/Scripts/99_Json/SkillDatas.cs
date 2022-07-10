@@ -49,14 +49,13 @@
 
     public class MonsterMushroomAttack01Data : Skillable
     {
-        public float AttackDistance;
         
     }
 
 
     public class MonsterMushroomAttack02Data : Skillable
     {
-        public int AttackDistance;
+        public float AttackDistance;
         public int MaximumHits;
         
     }
@@ -64,8 +63,8 @@
 
     public class MonsterMushroomAttack03Data : Skillable
     {
-        public int MaximumHits;
         public float AttackDistance;
+        public float AttackAngle;
         
     }
 

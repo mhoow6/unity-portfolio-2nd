@@ -44,8 +44,3 @@ public enum AlarmEvent
     NONE = 0,
     SpawnBoss,
 }
-
-public interface IAlarmReactable
-{
-    public void React(AlarmEvent alarmEvent);
-}

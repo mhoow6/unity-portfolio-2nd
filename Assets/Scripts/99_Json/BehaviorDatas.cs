@@ -15,6 +15,7 @@
         public float EnemyDetectRange;
         public float EnemyDetectAngle;
         public float EnemyLookAtSpeed;
+        public float TargetKeepDistance;
         
     }
 

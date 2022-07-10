@@ -28,7 +28,7 @@ public class MonsterMushroomIdle00Behavior : MonsterMushroomBehavior
                     if (ChooseAttackDecision(currentDistanceWithTarget) == MonsterMushroomDecision.None)
                     {
                         Vector3 endPosition = m_Self.Target.transform.position;
-                        endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_Attack01Data.AttackDistance);
+                        endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_BehaviorData.TargetKeepDistance);
 
                         m_Mushroom.SetWalkBehavior(endPosition);
                     }

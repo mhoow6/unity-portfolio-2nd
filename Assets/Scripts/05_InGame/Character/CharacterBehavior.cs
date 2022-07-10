@@ -10,26 +10,4 @@ public class CharacterBehavior : AnimationBehaviour
         if (m_Self == null)
             m_Self = animator.GetComponent<Character>();
     }
-
-    protected bool IsTargetIn(IsTargetInParam param)
-    {
-        if (param.Target == null)
-            return false;
-
-        Vector3 forward = m_Self.transform.forward;
-        Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
-        Vector3 fromTargetNormalized = fromTarget.normalized;
-
-        float halfAngle = param.DetectAngle * 0.5f * Mathf.Deg2Rad;
-        float attackRange = param.DetectRange;
-
-        // 공격범위 안에 있는 경우
-        if (Mathf.Cos(halfAngle) < Vector3.Dot(forward, fromTargetNormalized))
-        {
-            // 사정거리 안에 있는 경우 
-            if (Mathf.Round(Vector3.SqrMagnitude(fromTarget)) <= Mathf.Pow(attackRange, 2))
-                return true;
-        }
-        return false;
-    }
 }

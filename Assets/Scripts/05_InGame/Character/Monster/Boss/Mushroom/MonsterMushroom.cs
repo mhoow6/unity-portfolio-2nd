@@ -34,6 +34,33 @@ public sealed class MonsterMushroom : Boss
     }
     #endregion
 
+    public void Attack01()
+    {
+        
+    }
+
+    public void Attack02()
+    {
+
+    }
+
+    public void Attack03()
+    {
+        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 2] as MonsterMushroomAttack03Data;
+        var param = new IsTargetInParam()
+        {
+            Target = Target,
+            DetectAngle = attackdata.AttackAngle,
+            DetectRange = attackdata.AttackDistance
+        };
+
+        if (IsTargetIn(param))
+        {
+            var result = CalcuateDamage(Target, attackdata.DamageScale);
+            Target.Hp -= result.Damage;
+        }
+    }
+
     // -----------------------------------------------------------------------
 
     #region AI
