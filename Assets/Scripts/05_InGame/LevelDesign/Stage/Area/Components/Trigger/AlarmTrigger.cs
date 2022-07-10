@@ -19,14 +19,23 @@ public class AlarmTrigger : AreaTrigger
 
         var sm = StageManager.Instance;
 
-        // 알람 효과 발생
-        var alarmUI = GameManager.UISystem.PushToast<BossWarningUI>(ToastType.BossWarning);
-        alarmUI.SetData(() =>
+        switch (AlarmEvent)
         {
-            var area = sm.Areas.Find(a => a.Index == m_AreaIdx);
-            if (area != null)
-                area.React(AlarmEvent);
-        });
+            case AlarmEvent.NONE:
+                break;
+            case AlarmEvent.SpawnBoss:
+                // 알람 효과 발생
+                var alarmUI = GameManager.UISystem.PushToast<BossWarningUI>(ToastType.BossWarning);
+                alarmUI.SetData(() =>
+                {
+                    var area = sm.Areas.Find(a => a.Index == m_AreaIdx);
+                    if (area != null)
+                        area.React(AlarmEvent);
+                });
+                break;
+            default:
+                break;
+        }
     }
 }
 

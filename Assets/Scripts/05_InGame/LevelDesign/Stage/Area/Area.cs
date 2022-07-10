@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class Area : MonoBehaviour, IAlarmReactable
+public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
 {
     public int Index => AreaIdx;
     [SerializeField] int AreaIdx;
@@ -128,5 +129,17 @@ public class Area : MonoBehaviour, IAlarmReactable
             default:
                 break;
         }
+    }
+
+    public int CompareTo(Area other)
+    {
+        // 0: 같다, 1: 왼쪽이 크다, -1: 오른쪽이 크다
+        if (this.AreaIdx > other.AreaIdx)
+            return 1;
+
+        if (this.AreaIdx < other.AreaIdx)
+            return -1;
+
+        return 0;
     }
 }

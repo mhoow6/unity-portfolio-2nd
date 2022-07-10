@@ -96,8 +96,10 @@ public abstract class Monster : Character
 
     protected override void OnDead(Character attacker, int damage)
     {
-        var manager = StageManager.Instance;
+        if (m_TargetLockOnImage)
+            GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
 
+        var manager = StageManager.Instance;
         if (manager != null)
         {
             // 스테이지 매니저의 몬스터 리스트에서 삭제
@@ -122,10 +124,7 @@ public abstract class Monster : Character
         StartCoroutine(OnDeadCoroutine());
 
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
-        StageManager.Instance.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
-
-        if (m_TargetLockOnImage)
-            GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
+        manager.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
 
         // 50%확률로 SP,HP 회복아이템 드랍
         int randomPoint = UnityEngine.Random.Range(0, 100);
@@ -143,7 +142,7 @@ public abstract class Monster : Character
 
         // 100%확률로 골드 드랍
         var goldDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Gold");
-        ThrowDropItem(goldDropItem, 0.1f);
+        ThrowDropItem(goldDropItem, 0.2f);
 
         // 100% 확률로 스테이지 아이템 리스트 중 하나를 드랍
         var stageDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Box");
@@ -229,7 +228,7 @@ public abstract class Monster : Character
             {
                 colliderCheck = true;
                 if (position.RaycastDown(out Vector3 groundPoint))
-                    dropEndPosition = groundPoint;
+                    dropEndPosition = groundPoint + new Vector3(0, adjustHeight, 0);
 
                 break;
             }

@@ -13,6 +13,7 @@ public class SpeakerPreset : MonoBehaviour
 
     public bool IsSpeaking { get; private set; } = false;
     public string SpeakerName { get; private set; } = string.Empty;
+    public float SpeakingTime { get; private set; }
 
     readonly Color SPEAK_LABEL_COLOR = Color.yellow;
     readonly Color LISTEN_LABEL_COLOR = Color.gray;
@@ -56,8 +57,19 @@ public class SpeakerPreset : MonoBehaviour
         m_SpeakingTween = 
         speakText
             .DOText(dialogue.Dialogue, SPEAKING_TIME)
-            .OnPlay(() => { IsSpeaking = true; })
-            .OnComplete(() => { IsSpeaking = false; });
+            .OnUpdate(() =>
+            {
+                SpeakingTime += Time.deltaTime;
+            })
+            .OnPlay(() => 
+            {
+                IsSpeaking = true;
+                SpeakingTime = 0f;
+            })
+            .OnComplete(() => 
+            { 
+                IsSpeaking = false;
+            });
     }
 
     public void SpeakComplete()

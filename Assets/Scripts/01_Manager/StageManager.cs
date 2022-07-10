@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using DatabaseSystem;
+using System.Linq;
 
 public sealed class StageManager : GameSceneManager
 {
@@ -234,6 +235,16 @@ public sealed class StageManager : GameSceneManager
         onProcessCompletedCallback?.Invoke(go);
     }
     #endregion
+
+#if UNITY_EDITOR
+    [ContextMenu("# Get Area")]
+    void GetArea()
+    {
+        var areas = FindObjectsOfType<Area>();
+        Areas = areas.ToList();
+        Areas.Sort();
+    }
+#endif
 }
 
 #if UNITY_EDITOR

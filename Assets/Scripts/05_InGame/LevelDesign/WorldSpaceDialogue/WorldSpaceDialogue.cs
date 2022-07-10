@@ -61,22 +61,25 @@ public class WorldSpaceDialogue : MonoBehaviour
 
         // 카메라 연출
         var brain = StageManager.Instance.BrainCam;
-        StartCoroutine(BlendingCoroutine(BlendType.StartToEnd, () => 
+        StartCoroutine(BlendingCoroutine(WorldSpaceDialogueBlendType.StartToEnd, () => 
         {
             Invoke("DialogueSetting", 0.5f);
         }));      
     }
 
-    // Canvas-Button-OnClickEvent
     public void DialogueRead()
     {
-        // 남은 대화가 있는 경우
-        if (m_CurrentDialogueIndex < m_Dialogues.Count)
+        // 대사 1초는 보게하자
+        if (m_CurrentSpeaker.SpeakingTime < 1f)
+            return;
+
+        // 말하는 사람의 대화를 전부 다 출력한다.
+        if (m_CurrentSpeaker.IsSpeaking)
+            m_CurrentSpeaker.SpeakComplete();
+        else
         {
-            // 말하는 사람의 대화를 전부 다 출력한다.
-            if (m_CurrentSpeaker.IsSpeaking)
-                m_CurrentSpeaker.SpeakComplete();
-            else
+            // 남은 대화가 있는 경우
+            if (m_CurrentDialogueIndex < m_Dialogues.Count)
             {
                 // 말하고 있는 사람이 없는 거면 대화자가 말을 다 끝낸상태
                 var listener = m_CurrentSpeaker == m_LeftSpeaker ? m_RightSpeaker : m_LeftSpeaker;
@@ -98,18 +101,12 @@ public class WorldSpaceDialogue : MonoBehaviour
                     m_CurrentSpeaker = listener;
                 }
             }
-        }
-        else
-        {
-            // 마지막 대화면 마저 말하게 하고
-            if (m_CurrentSpeaker.IsSpeaking)
-                m_CurrentSpeaker.SpeakComplete();
-            // 더 이상 진행할 대화가 없다면 대화 종료
             else
             {
+                // 더 이상 진행할 대화가 없다면 대화 종료
                 m_Monitor.transform.DOScaleY(0, DIALOUGE_WINDOW_TWEENING_SPEED);
 
-                StartCoroutine(BlendingCoroutine(BlendType.EndToStart,
+                StartCoroutine(BlendingCoroutine(WorldSpaceDialogueBlendType.EndToStart,
                     () =>
                     {
                         gameObject.SetActive(false);
@@ -117,16 +114,24 @@ public class WorldSpaceDialogue : MonoBehaviour
                         GameManager.InputSystem.CameraRotatable = true;
                         StageManager.Instance.Player.Moveable = true;
 
-                        // UI 켜기
-                        GameManager.UISystem.HUD = true;
+                    // UI 켜기
+                    GameManager.UISystem.HUD = true;
 
-                        // 인게임 UI 켜기
-                        GameManager.UISystem.OpenWindow(UIType.InGame);
+                    // 인게임 UI 켜기
+                    GameManager.UISystem.OpenWindow(UIType.InGame);
 
                         m_DialogueEndCallback?.Invoke();
                     }));
             }
         }
+    }
+
+    // ---------------------------------------------------------------
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+            DialogueRead();
     }
 
     void SetBlendSetting()
@@ -153,24 +158,24 @@ public class WorldSpaceDialogue : MonoBehaviour
         brain.m_CustomBlends = m_BlenderSettings;
 
         // 트리거를 밟아 시작 카메라에서 대화창을 보는 카메라의 Blend 세팅
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToEnd].m_From = m_StartBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToEnd].m_To = m_EndBlendingCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.StartToEnd].m_From = m_StartBlendingCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.StartToEnd].m_To = m_EndBlendingCamera.name;
 
         // 대화창을 끝내고 시작 카메라로 돌아갈때 Blend 세팅
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.EndToStart].m_From = m_EndBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.EndToStart].m_To = m_StartBlendingCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.EndToStart].m_From = m_EndBlendingCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.EndToStart].m_To = m_StartBlendingCamera.name;
 
         // 시작 카메라에서 플레이어 카메라로 돌아갈때 Blend 세팅
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_From = m_StartBlendingCamera.name;
-        brain.m_CustomBlends.m_CustomBlends[(int)BlendType.StartToPlayer].m_To = sm.FreeLookCam.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.StartToPlayer].m_From = m_StartBlendingCamera.name;
+        brain.m_CustomBlends.m_CustomBlends[(int)WorldSpaceDialogueBlendType.StartToPlayer].m_To = sm.FreeLookCam.name;
     }
 
-    IEnumerator BlendingCoroutine(BlendType type, Action blendDoneCallback = null)
+    IEnumerator BlendingCoroutine(WorldSpaceDialogueBlendType type, Action blendDoneCallback = null)
     {
         var brain = StageManager.Instance.BrainCam;
         switch (type)
         {
-            case BlendType.StartToEnd:
+            case WorldSpaceDialogueBlendType.StartToEnd:
                 // 대화창 끝낼 때 원래 카메라로 돌아가야한다
                 m_ReturnCamera = brain.ActiveVirtualCamera.VirtualCameraGameObject;
 
@@ -190,7 +195,7 @@ public class WorldSpaceDialogue : MonoBehaviour
                 // 포스트 프로세싱도 같이 켜준다.
                 m_EndBlendingPostProcessing.SetActive(true);
                 break;
-            case BlendType.EndToStart:
+            case WorldSpaceDialogueBlendType.EndToStart:
                 // 대화창을 바라보는 카메라 비활성화하고
                 m_EndBlendingCamera.gameObject.SetActive(false);
                 // 포스트 프로세싱도 같이 꺼주고
@@ -249,14 +254,14 @@ public class WorldSpaceDialogue : MonoBehaviour
             }
         }
     }
+}
 
-    enum BlendType
-    {
-        /// <summary> 블랜딩 시작 카메라부터 끝 카메라 /// </summary>
-        StartToEnd,
-        /// <summary> 블랜딩 끝 카메라부터 시작 카메라 /// </summary>
-        EndToStart,
-        /// <summary> 블랜딩 끝 카메라부터 플레이어 카메라 /// </summary>
-        StartToPlayer
-    }
+enum WorldSpaceDialogueBlendType
+{
+    /// <summary> 블랜딩 시작 카메라부터 끝 카메라 /// </summary>
+    StartToEnd,
+    /// <summary> 블랜딩 끝 카메라부터 시작 카메라 /// </summary>
+    EndToStart,
+    /// <summary> 블랜딩 끝 카메라부터 플레이어 카메라 /// </summary>
+    StartToPlayer
 }

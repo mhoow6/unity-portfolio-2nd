@@ -7,6 +7,8 @@ namespace Mhoow6.SafeArea
 {
     public abstract class SafeAreaTool : MonoBehaviour
     {
+        public bool WarningMessage;
+
         protected RectTransform rectTransform;
         protected Canvas canavs;
 
@@ -17,7 +19,8 @@ namespace Mhoow6.SafeArea
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
             if (screenSize.x <= Screen.safeArea.size.x && screenSize.y <= Screen.safeArea.size.y)
             {
-                Debug.LogWarning($"스크린 사이즈보다 SafeArea가 큰 경우, SafeArea Tool을 종료합니다.");
+                if (WarningMessage)
+                    Debug.LogWarning($"스크린 사이즈보다 SafeArea가 큰 경우, SafeArea Tool을 종료합니다.");
                 enabled = false;
                 return;
             }
