@@ -57,7 +57,7 @@ public sealed class MonsterMushroom : Boss
         if (IsTargetIn(param))
         {
             var result = CalcuateDamage(Target, attackdata.DamageScale);
-            Target.Hp -= result.Damage;
+            Target.Damaged(this, result.Damage, result.IsCrit);
         }
     }
 
