@@ -15,7 +15,7 @@ public class MonsterPirateRun00Behavior : MonsterPirateBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
-        if (m_Pirate.Agent.pathEndPosition == m_Pirate.transform.position)
+        if (m_Pirate.Agent.pathEndPosition.Similar(m_Pirate.transform.position))
         {
             // 타겟을 공격해야하는 경우
             if (m_Pirate.Target != null)

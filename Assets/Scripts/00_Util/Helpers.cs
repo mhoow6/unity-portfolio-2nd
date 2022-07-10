@@ -245,9 +245,7 @@ public static class UnityHelper
         return result;
     }
 
-    /// <summary>
-    /// 해당 이름의 노드를 탐색합니다.
-    /// </summary>
+    /// <summary> 해당 이름의 노드를 탐색합니다. </summary>
     public static void GetNodeObject(Transform root, string nodeName, ref Transform node)
     {
         for (int i = 0; i < root.childCount; i++)
@@ -270,12 +268,7 @@ public static class UnityHelper
         }
     }
 
-    /// <summary>
-    /// 구 충돌을 시도합니다.
-    /// </summary>
-    /// <param name="lhs"></param>
-    /// <param name="rhs"></param>
-    /// <returns>충돌 여부</returns>
+    /// <summary> 구 충돌을 시도합니다.</summary>
     public static bool TrySphereCollide(this GameObject lhs, GameObject rhs, float lhsRadius)
     {
         // 화살과 타겟의 충돌처리
@@ -288,39 +281,13 @@ public static class UnityHelper
         return false;
     }
 
-    /// <summary>
-    /// AABB 충돌을 시도합니다.
-    /// </summary>
-    /// <param name="lhsBounds"></param>
-    /// <param name="rhsBounds"></param>
-    /// <returns></returns>
+    /// <summary> AABB 충돌을 시도합니다. </summary>
     public static bool TryAABB(this ref Bounds lhsBounds, ref Bounds rhsBounds)
     {
         if (lhsBounds.Intersects(rhsBounds))
             return true;
 
         return false;
-    }
-
-    /// <summary>
-    /// 3D 공간에서 오브젝트가 카메라 안에 있는지 확인합니다.
-    /// </summary>
-    /// <param name="obj">확인할 오브젝트</param>
-    /// <param name="cam">오브젝트를 감시할 카메라</param>
-    /// <returns></returns>
-    public static bool IsInCamera(this GameObject obj, Camera cam)
-    {
-        Vector3 screenPoint = cam.WorldToViewportPoint(obj.transform.position);
-
-        // 뷰포트 안에 있는지 확인
-        return
-            screenPoint.z > 0 &&
-            screenPoint.x > 0 &&
-            screenPoint.x < 1 &&
-            screenPoint.y > 0 &&
-            screenPoint.y < 1 &&
-            // FarPlane보다 가까이 있는지 확인
-            obj.TrySphereCollide(cam.gameObject, cam.farClipPlane);
     }
 
     /// <summary>
@@ -340,9 +307,6 @@ public static class UnityHelper
         return false;
     }
 
-    /// <summary>
-    /// position에서 밑으로 Raycast를 합니다.
-    /// </summary>
     public static bool RaycastDown(this Vector3 position, out Vector3 hitPoint)
     {
         // 포탄이 닿을 오브젝트 감지
@@ -355,6 +319,11 @@ public static class UnityHelper
         }
         hitPoint = Vector3.zero;
         return false;
+    }
+
+    public static bool Similar(this Vector3 a, Vector3 b)
+    {
+        return Vector3.SqrMagnitude(a - b) < 0.01f;
     }
 
 }

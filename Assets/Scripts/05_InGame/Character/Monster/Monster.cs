@@ -54,9 +54,15 @@ public abstract class Monster : Character
         StartCoroutine(LookAtLerpCoroutine(desired, rotateTime, lookAtDoneCallback));
     }
 
-    public void LookAtWith(Transform target, Action doSomething)
+    public void LookAtWith(Transform lookat, Action doSomething)
     {
-        transform.LookAt(target);
+        transform.LookAt(lookat);
+        doSomething?.Invoke();
+    }
+
+    public void LookAtWith(Quaternion desired, Action doSomething)
+    {
+        transform.rotation = desired;
         doSomething?.Invoke();
     }
     #endregion
