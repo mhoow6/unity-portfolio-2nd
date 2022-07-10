@@ -69,6 +69,10 @@ public class WorldSpaceDialogue : MonoBehaviour
 
     public void DialogueRead()
     {
+        // 대화자가 세팅되기 전에 마우스 버튼을 누르는 경우 제외
+        if (m_CurrentSpeaker == null)
+            return;
+
         // 대사 1초는 보게하자
         if (m_CurrentSpeaker.SpeakingTime < 1f)
             return;

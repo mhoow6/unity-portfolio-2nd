@@ -34,7 +34,6 @@ public sealed class MonsterMushroom : Boss
     }
     #endregion
 
-
     // -----------------------------------------------------------------------
 
     #region AI

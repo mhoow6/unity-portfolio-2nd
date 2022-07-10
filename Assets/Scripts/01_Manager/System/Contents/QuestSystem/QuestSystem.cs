@@ -79,16 +79,7 @@ public class QuestSystem : IGameSystem
     }
 
 	/// <summary> 해당 퀘스트 타입의 목표를 달성했다는 보고 용도 </summary>
-	public void ReportAll(QuestType type, int addCount = 1)
-    {
-        foreach (var kvp in QuestRecords)
-        {
-			if (kvp.Value.Type == type)
-				Report(kvp.Key, addCount);
-		}
-    }
-
-	public void ReportAll(QuestType type, int target, int addCount = 1)
+	public void ReportAll(QuestType type, int target = -1, int addCount = 1)
 	{
 		foreach (var kvp in QuestRecords)
 		{

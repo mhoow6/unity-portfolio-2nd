@@ -124,12 +124,12 @@ public abstract class Monster : Character
         StartCoroutine(OnDeadCoroutine());
 
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
-        manager.MissionSystem.ReportAll(QuestType.KILL_ENEMY);
+        manager.MissionSystem.ReportAll(QuestType.KILL_ENEMY, (int)Code);
 
-        // 50%확률로 SP,HP 회복아이템 드랍
+        // 30%확률로 SP,HP 회복아이템 드랍
         int randomPoint = UnityEngine.Random.Range(0, 100);
         string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
-        if (randomPoint >= 50 || GameManager.CheatSettings.DropItem100Percent)
+        if (randomPoint >= 70 || GameManager.CheatSettings.DropItem100Percent)
         {
             var spDropItem = manager.PoolSystem.Load<RecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
             spDropItem.SetData(this);

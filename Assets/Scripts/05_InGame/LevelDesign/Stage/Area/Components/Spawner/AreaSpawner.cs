@@ -43,8 +43,7 @@ public class AreaSpawner : AreaComponent
 
         while (count != 0)
         {
-            int random = UnityEngine.Random.Range(0, m_SpawnPositions.Count);
-            var pos = m_SpawnPositions[random];
+            var pos = m_SpawnPositions[m_CurrentSpawnCount];
 
             var mob = Instantiate(SpawnPrefab, pos);
             var comp = mob.GetComponent<Character>();
