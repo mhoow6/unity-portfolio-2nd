@@ -45,9 +45,17 @@ namespace DatabaseSystem
             MonsterPirateAttackData monsterpirateattackdata = JsonConvert.DeserializeObject<MonsterPirateAttackData>(monsterpirateattackdataNode.ToString());
             JsonDatas.Add(monsterpirateattackdata.Index, monsterpirateattackdata);
 
-            JSONNode monstermushroomattackdataNode = skilldatasRoot["MonsterMushroomAttackData(Skillable)"];
-            MonsterMushroomAttackData monstermushroomattackdata = JsonConvert.DeserializeObject<MonsterMushroomAttackData>(monstermushroomattackdataNode.ToString());
-            JsonDatas.Add(monstermushroomattackdata.Index, monstermushroomattackdata);
+            JSONNode monstermushroomattack01dataNode = skilldatasRoot["MonsterMushroomAttack01Data(Skillable)"];
+            MonsterMushroomAttack01Data monstermushroomattack01data = JsonConvert.DeserializeObject<MonsterMushroomAttack01Data>(monstermushroomattack01dataNode.ToString());
+            JsonDatas.Add(monstermushroomattack01data.Index, monstermushroomattack01data);
+
+            JSONNode monstermushroomattack02dataNode = skilldatasRoot["MonsterMushroomAttack02Data(Skillable)"];
+            MonsterMushroomAttack02Data monstermushroomattack02data = JsonConvert.DeserializeObject<MonsterMushroomAttack02Data>(monstermushroomattack02dataNode.ToString());
+            JsonDatas.Add(monstermushroomattack02data.Index, monstermushroomattack02data);
+
+            JSONNode monstermushroomattack03dataNode = skilldatasRoot["MonsterMushroomAttack03Data(Skillable)"];
+            MonsterMushroomAttack03Data monstermushroomattack03data = JsonConvert.DeserializeObject<MonsterMushroomAttack03Data>(monstermushroomattack03dataNode.ToString());
+            JsonDatas.Add(monstermushroomattack03data.Index, monstermushroomattack03data);
         }
     }
 }

@@ -13,30 +13,23 @@ public class CharacterBehavior : AnimationBehaviour
 
     protected bool IsTargetIn(IsTargetInParam param)
     {
-        if (m_Self.Target == null)
+        if (param.Target == null)
             return false;
 
         Vector3 forward = m_Self.transform.forward;
         Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
         Vector3 fromTargetNormalized = fromTarget.normalized;
 
-        float halfAngle = param.AttackAngle * 0.5f * Mathf.Deg2Rad;
-        float attackRange = param.AttackRange;
+        float halfAngle = param.DetectAngle * 0.5f * Mathf.Deg2Rad;
+        float attackRange = param.DetectRange;
 
         // 공격범위 안에 있는 경우
         if (Mathf.Cos(halfAngle) < Vector3.Dot(forward, fromTargetNormalized))
         {
             // 사정거리 안에 있는 경우 
             if (Mathf.Round(Vector3.SqrMagnitude(fromTarget)) <= Mathf.Pow(attackRange, 2))
-            {
-                OnTargetIn(param);
                 return true;
-            }
-            return false;
         }
-        else
-            return false;
+        return false;
     }
-
-    protected virtual void OnTargetIn(IsTargetInParam param) { }
 }

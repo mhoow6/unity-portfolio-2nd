@@ -21,6 +21,9 @@ public abstract class Monster : Character
             case ObjectCode.CHAR_MonsterPirate:
                 result = JsonManager.Instance.JsonDatas[4000] as Behaviorable;
                 break;
+            case ObjectCode.CHAR_MonsterMushroom:
+                result = JsonManager.Instance.JsonDatas[4001] as Behaviorable;
+                break;
             default:
                 break;
         }

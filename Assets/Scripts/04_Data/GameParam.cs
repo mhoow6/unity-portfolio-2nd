@@ -31,6 +31,7 @@ public struct MoveInParabolaParam
 
 public struct IsTargetInParam
 {
-    public float AttackAngle;
-    public float AttackRange;
+    public Character Target;
+    public float DetectAngle;
+    public float DetectRange;
 }

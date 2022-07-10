@@ -108,6 +108,12 @@
         /// <summary> 가속(회피)할 때 애니메이션 </summary> ///
         DASH_4 = 29,
 
+        /// <summary> 앉을 때 애니메이션 </summary> ///
+        SIT_0 = 35,
+
+        /// <summary> 일어날 때 애니메이션 </summary> ///
+        RISE_0 = 36,
+
         /// <summary>  </summary> ///
         NONE = -1,
 

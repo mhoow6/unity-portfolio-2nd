@@ -15,21 +15,21 @@ public sealed class MonsterMushroom : Boss
         Decision = MonsterMushroomDecision.Attack02;
     }
 
-    public void SetJumpAttackBehavior()
+    public void SetAttack03Behavior()
     {
         AnimationJobs.Enqueue(AniType.ATTACK_2);
-        Decision = MonsterMushroomDecision.JumpAttack;
+        Decision = MonsterMushroomDecision.Attack03;
     }
 
     public void SetDizzyBehavior()
     {
-        AnimationJobs.Enqueue(AniType.ATTACK_2);
+        AnimationJobs.Enqueue(AniType.SIT_0);
         Decision = MonsterMushroomDecision.Sit;
     }
 
     public void SetRiseBehavior()
     {
-        AnimationJobs.Enqueue(AniType.ATTACK_2);
+        AnimationJobs.Enqueue(AniType.RISE_0);
         Decision = MonsterMushroomDecision.Rise;
     }
     #endregion
@@ -63,7 +63,7 @@ public enum MonsterMushroomDecision
     Walk,
     Attack01,
     Attack02,
-    JumpAttack,
+    Attack03,
     Sit,
     Rise,
     None = -1

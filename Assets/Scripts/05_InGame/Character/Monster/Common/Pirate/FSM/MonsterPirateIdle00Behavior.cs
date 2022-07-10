@@ -7,6 +7,8 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
     bool m_FirstLookAt;
     bool m_LookAtLerp;
 
+    protected override AniType m_AniType => AniType.IDLE_0;
+
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnAnimationEnter(animator, stateInfo, layerIndex);

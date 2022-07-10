@@ -6,6 +6,8 @@ public class MonsterPirateAttack00Behavior : MonsterPirateBehavior
 {
     bool m_Shoot;
 
+    protected override AniType m_AniType => AniType.ATTACK_0;
+
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnAnimationEnter(animator, stateInfo, layerIndex);

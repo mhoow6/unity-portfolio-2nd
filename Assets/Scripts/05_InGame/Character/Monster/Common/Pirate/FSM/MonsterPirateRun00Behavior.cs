@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MonsterPirateRun00Behavior : MonsterPirateBehavior
 {
+    protected override AniType m_AniType => AniType.RUN_0;
+
     protected override void OnAnimationEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnAnimationEnter(animator, stateInfo, layerIndex);

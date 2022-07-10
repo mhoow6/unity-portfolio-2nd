@@ -47,8 +47,23 @@
     }
 
 
-    public class MonsterMushroomAttackData : Skillable
+    public class MonsterMushroomAttack01Data : Skillable
     {
+        
+    }
+
+
+    public class MonsterMushroomAttack02Data : Skillable
+    {
+        public int MaximumHits;
+        
+    }
+
+
+    public class MonsterMushroomAttack03Data : Skillable
+    {
+        public int MaximumHits;
+        public int ThrustDistance;
         
     }
 
