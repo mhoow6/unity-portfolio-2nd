@@ -12,44 +12,54 @@ public class MonsterMushroomIdle00Behavior : MonsterMushroomBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
-        IsTargetInParam isTargetInParam = new IsTargetInParam()
+        if (m_Self.Target != null)
         {
-            Target = m_Self.Target,
-            DetectAngle = m_BehaviorData.EnemyDetectAngle,
-            DetectRange = m_BehaviorData.EnemyDetectRange
-        };
-        if (IsTargetIn(isTargetInParam))
-        {
-            
-        }
-        else
-        {
-            // 타겟쪽으로 고개를 돌려준다
-            if (m_LookAt == false)
+            IsTargetInParam isTargetInParam = new IsTargetInParam()
             {
+                Target = m_Self.Target,
+                DetectAngle = m_BehaviorData.EnemyDetectAngle,
+                DetectRange = m_BehaviorData.EnemyDetectRange
+            };
+            if (IsTargetIn(isTargetInParam))
+            {
+                // 타겟쪽으로 고개를 돌려준다
                 Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
-                m_LookAt = true;
-                m_Mushroom.LookAtLerp(Quaternion.LookRotation(fromTarget), m_BehaviorData.EnemyLookAtSpeed, lookAtDoneCallback: () =>
+                float decisionTime = m_BehaviorData.BehaviorDecisionTime;
+                m_Mushroom.LookAtWith(m_Self.Target.transform, () =>
                 {
-                    m_LookAt = false;
+                    Debug.Log($"생각할 수 있는 시간: {m_DecisionTimer}");
 
-                    // 고개를 다 돌리고 나면 타겟과의 거리를 재서
-                    float currentDistanceWithTarget = Vector3.Distance(isTargetInParam.Target.transform.position, m_Mushroom.transform.position);
-
-                    // 점프 공격으로 공격이 맞을 것 같으면 점프공격을 하고, 그렇지 않으면 1,2번중 택
-                    if (currentDistanceWithTarget <= m_Attack03Data.ThrustDistance)
-                        m_Mushroom.SetAttack03Behavior();
-                    else
+                    // 생각할 시간 측정
+                    if (m_DecisionTimer <= decisionTime)
+                        m_DecisionTimer += Time.deltaTime;
+                    else if (m_DecisionTimer > decisionTime)
                     {
-                        int random = UnityEngine.Random.Range(0, 2);
-                        if (random > 0)
-                            m_Mushroom.SetAttack02Behavior();
-                        else
-                            m_Mushroom.SetAttackBehavior();
+                        // 결정하기
+                        float currentDistanceWithTarget = Vector3.Distance(isTargetInParam.Target.transform.position, m_Mushroom.transform.position);
+                        if (ChooseAttackDecision(currentDistanceWithTarget) == MonsterMushroomDecision.None)
+                        {
+                            Vector3 endPosition = m_Self.Target.transform.position;
+                            endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_Attack01Data.AttackDistance);
+
+                            m_Mushroom.SetWalkBehavior(endPosition);
+                        }
                     }
                 });
             }
+            else
+            {
+                if (m_LookAt == false)
+                {
+                    Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
+                    m_LookAt = true;
+                    m_Mushroom.LookAtLerp(Quaternion.LookRotation(fromTarget), m_BehaviorData.EnemyLookAtSpeed, lookAtDoneCallback: () =>
+                    {
+                        m_LookAt = false;
+                    });
+                }
+            }
         }
+        
         
     }
 }

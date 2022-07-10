@@ -36,4 +36,37 @@ public class MonsterMushroomBehavior : CharacterBehavior
         if (m_Mushroom.Hp <= 0)
             m_Mushroom.AnimationJobs.Enqueue(AniType.DEAD_0);
     }
+
+    protected MonsterMushroomDecision ChooseAttackDecision(float distanceWithTarget)
+    {
+        float attack01distance = m_Attack01Data.AttackDistance;
+        float attack02distance = m_Attack02Data.AttackDistance;
+        float attack03distance = m_Attack03Data.AttackDistance;
+
+        if (distanceWithTarget > attack03distance && distanceWithTarget <= attack02distance)
+        {
+            m_Mushroom.SetAttack03Behavior();
+            return MonsterMushroomDecision.Attack03;
+        }
+        else if (distanceWithTarget > attack01distance && distanceWithTarget < attack03distance)
+        {
+            m_Mushroom.SetAttack02Behavior();
+            return MonsterMushroomDecision.Attack02;
+        }
+        else if (distanceWithTarget < attack01distance)
+        {
+            int random = UnityEngine.Random.Range(0, 3);
+            switch (random)
+            {
+                case 0:
+                    m_Mushroom.SetAttack02Behavior();
+                    return MonsterMushroomDecision.Attack03;
+                case 1:
+                    m_Mushroom.SetAttackBehavior();
+                    return MonsterMushroomDecision.Attack01;
+            }
+        }
+
+        return MonsterMushroomDecision.None;
+    }
 }

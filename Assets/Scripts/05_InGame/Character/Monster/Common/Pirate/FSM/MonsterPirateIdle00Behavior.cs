@@ -43,8 +43,6 @@ public class MonsterPirateIdle00Behavior : MonsterPirateBehavior
                         // 계속 타겟을 쳐다보면서 공격준비 단계에 돌입한다.
                         m_Pirate.LookAtWith(m_Pirate.Target.transform, () =>
                         {
-                            Debug.Log($"해적이 생각하는 시간: {m_DecisionTimer}");
-
                             // 생각할 시간 측정
                             if (m_DecisionTimer <= decisionTime)
                                 m_DecisionTimer += Time.deltaTime;
