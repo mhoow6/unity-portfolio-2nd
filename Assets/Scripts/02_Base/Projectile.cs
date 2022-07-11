@@ -90,14 +90,13 @@ public class Projectile : BaseObject, IPoolable
     IEnumerator ShootStraightCoroutine(Vector3 direction, float moveSpeed, int lifeTime)
     {
         float timer = 0f;
-        m_RigidBody.isKinematic = false;
-        m_RigidBody.useGravity = false;
-        m_RigidBody.velocity = direction.normalized * moveSpeed * SHOOT_VELOCITY;
         while (timer < lifeTime)
         {
-            timer += Time.fixedDeltaTime;
+            timer += Time.deltaTime;
 
-            yield return new WaitForFixedUpdate();
+            transform.position += direction * moveSpeed * Time.deltaTime;
+
+            yield return null;
         }
         StageManager.Instance.PoolSystem.Release(this);
     }
@@ -105,15 +104,13 @@ public class Projectile : BaseObject, IPoolable
     IEnumerator ShootParabolaCoroutine(Vector3 startPosition, Vector3 endPosition, float height, float lifeTime)
     {
         float timer = 0f;
-        m_RigidBody.isKinematic = false;
-        m_RigidBody.useGravity = false;
         while (timer < lifeTime)
         {
-            timer += Time.fixedDeltaTime;
+            timer += Time.deltaTime;
 
-            m_RigidBody.position = MathParabola.Parabola(startPosition, endPosition, height, timer / lifeTime);
+            transform.position = MathParabola.Parabola(startPosition, endPosition, height, timer / lifeTime);
 
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
         StageManager.Instance.PoolSystem.Release(this);
     }
