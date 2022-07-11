@@ -42,6 +42,13 @@ public class MonsterMushroomAttack02Hitbox : MonoBehaviour
         m_CurrentHitCount++;
 
         var damageResult = m_Owner.CalcuateDamage(victim, m_DamageScale);
-        victim.Damaged(m_Owner, damageResult.Damage, damageResult.IsCrit);
+
+        DamagedParam param = new DamagedParam()
+        {
+            Attacker = m_Owner,
+            Damage = damageResult.Damage,
+            IsCrit = damageResult.IsCrit,
+        };
+        victim.Damaged(param);
     }
 }

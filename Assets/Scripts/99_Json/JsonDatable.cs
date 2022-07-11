@@ -17,6 +17,7 @@ namespace DatabaseSystem
             "DamageScale",
             "ActorCode",
             "BehaviorDecisionTime",
+            "GroggyPoint",
         };
 
         public int Index;
@@ -38,6 +39,7 @@ namespace DatabaseSystem
         public int Stack;
         public float CoolTime;
         public float DamageScale;
+        public int GroggyPoint;
 
         #region implicit/explicit operator 연산자 오버로딩 설명
         // implicit operator bool(Skillable skill)란?

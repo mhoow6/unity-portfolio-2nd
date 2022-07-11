@@ -35,3 +35,11 @@ public struct IsTargetInParam
     public float DetectAngle;
     public float DetectRange;
 }
+
+public struct DamagedParam
+{
+    public Character Attacker;
+    public int Damage;
+    public bool IsCrit;
+    public int GroggyPoint;
+}

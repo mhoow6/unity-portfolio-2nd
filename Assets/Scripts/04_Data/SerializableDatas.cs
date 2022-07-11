@@ -34,6 +34,8 @@ public class CharacterData
     public int Defense;
     public int Critical;
     public float Speed;
+    public int GroggyExhaustion;
+    public int GroggyRecoverySpeed;
 
     public WeaponData EquipWeaponData;
 }

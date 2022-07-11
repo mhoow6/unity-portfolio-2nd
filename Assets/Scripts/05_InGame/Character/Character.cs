@@ -138,6 +138,53 @@ public abstract class Character : BaseObject, ISubscribable
         }
     }
 
+    public int GroggyExhaustion
+    {
+        get
+        {
+            return m_Data.GroggyExhaustion;
+        }
+        set
+        {
+            // 그로기값은 음수가 될수는 없다.
+            int preCalculated = m_Data.GroggyExhaustion + value;
+            if (preCalculated < 0)
+                return;
+
+            var data = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+
+            // 그로기 진행중이라면
+            if (GroggyRecoverySpeed == data.GroggyRecoverySpeed)
+                return;
+
+            m_Data.GroggyExhaustion = value;
+
+            // 그로기 조건 달성시
+            int maxGroggy = data.MaxGroggyExhaustion;
+            if (maxGroggy > -1)
+            {
+                if (m_Data.GroggyExhaustion >= maxGroggy)
+                {
+                    m_Data.GroggyExhaustion = maxGroggy;
+                    GroggyRecoverySpeed = data.GroggyRecoverySpeed;
+                    OnGroggied();
+                }
+            }
+        }
+    }
+
+    public int GroggyRecoverySpeed
+    {
+        get
+        {
+            return m_Data.GroggyRecoverySpeed;
+        }
+        set
+        {
+            m_Data.GroggyRecoverySpeed = value;
+        }
+    }
+
     /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
     public static int GetPassiveIndex(ObjectCode objectCode)
     {
@@ -234,7 +281,7 @@ public abstract class Character : BaseObject, ISubscribable
     public bool Invulnerable { get; set; }
 
     /// <summary> 피격을 받아야 되는 상황에 호출 </summary>
-    public void Damaged(Character attacker, int damage, bool isCrit)
+    public void Damaged(DamagedParam param)
     {
         if (Invulnerable)
             return;
@@ -242,27 +289,26 @@ public abstract class Character : BaseObject, ISubscribable
         // 플레이어 치트
         var player = StageManager.Instance.Player.CurrentCharacter;
         var victim = this;
-        if (attacker.Equals(player))
+        if (param.Attacker.Equals(player))
         {
             if (GameManager.CheatSettings.OneShotKill)
-                damage = 999999999;
+                param.Damage = 999999999;
         }
         if (victim.Equals(player))
         {
-
             if (GameManager.CheatSettings.GodMode)
-                damage = 0;
+                param.Damage = 0;
         }
 
         // ----------------------------------------------------------
 
         // 데이터
-        Hp -= damage;
+        Hp -= param.Damage;
 
         // 데미지 텍스트
         var damageText = GameManager.UISystem.Pool.Load<FloatingDamageText>($"{GameManager.GameDevelopSettings.UIResourcePath}/InGame/Effect/FloatingDamage");
         var floatingStartPoint = StageManager.Instance.MainCam.WorldToScreenPoint(Head.position);
-        damageText.SetData(damage, isCrit, floatingStartPoint, Head.position);
+        damageText.SetData(param.Damage, param.IsCrit, floatingStartPoint, Head.position);
         damageText.StartFloating();
 
         // 캐릭터 사망
@@ -275,11 +321,15 @@ public abstract class Character : BaseObject, ISubscribable
             if (Rigidbody)
                 Rigidbody.isKinematic = true;
 
-            OnDead(attacker, damage);
+            OnDead(param.Attacker, param.Damage);
             return;
         }
 
-        OnDamaged(attacker, damage, isCrit);
+        OnDamaged(param);
+
+        // 그로기 공격이라면?
+        if (param.GroggyPoint > 0)
+            GroggyExhaustion += param.GroggyPoint;
     }
     #endregion
 
@@ -380,7 +430,11 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 캐릭터 공격/피격
     /// <summary> Damaged 호출 시 해야할 행동 </summary>
-    protected virtual void OnDamaged(Character attacker, int damage, bool isCrit) { }
+    protected virtual void OnDamaged(DamagedParam param) { }
+
+    protected virtual void OnGroggied() { }
+
+    protected virtual void OnGroggyOut() { }
     #endregion
 
     #region 타겟팅
@@ -422,6 +476,16 @@ public abstract class Character : BaseObject, ISubscribable
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
 
         SetPropertiesFromTable();
+
+        // 그로기 체크
+        var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+        if (chaData.MaxGroggyExhaustion != -1)
+            StartCoroutine(NaturalGroggyRecoveryCoroutine());
+    }
+
+    protected void OnDestroy()
+    {
+        StopAllCoroutines();
     }
 
     /// <summary> 캐릭터 살아있을 때 호출 </summary>
@@ -446,6 +510,40 @@ public abstract class Character : BaseObject, ISubscribable
 
     #region 타겟팅
     Character m_Target;
+    #endregion
+
+    #region 캐릭터 공격/피격
+    IEnumerator NaturalGroggyRecoveryCoroutine()
+    {
+        var data = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+        int groggyRecoverySpeed = data.GroggyRecoverySpeed;
+        int groggyNaturalRecoverySpeed = data.GroggyNaturalRecoverySpeed;
+        int groggyTimer = 0;
+        int groggyRecoveryMaxTime = data.MaxGroggyExhaustion / groggyRecoverySpeed;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+
+            // 그로기에 걸려 그로기 회복속도가 올라갔을 경우
+            if (GroggyRecoverySpeed == groggyRecoverySpeed)
+            {
+                groggyTimer += 1;
+
+                // 정신을 차릴때가 왔다.
+                if (groggyTimer == groggyRecoveryMaxTime)
+                {
+                    GroggyExhaustion = 0;
+                    GroggyRecoverySpeed = groggyNaturalRecoverySpeed;
+                    groggyTimer = 0;
+
+                    OnGroggyOut();
+                }
+            }
+
+            GroggyExhaustion -= GroggyRecoverySpeed;
+        }
+    }
     #endregion
 
     #region 데미지 계산
@@ -577,7 +675,8 @@ public abstract class Character : BaseObject, ISubscribable
                 Damage = (int)(table.BaseDamage + (table.BaseDamage * (record.Level * table.DamageIncreaseRatioByLevelUp))),
                 Defense = (int)(table.BaseDefense + (table.BaseDefense * (record.Level * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
-                EquipWeaponData = null
+                EquipWeaponData = null,
+                GroggyExhaustion = 0,
             };
         }
         else
@@ -591,7 +690,8 @@ public abstract class Character : BaseObject, ISubscribable
                 Damage = (int)(table.BaseDamage + (table.BaseDamage * (1 * table.DamageIncreaseRatioByLevelUp))),
                 Defense = (int)(table.BaseDefense + (table.BaseDefense * (1 * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
-                EquipWeaponData = null
+                EquipWeaponData = null,
+                GroggyExhaustion = 0,
             };
     }
 

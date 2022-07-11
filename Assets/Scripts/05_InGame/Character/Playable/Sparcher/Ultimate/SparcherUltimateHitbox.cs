@@ -45,7 +45,16 @@ public class SparcherUltimateHitbox : MonoBehaviour
                 m_CurrentTriggerCount++;
                 m_Attacker.Target = victim;
                 var damageData = m_Attacker.CalcuateDamage(victim, m_Data.DamageScale);
-                victim.Damaged(m_Attacker, damageData.Damage, damageData.IsCrit);
+
+                DamagedParam damageparam = new DamagedParam()
+                {
+                    Attacker = m_Attacker,
+                    Damage = damageData.Damage,
+                    IsCrit = damageData.IsCrit,
+                    GroggyPoint = m_Data.GroggyPoint
+                };
+
+                victim.Damaged(damageparam);
             }
         }
     }

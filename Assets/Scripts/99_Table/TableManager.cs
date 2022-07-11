@@ -58,6 +58,9 @@ namespace DatabaseSystem
 				info.BaseSpeed = float.Parse(datas[13]);
 				info.PortraitName = datas[14];
 				info.LobbyAnimatorPath = datas[15];
+				info.MaxGroggyExhaustion = int.Parse(datas[16]);
+				info.GroggyRecoverySpeed = int.Parse(datas[17]);
+				info.GroggyNaturalRecoverySpeed = int.Parse(datas[18]);
 				
                 CharacterTable.Add(info);
                 LoadedData++;

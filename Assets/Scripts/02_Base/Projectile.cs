@@ -59,7 +59,14 @@ public class Projectile : BaseObject, IPoolable
             var result = m_Owner.CalcuateDamage(rhs, m_DamageScale);
 
             // 실제 데미지
-            rhs.Damaged(m_Owner, result.Damage, result.IsCrit);
+            DamagedParam param = new DamagedParam()
+            {
+                Attacker = m_Owner,
+                Damage = result.Damage,
+                IsCrit = result.IsCrit,
+            };
+
+            rhs.Damaged(param);
 
             OnCollide(other);
 

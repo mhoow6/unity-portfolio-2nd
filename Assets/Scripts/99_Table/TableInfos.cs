@@ -44,6 +44,12 @@
 		public string PortraitName;
 		/// <summary> 로비에서 쓰일 애니메이션 컨트롤러 경로 </summary> ///
 		public string LobbyAnimatorPath;
+		/// <summary> 그로기 피로도 (0~100) </summary> ///
+		public int MaxGroggyExhaustion;
+		/// <summary> 그로기 걸렸을때 회복속도(ms) </summary> ///
+		public int GroggyRecoverySpeed;
+		/// <summary> 그로기 자연 회복속도(ms) </summary> ///
+		public int GroggyNaturalRecoverySpeed;
 	}
 
 	public struct HpRecoveryItemTable

@@ -256,7 +256,7 @@ public abstract class Playable : Character
         m_CurrentDashStack = dashData.Stack;
     }
 
-    protected override void OnDamaged(Character attacker, int damage, bool isCrit)
+    protected override void OnDamaged(DamagedParam param)
     {
         StageManager.Instance.MissionSystem.ReportAll(QuestType.GET_DAMAGED);
     }

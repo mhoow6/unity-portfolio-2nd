@@ -12,17 +12,19 @@ public sealed class MonsterMushroom : Boss
     #region AI
     public void SetAttack02Behavior()
     {
+        // 애니메이션 변경로 인해 ATTACK_1 = Attack02
         AnimationJobs.Enqueue(AniType.ATTACK_1);
         Decision = MonsterMushroomDecision.Attack02;
     }
 
     public void SetAttack03Behavior()
     {
+        // 애니메이션 변경로 인해 ATTACK_2 = Attack03
         AnimationJobs.Enqueue(AniType.ATTACK_2);
         Decision = MonsterMushroomDecision.Attack03;
     }
 
-    public void SetDizzyBehavior()
+    public void SetSitBehavior()
     {
         AnimationJobs.Enqueue(AniType.SIT_0);
         Decision = MonsterMushroomDecision.Sit;
@@ -62,7 +64,14 @@ public sealed class MonsterMushroom : Boss
         if (IsTargetIn(param))
         {
             var result = CalcuateDamage(Target, attackdata.DamageScale);
-            Target.Damaged(this, result.Damage, result.IsCrit);
+            DamagedParam damageparam = new DamagedParam()
+            {
+                Attacker = this,
+                Damage = result.Damage,
+                IsCrit = result.IsCrit
+            };
+
+            Target.Damaged(damageparam);
         }
     }
 
@@ -96,6 +105,20 @@ public sealed class MonsterMushroom : Boss
         var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
         Attack02Hitbox.gameObject.SetActive(false);
         Attack02Hitbox.SetData(this, attackdata.MaximumHits, attackdata.DamageScale);
+    }
+
+    protected override void OnGroggied()
+    {
+        base.OnGroggied();
+
+        SetSitBehavior();
+    }
+
+    protected override void OnGroggyOut()
+    {
+        base.OnGroggyOut();
+
+
     }
 
     // -----------------------------------------------------------------------
