@@ -43,7 +43,11 @@ public class AreaSpawner : AreaComponent
 
         while (count != 0)
         {
-            var pos = m_SpawnPositions[m_CurrentSpawnCount];
+            int posIndex = 0;
+            posIndex = m_CurrentSpawnCount % m_SpawnPositions.Count;
+            Debug.Log($"스폰 위치: {posIndex}");
+
+            Transform pos = m_SpawnPositions[posIndex];
 
             var mob = Instantiate(SpawnPrefab, pos);
             var comp = mob.GetComponent<Character>();

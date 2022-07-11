@@ -125,8 +125,10 @@ public class SparcherUltimateCutscene : Cutscene
         // 캐릭터 못 움직이게 하기
         GameManager.InputSystem.CameraRotatable = false;
         StageManager.Instance.Player.Moveable = false;
+        StageManager.Instance.Player.CurrentCharacter.Invulnerable = true;
         var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
         inGameUi.Joystick.gameObject.SetActive(false);
+
     }
 
     protected override void OnCutSceneFinish()
@@ -157,8 +159,9 @@ public class SparcherUltimateCutscene : Cutscene
         // 캐릭터 못 움직이게 하기
         GameManager.InputSystem.CameraRotatable = true;
         StageManager.Instance.Player.Moveable = true;
-        var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
+        StageManager.Instance.Player.CurrentCharacter.Invulnerable = false;
 
+        var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
         if (!inGameUi.Joystick.IsNullOrDestroyed())
             inGameUi.Joystick.gameObject.SetActive(true);
     }
