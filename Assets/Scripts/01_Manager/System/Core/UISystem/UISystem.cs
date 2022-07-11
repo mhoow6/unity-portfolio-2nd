@@ -79,7 +79,12 @@ public class UISystem : MonoBehaviour, IGameSystem
             if (m_WindowStack.Count > 0)
             {
                 if (m_WindowStack.Count > 1)
-                    CloseWindow();
+                {
+                    if (m_WindowStack.Peek().Type == UIType.Confirm)
+                        CloseWindow(false);
+                    else
+                        CloseWindow(true);
+                }
                 else
                 {
                     var confirm = OpenWindow<ConfirmUI>(UIType.Confirm, false);

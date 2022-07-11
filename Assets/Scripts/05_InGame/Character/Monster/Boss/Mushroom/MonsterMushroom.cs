@@ -36,7 +36,7 @@ public sealed class MonsterMushroom : Boss
 
     public void Attack01()
     {
-        
+        // 애니메이션 퀄리티가 떨어져서 폐기
     }
 
     public void Attack02()

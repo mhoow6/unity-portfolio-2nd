@@ -28,10 +28,8 @@ public class ConfirmUI : UI
 
     public void OnCancelBtnClick()
     {
-        if (m_CancelCallback == null)
-            GameManager.UISystem.CloseWindow();
-        else
-            m_CancelCallback.Invoke();
+        m_CancelCallback?.Invoke();
+        GameManager.UISystem.CloseWindow(false);
     }
 
     public override void OnClosed()

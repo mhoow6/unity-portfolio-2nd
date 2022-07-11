@@ -220,18 +220,20 @@ public class Player : MonoBehaviour
 
         // 현재 캐릭터로부터 목적지까지의 거리벡터
         Vector3 adjust = destination - CurrentCharacter.transform.position;
+
         while (t < 1)
         {
             t += Time.fixedDeltaTime / desiredTime;
 
             // Force가 계속해서 더해지는 현상 방지하기 위함
             CurrentCharacter.Rigidbody.velocity = Vector3.zero;
-
             CurrentCharacter.Rigidbody.AddForce(adjust / desiredTime, ForceMode.VelocityChange);
 
             yield return new WaitForFixedUpdate();
         }
         m_SmoothlyMoving = false;
+        CurrentCharacter.Rigidbody.velocity = Vector3.zero;
+
         onArriveCallback?.Invoke();
     }
     #endregion
