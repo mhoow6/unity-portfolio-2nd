@@ -27,6 +27,8 @@ public sealed class MonsterMushroom : Boss
     public void SetSitBehavior()
     {
         AnimationJobs.Enqueue(AniType.SIT_0);
+        Agent.SetDestination(transform.position);
+
         Decision = MonsterMushroomDecision.Sit;
     }
 
@@ -118,7 +120,7 @@ public sealed class MonsterMushroom : Boss
     {
         base.OnGroggyOut();
 
-
+        SetRiseBehavior();
     }
 
     // -----------------------------------------------------------------------

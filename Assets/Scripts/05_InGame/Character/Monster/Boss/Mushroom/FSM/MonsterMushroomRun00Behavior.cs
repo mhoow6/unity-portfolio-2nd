@@ -8,6 +8,9 @@ public class MonsterMushroomRun00Behavior : MonsterMushroomBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
+        if (m_Mushroom.Decision == MonsterMushroomDecision.Sit)
+            return;
+
         Vector3 fromTarget = (m_Self.Target.transform.position - m_Self.transform.position);
         Vector3 endPosition = m_Self.Target.transform.position;
         endPosition = m_Self.Target.transform.position - (fromTarget.normalized * m_BehaviorData.TargetKeepDistance);

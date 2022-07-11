@@ -17,6 +17,9 @@ public class MonsterMushroomAttack03Behavior : MonsterMushroomBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
+        if (m_Mushroom.Decision == MonsterMushroomDecision.Sit)
+            return;
+
         if (m_CurrentAnimationTime > 0.71f && m_attack03 == false)
         {
             m_attack03 = true;

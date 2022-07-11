@@ -10,6 +10,9 @@ public class MonsterMushroomIdle00Behavior : MonsterMushroomBehavior
     {
         base.OnAnimationUpdate(animator, stateInfo, layerIndex);
 
+        if (m_Mushroom.Decision == MonsterMushroomDecision.Sit)
+            return;
+
         if (m_Self.Target != null)
         {
             // 타겟쪽으로 고개를 돌려준다
