@@ -205,14 +205,13 @@ public sealed class StageManager : GameSceneManager
         while (m_PreloadQueue.Count != 0)
         {
             var param = m_PreloadQueue.Dequeue();
-            GameObject _gameObject = param.PreloadPrefab;
-            GameObject gameObject = Instantiate(_gameObject, PreloadZone);
+            GameObject gameObject = Instantiate(param.PreloadPrefab, PreloadZone);
 
             ParticleSystem ps = gameObject.GetComponent<ParticleSystem>();
             if (ps)
                 yield return StartCoroutine(ProcessingPreloadParticle(ps, param.OnProcessCompletedCallback));
             else
-                yield return StartCoroutine(ProcessingPreloadGameObject(gameObject));
+                yield return StartCoroutine(ProcessingPreloadGameObject(gameObject, param.OnProcessCompletedCallback));
         }
 
         yield return null;
@@ -220,7 +219,7 @@ public sealed class StageManager : GameSceneManager
 
     IEnumerator ProcessingPreloadParticle(ParticleSystem ps, Action<GameObject> onProcessCompletedCallback = null)
     {
-        yield return new WaitForSeconds(GameManager.GameDevelopSettings.SceneTransitionWaitingTime);
+        yield return null;
         ps.Clear(true);
         ps.gameObject.SetActive(false);
 
