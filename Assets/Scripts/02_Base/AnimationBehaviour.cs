@@ -12,7 +12,8 @@ public class AnimationBehaviour : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_CurrentAnimationTime = stateInfo.normalizedTime % 1;
-        OnAnimationUpdate(animator, stateInfo, layerIndex);
+        if (!animator.IsInTransition(layerIndex))
+            OnAnimationUpdate(animator, stateInfo, layerIndex);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
