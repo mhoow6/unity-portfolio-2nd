@@ -56,6 +56,7 @@
     public class MonsterMushroomAttack02Data : Skillable
     {
         public float AttackDistance;
+        public float HitboxLifeTime;
         public int MaximumHits;
         
     }

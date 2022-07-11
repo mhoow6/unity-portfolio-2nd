@@ -42,15 +42,23 @@ public class MonsterMushroomBehavior : CharacterBehavior
         float attack02distance = m_Attack02Data.AttackDistance;
         float attack03distance = m_Attack03Data.AttackDistance;
 
-        if (distanceWithTarget > attack03distance && distanceWithTarget <= attack02distance)
+        if (distanceWithTarget < attack03distance)
         {
-            m_Mushroom.SetAttack02Behavior();
-            return MonsterMushroomDecision.Attack02;
-        }
-        else if (distanceWithTarget < attack03distance)
-        {
-            m_Mushroom.SetAttack03Behavior();
-            return MonsterMushroomDecision.Attack03;
+            int random = UnityEngine.Random.Range(0, 2);
+
+            switch (random)
+            {
+                case 0:
+                    m_Mushroom.SetAttack02Behavior();
+                    return MonsterMushroomDecision.Attack02;
+
+                case 1:
+                    m_Mushroom.SetAttack03Behavior();
+                    return MonsterMushroomDecision.Attack03;
+
+                default:
+                    break;
+            }
         }
 
         return MonsterMushroomDecision.None;

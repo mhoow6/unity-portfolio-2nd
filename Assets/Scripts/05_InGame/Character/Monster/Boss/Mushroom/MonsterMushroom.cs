@@ -7,6 +7,7 @@ public sealed class MonsterMushroom : Boss
 {
     public override ObjectCode Code => ObjectCode.CHAR_MonsterMushroom;
     public MonsterMushroomDecision Decision;
+    public MonsterMushroomAttack02Hitbox Attack02Hitbox;
 
     #region AI
     public void SetAttack02Behavior()
@@ -41,7 +42,11 @@ public sealed class MonsterMushroom : Boss
 
     public void Attack02()
     {
+        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
 
+        Attack02Hitbox.ResetHitCount();
+        Attack02Hitbox.gameObject.SetActive(true);
+        StartCoroutine(Attack02HitboxOffCoroutine(attackdata.HitboxLifeTime));
     }
 
     public void Attack03()
@@ -82,6 +87,24 @@ public sealed class MonsterMushroom : Boss
         Decision = MonsterMushroomDecision.Attack01;
     }
     #endregion
+
+    protected override void OnSpawn()
+    {
+        base.OnSpawn();
+
+        // 히트박스 세팅
+        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
+        Attack02Hitbox.gameObject.SetActive(false);
+        Attack02Hitbox.SetData(this, attackdata.MaximumHits, attackdata.DamageScale);
+    }
+
+    // -----------------------------------------------------------------------
+
+    IEnumerator Attack02HitboxOffCoroutine(float lifeTime)
+    {
+        yield return new WaitForSeconds(lifeTime);
+        Attack02Hitbox.gameObject.SetActive(false);
+    }
 }
 
 public enum MonsterMushroomDecision

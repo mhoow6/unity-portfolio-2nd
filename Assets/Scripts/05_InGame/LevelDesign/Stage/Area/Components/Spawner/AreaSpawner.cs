@@ -45,7 +45,6 @@ public class AreaSpawner : AreaComponent
         {
             int posIndex = 0;
             posIndex = m_CurrentSpawnCount % m_SpawnPositions.Count;
-            Debug.Log($"스폰 위치: {posIndex}");
 
             Transform pos = m_SpawnPositions[posIndex];
 
