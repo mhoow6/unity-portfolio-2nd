@@ -192,11 +192,11 @@ namespace DatabaseSystem
 				info.StageIdx = int.Parse(datas[1]);
 				info.MinGoldDropValue = int.Parse(datas[2]);
 				info.MaxGoldDropValue = int.Parse(datas[3]);
-				info.DropItem1Code = (ItemCode)Enum.Parse(typeof(ItemCode),datas[4]);
-				info.DropItem2Code = (ItemCode)Enum.Parse(typeof(ItemCode),datas[5]);
-				info.DropItem3Code = (ItemCode)Enum.Parse(typeof(ItemCode),datas[6]);
-				info.DropItem4Code = (ItemCode)Enum.Parse(typeof(ItemCode),datas[7]);
-				info.DropItem5Code = (ItemCode)Enum.Parse(typeof(ItemCode),datas[8]);
+				info.DropItem1Index = int.Parse(datas[4]);
+				info.DropItem2Index = int.Parse(datas[5]);
+				info.DropItem3Index = int.Parse(datas[6]);
+				info.DropItem4Index = int.Parse(datas[7]);
+				info.DropItem5Index = int.Parse(datas[8]);
 				
                 StageDropItemTable.Add(info);
                 LoadedData++;

@@ -24,7 +24,7 @@ public sealed class StageManager : GameSceneManager
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
 
-    public List<ItemCode> StageDropItems = new List<ItemCode>(5);
+    public List<ItemType> StageDropItems = new List<ItemType>(5);
     public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
@@ -137,20 +137,22 @@ public sealed class StageManager : GameSceneManager
         // 스테이지 아이템 리스트 세팅
         var dropData = TableManager.Instance.StageDropItemTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
 
-        if (dropData.DropItem1Code != ItemCode.None)
-            StageDropItems.Add(dropData.DropItem1Code);
 
-        if (dropData.DropItem2Code != ItemCode.None)
-            StageDropItems.Add(dropData.DropItem2Code);
+        // TODO: 아이템 테이블
+        //if (dropData.DropItem1Index >= 5000)
+        //    StageDropItems.Add(dropData.DropItem1Code);
 
-        if (dropData.DropItem3Code != ItemCode.None)
-            StageDropItems.Add(dropData.DropItem3Code);
+        //if (dropData.DropItem2Index >= 5000)
+        //    StageDropItems.Add(dropData.DropItem2Code);
 
-        if (dropData.DropItem4Code != ItemCode.None)
-            StageDropItems.Add(dropData.DropItem4Code);
+        //if (dropData.DropItem3Index >= 5000)
+        //    StageDropItems.Add(dropData.DropItem3Code);
 
-        if (dropData.DropItem5Code != ItemCode.None)
-            StageDropItems.Add(dropData.DropItem5Code);
+        //if (dropData.DropItem4Index >= 5000)
+        //    StageDropItems.Add(dropData.DropItem4Code);
+
+        //if (dropData.DropItem5Index >= 5000)
+        //    StageDropItems.Add(dropData.DropItem5Code);
 
         // --------------------------------------------------------------------------------------------------------
 

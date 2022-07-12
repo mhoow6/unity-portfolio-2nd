@@ -122,6 +122,6 @@ public struct StageResultData
 [Serializable]
 public class StageRewardItemData
 {
-    public ItemCode Code;
+    public ItemType Code;
     public int Quantity;
 }

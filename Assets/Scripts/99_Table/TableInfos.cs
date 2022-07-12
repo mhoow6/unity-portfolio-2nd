@@ -150,16 +150,16 @@
 		public int MinGoldDropValue;
 		/// <summary> 드랍하는 골드의 최대값 </summary> ///
 		public int MaxGoldDropValue;
-		/// <summary> 드랍하는 아이템1 코드 </summary> ///
-		public ItemCode DropItem1Code;
-		/// <summary> 드랍하는 아이템2 코드 </summary> ///
-		public ItemCode DropItem2Code;
-		/// <summary> 드랍하는 아이템3 코드 </summary> ///
-		public ItemCode DropItem3Code;
-		/// <summary> 드랍하는 아이템4 코드 </summary> ///
-		public ItemCode DropItem4Code;
-		/// <summary> 드랍하는 아이템5 코드 </summary> ///
-		public ItemCode DropItem5Code;
+		/// <summary> 드랍하는 아이템1 인덱스 </summary> ///
+		public int DropItem1Index;
+		/// <summary> 드랍하는 아이템2 인덱스 </summary> ///
+		public int DropItem2Index;
+		/// <summary> 드랍하는 아이템3 인덱스 </summary> ///
+		public int DropItem3Index;
+		/// <summary> 드랍하는 아이템4 인덱스 </summary> ///
+		public int DropItem4Index;
+		/// <summary> 드랍하는 아이템5 인덱스 </summary> ///
+		public int DropItem5Index;
 	}
 
 	public struct StageTable

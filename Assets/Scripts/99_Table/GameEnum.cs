@@ -232,7 +232,7 @@
 
     }
 
-    public enum ItemCode
+    public enum ItemType
     {
         
         /// <summary> 더미 </summary> ///
