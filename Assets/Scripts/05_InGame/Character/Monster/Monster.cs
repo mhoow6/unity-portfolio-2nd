@@ -159,6 +159,9 @@ public abstract class Monster : Character
         // 죽는 애니메이션
         AnimationJobs.Enqueue(AniType.DEAD_0);
 
+        // Agent 이동하는 현상 방지
+        Agent.SetDestination(transform.position);
+
         // 시간이 지나서 자동으로 사라지도록 함
         StartCoroutine(OnDeadCoroutine());
     }

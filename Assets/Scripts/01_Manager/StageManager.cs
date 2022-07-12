@@ -198,10 +198,12 @@ public sealed class StageManager : GameSceneManager
             var duration = StageResult.Duration;
             StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 100);
         }
-        
+
         // TODO: 인벤토리에 전리품 넣어주기
 
         // TODO: 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
+        var flash = GameManager.UISystem.PushToast<FlashTransitionUI>(ToastType.FlashTransition);
+        flash.SetData(GameManager.UISystem.CloseAllWindow, null, 4f);
     }
 
     #region 프리로드

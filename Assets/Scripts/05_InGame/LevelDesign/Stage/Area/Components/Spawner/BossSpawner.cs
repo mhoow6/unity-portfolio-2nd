@@ -22,13 +22,13 @@ public class BossSpawner : AreaSpawner, IStageClearable
     IEnumerator StageClearCoroutine()
     {
         float timer = 0f;
-        Vector2 desired = new Vector2(-1.5f, GameManager.InputSystem.CameraRotateInput.y);
+        var freelook = StageManager.Instance.FreeLookCam;
 
         while (timer < 2f)
         {
             timer += Time.deltaTime;
 
-            GameManager.InputSystem.CameraRotateInput = Vector2.Lerp(GameManager.InputSystem.CameraRotateInput, desired, timer / 2f);
+            freelook.m_XAxis.Value = Mathf.Lerp(freelook.m_XAxis.Value, -2.0f, timer / 2f);
 
             yield return null;
         }
