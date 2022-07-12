@@ -5,7 +5,7 @@ using DatabaseSystem;
 using UnityEngine.AI;
 using System;
 
-public abstract class Character : BaseObject, ISubscribable
+public abstract class Character : BaseObject, ISubscribable, IGameEventListener
 {
     #region 애니메이션
     public readonly int ANITYPE_HASHCODE = Animator.StringToHash("AniType");
@@ -321,6 +321,8 @@ public abstract class Character : BaseObject, ISubscribable
             if (Rigidbody)
                 Rigidbody.isKinematic = true;
 
+            GameEventSystem.RemoveListener(this);
+
             OnDead(param.Attacker, param.Damage);
             return;
         }
@@ -388,6 +390,8 @@ public abstract class Character : BaseObject, ISubscribable
 
         if (gameObject.activeSelf)
             SetUpdate(true);
+
+        GameEventSystem.AddListener(this);
 
         OnSpawn();
     }
@@ -705,6 +709,17 @@ public abstract class Character : BaseObject, ISubscribable
         TargetSliderHooked = false;
         OnMoveSpeedUpdate = null;
 
-        Debug.Log("캐릭터의 DisposeEvents");
+        Debug.Log($"{name}의 DisposeEvents");
+    }
+
+    public void Listen(GameEvent gameEvent)
+    {
+        switch (gameEvent)
+        {
+            case GameEvent.StageClear:
+                DisposeEvents();
+                GameEventSystem.ReserveRemoveListener(this);
+                break;
+        }
     }
 }

@@ -22,7 +22,7 @@ public class BossSpawner : AreaSpawner, IStageClearable
     IEnumerator StageClearCoroutine()
     {
         float timer = 0f;
-        Vector2 desired = new Vector2(-1.5f, 0);
+        Vector2 desired = new Vector2(-1.5f, GameManager.InputSystem.CameraRotateInput.y);
 
         while (timer < 2f)
         {

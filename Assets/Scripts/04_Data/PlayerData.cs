@@ -119,6 +119,7 @@ public class PlayerData : ISubscribable
 
         var saveData = JsonConvert.SerializeObject(this);
         FileHelper.WriteFile(m_FilePath, saveData);
+
         Debug.Log($"게임 데이터 저장완료. 저장경로 {m_FilePath}");
     }
 

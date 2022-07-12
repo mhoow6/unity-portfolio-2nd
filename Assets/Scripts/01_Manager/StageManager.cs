@@ -165,6 +165,9 @@ public sealed class StageManager : GameSceneManager
     /// </summary>
     public void StageClear()
     {
+        // 이벤트 알림
+        GameEventSystem.SendEvent(GameEvent.StageClear);
+
         // 도전 목표 기록을 플레이어 데이터에 업데이트
         var playerData = GameManager.PlayerData;
         foreach (var record in MissionSystem.QuestRecords.Values)
@@ -178,9 +181,6 @@ public sealed class StageManager : GameSceneManager
                 exist.Clear = record.Clear;
             }
         }
-
-        // 모든 콜백 이벤트 null
-        BroadcastMessage("DisposeEvents", SendMessageOptions.DontRequireReceiver);
 
         // 스테이지 클리어 시간
         StageResult.StageEndTime = DateTime.Now;
@@ -200,6 +200,8 @@ public sealed class StageManager : GameSceneManager
         }
         
         // TODO: 인벤토리에 전리품 넣어주기
+
+        // TODO: 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
     }
 
     #region 프리로드
