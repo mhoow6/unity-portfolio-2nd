@@ -160,19 +160,12 @@ public sealed class StageManager : GameSceneManager
     }
     #endregion
 
-    #region 스테이지 클리어시
+    /// <summary>
+    /// 스테이지 클리어시 호출하세요
+    /// </summary>
     public void StageClear()
     {
-        // 데이터 기록
-        UpdatePlayerMissionRecords();
-
-        // 모든 콜백 이벤트 null
-        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
-    }
-
-    /// <summary> 도전 목표 기록을 플레이어 데이터에 업데이트 </summary>
-	void UpdatePlayerMissionRecords()
-    {
+        // 도전 목표 기록을 플레이어 데이터에 업데이트
         var playerData = GameManager.PlayerData;
         foreach (var record in MissionSystem.QuestRecords.Values)
         {
@@ -185,8 +178,29 @@ public sealed class StageManager : GameSceneManager
                 exist.Clear = record.Clear;
             }
         }
+
+        // 모든 콜백 이벤트 null
+        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
+
+        // 스테이지 클리어 시간
+        StageResult.StageEndTime = DateTime.Now;
+
+        // 몬스터 처리 수 * 10점
+        StageResult.Score += (StageResult.MonsterKillCount * 10);
+
+        // 보스몬스터 처리 수 * 100점
+        StageResult.Score += (StageResult.BossKillCount * 100);
+
+        // (스테이지 클리어 최대 시간 - 스테이지 클리어 시간) * 100점
+        var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
+        if (stageData.ClearTimelimit != 0)
+        {
+            var duration = StageResult.Duration;
+            StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 100);
+        }
+        
+        // TODO: 인벤토리에 전리품 넣어주기
     }
-    #endregion
 
     #region 프리로드
     public void ReservingPreload(PreloadParam param)

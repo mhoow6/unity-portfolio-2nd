@@ -105,35 +105,32 @@ public abstract class Monster : Character
 
     protected override void OnDead(Character attacker, int damage)
     {
-        if (m_TargetLockOnImage)
-            GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
-
         var manager = StageManager.Instance;
-        if (manager != null)
+
+        // 스테이지 매니저의 몬스터 리스트에서 삭제
+        manager.Monsters.Remove(this);
+
+        // 자신이 태어난 스포너가 있으면 알려주기
+        AreaSpawner spawner = null;
+        foreach (var area in manager.Areas)
         {
-            // 스테이지 매니저의 몬스터 리스트에서 삭제
-            manager.Monsters.Remove(this);
-
-            // 자신이 태어난 스포너가 있으면 알려주기
-            AreaSpawner spawner = null;
-            foreach (var area in manager.Areas)
-            {
-                spawner = area.FindSpawner(this);
-                if (spawner != null)
-                    break;
-            }
+            spawner = area.FindSpawner(this);
             if (spawner != null)
-                spawner.NotifyDead(this);
+                break;
         }
-
-        // 죽는 애니메이션
-        AnimationJobs.Enqueue(AniType.DEAD_0);
-
-        // 시간이 지나서 자동으로 사라지도록 함
-        StartCoroutine(OnDeadCoroutine());
+        if (spawner != null)
+            spawner.NotifyDead(this);
 
         // 플레이어가 적을 죽였으니 적 처치 횟수 증가
         manager.MissionSystem.ReportAll(QuestType.KILL_ENEMY, (int)Code);
+
+        // 킬 카운트
+        manager.StageResult.MonsterKillCount++;
+
+        // -------------------------------------------------------------------------
+
+        if (m_TargetLockOnImage)
+            GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
 
         // 30%확률로 SP,HP 회복아이템 드랍
         int randomPoint = UnityEngine.Random.Range(0, 100);
@@ -156,6 +153,14 @@ public abstract class Monster : Character
         // 100% 확률로 스테이지 아이템 리스트 중 하나를 드랍
         var stageDropItem = manager.PoolSystem.Load<DropItem>($"{interactablePath}/DropItem_Box");
         ThrowDropItem(stageDropItem);
+
+        // -------------------------------------------------------------------------
+
+        // 죽는 애니메이션
+        AnimationJobs.Enqueue(AniType.DEAD_0);
+
+        // 시간이 지나서 자동으로 사라지도록 함
+        StartCoroutine(OnDeadCoroutine());
     }
 
     // -----------------------------------------------------------------------

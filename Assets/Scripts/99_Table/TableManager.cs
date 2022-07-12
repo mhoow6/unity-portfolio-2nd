@@ -220,6 +220,7 @@ namespace DatabaseSystem
 				info.StageImage = datas[9];
 				info.SceneCode = (SceneCode)Enum.Parse(typeof(SceneCode),datas[10]);
 				info.WorldPrefabName = datas[11];
+				info.ClearTimelimit = int.Parse(datas[12]);
 				
                 StageTable.Add(info);
                 LoadedData++;

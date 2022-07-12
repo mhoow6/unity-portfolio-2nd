@@ -89,17 +89,33 @@ public struct CheatSettings
 [Serializable]
 public struct StageResultData
 {
-    public int Gold;
     public int Score;
+
+    public int MonsterKillCount;
+    public int BossKillCount;
+
+    public int Gold;
     public List<StageRewardItemData> Rewards;
-    public TimeSpan Duration;
+
+    public readonly TimeSpan Duration
+    {
+        get
+        {
+            return StageStartTime - StageEndTime;
+        }
+    }
+    public readonly DateTime StageStartTime;
+    public DateTime StageEndTime;
 
     public StageResultData(List<StageRewardItemData> rewardList)
     {
         Rewards = rewardList;
         Gold = 0;
         Score = 0;
-        Duration = default(TimeSpan);
+        StageStartTime = DateTime.Now;
+        StageEndTime = default(DateTime);
+        MonsterKillCount = 0;
+        BossKillCount = 0;
     }
 }
 

@@ -188,6 +188,8 @@
 		public SceneCode SceneCode;
 		/// <summary> 스테이지 프리팹 이름 </summary> ///
 		public string WorldPrefabName;
+		/// <summary> 스테이지를 클리어 할 수 있는 최대시간(sec) </summary> ///
+		public int ClearTimelimit;
 	}
 
 }
