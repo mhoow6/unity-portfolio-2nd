@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AreaSpawner : AreaComponent
 {
-    [Header("# 수동기입")]
+    [Header("# 기본 스포너 수동기입")]
     public int Priority;
     public Character SpawnPrefab;
     public bool NoRequireTargetSearch;
@@ -83,7 +83,7 @@ public class AreaSpawner : AreaComponent
                 if (area != null)
                 {
                     // 다음 스포너에서 몬스터 생성 시작
-                    area.InitSpawner();
+                    area.SpawnMonsterFromNewSpawner();
                 }
             }
         }

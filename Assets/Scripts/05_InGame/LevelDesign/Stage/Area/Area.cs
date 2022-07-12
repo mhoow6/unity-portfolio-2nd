@@ -101,7 +101,7 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
     }
 
     /// <summary> 새로운 스포너 작동을 시작합니다. </summary> /// 
-    public void InitSpawner()
+    public void SpawnMonsterFromNewSpawner()
     {
         if (m_CurrentSpawnerPriority < m_Spawners.Count)
         {
@@ -112,6 +112,11 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
         {
             // 모든 스포너에서 스폰이 완료된 경우 벽 해제
             m_Walls.ForEach(w => w.gameObject.SetActive(false));
+
+            // 마지막 스포너가 클리어 조건이라면?
+            var clearSpawner = m_Spawners[m_Spawners.Count - 1] as IStageClearable;
+            if (clearSpawner != null)
+                clearSpawner.ClearAction();
         }
     }
     #endregion
@@ -124,7 +129,10 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
                 break;
             case AlarmEvent.SpawnBoss:
                 var bossSpawner = m_Spawners.Find(spawner => spawner is BossSpawner);
-                bossSpawner.SpawnMonsters();
+                if (bossSpawner != null)
+                {
+                    SpawnMonsterFromNewSpawner();
+                }
                 break;
             default:
                 break;

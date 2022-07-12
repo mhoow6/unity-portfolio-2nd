@@ -170,6 +170,15 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
                 return new Vector2(cam.m_XAxis.m_InputAxisValue, cam.m_YAxis.m_InputAxisValue);
             return Vector2.zero;
         }
+        set
+        {
+            var cam = StageManager.Instance.FreeLookCam;
+            if (cam != null)
+            {
+                cam.m_XAxis.Value = value.x;
+                cam.m_YAxis.Value = value.y;
+            }    
+        }
     }
     public bool CameraRotatable
     {
@@ -265,6 +274,8 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         OnHoldBButton = null;
         OnPressXButton = null;
         OnHoldXButton = null;
+
+        Debug.Log("인풋 시스템의 DisposeEvents");
     }
 
     IEnumerator MobileCameraRotateCoroutine()

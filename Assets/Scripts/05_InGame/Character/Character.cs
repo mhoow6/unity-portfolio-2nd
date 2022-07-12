@@ -704,5 +704,7 @@ public abstract class Character : BaseObject, ISubscribable
         OnTargetUpdate = null;
         TargetSliderHooked = false;
         OnMoveSpeedUpdate = null;
+
+        Debug.Log("캐릭터의 DisposeEvents");
     }
 }

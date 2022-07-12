@@ -180,7 +180,7 @@ public sealed class StageManager : GameSceneManager
         }
 
         // 모든 콜백 이벤트 null
-        BroadcastMessage("DisposeEvents", SendMessageOptions.RequireReceiver);
+        BroadcastMessage("DisposeEvents", SendMessageOptions.DontRequireReceiver);
 
         // 스테이지 클리어 시간
         StageResult.StageEndTime = DateTime.Now;

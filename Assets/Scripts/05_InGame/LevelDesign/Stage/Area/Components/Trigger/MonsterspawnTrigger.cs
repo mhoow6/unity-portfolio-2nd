@@ -16,7 +16,7 @@ public class MonsterspawnTrigger : AreaTrigger
         {
             var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
             if (parent != null)
-                parent.InitSpawner();
+                parent.SpawnMonsterFromNewSpawner();
         }
     }
 }
