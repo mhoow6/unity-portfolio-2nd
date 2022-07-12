@@ -11,7 +11,7 @@ public class BossWarningUI : Toast
     [Range(0, 1)]
     public float BlinkSenstivity;
 
-    const float BLINK_DURATION = 5f;
+    const float BLINK_DURATION = 4.5f;
     Action m_OnAlarmEndCallback;
 
     public override void OnClosed()

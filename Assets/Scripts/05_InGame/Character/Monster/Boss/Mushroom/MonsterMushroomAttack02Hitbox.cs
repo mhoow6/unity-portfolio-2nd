@@ -8,6 +8,7 @@ public class MonsterMushroomAttack02Hitbox : MonoBehaviour
     int m_CurrentHitCount;
     int m_MaxHitCount;
     float m_DamageScale;
+    List<Character> m_Victims = new List<Character>();
 
     public void SetData(Character owner, int maxHitCount, float damageScale)
     {
@@ -18,9 +19,10 @@ public class MonsterMushroomAttack02Hitbox : MonoBehaviour
         m_DamageScale = damageScale;
     }
 
-    public void ResetHitCount()
+    public void ResetHitbox()
     {
         m_CurrentHitCount = 0;
+        m_Victims.Clear();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,10 +41,14 @@ public class MonsterMushroomAttack02Hitbox : MonoBehaviour
         if (victim == null)
             return;
 
+        // 맞던 캐릭터는 또 맞게 하지 않는다.
+        if (m_Victims.Find(cha => cha == victim))
+            return;
+
         m_CurrentHitCount++;
+        m_Victims.Add(victim);
 
         var damageResult = m_Owner.CalcuateDamage(victim, m_DamageScale);
-
         DamagedParam param = new DamagedParam()
         {
             Attacker = m_Owner,

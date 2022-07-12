@@ -48,7 +48,7 @@ public sealed class MonsterMushroom : Boss
     {
         var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
 
-        Attack02Hitbox.ResetHitCount();
+        Attack02Hitbox.ResetHitbox();
         Attack02Hitbox.gameObject.SetActive(true);
         StartCoroutine(Attack02HitboxOffCoroutine(attackdata.HitboxLifeTime));
     }
