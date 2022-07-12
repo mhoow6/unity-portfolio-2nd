@@ -16,7 +16,7 @@ public class StageDropItem : DropItem
             return;
 
         int randomIdx = UnityEngine.Random.Range(0, sm.StageDropItems.Count - 1);
-        ItemCode dropItemCode = sm.StageDropItems[randomIdx];
+        ItemType dropItemCode = sm.StageDropItems[randomIdx];
 
         var exist = sm.StageResult.Rewards.Find(reward => reward.Code == dropItemCode);
         if (exist != null)
