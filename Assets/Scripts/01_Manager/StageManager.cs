@@ -24,7 +24,7 @@ public sealed class StageManager : GameSceneManager
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
 
-    public List<ObjectCode> StageDropItems = new List<ObjectCode>(5);
+    public List<ItemCode> StageDropItems = new List<ItemCode>(5);
     public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
@@ -137,19 +137,19 @@ public sealed class StageManager : GameSceneManager
         // 스테이지 아이템 리스트 세팅
         var dropData = TableManager.Instance.StageDropItemTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
 
-        if (dropData.DropItem1Code != ObjectCode.NONE)
+        if (dropData.DropItem1Code != ItemCode.None)
             StageDropItems.Add(dropData.DropItem1Code);
 
-        if (dropData.DropItem2Code != ObjectCode.NONE)
+        if (dropData.DropItem2Code != ItemCode.None)
             StageDropItems.Add(dropData.DropItem2Code);
 
-        if (dropData.DropItem3Code != ObjectCode.NONE)
+        if (dropData.DropItem3Code != ItemCode.None)
             StageDropItems.Add(dropData.DropItem3Code);
 
-        if (dropData.DropItem4Code != ObjectCode.NONE)
+        if (dropData.DropItem4Code != ItemCode.None)
             StageDropItems.Add(dropData.DropItem4Code);
 
-        if (dropData.DropItem5Code != ObjectCode.NONE)
+        if (dropData.DropItem5Code != ItemCode.None)
             StageDropItems.Add(dropData.DropItem5Code);
 
         // --------------------------------------------------------------------------------------------------------
@@ -201,9 +201,15 @@ public sealed class StageManager : GameSceneManager
 
         // TODO: 인벤토리에 전리품 넣어주기
 
-        // TODO: 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
+        // 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
         var flash = GameManager.UISystem.PushToast<FlashTransitionUI>(ToastType.FlashTransition);
-        flash.SetData(GameManager.UISystem.CloseAllWindow, null, 4f);
+        flash.SetData(
+            GameManager.UISystem.CloseAllWindow, 
+            () =>
+            {
+                var stageclearUI = GameManager.UISystem.OpenWindow<StageClearUI>(UIType.StageClear);
+            },
+            4f);
     }
 
     #region 프리로드

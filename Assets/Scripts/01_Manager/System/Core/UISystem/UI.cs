@@ -14,6 +14,7 @@ public enum UIType
     InGame,
     Sortie,
     Logo,
+    StageClear
 }
 
 public abstract class UI : MonoBehaviour

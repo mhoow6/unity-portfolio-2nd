@@ -192,23 +192,20 @@
         /// <summary> 대포발사 이펙트 </summary> ///
         Effect_CanonBulletFired = 10,
 
-        /// <summary> Sp를 회복하게 하는 아이템 (필드드랍) </summary> ///
-        ITEM_SPRecoveryDrop = 11,
+        /// <summary> Sp를 회복하게 하는 아이템 </summary> ///
+        LOOT_SPRecovery = 11,
 
-        /// <summary> Hp를 회복하게 하는 아이템 (필드드랍) </summary> ///
-        ITEM_HPRecoveryDrop = 12,
+        /// <summary> Hp를 회복하게 하는 아이템 </summary> ///
+        LOOT_HPRecovery = 12,
 
-        /// <summary> 스테이지에서 얻을 수 있는 골드 (필드드랍) </summary> ///
-        ITEM_GoldDrop = 13,
-
-        /// <summary> 캐릭터 레벨업 아이템 </summary> ///
-        ITEM_CharacterLevelUpChip = 14,
-
-        /// <summary> 무기 레벨업 아이템 </summary> ///
-        ITEM_WeaponLevelUpChip = 15,
+        /// <summary> 스테이지에서 얻을 수 있는 골드 </summary> ///
+        LOOT_Gold = 13,
 
         /// <summary> 이능속성 보스 버섯 </summary> ///
         CHAR_MonsterMushroom = 16,
+
+        /// <summary> 스테이지에서 얻을 수 있는 전리품 </summary> ///
+        LOOT_Item = 17,
 
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
@@ -232,6 +229,20 @@
 
         /// <summary> 에러 </summary> ///
         None = -1,
+
+    }
+
+    public enum ItemCode
+    {
+        
+        /// <summary> 더미 </summary> ///
+        None = 0,
+
+        /// <summary> 캐릭터 레벨업 아이템 </summary> ///
+        CharacterLevelUpChip = 1,
+
+        /// <summary> 무기 레벨업 아이템 </summary> ///
+        WeaponLevelUpChip = 2,
 
     }
 

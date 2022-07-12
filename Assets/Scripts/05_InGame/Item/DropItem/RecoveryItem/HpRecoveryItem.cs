@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class HpRecoveryItem : RecoveryItem
 {
+    public override ObjectCode Code => ObjectCode.LOOT_HPRecovery;
+
     public override void Use()
     {
         base.Use();

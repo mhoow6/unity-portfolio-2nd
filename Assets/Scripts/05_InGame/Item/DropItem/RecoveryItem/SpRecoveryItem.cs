@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpRecoveryItem : RecoveryItem
 {
-    public override ObjectCode Code => ObjectCode.ITEM_SPRecoveryDrop;
+    public override ObjectCode Code => ObjectCode.LOOT_SPRecovery;
 
     public override void Use()
     {

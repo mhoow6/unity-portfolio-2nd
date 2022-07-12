@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StageDropItem : DropItem
 {
-    public override ObjectCode Code => ObjectCode.NONE;
+    public override ObjectCode Code => ObjectCode.LOOT_Item;
 
     public override void Use()
     {
@@ -16,7 +16,7 @@ public class StageDropItem : DropItem
             return;
 
         int randomIdx = UnityEngine.Random.Range(0, sm.StageDropItems.Count - 1);
-        ObjectCode dropItemCode = sm.StageDropItems[randomIdx];
+        ItemCode dropItemCode = sm.StageDropItems[randomIdx];
 
         var exist = sm.StageResult.Rewards.Find(reward => reward.Code == dropItemCode);
         if (exist != null)

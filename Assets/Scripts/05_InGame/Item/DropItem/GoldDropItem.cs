@@ -5,7 +5,7 @@ using DatabaseSystem;
 
 public class GoldDropItem : DropItem
 {
-    public override ObjectCode Code => ObjectCode.ITEM_GoldDrop;
+    public override ObjectCode Code => ObjectCode.LOOT_Gold;
 
     public override void Use()
     {

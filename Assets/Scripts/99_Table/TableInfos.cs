@@ -151,15 +151,15 @@
 		/// <summary> 드랍하는 골드의 최대값 </summary> ///
 		public int MaxGoldDropValue;
 		/// <summary> 드랍하는 아이템1 코드 </summary> ///
-		public ObjectCode DropItem1Code;
+		public ItemCode DropItem1Code;
 		/// <summary> 드랍하는 아이템2 코드 </summary> ///
-		public ObjectCode DropItem2Code;
+		public ItemCode DropItem2Code;
 		/// <summary> 드랍하는 아이템3 코드 </summary> ///
-		public ObjectCode DropItem3Code;
+		public ItemCode DropItem3Code;
 		/// <summary> 드랍하는 아이템4 코드 </summary> ///
-		public ObjectCode DropItem4Code;
+		public ItemCode DropItem4Code;
 		/// <summary> 드랍하는 아이템5 코드 </summary> ///
-		public ObjectCode DropItem5Code;
+		public ItemCode DropItem5Code;
 	}
 
 	public struct StageTable
