@@ -10,6 +10,7 @@ namespace DatabaseSystem
 		public List<AniTypeDialogueTable> AniTypeDialogueTable = new List<AniTypeDialogueTable>();
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<HpRecoveryItemTable> HpRecoveryItemTable = new List<HpRecoveryItemTable>();
+		public List<ItemTable> ItemTable = new List<ItemTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
@@ -78,6 +79,22 @@ namespace DatabaseSystem
 				info.HpRecoveryPoint = int.Parse(datas[3]);
 				
                 HpRecoveryItemTable.Add(info);
+                LoadedData++;
+            }
+        
+            var ItemTableTextasset = Resources.Load<TextAsset>("99_Database/Table/ItemTable");
+            string[] ItemTableLines = ItemTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < ItemTableLines.Length; i++)
+            {
+                string[] datas = ItemTableLines[i].Split(',');
+                ItemTable info;
+                info.Index = int.Parse(datas[0]);
+				info.Type = (ItemType)Enum.Parse(typeof(ItemType),datas[1]);
+				info.Value = int.Parse(datas[2]);
+				info.StarCount = int.Parse(datas[3]);
+				info.IconPath = datas[4];
+				
+                ItemTable.Add(info);
                 LoadedData++;
             }
         

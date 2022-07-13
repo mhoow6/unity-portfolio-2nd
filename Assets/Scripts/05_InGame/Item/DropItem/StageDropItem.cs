@@ -12,13 +12,13 @@ public class StageDropItem : DropItem
         if (sm == null)
             return;
 
-        if (sm.StageDropItems.Count == 0)
+        if (sm.StageDropItemIndices.Count == 0)
             return;
 
-        int randomIdx = UnityEngine.Random.Range(0, sm.StageDropItems.Count - 1);
-        ItemType dropItemCode = sm.StageDropItems[randomIdx];
+        int randomIdx = UnityEngine.Random.Range(0, sm.StageDropItemIndices.Count);
+        int dropItemIndex = sm.StageDropItemIndices[randomIdx];
 
-        var exist = sm.StageResult.Rewards.Find(reward => reward.Code == dropItemCode);
+        var exist = sm.StageResult.Rewards.Find(reward => reward.Index == dropItemIndex);
         if (exist != null)
         {
             exist.Quantity++;
@@ -27,7 +27,7 @@ public class StageDropItem : DropItem
         {
             sm.StageResult.Rewards.Add(new StageRewardItemData()
             {
-                Code = dropItemCode,
+                Index = dropItemIndex,
                 Quantity = 1
             });
         }

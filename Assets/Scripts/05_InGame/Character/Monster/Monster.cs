@@ -133,9 +133,9 @@ public abstract class Monster : Character
             GameManager.UISystem.Pool.Release(m_TargetLockOnImage);
 
         // 30%확률로 SP,HP 회복아이템 드랍
-        int randomPoint = UnityEngine.Random.Range(0, 100);
+        int recoveryItemDropRate = UnityEngine.Random.Range(0, 100);
         string interactablePath = GameManager.GameDevelopSettings.InteractableResourcePath;
-        if (randomPoint >= 70 || GameManager.CheatSettings.DropItem100Percent)
+        if (recoveryItemDropRate >= 70 || GameManager.CheatSettings.DropItem100Percent)
         {
             var spDropItem = manager.PoolSystem.Load<RecoveryItem>($"{interactablePath}/DropItem_SpRecovery");
             spDropItem.SetData(this);

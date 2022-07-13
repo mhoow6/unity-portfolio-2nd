@@ -64,6 +64,20 @@
 		public int HpRecoveryPoint;
 	}
 
+	public struct ItemTable
+	{
+		/// <summary> 아이템 인덱스 </summary> ///
+		public int Index;
+		/// <summary> 아이템 타입 </summary> ///
+		public ItemType Type;
+		/// <summary> 아이템의 가치 (ex. 캐릭터 레벨업 칩인 아이템의 가치가 100이면 캐릭터의 레벨을 100만큼 올려줌) </summary> ///
+		public int Value;
+		/// <summary> 아이템 별의 갯수 </summary> ///
+		public int StarCount;
+		/// <summary> 아이콘 경로 </summary> ///
+		public string IconPath;
+	}
+
 	public struct PlayerLevelEnergyTable
 	{
 		/// <summary> 레벨 </summary> ///

@@ -24,7 +24,7 @@ public sealed class StageManager : GameSceneManager
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
 
-    public List<ItemType> StageDropItems = new List<ItemType>(5);
+    public List<int> StageDropItemIndices = new List<int>(5);
     public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
@@ -136,23 +136,31 @@ public sealed class StageManager : GameSceneManager
 
         // 스테이지 아이템 리스트 세팅
         var dropData = TableManager.Instance.StageDropItemTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
-
-
-        // TODO: 아이템 테이블
-        //if (dropData.DropItem1Index >= 5000)
-        //    StageDropItems.Add(dropData.DropItem1Code);
-
-        //if (dropData.DropItem2Index >= 5000)
-        //    StageDropItems.Add(dropData.DropItem2Code);
-
-        //if (dropData.DropItem3Index >= 5000)
-        //    StageDropItems.Add(dropData.DropItem3Code);
-
-        //if (dropData.DropItem4Index >= 5000)
-        //    StageDropItems.Add(dropData.DropItem4Code);
-
-        //if (dropData.DropItem5Index >= 5000)
-        //    StageDropItems.Add(dropData.DropItem5Code);
+        if (dropData.DropItem1Index >= 5000)
+        {
+            if (!StageDropItemIndices.Contains(dropData.DropItem1Index))
+                StageDropItemIndices.Add(dropData.DropItem1Index);
+        }
+        if (dropData.DropItem2Index >= 5000)
+        {
+            if (!StageDropItemIndices.Contains(dropData.DropItem2Index))
+                StageDropItemIndices.Add(dropData.DropItem2Index);
+        }
+        if (dropData.DropItem3Index >= 5000)
+        {
+            if (!StageDropItemIndices.Contains(dropData.DropItem3Index))
+                StageDropItemIndices.Add(dropData.DropItem3Index);
+        }
+        if (dropData.DropItem4Index >= 5000)
+        {
+            if (!StageDropItemIndices.Contains(dropData.DropItem4Index))
+                StageDropItemIndices.Add(dropData.DropItem4Index);
+        }
+        if (dropData.DropItem5Index >= 5000)
+        {
+            if (!StageDropItemIndices.Contains(dropData.DropItem5Index))
+                StageDropItemIndices.Add(dropData.DropItem5Index);
+        }
 
         // --------------------------------------------------------------------------------------------------------
 

@@ -136,7 +136,5 @@ public class PlayerData : ISubscribable
         OnGoldUpdate = null;
         OnLevelUpdate = null;
         OnNickNameUpdate = null;
-
-        Debug.Log("플레이어 데이터의 DisposeEvents");
     }
 }
