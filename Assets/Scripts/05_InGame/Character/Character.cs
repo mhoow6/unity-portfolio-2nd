@@ -246,6 +246,14 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         }
         return null;
     }
+
+    public static string GetName(ObjectCode objectCode)
+    {
+        var data = TableManager.Instance.CharacterTable.Find(cha => cha.Code == objectCode);
+        if (data.Name != string.Empty)
+            return data.Name;
+        return string.Empty;
+    }
     #endregion
 
     #region Å¸°ÙÆÃ
