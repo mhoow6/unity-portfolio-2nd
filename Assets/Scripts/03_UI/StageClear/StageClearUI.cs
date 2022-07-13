@@ -53,13 +53,11 @@ public class StageClearUI : UI
         GameManager.Instance.LoadScene(SceneCode.Lobby, onPrevSceneLoad:
             () =>
             {
-                GameManager.UISystem.PushToast(ToastType.SceneTransition);
+                //GameManager.UISystem.PushToast(ToastType.SceneTransition);
             }, 
             onSceneLoaded: () =>
             {
-                GameManager.UISystem.CloseToast(true);
-
-                GameManager.UISystem.OpenWindow(UIType.MainLobby);
+                //GameManager.UISystem.CloseToast(true);
 
                 var battleResult = GameManager.UISystem.OpenWindow<BattleResultUI>(UIType.BattleResult);
                 battleResult.SetData(StageManager.Instance.StageResult);

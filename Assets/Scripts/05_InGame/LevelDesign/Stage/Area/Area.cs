@@ -105,7 +105,6 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
     {
         if (m_CurrentSpawnerCount < m_Spawners.Count)
         {
-            Debug.Log($"현재스포너: {m_CurrentSpawnerCount}");
             m_Spawners[m_CurrentSpawnerCount].SpawnMonsters();
             m_CurrentSpawnerCount++;
         }

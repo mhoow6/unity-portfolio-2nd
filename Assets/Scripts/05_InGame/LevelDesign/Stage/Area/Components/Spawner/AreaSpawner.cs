@@ -47,7 +47,6 @@ public class AreaSpawner : AreaComponent
     IEnumerator SpawnMonsterCoroutine(int count = 1)
     {
         yield return new WaitForSeconds(SPAWN_COOLTIME);
-        Debug.Log($"{m_CurrentSpawnCount} -> {m_CurrentSpawnCount + count}");
         if (m_CurrentSpawnCount >= TotalSpawnCount)
             yield break;
 
