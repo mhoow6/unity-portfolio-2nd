@@ -85,6 +85,9 @@ public class AreaSpawner : AreaComponent
                 StartCoroutine(SpawnMonsterCoroutine());
             else
             {
+                if (StageManager.Instance.Monsters.Count > 0)
+                    return;
+
                 // 자기를 포함하는 Area 찾기
                 var area = StageManager.Instance.Areas.Find(a => a.IsSpawnerIn(this));
                 if (area != null)

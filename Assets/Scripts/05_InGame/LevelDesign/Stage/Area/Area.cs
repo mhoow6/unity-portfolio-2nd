@@ -40,7 +40,7 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
         }
     }
 
-    [SerializeField, ReadOnly] int m_CurrentSpawnerPriority = 1;
+    [SerializeField, ReadOnly] int m_CurrentSpawnerCount;
 
     [SerializeField] List<AreaTrigger> m_Triggers = new List<AreaTrigger>();
     [SerializeField] List<AreaWall> m_Walls = new List<AreaWall>();
@@ -72,7 +72,6 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
         m_Spawners.Sort((lhs, rhs) => { return lhs.Priority.CompareTo(rhs.Priority); });
 
         m_Init = true;
-        m_CurrentSpawnerPriority = 1;
     }
 
     #region 스포너
@@ -104,10 +103,11 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
     /// <summary> 새로운 스포너 작동을 시작합니다. </summary> /// 
     public void SpawnMonsterFromNewSpawner()
     {
-        if (m_CurrentSpawnerPriority <= m_Spawners.Count)
+        if (m_CurrentSpawnerCount < m_Spawners.Count)
         {
-            m_Spawners[m_CurrentSpawnerPriority - 1].SpawnMonsters();
-            m_CurrentSpawnerPriority++;
+            Debug.Log($"현재스포너: {m_CurrentSpawnerCount}");
+            m_Spawners[m_CurrentSpawnerCount].SpawnMonsters();
+            m_CurrentSpawnerCount++;
         }
         else
         {
