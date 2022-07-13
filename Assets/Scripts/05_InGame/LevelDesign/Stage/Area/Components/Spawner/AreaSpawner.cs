@@ -23,6 +23,13 @@ public class AreaSpawner : AreaComponent
 
     private void Awake()
     {
+        if (Priority <= 0)
+        {
+            Debug.LogError($"스포너의 Priority는 {Priority}가 될 수 없습니다. 최소한 1 이상의 값으로 설정하세요.");
+            enabled = false;
+            return;
+        }
+
         if (TotalSpawnCount < FirstSpawnCount)
             FirstSpawnCount = TotalSpawnCount;
     }

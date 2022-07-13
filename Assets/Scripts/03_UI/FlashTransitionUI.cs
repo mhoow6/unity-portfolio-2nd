@@ -60,5 +60,6 @@ public class FlashTransitionUI : Toast
 
             yield return null;
         }
+        GameManager.UISystem.CloseToast(true);
     }
 }

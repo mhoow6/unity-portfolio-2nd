@@ -164,7 +164,7 @@ public sealed class GameManager : MonoBehaviour
     }
 
     #region ¾À ·Îµå
-    public void LoadScene(SceneCode scene, Action onPrevSceneLoading = null, Action onSceneLoading = null, Action onSceneLoaded = null)
+    public void LoadScene(SceneCode scene, Action onPrevSceneLoad = null, Action onSceneLoading = null, Action onSceneLoaded = null)
     {
         if (scene == SceneCode.Logo)
         {
@@ -172,14 +172,14 @@ public sealed class GameManager : MonoBehaviour
             return;
         }    
 
-        StartCoroutine(LoadSceneCoroutine(scene, onPrevSceneLoading, onSceneLoading, onSceneLoaded));
+        StartCoroutine(LoadSceneCoroutine(scene, onPrevSceneLoad, onSceneLoading, onSceneLoaded));
     }
 
-    IEnumerator LoadSceneCoroutine(SceneCode scene, Action onPrevSceneLoading = null, Action onSceneLoading = null, Action onSceneLoaded = null)
+    IEnumerator LoadSceneCoroutine(SceneCode scene, Action onPrevSceneLoad = null, Action onSceneLoading = null, Action onSceneLoaded = null)
     {
         AsyncOperation async = SceneManager.LoadSceneAsync((int)scene, LoadSceneMode.Single);
 
-        onPrevSceneLoading?.Invoke();
+        onPrevSceneLoad?.Invoke();
         while (!async.isDone)
         {
             Debug.Log($"async progress: {async.progress}%\nasync.allowSceneActivation = {async.allowSceneActivation}");

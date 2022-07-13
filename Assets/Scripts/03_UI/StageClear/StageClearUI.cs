@@ -19,8 +19,11 @@ public class StageClearUI : UI
 
     public override void OnOpened()
     {
-        var result = StageManager.Instance.StageResult;
         var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
+        var result = sm.StageResult;
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == sm.WorldIdx && stage.StageIdx == sm.StageIdx);
 
         // 스테이지 이름
@@ -46,7 +49,26 @@ public class StageClearUI : UI
 
     public void OnStageOutBtnClick()
     {
-        Debug.Log($"반응");
-        //GameManager.Instance.LoadScene(SceneCode.Lobby, onSceneLoaded:)
+        if (GameManager.Instance.IsTestZone)
+        {
+            GameManager.UISystem.CloseWindow();
+            GameManager.UISystem.OpenWindow(UIType.InGame);
+            return;
+        }
+
+        GameManager.Instance.LoadScene(SceneCode.Lobby, onPrevSceneLoad:
+            () =>
+            {
+                GameManager.UISystem.PushToast(ToastType.SceneTransition);
+            }, 
+            onSceneLoaded: () =>
+            {
+                GameManager.UISystem.CloseToast(true);
+
+                GameManager.UISystem.OpenWindow(UIType.MainLobby);
+
+                var battleResult = GameManager.UISystem.OpenWindow<BattleResultUI>(UIType.BattleResult);
+                battleResult.SetData(StageManager.Instance.StageResult);
+            });
     }
 }
