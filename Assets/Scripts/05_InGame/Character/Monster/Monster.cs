@@ -166,6 +166,15 @@ public abstract class Monster : Character
         StartCoroutine(OnDeadCoroutine());
     }
 
+    protected override void OnDamaged(DamagedParam param)
+    {
+        var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
+        sm.ComboSystem.Report(1);
+    }
+
     // -----------------------------------------------------------------------
 
     #region LookAt

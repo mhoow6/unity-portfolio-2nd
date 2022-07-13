@@ -23,12 +23,17 @@ public sealed class StageManager : GameSceneManager
     // 시스템
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
+    public ComboSystem ComboSystem;
 
     public List<int> StageDropItemIndices = new List<int>(5);
     public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
     bool m_Init;
+
+    // Update Handler
+    Action m_Update;
+    Action m_FixedUpdate;
 
     void Awake()
     {
@@ -42,9 +47,21 @@ public sealed class StageManager : GameSceneManager
         MissionSystem = new MissionSystem();
         MissionSystem.Init();
 
+        ComboSystem = new ComboSystem();
+        ComboSystem.Init();
+
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
             area.Init();
+
+        // ---------------------------------------
+
+        m_Update += ComboSystem.Tick;
+    }
+
+    private void Update()
+    {
+        m_Update?.Invoke();
     }
 
     #region 초기화
@@ -178,19 +195,7 @@ public sealed class StageManager : GameSceneManager
         // 이벤트 알림
         GameEventSystem.SendEvent(GameEvent.StageClear);
 
-        // 도전 목표 기록을 플레이어 데이터에 업데이트
-        var playerData = GameManager.PlayerData;
-        foreach (var record in MissionSystem.QuestRecords.Values)
-        {
-            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
-            if (exist == null)
-                playerData.QuestRecords.Add(record);
-            else
-            {
-                exist.SuccessCount = record.SuccessCount;
-                exist.Clear = record.Clear;
-            }
-        }
+        // -------------------------------------------------------------------------------
 
         // 스테이지 클리어 시간
         StageResult.StageEndTime = DateTime.Now;
@@ -209,7 +214,27 @@ public sealed class StageManager : GameSceneManager
             StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 100);
         }
 
+        StageResult.Combo = ComboSystem.Combo;
+
+        // -------------------------------------------------------------------------------
+
+        // 도전 목표 기록을 플레이어 데이터에 업데이트
+        var playerData = GameManager.PlayerData;
+        foreach (var record in MissionSystem.QuestRecords.Values)
+        {
+            var exist = playerData.QuestRecords.Find(r => r.QuestIdx == record.QuestIdx);
+            if (exist == null)
+                playerData.QuestRecords.Add(record);
+            else
+            {
+                exist.SuccessCount = record.SuccessCount;
+                exist.Clear = record.Clear;
+            }
+        }
+
         // TODO: 인벤토리에 전리품 넣어주기
+
+        // -------------------------------------------------------------------------------
 
         // 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
         var flash = GameManager.UISystem.PushToast<FlashTransitionUI>(ToastType.FlashTransition);

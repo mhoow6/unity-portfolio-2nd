@@ -324,7 +324,6 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
             GameEventSystem.RemoveListener(this);
 
             OnDead(param.Attacker, param.Damage);
-            return;
         }
 
         OnDamaged(param);

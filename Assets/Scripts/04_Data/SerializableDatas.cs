@@ -95,13 +95,15 @@ public struct StageResultData
     public int BossKillCount;
 
     public int Gold;
+    public int Combo;
+
     public List<StageRewardItemData> Rewards;
 
     public readonly TimeSpan Duration
     {
         get
         {
-            return StageStartTime - StageEndTime;
+            return StageEndTime - StageStartTime;
         }
     }
     public readonly DateTime StageStartTime;
@@ -112,6 +114,7 @@ public struct StageResultData
         Rewards = rewardList;
         Gold = 0;
         Score = 0;
+        Combo = 0;
         StageStartTime = DateTime.Now;
         StageEndTime = default(DateTime);
         MonsterKillCount = 0;
