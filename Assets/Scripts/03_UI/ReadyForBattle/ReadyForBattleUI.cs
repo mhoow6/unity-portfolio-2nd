@@ -79,34 +79,21 @@ public class ReadyForBattleUI : UI
         StageImage.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.StageImage}");
 
         // 긴급 목표
-        Mission1.SetData(QuestDescription(row.Quest1Idx), mission1Clear);
-        Mission2.SetData(QuestDescription(row.Quest2Idx), mission2Clear);
-        Mission3.SetData(QuestDescription(row.Quest3Idx), mission3Clear);
+        var quest1Data = TableManager.Instance.QuestTable.Find(quest => quest.Index == row.Quest1Idx);
+        var quest1Description = TableManager.Instance.QuestDescriptionTable.Find(quest => quest.Type == quest1Data.Type);
+        Mission1.SetData(string.Format(quest1Description.Description, quest1Data.PurposeCount), mission1Clear);
+
+        var quest2Data = TableManager.Instance.QuestTable.Find(quest => quest.Index == row.Quest2Idx);
+        var quest2Description = TableManager.Instance.QuestDescriptionTable.Find(quest => quest.Type == quest2Data.Type);
+        Mission2.SetData(string.Format(quest2Description.Description, quest2Data.PurposeCount), mission2Clear);
+
+        var quest3Data = TableManager.Instance.QuestTable.Find(quest => quest.Index == row.Quest3Idx);
+        var quest3Description = TableManager.Instance.QuestDescriptionTable.Find(quest => quest.Type == quest3Data.Type);
+        Mission3.SetData(string.Format(quest3Description.Description, quest3Data.PurposeCount), mission3Clear);
 
         // UNDONE: 스테이지에서 얻을 수 있는 아이템 리스트
 
         // 에너지 소비
         EnergyCost.text = row.EnergyCost.ToString();
-    }
-
-    string QuestDescription(int questIdx)
-    {
-        string result = string.Empty;
-        var row = TableManager.Instance.QuestTable.Find(q => q.Index == questIdx);
-
-        switch (row.Type)
-        {
-            case QuestType.KILL_ENEMY:
-                result = $"{row.PurposeCount}기 이상의 적을 처치한다.";
-                break;
-            case QuestType.GET_DAMAGED:
-                result = $"피격횟수가 {row.PurposeCount}번을 넘지 않을 것";
-                break;
-            case QuestType.INCAPCITATED:
-                result = $"전투 불능이 된 캐릭터 {row.PurposeCount}명 이하";
-                break;
-        }
-
-        return result;
     }
 }

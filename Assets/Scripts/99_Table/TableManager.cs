@@ -13,6 +13,7 @@ namespace DatabaseSystem
 		public List<ItemTable> ItemTable = new List<ItemTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
+		public List<QuestDescriptionTable> QuestDescriptionTable = new List<QuestDescriptionTable>();
 		public List<QuestTable> QuestTable = new List<QuestTable>();
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
@@ -121,6 +122,19 @@ namespace DatabaseSystem
 				info.MaxExperience = int.Parse(datas[1]);
 				
                 PlayerLevelExperienceTable.Add(info);
+                LoadedData++;
+            }
+        
+            var QuestDescriptionTableTextasset = Resources.Load<TextAsset>("99_Database/Table/QuestDescriptionTable");
+            string[] QuestDescriptionTableLines = QuestDescriptionTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < QuestDescriptionTableLines.Length; i++)
+            {
+                string[] datas = QuestDescriptionTableLines[i].Split(',');
+                QuestDescriptionTable info;
+                info.Type = (QuestType)Enum.Parse(typeof(QuestType),datas[0]);
+				info.Description = datas[1];
+				
+                QuestDescriptionTable.Add(info);
                 LoadedData++;
             }
         

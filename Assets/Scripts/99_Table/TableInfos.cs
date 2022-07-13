@@ -94,6 +94,14 @@
 		public int MaxExperience;
 	}
 
+	public struct QuestDescriptionTable
+	{
+		/// <summary> 퀘스트 타입 </summary> ///
+		public QuestType Type;
+		/// <summary> 퀘스트 설명 </summary> ///
+		public string Description;
+	}
+
 	public struct QuestTable
 	{
 		/// <summary> 퀘스트 인덱스 </summary> ///

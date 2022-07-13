@@ -197,6 +197,8 @@ public sealed class StageManager : GameSceneManager
 
         // -------------------------------------------------------------------------------
 
+        StageResult.Clear = true;
+
         // 스테이지 클리어 시간
         StageResult.StageEndTime = DateTime.Now;
 

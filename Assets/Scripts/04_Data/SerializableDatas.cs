@@ -89,6 +89,8 @@ public struct CheatSettings
 [Serializable]
 public struct StageResultData
 {
+    public bool Clear;
+
     public int Score;
 
     public int MonsterKillCount;
@@ -111,6 +113,7 @@ public struct StageResultData
 
     public StageResultData(List<StageRewardItemData> rewardList)
     {
+        Clear = false;
         Rewards = rewardList;
         Gold = 0;
         Score = 0;
