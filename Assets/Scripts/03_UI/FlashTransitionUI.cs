@@ -11,6 +11,8 @@ public class FlashTransitionUI : Toast
 
     Action m_OnFadeInCallback;
     Action m_OnFadeOutCallback;
+    Action m_OnFadeEndCallback;
+
     float m_FadeTime;
 
     public override void OnClosed()
@@ -24,10 +26,11 @@ public class FlashTransitionUI : Toast
         StartCoroutine(FlashCoroutine());
     }
 
-    public void SetData(Action onFadeInCallback, Action onFadeOutFallback, float fadeTime)
+    public void SetData(Action onFadeInCallback, Action onFadeOutFallback, Action onFadeEndCallback, float fadeTime)
     {
         m_OnFadeInCallback = onFadeInCallback;
         m_OnFadeOutCallback = onFadeOutFallback;
+        m_OnFadeEndCallback = onFadeEndCallback;
         m_FadeTime = fadeTime;
     }
 

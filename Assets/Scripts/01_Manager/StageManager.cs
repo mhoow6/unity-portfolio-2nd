@@ -208,12 +208,12 @@ public sealed class StageManager : GameSceneManager
         // 보스몬스터 처리 수 * 100점
         StageResult.Score += (StageResult.BossKillCount * 100);
 
-        // (스테이지 클리어 최대 시간 - 스테이지 클리어 시간) * 100점
+        // (스테이지 클리어 최대 시간 - 스테이지 클리어 시간) * 50점
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
         if (stageData.ClearTimelimit != 0)
         {
             var duration = StageResult.Duration;
-            StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 100);
+            StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 50);
         }
 
         StageResult.Combo = ComboSystem.Combo;
@@ -245,6 +245,10 @@ public sealed class StageManager : GameSceneManager
             () =>
             {
                 var stageclearUI = GameManager.UISystem.OpenWindow<StageClearUI>(UIType.StageClear);
+            },
+            () =>
+            {
+                Time.timeScale = 0;
             },
             4f);
     }

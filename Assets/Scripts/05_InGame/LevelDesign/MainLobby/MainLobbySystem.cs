@@ -43,9 +43,12 @@ public class MainLobbySystem : MonoBehaviour
     {
         SpawnMainCharacter();
 
-        LobbyManager.Instance.MainCam = LobbyCamera;
-        LobbyManager.Instance.MainCam.transform.position = CameraPosition.transform.position;
-        Destroy(LobbyManager.Instance.LoadingTitleSystem.gameObject);
+        var lm = LobbyManager.Instance;
+
+        lm.MainCam = LobbyCamera;
+        lm.MainCam.transform.position = CameraPosition.transform.position;
+
+        Destroy(lm.LoadingTitleSystem.gameObject);
         GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 

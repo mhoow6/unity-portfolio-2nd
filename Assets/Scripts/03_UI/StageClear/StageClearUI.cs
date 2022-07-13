@@ -50,14 +50,11 @@ public class StageClearUI : UI
             return;
         }
 
-        GameManager.Instance.LoadScene(SceneCode.Lobby, onPrevSceneLoad:
-            () =>
-            {
-                //GameManager.UISystem.PushToast(ToastType.SceneTransition);
-            }, 
+        Time.timeScale = 1;
+        GameManager.Instance.LoadScene(SceneCode.Lobby, 
             onSceneLoaded: () =>
             {
-                //GameManager.UISystem.CloseToast(true);
+                LobbyManager.Instance.Init();
 
                 var battleResult = GameManager.UISystem.OpenWindow<BattleResultUI>(UIType.BattleResult);
                 battleResult.SetData(StageManager.Instance.StageResult);
