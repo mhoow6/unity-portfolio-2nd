@@ -148,6 +148,11 @@ public class BattleResultUI : UI
         }
     }
 
+    public void OnConfirmBtnClick()
+    {
+        GameManager.UISystem.CloseWindow();
+    }
+
     IEnumerator IncreasePlayerLevelSliderCoroutine(SplitSlider slider, Text representText, int currentLevel, int currentExp, float endValue)
     {
         float desiredValue = endValue;
