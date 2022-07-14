@@ -35,6 +35,6 @@ public class ItemUI : Display
         Stars[itemData.StarCount - 2].gameObject.SetActive(true);
 
         // 배경 색상
-        RarityBackground.color = RarityBackgroundColors[itemCount - 2];
+        RarityBackground.color = RarityBackgroundColors[itemData.StarCount - 2];
     }
 }

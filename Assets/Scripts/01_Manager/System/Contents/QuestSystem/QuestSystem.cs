@@ -7,12 +7,17 @@ public class QuestSystem : IGameSystem
     // QuestIdx: RecordData
     public Dictionary<int, QuestRecordData> QuestRecords = new Dictionary<int, QuestRecordData>();
 
-    // QuestIdx: PurposeCount
-    protected Dictionary<int, int> m_QuestIdxPurposeCountDic = new Dictionary<int, int>();
+	// QuestIdx
+	List<int> m_ReportBlockQuests = new List<int>();
+
+	// QuestIdx: PurposeCount
+	protected Dictionary<int, int> m_QuestIdxPurposeCountDic = new Dictionary<int, int>();
 
 	/// <summary> 퀘스트 등록 용도 </summary>
 	public void Register(List<int> questIndices)
 	{
+		m_ReportBlockQuests.Clear();
+
 		foreach (int index in questIndices)
 		{
 			var row = TableManager.Instance.QuestTable.Find(q => q.Index == index);
@@ -21,6 +26,16 @@ public class QuestSystem : IGameSystem
 				bool initFlag = row.Positive ? false : true;
 				int purposeCount = row.PurposeCount;
 
+				// 플레이어가 이미 깬 경우 스킵
+				var playerRecord = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == index);
+				if (playerRecord != null)
+                {
+					if (playerRecord.Clear)
+						continue;
+                }
+					
+
+				// 시스템에 이미 등록되있을 경우 스킵
 				if (QuestRecords.TryGetValue(index, out var record))
 					continue;
 				else
@@ -30,10 +45,12 @@ public class QuestSystem : IGameSystem
 						QuestIdx = index,
 						SuccessCount = 0,
 						Clear = initFlag,
+						Type = row.Type
 					};
 					QuestRecords.Add(index, newRecord);
+
+					m_QuestIdxPurposeCountDic.Add(index, purposeCount);
 				}
-				m_QuestIdxPurposeCountDic.Add(index, purposeCount);
 			}
 		}
 	}
@@ -41,9 +58,19 @@ public class QuestSystem : IGameSystem
 	/// <summary> 퀘스트 등록 용도 </summary>
 	public void Register(List<Questable> quests)
     {
+		m_ReportBlockQuests.Clear();
+
 		foreach (var quest in quests)
 		{
 			int purposeCount = quest.PurposeCount;
+
+			// 플레이어가 이미 깬 경우 스킵
+			var playerRecord = GameManager.PlayerData.QuestRecords.Find(q => q.QuestIdx == quest.Index);
+			if (playerRecord != null)
+            {
+				if (playerRecord.Clear)
+					continue;
+			}
 
 			if (QuestRecords.ContainsKey(quest.Index))
 				continue;
@@ -66,6 +93,9 @@ public class QuestSystem : IGameSystem
 	/// <summary> 해당 퀘스트의 목표를 달성했다는 보고 용도 </summary>
 	public void Report(int questIdx, int addCount = 1)
     {
+		if (m_ReportBlockQuests.Contains(questIdx))
+			return;
+
         if (QuestRecords.TryGetValue(questIdx, out var record))
 		{
 			int purposeCount = m_QuestIdxPurposeCountDic[questIdx];
@@ -74,6 +104,7 @@ public class QuestSystem : IGameSystem
 			{
 				record.SuccessCount = purposeCount;
 				record.Clear = !record.Clear;
+				m_ReportBlockQuests.Add(questIdx);
 			}
 		}
     }
