@@ -312,7 +312,7 @@ public sealed class StageManager : GameSceneManager
         }
 
         // 스테이지 결과에 따른 플레이어 레벨업
-        int delta = (int)StageResult.PlayerGetExperience - GameManager.PlayerData.Experience;
+        int delta = StageResult.PlayerGetExperience - GameManager.PlayerData.Experience;
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience;
         while (maxExperience < delta)
         {
@@ -360,7 +360,7 @@ public sealed class StageManager : GameSceneManager
     {
         if (record != null)
         {
-            delta = (int)StageResult.CharacterGetExperience - record.Experience;
+            delta = StageResult.CharacterGetExperience - record.Experience;
             Debug.Log($"경험치 흭득량: {delta}");
             maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
             while (maxExperience < delta)

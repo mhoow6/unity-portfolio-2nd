@@ -43,8 +43,8 @@ public class BattleResultUI : UI
 
     public void SetData(StageResultData result)
     {
-        int playerGetExperience = (int)result.PlayerGetExperience;
-        int characterGetExperience = (int)result.CharacterGetExperience;
+        int playerGetExperience = result.PlayerGetExperience;
+        int characterGetExperience = result.CharacterGetExperience;
 
         // 배경화면
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == result.WorldIdx && stage.StageIdx == result.StageIdx);

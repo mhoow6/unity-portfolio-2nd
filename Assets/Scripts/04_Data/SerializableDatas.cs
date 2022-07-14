@@ -94,7 +94,16 @@ public class StageResultData
     public int StageIdx;
     public bool Clear;
 
-    public int Score;
+    public int Score
+    {
+        get => m_Score;
+        set
+        {
+            m_Score = value;
+            PlayerGetExperience = (int)Mathf.Floor(Score * 0.1f);
+            CharacterGetExperience = (int)Mathf.Floor(Score * 0.5f);
+        }
+    }
 
     public int MonsterKillCount;
     public int BossKillCount;
@@ -102,8 +111,8 @@ public class StageResultData
     public int Gold;
     public int Combo;
 
-    public float PlayerGetExperience => Score * 0.1f;
-    public float CharacterGetExperience => Score * 0.5f;
+    public int PlayerGetExperience { get; private set; }
+    public int CharacterGetExperience { get; private set; }
 
     public StagePlayerData PlayerRecord;
     public List<StageCharacterData> CharacterRecords;
@@ -119,6 +128,8 @@ public class StageResultData
     }
     public readonly DateTime StageStartTime;
     public DateTime StageEndTime;
+
+    int m_Score;
 
     public StageResultData(List<StageRewardItemData> rewardList)
     {
