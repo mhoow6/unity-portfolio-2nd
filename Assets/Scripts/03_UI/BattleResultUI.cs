@@ -43,8 +43,8 @@ public class BattleResultUI : UI
 
     public void SetData(StageResultData result)
     {
-        float playerGetExperience = result.PlayerGetExperience;
-        float characterGetExperience = result.CharacterGetExperience;
+        int playerGetExperience = (int)result.PlayerGetExperience;
+        int characterGetExperience = (int)result.CharacterGetExperience;
 
         // 배경화면
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == result.WorldIdx && stage.StageIdx == result.StageIdx);
@@ -87,7 +87,7 @@ public class BattleResultUI : UI
             SelectCharacterUIs[0],
             leaderCharacterRecord.Level,
             leaderCharacterRecord.Experience,
-            (leaderCharacterRecord.Experience + characterGetExperience)));
+            leaderCharacterRecord.Experience + characterGetExperience));
 
         // 리더 캐릭터 얻는 경험치 표시
         CharacterExperienceGains[0].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";

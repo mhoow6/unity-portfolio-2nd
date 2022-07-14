@@ -88,7 +88,7 @@ public struct CheatSettings
 }
 
 [Serializable]
-public struct StageResultData
+public class StageResultData
 {
     public int WorldIdx;
     public int StageIdx;
@@ -102,15 +102,15 @@ public struct StageResultData
     public int Gold;
     public int Combo;
 
-    public readonly float PlayerGetExperience => Score * 0.1f;
-    public readonly float CharacterGetExperience => Score * 0.5f;
+    public float PlayerGetExperience => Score * 0.1f;
+    public float CharacterGetExperience => Score * 0.5f;
 
     public StagePlayerData PlayerRecord;
     public List<StageCharacterData> CharacterRecords;
 
     public List<StageRewardItemData> Rewards;
 
-    public readonly TimeSpan Duration
+    public TimeSpan Duration
     {
         get
         {

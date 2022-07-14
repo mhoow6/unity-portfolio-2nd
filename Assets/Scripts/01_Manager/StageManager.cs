@@ -57,6 +57,10 @@ public sealed class StageManager : GameSceneManager
         // ---------------------------------------
 
         m_Update += ComboSystem.Tick;
+
+        // ---------------------------------------
+
+        
     }
 
     private void Update()
@@ -187,6 +191,7 @@ public sealed class StageManager : GameSceneManager
     }
     #endregion
 
+    #region 스테이지 클리어
     /// <summary>
     /// 스테이지 클리어시 호출하세요
     /// </summary>
@@ -197,8 +202,7 @@ public sealed class StageManager : GameSceneManager
 
         // -------------------------------------------------------------------------------
 
-        // 초기화
-        StageResult = new StageResultData();
+        StageResult.CharacterRecords = new List<StageCharacterData>();
 
         // 스테이지에 참여했던 플레이어 데이터 저장
         StageResult.PlayerRecord = new StagePlayerData()
@@ -221,21 +225,41 @@ public sealed class StageManager : GameSceneManager
 
         // 2번째캐릭 데이터 저장
         var secondRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterSecond);
-        StageResult.CharacterRecords.Add(new StageCharacterData()
+        if (secondRecord != null)
         {
-            Code = secondRecord.Code,
-            Level = secondRecord.Level,
-            Experience = secondRecord.Experience
-        });
-
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = secondRecord.Code,
+                Level = secondRecord.Level,
+                Experience = secondRecord.Experience
+            });
+        }
+        else
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = ObjectCode.NONE
+            });
+        }
+        
         // 3번째캐릭 데이터 저장
         var thirdRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterThird);
-        StageResult.CharacterRecords.Add(new StageCharacterData()
+        if (thirdRecord != null)
         {
-            Code = thirdRecord.Code,
-            Level = thirdRecord.Level,
-            Experience = thirdRecord.Experience
-        });
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = thirdRecord.Code,
+                Level = thirdRecord.Level,
+                Experience = thirdRecord.Experience
+            });
+        }
+        else
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = ObjectCode.NONE
+            });
+        }
 
         StageResult.Clear = true;
 
@@ -288,10 +312,30 @@ public sealed class StageManager : GameSceneManager
         }
 
         // 스테이지 결과에 따른 플레이어 레벨업
-        
+        int delta = (int)StageResult.PlayerGetExperience - GameManager.PlayerData.Experience;
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience;
+        while (maxExperience < delta)
+        {
+            // 레벨업이 되는 상황이므로 레벨업
+            GameManager.PlayerData.Level++;
+            GameManager.PlayerData.Experience = 0;
+
+            delta -= maxExperience;
+
+            maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience;
+        }
+        GameManager.PlayerData.Experience += Mathf.Abs(delta);
 
         // 스테이지 결과에 따른 캐릭터 레벨업
 
+        // 리더 레벨업
+        CharacterLevelUp(ref delta, ref maxExperience, leaderRecord);
+
+        // 두번째 레벨업
+        CharacterLevelUp(ref delta, ref maxExperience, secondRecord);
+
+        // 세번째 레벨업
+        CharacterLevelUp(ref delta, ref maxExperience, thirdRecord);
 
         // TODO: 인벤토리에 전리품 넣어주기
 
@@ -311,6 +355,28 @@ public sealed class StageManager : GameSceneManager
             },
             4f);
     }
+
+    void CharacterLevelUp(ref int delta, ref int maxExperience, CharacterRecordData record)
+    {
+        if (record != null)
+        {
+            delta = (int)StageResult.CharacterGetExperience - record.Experience;
+            Debug.Log($"경험치 흭득량: {delta}");
+            maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
+            while (maxExperience < delta)
+            {
+                // 레벨업이 되는 상황이므로 레벨업
+                record.Level++;
+                record.Experience = 0;
+
+                delta -= maxExperience;
+
+                maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
+            }
+            record.Experience += Mathf.Abs(delta);
+        }
+    }
+    #endregion
 
     #region 프리로드
     public void ReservingPreload(PreloadParam param)
