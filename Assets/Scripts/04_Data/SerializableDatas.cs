@@ -102,6 +102,12 @@ public struct StageResultData
     public int Gold;
     public int Combo;
 
+    public readonly float PlayerGetExperience => Score * 0.1f;
+    public readonly float CharacterGetExperience => Score * 0.5f;
+
+    public StagePlayerData PlayerRecord;
+    public List<StageCharacterData> CharacterRecords;
+
     public List<StageRewardItemData> Rewards;
 
     public readonly TimeSpan Duration
@@ -127,6 +133,8 @@ public struct StageResultData
         StageEndTime = default(DateTime);
         MonsterKillCount = 0;
         BossKillCount = 0;
+        CharacterRecords = new List<StageCharacterData>();
+        PlayerRecord = new StagePlayerData();
     }
 }
 
@@ -135,4 +143,17 @@ public class StageRewardItemData
 {
     public int Index;
     public int Quantity;
+}
+
+public struct StagePlayerData
+{
+    public int Level;
+    public int Experience;
+}
+
+public struct StageCharacterData
+{
+    public ObjectCode Code;
+    public int Level;
+    public int Experience;
 }

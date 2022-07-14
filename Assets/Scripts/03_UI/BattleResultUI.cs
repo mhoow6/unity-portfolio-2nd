@@ -43,8 +43,8 @@ public class BattleResultUI : UI
 
     public void SetData(StageResultData result)
     {
-        float playerGetExperience = result.Score * 0.1f;
-        float characterGetExperience = result.Score * 0.5f;
+        float playerGetExperience = result.PlayerGetExperience;
+        float characterGetExperience = result.CharacterGetExperience;
 
         // 배경화면
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == result.WorldIdx && stage.StageIdx == result.StageIdx);
@@ -54,8 +54,8 @@ public class BattleResultUI : UI
         StageName.text = stageData.StageName;
 
         // 함장 레벨
-        int playerLevel = GameManager.PlayerData.Level;
-        int playerExperience = GameManager.PlayerData.Experience;
+        int playerLevel = result.PlayerRecord.Level;
+        int playerExperience = result.PlayerRecord.Experience;
         Level.text = $"LV.{playerLevel}";
 
         // 함장 경험치
@@ -70,19 +70,18 @@ public class BattleResultUI : UI
         ExperienceGain.gameObject.DODisable(2f);
 
         // 파티 프리셋 보여주기
-        var playerStageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == result.WorldIdx && stage.StageIdx == result.StageIdx);
-        SelectCharacterUIs[0].SetData(playerStageRecord.CharacterLeader);
+        SelectCharacterUIs[0].SetData(result.CharacterRecords[0].Code, result.CharacterRecords[0].Level);
         SelectCharacterUIs[0].Raycastable = false;
         SelectCharacterUIs[0].IsLeaderSlot = true;
-        SelectCharacterUIs[1].SetData(playerStageRecord.CharacterSecond);
+        SelectCharacterUIs[1].SetData(result.CharacterRecords[1].Code, result.CharacterRecords[1].Level);
         SelectCharacterUIs[1].Raycastable = false;
         SelectCharacterUIs[1].IsLeaderSlot = false;
-        SelectCharacterUIs[2].SetData(playerStageRecord.CharacterThird);
+        SelectCharacterUIs[2].SetData(result.CharacterRecords[2].Code, result.CharacterRecords[2].Level);
         SelectCharacterUIs[2].Raycastable = false;
         SelectCharacterUIs[2].IsLeaderSlot = false;
 
         // 리더 캐릭터 경험치
-        var leaderCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[0].DisplayedCharacter);
+        var leaderCharacterRecord = result.CharacterRecords.Find(cha => cha.Code == SelectCharacterUIs[0].DisplayedCharacter);
         StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
             CharacterExperiences[0],
             SelectCharacterUIs[0],
@@ -98,7 +97,7 @@ public class BattleResultUI : UI
         if (SelectCharacterUIs[1].DisplayedCharacter != ObjectCode.NONE)
         {
             CharacterExperiences[1].gameObject.SetActive(true);
-            var secondCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[1].DisplayedCharacter);
+            var secondCharacterRecord = result.CharacterRecords.Find(cha => cha.Code == SelectCharacterUIs[1].DisplayedCharacter);
             StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
                 CharacterExperiences[1],
                 SelectCharacterUIs[1],
@@ -122,7 +121,7 @@ public class BattleResultUI : UI
         if (SelectCharacterUIs[2].DisplayedCharacter != ObjectCode.NONE)
         {
             CharacterExperiences[2].gameObject.SetActive(true);
-            var thirdCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[2].DisplayedCharacter);
+            var thirdCharacterRecord = result.CharacterRecords.Find(cha => cha.Code == SelectCharacterUIs[2].DisplayedCharacter);
             StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
                 CharacterExperiences[2],
                 SelectCharacterUIs[2],

@@ -197,11 +197,52 @@ public sealed class StageManager : GameSceneManager
 
         // -------------------------------------------------------------------------------
 
-        StageResult.WorldIdx = WorldIdx;
-        StageResult.StageIdx = StageIdx;
+        // 초기화
+        StageResult = new StageResultData();
+
+        // 스테이지에 참여했던 플레이어 데이터 저장
+        StageResult.PlayerRecord = new StagePlayerData()
+        {
+            Level = GameManager.PlayerData.Level,
+            Experience = GameManager.PlayerData.Experience
+        };
+
+        // 스테이지에 참여했던 캐릭터들의 데이터 저장
+        var playerStageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
+
+        // 리더데이터 저장
+        var leaderRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterLeader);
+        StageResult.CharacterRecords.Add(new StageCharacterData()
+        {
+            Code = leaderRecord.Code,
+            Level = leaderRecord.Level,
+            Experience = leaderRecord.Experience
+        });
+
+        // 2번째캐릭 데이터 저장
+        var secondRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterSecond);
+        StageResult.CharacterRecords.Add(new StageCharacterData()
+        {
+            Code = secondRecord.Code,
+            Level = secondRecord.Level,
+            Experience = secondRecord.Experience
+        });
+
+        // 3번째캐릭 데이터 저장
+        var thirdRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterThird);
+        StageResult.CharacterRecords.Add(new StageCharacterData()
+        {
+            Code = thirdRecord.Code,
+            Level = thirdRecord.Level,
+            Experience = thirdRecord.Experience
+        });
 
         StageResult.Clear = true;
 
+        // 스테이지 기본정보
+        StageResult.WorldIdx = WorldIdx;
+        StageResult.StageIdx = StageIdx;
+        
         // 스테이지 클리어 시간
         StageResult.StageEndTime = DateTime.Now;
 
@@ -245,6 +286,12 @@ public sealed class StageManager : GameSceneManager
                 exist.Clear = record.Clear;
             }
         }
+
+        // 스테이지 결과에 따른 플레이어 레벨업
+        
+
+        // 스테이지 결과에 따른 캐릭터 레벨업
+
 
         // TODO: 인벤토리에 전리품 넣어주기
 

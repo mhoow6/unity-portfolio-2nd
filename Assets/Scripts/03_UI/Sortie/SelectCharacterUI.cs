@@ -71,7 +71,7 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
     string m_OnPointerUpColorCode = "#FFFFFF";
     const float DISPLAY_SWAP_ALPHA = 0.8f;
 
-    public void SetData(ObjectCode characterCode)
+    public void SetData(ObjectCode characterCode, int characterLevel = -1)
     {
         DisplayedCharacter = characterCode;
 
@@ -85,7 +85,11 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
             return;
         }
 
-        CharacterLevel.text = $"Lv. {record.Level}";
+        if (characterLevel == -1)
+            CharacterLevel.text = $"Lv. {record.Level}";
+        else
+            CharacterLevel.text = $"Lv. {characterLevel}";
+
         m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}");
         PortraitVisible = true;
     }
