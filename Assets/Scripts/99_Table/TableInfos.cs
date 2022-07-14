@@ -10,6 +10,14 @@
 		public string Dialog;
 	}
 
+	public struct CharacterLevelExperienceTable
+	{
+		/// <summary> 캐릭터 레벨 </summary> ///
+		public int Level;
+		/// <summary> 캐릭터 최대 경험치 </summary> ///
+		public int MaxExperience;
+	}
+
 	public struct CharacterTable
 	{
 		/// <summary> 오브젝트 코드 </summary> ///

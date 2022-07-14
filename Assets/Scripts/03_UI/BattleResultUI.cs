@@ -61,19 +61,88 @@ public class BattleResultUI : UI
         // 함장 경험치
         var levelData = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == playerLevel);
         LevelExperience.text = $"{playerExperience} / {levelData.MaxExperience}";
-        float experienceRatio = (playerExperience + playerGetExperience) / levelData.MaxExperience;
-        float tweenDuration = Mathf.Min(4f * experienceRatio, 4f);
 
         // 함장 경험치 트위닝
-        //LevelExperience.DOText($"{playerExperience + playerGetExperience} / {levelData.MaxExperience}", tweenDuration);
-        StartCoroutine(IncreasePlayerLevelSliderCoroutine(LevelSlider, playerLevel, playerExperience, (playerExperience + playerGetExperience)));
+        StartCoroutine(IncreasePlayerLevelSliderCoroutine(LevelSlider, LevelExperience, playerLevel, playerExperience, (playerExperience + playerGetExperience)));
 
         // 함장 얻는 경험치 표시
         ExperienceGain.text = $"+{playerGetExperience}<color=#02C3FE>Exp</color>";
         ExperienceGain.gameObject.DODisable(2f);
+
+        // 파티 프리셋 보여주기
+        var playerStageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == result.WorldIdx && stage.StageIdx == result.StageIdx);
+        SelectCharacterUIs[0].SetData(playerStageRecord.CharacterLeader);
+        SelectCharacterUIs[0].Raycastable = false;
+        SelectCharacterUIs[0].IsLeaderSlot = true;
+        SelectCharacterUIs[1].SetData(playerStageRecord.CharacterSecond);
+        SelectCharacterUIs[1].Raycastable = false;
+        SelectCharacterUIs[1].IsLeaderSlot = false;
+        SelectCharacterUIs[2].SetData(playerStageRecord.CharacterThird);
+        SelectCharacterUIs[2].Raycastable = false;
+        SelectCharacterUIs[2].IsLeaderSlot = false;
+
+        // 리더 캐릭터 경험치
+        var leaderCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[0].DisplayedCharacter);
+        StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
+            CharacterExperiences[0],
+            SelectCharacterUIs[0],
+            leaderCharacterRecord.Level,
+            leaderCharacterRecord.Experience,
+            (leaderCharacterRecord.Experience + characterGetExperience)));
+
+        // 리더 캐릭터 얻는 경험치 표시
+        CharacterExperienceGains[0].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
+        CharacterExperienceGains[0].gameObject.DODisable(2f);
+
+        // 두번째 캐릭터 경험치
+        if (SelectCharacterUIs[1].DisplayedCharacter != ObjectCode.NONE)
+        {
+            CharacterExperiences[1].gameObject.SetActive(true);
+            var secondCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[1].DisplayedCharacter);
+            StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
+                CharacterExperiences[1],
+                SelectCharacterUIs[1],
+                secondCharacterRecord.Level,
+                secondCharacterRecord.Experience,
+                (secondCharacterRecord.Experience + characterGetExperience)));
+
+            // 두번째 캐릭터 얻는 경험치 표시
+            CharacterExperienceGains[1].gameObject.SetActive(true);
+            CharacterExperienceGains[1].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
+            CharacterExperienceGains[1].gameObject.DODisable(2f);
+        }
+        else
+        {
+            CharacterExperiences[1].gameObject.SetActive(false);
+            CharacterExperienceGains[1].gameObject.SetActive(false);
+        }
+
+
+        // 세번째 캐릭터 경험치
+        if (SelectCharacterUIs[2].DisplayedCharacter != ObjectCode.NONE)
+        {
+            CharacterExperiences[2].gameObject.SetActive(true);
+            var thirdCharacterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == SelectCharacterUIs[2].DisplayedCharacter);
+            StartCoroutine(IncreaseCharacterLevelSliderCoroutine(
+                CharacterExperiences[2],
+                SelectCharacterUIs[2],
+                thirdCharacterRecord.Level,
+                thirdCharacterRecord.Experience,
+                (thirdCharacterRecord.Experience + characterGetExperience)));
+
+            // 두번째 캐릭터 얻는 경험치 표시
+            CharacterExperienceGains[2].gameObject.SetActive(true);
+            CharacterExperienceGains[2].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
+            CharacterExperienceGains[2].gameObject.DODisable(2f);
+        }
+        else
+        {
+            CharacterExperiences[2].gameObject.SetActive(false);
+            CharacterExperienceGains[2].gameObject.SetActive(false);
+        }
     }
 
-    IEnumerator IncreasePlayerLevelSliderCoroutine(SplitSlider slider, int currentLevel, int currentExp, float endValue)
+    IEnumerator IncreasePlayerLevelSliderCoroutine(SplitSlider slider, Text representText, int currentLevel, int currentExp, float endValue)
     {
         float desiredValue = endValue;
         int level = currentLevel;
@@ -97,11 +166,11 @@ public class BattleResultUI : UI
 
         // 레벨 슬라이더 초기 세팅
         (float, int) desired = endValues.Dequeue();
-        LevelSlider.SetData(0, desired.Item2, (exp) =>
+        slider.SetData(0, desired.Item2, (exp) =>
         {
-            LevelExperience.text = $"{Mathf.Floor(exp)} / {desired.Item2}";
+            representText.text = $"{Mathf.Floor(exp)} / {desired.Item2}";
         });
-        LevelSlider.Value = currentExp;
+        slider.Value = currentExp;
 
         // 경험치 증가 연출
         while (endValues.Count != 0)
@@ -113,7 +182,7 @@ public class BattleResultUI : UI
                 desired = endValues.Dequeue();
                 slider.SetData(0, desired.Item2, (exp) =>
                 {
-                    LevelExperience.text = $"{Mathf.Floor(exp)} / {desired.Item2}";
+                    representText.text = $"{Mathf.Floor(exp)} / {desired.Item2}";
                 });
                 slider.Value = 0;
                 OnPlayerLevelUp(++level);
@@ -137,5 +206,65 @@ public class BattleResultUI : UI
     void OnPlayerLevelUp(float level)
     {
         Level.text = $"LV.{level}";
+    }
+
+    IEnumerator IncreaseCharacterLevelSliderCoroutine(SplitSlider slider, SelectCharacterUI characterUI, int currentLevel, int currentExp, float endValue)
+    {
+        float desiredValue = endValue;
+        int level = currentLevel;
+        float getExperiencePerFrame = GetExperiencePerSecond / Application.targetFrameRate * 5f;
+
+        // 도달해야하는 경험치, 그 레벨에 맞는 최대경험치
+        Queue<(float, int)> endValues = new Queue<(float, int)>();
+
+        // endValues 세팅
+        var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level);
+        while (levelData.MaxExperience < desiredValue)
+        {
+            endValues.Enqueue((levelData.MaxExperience, levelData.MaxExperience));
+            desiredValue -= levelData.MaxExperience;
+            levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level + 1);
+            level = level + 1;
+        }
+        endValues.Enqueue((desiredValue, levelData.MaxExperience));
+
+        level = currentLevel;
+
+        // 레벨 슬라이더 초기 세팅
+        (float, int) desired = endValues.Dequeue();
+        slider.SetData(0, desired.Item2);
+        slider.Value = currentExp;
+
+        // 경험치 증가 연출
+        while (endValues.Count != 0)
+        {
+            if (slider.Value < desired.Item1)
+                slider.Value += Time.deltaTime * 100f * getExperiencePerFrame;
+            else
+            {
+                desired = endValues.Dequeue();
+                slider.SetData(0, desired.Item2);
+                slider.Value = 0;
+                OnCharacterLevelUp(characterUI, ++level);
+            }
+
+            yield return null;
+        }
+
+        // 남은 경험치 증가 연출
+        while (true)
+        {
+            if (slider.Value < desired.Item1)
+                slider.Value += Time.deltaTime * 100f * getExperiencePerFrame;
+            else
+                yield break;
+
+            yield return null;
+        }
+    }
+
+    void OnCharacterLevelUp(SelectCharacterUI characterUI, float level)
+    {
+        characterUI.CharacterLevel.text = $"Lv. {level}";
     }
 }

@@ -13,12 +13,12 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
     {
         get
         {
-            return m_CharacterPortrait.gameObject.activeSelf && m_CharacterLevel.gameObject.activeSelf;
+            return m_CharacterPortrait.gameObject.activeSelf && CharacterLevel.gameObject.activeSelf;
         }
         set
         {
             m_CharacterPortrait.gameObject.SetActive(value);
-            m_CharacterLevel.gameObject.SetActive(value);
+            CharacterLevel.gameObject.SetActive(value);
         }
     }
     public float Alpha
@@ -60,7 +60,7 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
     [SerializeField] Image m_LeaderIcon;
     [SerializeField] Image m_CharacterPortrait;
     [SerializeField] Image m_Background;
-    [SerializeField] Text m_CharacterLevel;
+    public Text CharacterLevel;
     CanvasGroup m_CanvasGroup;
 
     SelectCharacterUI m_Copied;
@@ -85,7 +85,7 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
             return;
         }
 
-        m_CharacterLevel.text = $"Lv. {record.Level}";
+        CharacterLevel.text = $"Lv. {record.Level}";
         m_CharacterPortrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{row.PortraitName}");
         PortraitVisible = true;
     }

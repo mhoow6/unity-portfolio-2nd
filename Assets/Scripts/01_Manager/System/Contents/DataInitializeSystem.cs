@@ -26,6 +26,7 @@ public class DataInitializeSystem : IGameSystem
                 Code = ObjectCode.CHAR_Sparcher,
                 Level = 1,
                 EquipWeaponCode = ObjectCode.NONE,
+                Experience = 0,
             });
         }
 

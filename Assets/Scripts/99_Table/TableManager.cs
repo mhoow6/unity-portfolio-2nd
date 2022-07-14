@@ -8,6 +8,7 @@ namespace DatabaseSystem
 		public static TableManager Instance { get; private set; } = new TableManager();
 		public int LoadedData { get; private set; } = 0;
 		public List<AniTypeDialogueTable> AniTypeDialogueTable = new List<AniTypeDialogueTable>();
+		public List<CharacterLevelExperienceTable> CharacterLevelExperienceTable = new List<CharacterLevelExperienceTable>();
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<HpRecoveryItemTable> HpRecoveryItemTable = new List<HpRecoveryItemTable>();
 		public List<ItemTable> ItemTable = new List<ItemTable>();
@@ -35,6 +36,19 @@ namespace DatabaseSystem
 				info.Dialog = datas[2];
 				
                 AniTypeDialogueTable.Add(info);
+                LoadedData++;
+            }
+        
+            var CharacterLevelExperienceTableTextasset = Resources.Load<TextAsset>("99_Database/Table/CharacterLevelExperienceTable");
+            string[] CharacterLevelExperienceTableLines = CharacterLevelExperienceTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < CharacterLevelExperienceTableLines.Length; i++)
+            {
+                string[] datas = CharacterLevelExperienceTableLines[i].Split(',');
+                CharacterLevelExperienceTable info;
+                info.Level = int.Parse(datas[0]);
+				info.MaxExperience = int.Parse(datas[1]);
+				
+                CharacterLevelExperienceTable.Add(info);
                 LoadedData++;
             }
         

@@ -46,6 +46,7 @@ public class CharacterRecordData
     public ObjectCode Code;
     public int Level;
     public ObjectCode EquipWeaponCode;
+    public int Experience;
 }
 
 [Serializable]
