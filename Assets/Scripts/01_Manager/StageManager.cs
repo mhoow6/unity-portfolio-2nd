@@ -197,6 +197,9 @@ public sealed class StageManager : GameSceneManager
 
         // -------------------------------------------------------------------------------
 
+        StageResult.WorldIdx = WorldIdx;
+        StageResult.StageIdx = StageIdx;
+
         StageResult.Clear = true;
 
         // 스테이지 클리어 시간
@@ -217,6 +220,15 @@ public sealed class StageManager : GameSceneManager
         }
 
         StageResult.Combo = ComboSystem.Combo;
+
+        // 퀘스트 클리어수당 * 200점
+        int questScore = 0;
+        foreach (var record in MissionSystem.QuestRecords)
+        {
+            if (record.Value.Clear)
+                questScore += 200;
+        }
+        StageResult.Score += questScore;
 
         // -------------------------------------------------------------------------------
 

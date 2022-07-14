@@ -89,6 +89,8 @@ public struct CheatSettings
 [Serializable]
 public struct StageResultData
 {
+    public int WorldIdx;
+    public int StageIdx;
     public bool Clear;
 
     public int Score;
@@ -113,6 +115,8 @@ public struct StageResultData
 
     public StageResultData(List<StageRewardItemData> rewardList)
     {
+        WorldIdx = 0;
+        StageIdx = 0;
         Clear = false;
         Rewards = rewardList;
         Gold = 0;

@@ -89,6 +89,9 @@ public class SplitSlider : Display
             m_OnValueUpdate?.Invoke(clamped);
         }
     }
+    public float MaxValue => m_MaxValue;
+    public float MinValue => m_MinValue;
+
     Action<float> m_OnValueUpdate;
 
     bool m_Flexible

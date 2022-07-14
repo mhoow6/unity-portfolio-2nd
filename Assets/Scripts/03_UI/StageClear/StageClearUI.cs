@@ -15,7 +15,7 @@ public class StageClearUI : UI
 
     public override void OnClosed()
     {
-        
+        MissionClearDetails.ForEach(misson => misson.gameObject.SetActive(true));
     }
 
     public override void OnOpened()
@@ -35,10 +35,17 @@ public class StageClearUI : UI
         Displays[1].SetData($"{result.Duration.Minutes:00}:{result.Duration.Seconds:00}");
         Displays[2].SetData($"{result.Score}");
 
+        // 퀘스트 없으면 도전목표가 아예 없는 거임
+        if (stageData.Quest1Idx == 0)
+        {
+            MissionClearDetails.ForEach(misson => misson.gameObject.SetActive(false));
+            return;
+        }
+
         // 도전 목표 결과
-        MissionClearDetails[0].SetData(result.Clear, QuestDescription(stageData.Quest1Idx));
-        MissionClearDetails[1].SetData(result.Clear, QuestDescription(stageData.Quest2Idx));
-        MissionClearDetails[2].SetData(result.Clear, QuestDescription(stageData.Quest3Idx));
+        MissionClearDetails[0].SetData(sm.MissionSystem.QuestRecords[stageData.Quest1Idx].Clear, QuestDescription(stageData.Quest1Idx));
+        MissionClearDetails[1].SetData(sm.MissionSystem.QuestRecords[stageData.Quest2Idx].Clear, QuestDescription(stageData.Quest2Idx));
+        MissionClearDetails[2].SetData(sm.MissionSystem.QuestRecords[stageData.Quest3Idx].Clear, QuestDescription(stageData.Quest3Idx));
     }
 
     public void OnStageOutBtnClick()

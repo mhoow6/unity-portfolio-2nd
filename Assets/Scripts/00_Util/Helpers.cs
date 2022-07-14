@@ -326,4 +326,10 @@ public static class UnityHelper
         return Vector3.SqrMagnitude(a - b) < 0.01f;
     }
 
+    public static void DODisable(this GameObject gameObject, float lifeDuration)
+    {
+        var _helper = new GameObject("CoroutineHelper", typeof(CoroutineHelper));
+        var helper = _helper.GetComponent<CoroutineHelper>();
+        helper.HelpDODisable(gameObject, lifeDuration);
+    }
 }
