@@ -361,7 +361,6 @@ public sealed class StageManager : GameSceneManager
         if (record != null)
         {
             delta = StageResult.CharacterGetExperience - record.Experience;
-            Debug.Log($"°æÇèÄ¡ Å‰µæ·®: {delta}");
             maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
             while (maxExperience < delta)
             {

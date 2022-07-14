@@ -57,7 +57,6 @@ public class StageClearUI : UI
             return;
         }
 
-        Time.timeScale = 1;
         GameManager.Instance.LoadScene(SceneCode.Lobby, 
             onSceneLoaded: () =>
             {

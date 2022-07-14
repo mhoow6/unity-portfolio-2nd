@@ -29,17 +29,9 @@ public class BattleResultUI : UI
     [Header("# 수동기입"), Tooltip("초당 올라가는 경험치")]
     public float GetExperiencePerSecond;
 
-    public override void OnClosed()
-    {
-        SelectCharacterUIs.Clear();
-        CharacterExperienceGains.Clear();
-        Items.Clear();
-    }
+    public override void OnClosed(){}
 
-    public override void OnOpened()
-    {
-        
-    }
+    public override void OnOpened(){}
 
     public void SetData(StageResultData result)
     {
@@ -138,6 +130,21 @@ public class BattleResultUI : UI
         {
             CharacterExperiences[2].gameObject.SetActive(false);
             CharacterExperienceGains[2].gameObject.SetActive(false);
+        }
+
+        // ------------------------------------------------------------------
+
+        // 얻은 골드량
+        GoldGain.text = $"<color=#F7C94E>+ </color>{result.Gold}";
+
+        // 전리품 보여주기
+        Items.ForEach(item => item.gameObject.SetActive(false));
+        for (int i = 0; i < result.Rewards.Count; i++)
+        {
+            var reward = result.Rewards[i];
+            var itemSlot = Items[i];
+
+            itemSlot.SetData(reward.Index, reward.Quantity);
         }
     }
 

@@ -82,8 +82,8 @@
 		public int Value;
 		/// <summary> 아이템 별의 갯수 </summary> ///
 		public int StarCount;
-		/// <summary> 아이콘 경로 </summary> ///
-		public string IconPath;
+		/// <summary> 아이콘 이름 </summary> ///
+		public string IconName;
 	}
 
 	public struct PlayerLevelEnergyTable
