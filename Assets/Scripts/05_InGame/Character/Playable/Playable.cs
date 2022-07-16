@@ -155,8 +155,6 @@ public abstract class Playable : Character
     public virtual bool CanJump() { return true; }
     #endregion
 
-    
-
     // -----------------------------------------------------------------------
 
     #region 캐릭터 대쉬
@@ -269,6 +267,9 @@ public abstract class Playable : Character
         var sm = StageManager.Instance;
         if (sm == null)
             return;
+
+        // 죽는 애니메이션
+        sm.Player.AnimationJobs.Enqueue(AniType.DEAD_0);
 
         sm.MissionSystem.ReportAll(QuestType.INCAPCITATED);
 

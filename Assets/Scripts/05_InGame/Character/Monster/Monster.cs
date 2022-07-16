@@ -195,24 +195,6 @@ public abstract class Monster : Character
     #endregion
 
     #region 몬스터 사망시
-    float m_DeathTimer;
-    const float INVISIBLE_TIME = 3f;
-
-    IEnumerator OnDeadCoroutine()
-    {
-        while (true)
-        {
-            m_DeathTimer += Time.deltaTime;
-            if (m_DeathTimer > INVISIBLE_TIME)
-            {
-                Destroy(gameObject);
-                m_DeathTimer = 0f;
-                yield break;
-            }
-            yield return null;
-        }
-    }
-
     void ThrowDropItem(DropItem dropItem, float adjustHeight = 0f)
     {
         Vector3 dropStartPosition = transform.position;

@@ -28,8 +28,12 @@ public class InGameUI : UI
 
     public override void OnClosed()
     {
-        var player = StageManager.Instance.Player;
+        var sm = StageManager.Instance;
+        if (sm == null)
+            return;
 
+        var player = sm.Player;
+        
         // 다시 Canvas의 RenderMode를 Screen Space - Camera
         GameManager.UISystem.Canvas.renderMode = RenderMode.ScreenSpaceCamera;
         GameManager.UISystem.Canvas.worldCamera = GameManager.UISystem.UICamera;
