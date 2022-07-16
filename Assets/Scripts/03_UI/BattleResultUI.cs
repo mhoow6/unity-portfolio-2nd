@@ -55,7 +55,7 @@ public class BattleResultUI : UI
         LevelExperience.text = $"{playerExperience} / {levelData.MaxExperience}";
 
         // 함장 경험치 트위닝
-        StartCoroutine(IncreasePlayerLevelSliderCoroutine(LevelSlider, LevelExperience, playerLevel, playerExperience, (playerExperience + playerGetExperience)));
+        StartCoroutine(IncreasePlayerLevelSliderCoroutine(LevelSlider, LevelExperience, playerLevel, playerExperience, playerGetExperience));
 
         // 함장 얻는 경험치 표시
         ExperienceGain.text = $"+{playerGetExperience}<color=#02C3FE>Exp</color>";
@@ -79,7 +79,7 @@ public class BattleResultUI : UI
             SelectCharacterUIs[0],
             leaderCharacterRecord.Level,
             leaderCharacterRecord.Experience,
-            leaderCharacterRecord.Experience + characterGetExperience));
+            characterGetExperience));
 
         // 리더 캐릭터 얻는 경험치 표시
         CharacterExperienceGains[0].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
@@ -95,7 +95,7 @@ public class BattleResultUI : UI
                 SelectCharacterUIs[1],
                 secondCharacterRecord.Level,
                 secondCharacterRecord.Experience,
-                (secondCharacterRecord.Experience + characterGetExperience)));
+                characterGetExperience));
 
             // 두번째 캐릭터 얻는 경험치 표시
             CharacterExperienceGains[1].gameObject.SetActive(true);
@@ -119,7 +119,7 @@ public class BattleResultUI : UI
                 SelectCharacterUIs[2],
                 thirdCharacterRecord.Level,
                 thirdCharacterRecord.Experience,
-                (thirdCharacterRecord.Experience + characterGetExperience)));
+                characterGetExperience));
 
             // 두번째 캐릭터 얻는 경험치 표시
             CharacterExperienceGains[2].gameObject.SetActive(true);
@@ -153,9 +153,9 @@ public class BattleResultUI : UI
         GameManager.UISystem.CloseWindow();
     }
 
-    IEnumerator IncreasePlayerLevelSliderCoroutine(SplitSlider slider, Text representText, int currentLevel, int currentExp, float endValue)
+    IEnumerator IncreasePlayerLevelSliderCoroutine(SplitSlider slider, Text representText, int currentLevel, int currentExp, float gainExperience)
     {
-        float desiredValue = endValue;
+        float desiredValue = gainExperience;
         int level = currentLevel;
         float getExperiencePerFrame = GetExperiencePerSecond / Application.targetFrameRate;
 
@@ -164,10 +164,14 @@ public class BattleResultUI : UI
 
         // endValues 세팅
         var levelData = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == level);
+        int previousExperience = currentExp;
         while (levelData.MaxExperience < desiredValue)
         {
             endValues.Enqueue((levelData.MaxExperience, levelData.MaxExperience));
-            desiredValue -= levelData.MaxExperience;
+
+            desiredValue -= (levelData.MaxExperience - previousExperience);
+            previousExperience = 0;
+
             levelData = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == level + 1);
             level = level + 1;
         }
@@ -208,10 +212,14 @@ public class BattleResultUI : UI
             if (slider.Value < desired.Item1)
                 slider.Value += Time.deltaTime * 100f * getExperiencePerFrame;
             else
+            {
+                slider.Value = desired.Item1;
                 yield break;
+            }
 
             yield return null;
         }
+        
     }
 
     void OnPlayerLevelUp(float level)
@@ -230,10 +238,14 @@ public class BattleResultUI : UI
 
         // endValues 세팅
         var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level);
+        int previousExperience = currentExp;
         while (levelData.MaxExperience < desiredValue)
         {
             endValues.Enqueue((levelData.MaxExperience, levelData.MaxExperience));
-            desiredValue -= levelData.MaxExperience;
+
+            desiredValue -= (levelData.MaxExperience - previousExperience);
+            previousExperience = 0;
+
             levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level + 1);
             level = level + 1;
         }
@@ -268,8 +280,11 @@ public class BattleResultUI : UI
             if (slider.Value < desired.Item1)
                 slider.Value += Time.deltaTime * 100f * getExperiencePerFrame;
             else
+            {
+                slider.Value = desired.Item1;
                 yield break;
-
+            }
+                
             yield return null;
         }
     }

@@ -81,7 +81,7 @@ public struct CheatSettings
     public bool OneShotKill;
 
     [Tooltip("100% 확률로 HP, SP 회복 아이템을 얻습니다.")]
-    public bool DropRecovery100Percent;
+    public bool DropRecovery100;
 
     [Tooltip("SP나 쿨타임 소비 없이 스킬을 쓸 수 있습니다.")]
     public bool FreeSkill;
@@ -120,7 +120,7 @@ public class StageResultData
     public StagePlayerData PlayerRecord;
     public List<StageCharacterData> CharacterRecords;
 
-    public List<StageRewardItemData> Rewards;
+    public List<ItemData> Rewards;
 
     public TimeSpan Duration
     {
@@ -134,7 +134,7 @@ public class StageResultData
 
     int m_Score;
 
-    public StageResultData(List<StageRewardItemData> rewardList)
+    public StageResultData(List<ItemData> rewardList)
     {
         WorldIdx = 0;
         StageIdx = 0;
@@ -153,7 +153,7 @@ public class StageResultData
 }
 
 [Serializable]
-public class StageRewardItemData
+public class ItemData
 {
     public int Index;
     public int Quantity;

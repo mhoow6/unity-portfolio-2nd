@@ -134,7 +134,7 @@ public class WorldSpaceDialogue : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !StageManager.Instance.BrainCam.IsBlending)
             DialogueRead();
     }
 

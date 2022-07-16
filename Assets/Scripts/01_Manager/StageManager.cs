@@ -26,7 +26,7 @@ public sealed class StageManager : GameSceneManager
     public ComboSystem ComboSystem;
 
     public List<int> StageDropItemIndices = new List<int>(5);
-    public StageResultData StageResult = new StageResultData(new List<StageRewardItemData>());
+    public StageResultData StageResult = new StageResultData(new List<ItemData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
     bool m_Init;
@@ -312,29 +312,33 @@ public sealed class StageManager : GameSceneManager
         }
 
         // 스테이지 결과에 따른 플레이어 레벨업
-        int delta = StageResult.PlayerGetExperience - GameManager.PlayerData.Experience;
-        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience;
-        while (maxExperience < delta)
+        int gainExperience = StageResult.PlayerGetExperience;
+        Debug.Log($"얻은 플레이어 경험치: {gainExperience}");
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience; // 300
+        int previousPlayerExperience = GameManager.PlayerData.Experience;
+        while (maxExperience < gainExperience)
         {
             // 레벨업이 되는 상황이므로 레벨업
             GameManager.PlayerData.Level++;
             GameManager.PlayerData.Experience = 0;
 
-            delta -= maxExperience;
+            gainExperience -= (maxExperience - previousPlayerExperience);
 
+            previousPlayerExperience = GameManager.PlayerData.Experience;
             maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience;
         }
-        GameManager.PlayerData.Experience += Mathf.Abs(delta);
+        GameManager.PlayerData.Experience += Mathf.Abs(gainExperience);
 
         // 스테이지 결과에 따른 캐릭터 레벨업
+        Debug.Log($"얻은 캐릭터 경험치: {StageResult.CharacterGetExperience}");
         // 리더 레벨업
-        CharacterLevelUp(ref delta, ref maxExperience, leaderRecord);
+        CharacterLevelUp(ref gainExperience, ref maxExperience, leaderRecord);
 
         // 두번째 레벨업
-        CharacterLevelUp(ref delta, ref maxExperience, secondRecord);
+        CharacterLevelUp(ref gainExperience, ref maxExperience, secondRecord);
 
         // 세번째 레벨업
-        CharacterLevelUp(ref delta, ref maxExperience, thirdRecord);
+        CharacterLevelUp(ref gainExperience, ref maxExperience, thirdRecord);
 
         // 인벤토리에 전리품 넣어주기
         foreach (var reward in StageResult.Rewards)
@@ -357,24 +361,28 @@ public sealed class StageManager : GameSceneManager
             4f);
     }
 
-    void CharacterLevelUp(ref int delta, ref int maxExperience, CharacterRecordData record)
+    void CharacterLevelUp(ref int gainExperience, ref int maxExperience, CharacterRecordData record)
     {
         if (record != null)
         {
-            delta = StageResult.CharacterGetExperience - record.Experience;
+            gainExperience = StageResult.CharacterGetExperience;
             maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
-            while (maxExperience < delta)
+            int previousExperience = record.Experience;
+            while (maxExperience < gainExperience)
             {
                 // 레벨업이 되는 상황이므로 레벨업
                 record.Level++;
                 record.Experience = 0;
 
-                delta -= maxExperience;
+                gainExperience -= (maxExperience - previousExperience);
 
+                previousExperience = record.Experience;
                 maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
             }
-            record.Experience += Mathf.Abs(delta);
+            record.Experience += Mathf.Abs(gainExperience);
+            Debug.Log($"스테이지를 클리어하여 {record.Code}는 레벨:{record.Level}과 {record.Experience}가 있습니다.");
         }
+        
     }
     #endregion
 
