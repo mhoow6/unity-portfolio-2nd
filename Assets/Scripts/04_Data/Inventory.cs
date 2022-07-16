@@ -4,9 +4,13 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Inventory
+public class Inventory : ISubscribable
 {
+    public delegate void InventoryDelegate(int itemIndex, int itemCount);
+
     public List<ItemData> Items = new List<ItemData>();
+    public InventoryDelegate OnItemAdd;
+    public InventoryDelegate OnItemRemove;
 
     public void AddItem(int itemIndex, int itemCount)
     {
@@ -25,6 +29,7 @@ public class Inventory
                 Quantity = itemCount
             });
         }
+        OnItemAdd?.Invoke(itemIndex, itemCount);
     }
 
     public void RemoveItem(int itemIndex, int itemCount)
@@ -33,15 +38,27 @@ public class Inventory
         if (exist != null)
         {
             exist.Quantity -= itemCount;
+            if (exist.Quantity <= 0)
+            {
+                Items.Remove(exist);
+            }
+            OnItemRemove?.Invoke(itemIndex, itemCount);
         }
     }
 
     /// <summary> 인벤토리에 있는 모든 아이템을 콘솔에 보여줍니다. </summary>
     public void ShowInventoryToString()
     {
+        int count = 1;
         foreach (var item in Items)
         {
-            Debug.Log($"Index: {item.Index}, Quantity: {item.Quantity}");
+            Debug.Log($"{count++}번째 아이템 슬롯: [Index: {item.Index}, Quantity: {item.Quantity}]");
         }
+    }
+
+    public void DisposeEvents()
+    {
+        OnItemAdd = null;
+        OnItemRemove = null;
     }
 }

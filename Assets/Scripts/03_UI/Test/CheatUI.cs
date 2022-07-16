@@ -13,6 +13,7 @@ public class CheatUI : UI
     public override void OnClosed()
     {
         CheatItemUIs.ForEach(cheat => cheat.ClearData());
+        GameManager.PlayerData.Inventory.DisposeEvents();
     }
 
     public override void OnOpened()
@@ -32,6 +33,16 @@ public class CheatUI : UI
         {
             cheatItem.SetData(itemOptions);
         }
+
+        GameManager.PlayerData.Inventory.OnItemAdd += (itemIndex, itemCount) =>
+        {
+            Debug.Log($"{itemIndex}를 {itemCount}만큼 넣었다!");
+        };
+
+        GameManager.PlayerData.Inventory.OnItemRemove += (itemIndex, itemCount) =>
+        {
+            Debug.Log($"{itemIndex}를 {itemCount}만큼 뺐다!");
+        };
     }
 
     public void OnShowInventoryBtnClick()
