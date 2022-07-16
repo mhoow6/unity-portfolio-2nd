@@ -8,7 +8,7 @@ public class CheatItemUI : Display
 {
     public Dropdown Dropdown;
     public InputField InputField;
-    public CheatType CheatType; 
+    public CheatItemType CheatType; 
 
     public void SetData(List<Dropdown.OptionData> options)
     {
@@ -24,17 +24,17 @@ public class CheatItemUI : Display
     {
         switch (CheatType)
         {
-            case CheatType.Add:
+            case CheatItemType.Add:
                 if (int.TryParse(InputField.text, out int addCount))
                 {
-                    var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.itemText.text);
+                    var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.options[Dropdown.value].text);
                     GameManager.PlayerData.Inventory.AddItem(itemData.Index, addCount);
                 }
                 break;
-            case CheatType.Remove:
+            case CheatItemType.Remove:
                 if (int.TryParse(InputField.text, out int removeCount))
                 {
-                    var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.itemText.text);
+                    var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.options[Dropdown.value].text);
                     GameManager.PlayerData.Inventory.RemoveItem(itemData.Index, removeCount);
                 }
                 break;
@@ -42,7 +42,7 @@ public class CheatItemUI : Display
     }
 }
 
-public enum CheatType
+public enum CheatItemType
 {
     None,
     Add,

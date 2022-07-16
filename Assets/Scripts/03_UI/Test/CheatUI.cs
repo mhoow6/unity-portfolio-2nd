@@ -33,4 +33,9 @@ public class CheatUI : UI
             cheatItem.SetData(itemOptions);
         }
     }
+
+    public void OnShowInventoryBtnClick()
+    {
+        GameManager.PlayerData.Inventory.ShowInventoryToString();
+    }
 }

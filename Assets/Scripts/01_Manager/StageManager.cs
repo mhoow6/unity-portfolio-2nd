@@ -352,7 +352,7 @@ public sealed class StageManager : GameSceneManager
             },
             () =>
             {
-                Time.timeScale = 0;
+                
             },
             4f);
     }
