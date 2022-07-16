@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ClearDetailDisplay : Display
+public class ClearDetailUI : Display
 {
     public Text Right;
 

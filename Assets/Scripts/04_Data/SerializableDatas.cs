@@ -80,11 +80,14 @@ public struct CheatSettings
     [Tooltip("플레이어가 한 방에 적을 죽일 수 있습니다.")]
     public bool OneShotKill;
 
-    [Tooltip("100% 확률로 드롭 아이템을 얻습니다.")]
-    public bool DropItem100Percent;
+    [Tooltip("100% 확률로 HP, SP 회복 아이템을 얻습니다.")]
+    public bool DropRecovery100Percent;
 
     [Tooltip("SP나 쿨타임 소비 없이 스킬을 쓸 수 있습니다.")]
     public bool FreeSkill;
+
+    [Tooltip("치트 창을 열 수 있습니다.")]
+    public bool CheatUI;
 }
 
 [Serializable]

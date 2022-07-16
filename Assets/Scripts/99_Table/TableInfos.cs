@@ -78,12 +78,14 @@
 		public int Index;
 		/// <summary> 아이템 타입 </summary> ///
 		public ItemType Type;
-		/// <summary> 아이템의 가치 (ex. 캐릭터 레벨업 칩인 아이템의 가치가 100이면 캐릭터의 레벨을 100만큼 올려줌) </summary> ///
-		public int Value;
+		/// <summary> 게임에서 사용되는 이름 </summary> ///
+		public string Name;
 		/// <summary> 아이템 별의 갯수 </summary> ///
 		public int StarCount;
 		/// <summary> 아이콘 이름 </summary> ///
 		public string IconName;
+		/// <summary> 적용 포인트 </summary> ///
+		public int Point;
 	}
 
 	public struct PlayerLevelEnergyTable

@@ -10,8 +10,8 @@ public class StageClearUI : UI
     public override UIType Type => UIType.StageClear;
 
     public Text StageName;
-    public List<ClearDetailDisplay> Displays = new List<ClearDetailDisplay>();
-    public List<MissionClearDetailDisplay> MissionClearDetails = new List<MissionClearDetailDisplay>();
+    public List<ClearDetailUI> Displays = new List<ClearDetailUI>();
+    public List<MissonClearDetailUI> MissionClearDetails = new List<MissonClearDetailUI>();
 
     public override void OnClosed()
     {

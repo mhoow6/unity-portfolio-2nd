@@ -327,7 +327,6 @@ public sealed class StageManager : GameSceneManager
         GameManager.PlayerData.Experience += Mathf.Abs(delta);
 
         // 스테이지 결과에 따른 캐릭터 레벨업
-
         // 리더 레벨업
         CharacterLevelUp(ref delta, ref maxExperience, leaderRecord);
 
@@ -337,7 +336,9 @@ public sealed class StageManager : GameSceneManager
         // 세번째 레벨업
         CharacterLevelUp(ref delta, ref maxExperience, thirdRecord);
 
-        // TODO: 인벤토리에 전리품 넣어주기
+        // 인벤토리에 전리품 넣어주기
+        foreach (var reward in StageResult.Rewards)
+            GameManager.PlayerData.Inventory.AddItem(reward.Index, reward.Quantity);
 
         // -------------------------------------------------------------------------------
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MissionClearDetailDisplay : Display
+public class MissonClearDetailUI : Display
 {
     public Text Mission;
     public GameObject ClearBadge;

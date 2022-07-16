@@ -82,6 +82,7 @@ public class PlayerData : ISubscribable
     public List<StageRecordData> StageRecords = new List<StageRecordData>();
     public List<QuestRecordData> QuestRecords = new List<QuestRecordData>();
     public List<CharacterRecordData> CharacterDatas = new List<CharacterRecordData>();
+    public Inventory Inventory = new Inventory();
 
     // --------------------------------------------------------------------
 

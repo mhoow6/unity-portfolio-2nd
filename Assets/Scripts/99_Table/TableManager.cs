@@ -105,9 +105,10 @@ namespace DatabaseSystem
                 ItemTable info;
                 info.Index = int.Parse(datas[0]);
 				info.Type = (ItemType)Enum.Parse(typeof(ItemType),datas[1]);
-				info.Value = int.Parse(datas[2]);
+				info.Name = datas[2];
 				info.StarCount = int.Parse(datas[3]);
 				info.IconName = datas[4];
+				info.Point = int.Parse(datas[5]);
 				
                 ItemTable.Add(info);
                 LoadedData++;
