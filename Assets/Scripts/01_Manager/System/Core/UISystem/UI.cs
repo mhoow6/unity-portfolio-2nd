@@ -18,7 +18,8 @@ public enum UIType
     Logo,
     StageClear,
     BattleResult,
-    Cheat
+    Cheat,
+    StageFail
 }
 
 public abstract class UI : MonoBehaviour

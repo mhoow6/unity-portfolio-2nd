@@ -6,6 +6,7 @@ public enum GameEvent
 {
     None = 0,
     StageClear,
+    StageFail
 }
 
 public interface IGameEventListener

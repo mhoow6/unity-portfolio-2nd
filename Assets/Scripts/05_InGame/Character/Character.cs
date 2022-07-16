@@ -722,6 +722,7 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         switch (gameEvent)
         {
             case GameEvent.StageClear:
+            case GameEvent.StageFail:
                 DisposeEvents();
                 GameEventSystem.ReserveRemoveListener(this);
                 break;

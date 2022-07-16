@@ -15,5 +15,8 @@ public class StageManagerButton : Editor
 
         if (GUILayout.Button("Stage Clear", new GUILayoutOption[] { GUILayout.Height(30) }))
             generator.StageClear();
+
+        if (GUILayout.Button("Stage Fail", new GUILayoutOption[] { GUILayout.Height(30) }))
+            generator.StageFail();
     }
 }

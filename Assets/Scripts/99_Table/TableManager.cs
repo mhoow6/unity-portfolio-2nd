@@ -19,6 +19,7 @@ namespace DatabaseSystem
 		public List<RandomNicknameTable> RandomNicknameTable = new List<RandomNicknameTable>();
 		public List<SlangTable> SlangTable = new List<SlangTable>();
 		public List<SpRecoveryItemTable> SpRecoveryItemTable = new List<SpRecoveryItemTable>();
+		public List<StageClearGuideTextTable> StageClearGuideTextTable = new List<StageClearGuideTextTable>();
 		public List<StageDialogueTable> StageDialogueTable = new List<StageDialogueTable>();
 		public List<StageDropItemTable> StageDropItemTable = new List<StageDropItemTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
@@ -205,6 +206,21 @@ namespace DatabaseSystem
 				info.SpRecoveryPoint = int.Parse(datas[3]);
 				
                 SpRecoveryItemTable.Add(info);
+                LoadedData++;
+            }
+        
+            var StageClearGuideTextTableTextasset = Resources.Load<TextAsset>("99_Database/Table/StageClearGuideTextTable");
+            string[] StageClearGuideTextTableLines = StageClearGuideTextTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < StageClearGuideTextTableLines.Length; i++)
+            {
+                string[] datas = StageClearGuideTextTableLines[i].Split(',');
+                StageClearGuideTextTable info;
+                info.Index = int.Parse(datas[0]);
+				info.WorldIdx = int.Parse(datas[1]);
+				info.StageIdx = int.Parse(datas[2]);
+				info.GuideText = datas[3];
+				
+                StageClearGuideTextTable.Add(info);
                 LoadedData++;
             }
         

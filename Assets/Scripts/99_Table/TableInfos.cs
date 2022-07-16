@@ -150,6 +150,18 @@
 		public int SpRecoveryPoint;
 	}
 
+	public struct StageClearGuideTextTable
+	{
+		/// <summary>  </summary> ///
+		public int Index;
+		/// <summary>  </summary> ///
+		public int WorldIdx;
+		/// <summary>  </summary> ///
+		public int StageIdx;
+		/// <summary>  </summary> ///
+		public string GuideText;
+	}
+
 	public struct StageDialogueTable
 	{
 		/// <summary>  </summary> ///

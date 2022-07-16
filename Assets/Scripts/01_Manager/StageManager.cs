@@ -191,7 +191,7 @@ public sealed class StageManager : GameSceneManager
     }
     #endregion
 
-    #region 스테이지 클리어
+    #region 스테이지 결과처리
     /// <summary>
     /// 스테이지 클리어시 호출하세요
     /// </summary>
@@ -202,64 +202,19 @@ public sealed class StageManager : GameSceneManager
 
         // -------------------------------------------------------------------------------
 
-        StageResult.CharacterRecords = new List<StageCharacterData>();
+        StageResultDefaultInfoSave();
 
-        // 스테이지에 참여했던 플레이어 데이터 저장
-        StageResult.PlayerRecord = new StagePlayerData()
-        {
-            Level = GameManager.PlayerData.Level,
-            Experience = GameManager.PlayerData.Experience
-        };
-
-        // 스테이지에 참여했던 캐릭터들의 데이터 저장
+        // 스테이지에 참여했던 캐릭터들
         var playerStageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
 
-        // 리더데이터 저장
+        // 리더데이터
         var leaderRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterLeader);
-        StageResult.CharacterRecords.Add(new StageCharacterData()
-        {
-            Code = leaderRecord.Code,
-            Level = leaderRecord.Level,
-            Experience = leaderRecord.Experience
-        });
 
-        // 2번째캐릭 데이터 저장
+        // 2번째캐릭 데이터
         var secondRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterSecond);
-        if (secondRecord != null)
-        {
-            StageResult.CharacterRecords.Add(new StageCharacterData()
-            {
-                Code = secondRecord.Code,
-                Level = secondRecord.Level,
-                Experience = secondRecord.Experience
-            });
-        }
-        else
-        {
-            StageResult.CharacterRecords.Add(new StageCharacterData()
-            {
-                Code = ObjectCode.NONE
-            });
-        }
-        
-        // 3번째캐릭 데이터 저장
+
+        // 3번째캐릭 데이터
         var thirdRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterThird);
-        if (thirdRecord != null)
-        {
-            StageResult.CharacterRecords.Add(new StageCharacterData()
-            {
-                Code = thirdRecord.Code,
-                Level = thirdRecord.Level,
-                Experience = thirdRecord.Experience
-            });
-        }
-        else
-        {
-            StageResult.CharacterRecords.Add(new StageCharacterData()
-            {
-                Code = ObjectCode.NONE
-            });
-        }
 
         StageResult.Clear = true;
 
@@ -283,9 +238,6 @@ public sealed class StageManager : GameSceneManager
             var duration = StageResult.Duration;
             StageResult.Score += ((stageData.ClearTimelimit - duration.Seconds) * 50);
         }
-
-        StageResult.Combo = ComboSystem.Combo;
-
         // 퀘스트 클리어수당 * 200점
         int questScore = 0;
         foreach (var record in MissionSystem.QuestRecords)
@@ -313,7 +265,6 @@ public sealed class StageManager : GameSceneManager
 
         // 스테이지 결과에 따른 플레이어 레벨업
         int gainExperience = StageResult.PlayerGetExperience;
-        Debug.Log($"얻은 플레이어 경험치: {gainExperience}");
         int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == GameManager.PlayerData.Level).MaxExperience; // 300
         int previousPlayerExperience = GameManager.PlayerData.Experience;
         while (maxExperience < gainExperience)
@@ -330,7 +281,6 @@ public sealed class StageManager : GameSceneManager
         GameManager.PlayerData.Experience += Mathf.Abs(gainExperience);
 
         // 스테이지 결과에 따른 캐릭터 레벨업
-        Debug.Log($"얻은 캐릭터 경험치: {StageResult.CharacterGetExperience}");
         // 리더 레벨업
         CharacterLevelUp(ref gainExperience, ref maxExperience, leaderRecord);
 
@@ -361,6 +311,25 @@ public sealed class StageManager : GameSceneManager
             4f);
     }
 
+    /// <summary>
+    /// 스테이지 실패시 호출하세요
+    /// </summary>
+    public void StageFail()
+    {
+        // 이벤트 알림
+        GameEventSystem.SendEvent(GameEvent.StageFail);
+
+        // -------------------------------------------------------------------------------
+
+        StageResultDefaultInfoSave();
+
+        StageResult.Clear = false;
+
+        // -------------------------------------------------------------------------------
+
+        GameManager.UISystem.OpenWindow(UIType.StageFail);
+    }
+
     void CharacterLevelUp(ref int gainExperience, ref int maxExperience, CharacterRecordData record)
     {
         if (record != null)
@@ -383,6 +352,81 @@ public sealed class StageManager : GameSceneManager
             Debug.Log($"스테이지를 클리어하여 {record.Code}는 레벨:{record.Level}과 {record.Experience}가 있습니다.");
         }
         
+    }
+
+    /// <summary>
+    /// 스테이지 실패 혹은 성공 상관없이 StageResult에 저장시켜야 할 정보를 저장합니다.
+    /// </summary>
+    void StageResultDefaultInfoSave()
+    {
+        StageResult.CharacterRecords = new List<StageCharacterData>();
+
+        // 스테이지에 참여했던 플레이어 데이터 저장
+        StageResult.PlayerRecord = new StagePlayerData()
+        {
+            Level = GameManager.PlayerData.Level,
+            Experience = GameManager.PlayerData.Experience
+        };
+
+        // 스테이지에 참여했던 캐릭터들의 데이터 저장
+        var playerStageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
+        
+        // 리더데이터 저장
+        var leaderRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterLeader);
+        StageResult.CharacterRecords.Add(new StageCharacterData()
+        {
+            Code = leaderRecord.Code,
+            Level = leaderRecord.Level,
+            Experience = leaderRecord.Experience
+        });
+
+        // 2번째캐릭 데이터 저장
+        var secondRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterSecond);
+        if (secondRecord != null)
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = secondRecord.Code,
+                Level = secondRecord.Level,
+                Experience = secondRecord.Experience
+            });
+        }
+        else
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = ObjectCode.NONE
+            });
+        }
+
+        // 3번째캐릭 데이터 저장
+        var thirdRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == playerStageRecord.CharacterThird);
+        if (thirdRecord != null)
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = thirdRecord.Code,
+                Level = thirdRecord.Level,
+                Experience = thirdRecord.Experience
+            });
+        }
+        else
+        {
+            StageResult.CharacterRecords.Add(new StageCharacterData()
+            {
+                Code = ObjectCode.NONE
+            });
+        }
+
+        // 스테이지 기본정보
+        StageResult.WorldIdx = WorldIdx;
+        StageResult.StageIdx = StageIdx;
+
+        // 스테이지 시간
+        StageResult.StageEndTime = DateTime.Now;
+
+        // 스테이지 콤보
+        StageResult.Combo = ComboSystem.Combo;
     }
     #endregion
 
