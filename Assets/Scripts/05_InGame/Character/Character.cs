@@ -392,9 +392,6 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
     {
         TryAttachToFloor();
 
-        if (Preloads)
-            Preloads.Instantitate();
-
         if (gameObject.activeSelf)
             SetUpdate(true);
 

@@ -67,7 +67,7 @@ public class SparcherUltimateCutscene : Cutscene
 
     protected override bool CutSceneInput()
     {
-        if (GameManager.InputSystem.PressBButton)
+        if (GameManager.InputSystem.PressBButton && StageManager.Instance.Player.CurrentCharacter.Code == ObjectCode.CHAR_Sparcher)
             return true;
         return false;
     }
@@ -76,7 +76,7 @@ public class SparcherUltimateCutscene : Cutscene
     {
         // 바인딩할 트랙과 오브젝트 지정하기
         var sm = StageManager.Instance;
-        var character = sm.Player.CurrentCharacter;
+        var character = transform.parent.GetComponent<Sparcher>();
 
         _bindingKeyValuePairs.Add("Sparcher Animation Track", new BindingData()
         {

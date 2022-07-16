@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Sparcher_PreloadSettings", menuName = "Preload/Sparcher Preload Settings", order = 2)]
-public class SparcherPreloadSettings : PreloadSettings
+public class SparcherPreloadSettings : PlayablePreloadSettings
 {
-    [HideInInspector] public GameObject UltimateCutscene;
     [HideInInspector] public GameObject UltimateEffect;
 
     [SerializeField] GameObject Prefab_UltimateCutscene;
@@ -13,13 +12,16 @@ public class SparcherPreloadSettings : PreloadSettings
 
     public override void Instantitate()
     {
+        
+    }
+
+    public override void Instantitate(Playable parent)
+    {
         var sm = StageManager.Instance;
         if (sm == null)
             return;
 
-        var sparcher = sm.Player.CurrentCharacter as Sparcher;
-
-        UltimateCutscene = Instantiate(Prefab_UltimateCutscene, sparcher.transform);
+        Instantiate(Prefab_UltimateCutscene, parent.transform);
 
         if (sm.PreloadZone)
         {

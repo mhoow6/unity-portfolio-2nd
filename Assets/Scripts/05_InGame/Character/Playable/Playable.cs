@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DatabaseSystem;
 using System;
+using System.Linq;
 
 public abstract class Playable : Character
 {
@@ -154,6 +155,8 @@ public abstract class Playable : Character
     public virtual bool CanJump() { return true; }
     #endregion
 
+    
+
     // -----------------------------------------------------------------------
 
     #region 캐릭터 대쉬
@@ -263,7 +266,24 @@ public abstract class Playable : Character
 
     protected override void OnDead(Character attacker, int damage)
     {
-        StageManager.Instance.MissionSystem.ReportAll(QuestType.INCAPCITATED);
+        var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
+        sm.MissionSystem.ReportAll(QuestType.INCAPCITATED);
+
+        // 모든 캐릭터가 다 죽었는지 체크
+        bool allDead = sm.Player.Characters.All(cha => cha.Hp <= 0);
+        if (allDead)
+            sm.StageFail();
+        else
+        {
+            // 살아있는 캐릭터 중에서 첫 번째를 불러온다.
+            var liveCharacters = sm.Player.Characters.Where(cha => cha.Hp > 0);
+            var changeCharacter = liveCharacters.First();
+
+            sm.Player.SwapCharacter(changeCharacter);
+        }
     }
 
     // -----------------------------------------------------------------------

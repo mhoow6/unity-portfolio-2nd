@@ -22,7 +22,6 @@ public class Player : MonoBehaviour
         ReleaseFromManager();
     }
 
-
     #region 초기화
     bool m_Init = false;
 
@@ -49,6 +48,17 @@ public class Player : MonoBehaviour
                 Characters.Add(cha);
             }
         }
+
+        // 프리로드 할 꺼 있으면 해주기
+        Characters.ForEach(cha =>
+        {
+            if (cha.Preloads != null)
+            {
+                var playablePreload = cha.Preloads as PlayablePreloadSettings;
+                playablePreload.Instantitate(cha);
+            }
+                
+        });
 
         m_RigidbodyControlCoroutine = ControlRigidbodyCoroutine();
         m_GetInputCoroutine = GetInputCoroutine();
@@ -238,5 +248,96 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    #endregion
+
+    #region 캐릭터 스왑
+    float m_SwapCoolTimer = 0f;
+    const float SWAP_COOLTIME = 2f;
+
+    public void SwapCharacter(Playable swapCharacter)
+    {
+        if (m_SwapCoolTimer != 0)
+            return;
+
+        var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
+        var changeCharacter = swapCharacter;
+        if (changeCharacter.Hp <= 0)
+            return;
+
+        // 스킬버튼을 누른 캐릭터에 맞게 세팅
+        var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
+        StartCoroutine(SwapCoolTimeCoroutine(inGameUi.CharacterButtonDisplays));
+
+        // 기존 캐릭터에 대한 처리
+        var prevCharcter = CurrentCharacter;
+        prevCharcter.gameObject.SetActive(false);
+
+        // 기존 캐릭터 버튼을 켜준다.
+        var prevCharacterButton = inGameUi.CharacterButtonDisplays.Find(button => button.ConnectCharacter.Equals(prevCharcter));
+        prevCharacterButton.gameObject.SetActive(true);
+        prevCharacterButton.SetData(prevCharcter);
+
+        // 스왑할 캐릭터의 위치
+        Vector3 spawnPosition = CurrentCharacter.transform.position;
+        Quaternion spawnRotation = CurrentCharacter.transform.rotation;
+        changeCharacter.transform.SetPositionAndRotation(spawnPosition, spawnRotation);
+
+        // 스왑할 캐릭터 카메라 및 업데이트 활성화
+        changeCharacter.gameObject.SetActive(true);
+        changeCharacter.SetUpdate(true);
+        StageManager.Instance.FreeLookCam.Follow = changeCharacter.transform;
+        StageManager.Instance.FreeLookCam.LookAt = changeCharacter.transform;
+
+        // 스왑할 캐릭터의 CharacterButtonUI
+        var changeCharacterButton = inGameUi.CharacterButtonDisplays.Find(button => button.ConnectCharacter.Equals(changeCharacter));
+        changeCharacterButton.gameObject.SetActive(false);
+
+        // 인게임 UI의 공격버튼 및 HP/SP 슬라이더를 스왑할 캐릭터의 것으로
+        inGameUi.SettingSkillButtons(changeCharacter);
+        inGameUi.SettingSliders(changeCharacter);
+
+        // 몬스터들의 타겟은 스왑한 캐릭터로 바뀐다.
+        StageManager.Instance.Monsters.ForEach(mob => mob.Target = changeCharacter);
+
+        // 캐릭터 스왑 이펙트
+        var effect = StageManager.Instance.PoolSystem.Load<CharacterSwapEffect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/FX_LevelUp_01");
+        effect.transform.position = changeCharacter.transform.position;
+
+
+        CurrentCharacter = changeCharacter;
+    }
+
+    IEnumerator SwapCoolTimeCoroutine(List<CharacterButtonUI> buttons)
+    {
+        foreach (var button in buttons)
+            button.CoolTime.gameObject.SetActive(true);
+
+        float timer = 0f;
+        while (timer < SWAP_COOLTIME)
+        {
+            timer += Time.deltaTime;
+
+            m_SwapCoolTimer = SWAP_COOLTIME - timer;
+            Debug.Log($"스왑 쿨타임은 {m_SwapCoolTimer}초 남음..");
+
+            foreach (var button in buttons)
+            {
+                button.CoolTime.fillAmount = 1 - (timer / SWAP_COOLTIME);
+            }
+
+            yield return null;
+        }
+        m_SwapCoolTimer = 0f;
+
+        foreach (var button in buttons)
+        {
+            button.CoolTime.fillAmount = 0f;
+            button.CoolTime.gameObject.SetActive(false);
+        }
+            
+    }
     #endregion
 }

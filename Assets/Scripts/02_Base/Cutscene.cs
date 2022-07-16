@@ -80,9 +80,17 @@ public abstract class Cutscene : MonoBehaviour
         };
 
         OnAwake();
+    }
 
+    private void OnEnable()
+    {
         // ÄÆ½Å ´ë±âÁß
         StartCoroutine(WaitingForCutsceneInput());
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 
     protected abstract CinemachineBrain cinemachineBrain { get; }
