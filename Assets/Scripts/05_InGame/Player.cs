@@ -163,12 +163,12 @@ public class Player : MonoBehaviour
         {
             bool skip = false;
 
-            #region 예외처리
             if (MoveVector.magnitude == 0)
                 skip = true;
             if (!Moveable)
                 skip = true;
-            #endregion
+            if (CurrentCharacter.Hp <= 0)
+                skip = true;
 
             if (!skip)
             {
@@ -321,7 +321,6 @@ public class Player : MonoBehaviour
             timer += Time.deltaTime;
 
             m_SwapCoolTimer = SWAP_COOLTIME - timer;
-            Debug.Log($"스왑 쿨타임은 {m_SwapCoolTimer}초 남음..");
 
             foreach (var button in buttons)
             {

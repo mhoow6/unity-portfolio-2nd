@@ -269,9 +269,12 @@ public abstract class Playable : Character
             return;
 
         // 죽는 애니메이션
-        sm.Player.AnimationJobs.Enqueue(AniType.DEAD_0);
+        Animator.SetInteger(ANITYPE_HASHCODE, (int)AniType.DEAD_0);
 
         sm.MissionSystem.ReportAll(QuestType.INCAPCITATED);
+
+        // 몬스터들의 타겟은 없다
+        sm.Monsters.ForEach(mob => mob.Target = null);
 
         // 모든 캐릭터가 다 죽었는지 체크
         bool allDead = sm.Player.Characters.All(cha => cha.Hp <= 0);
@@ -283,10 +286,16 @@ public abstract class Playable : Character
             var liveCharacters = sm.Player.Characters.Where(cha => cha.Hp > 0);
             var changeCharacter = liveCharacters.First();
 
-            sm.Player.SwapCharacter(changeCharacter);
+            StartCoroutine(SwapDelayCorotuine(changeCharacter));
         }
     }
 
     // -----------------------------------------------------------------------
 
+    IEnumerator SwapDelayCorotuine(Playable changeCharacter)
+    {
+        // 어떻게 애니메이션이 완전히 재생되었다는 것을 알지?
+        yield return new WaitForSeconds(5f);
+        StageManager.Instance.Player.SwapCharacter(changeCharacter);
+    }
 }
