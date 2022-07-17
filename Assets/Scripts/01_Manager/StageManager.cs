@@ -349,7 +349,7 @@ public sealed class StageManager : GameSceneManager
                 maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == record.Level).MaxExperience;
             }
             record.Experience += Mathf.Abs(gainExperience);
-            Debug.Log($"스테이지를 클리어하여 {record.Code}는 레벨:{record.Level}과 {record.Experience}가 있습니다.");
+            Debug.LogWarning($"스테이지를 클리어하여 {record.Code}는 레벨:{record.Level}과 {record.Experience}가 있습니다.");
         }
         
     }

@@ -153,6 +153,7 @@ public class InGameUI : UI
             {
                 m_HpText.text = $"{hp}/<size=36>{character.MaxHp}</size>";
             });
+        m_HpSlider.Value = character.Hp;
         m_HpText.text = $"{character.Hp}/<size=36>{character.MaxHp}</size>";
         character.OnHpUpdate +=
             (hp) =>
@@ -168,6 +169,7 @@ public class InGameUI : UI
             {
                 m_SpText.text = $"{sp} / {character.MaxSp}";
             });
+        m_SpSlider.Value = character.Hp;
         m_SpText.text = $"{character.Sp} / {character.MaxSp}";
         character.OnSpUpdate +=
             (sp) =>

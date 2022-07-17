@@ -61,7 +61,7 @@ public class DataInitializeSystem : IGameSystem
                 WorldIdx = 1,
                 StageIdx = 1,
                 CharacterLeader = ObjectCode.CHAR_Sparcher,
-                CharacterSecond = ObjectCode.NONE,
+                CharacterSecond = ObjectCode.CHAR_Sparcher,
                 CharacterThird = ObjectCode.NONE,
                 Clear = false
             });
