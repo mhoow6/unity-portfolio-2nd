@@ -76,6 +76,7 @@ public class MainLobbyUI : UI
         {
             GameManager.UISystem.OpenWindow(UIType.NickNameInput);
             playerData.AskForNickName = true;
+            return;
         }
 
         // 버튼 스케일 값 복구
