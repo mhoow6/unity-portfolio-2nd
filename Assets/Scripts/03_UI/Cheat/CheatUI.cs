@@ -49,4 +49,14 @@ public class CheatUI : UI
     {
         GameManager.PlayerData.Inventory.ShowInventoryToString();
     }
+
+    public void OnRefreshGameBtnClick()
+    {
+        GameManager.Instance.RefreshGame();
+    }
+
+    public void OnSavefileDeleteBtnClick()
+    {
+        GameManager.PlayerData.Delete();
+    }
 }

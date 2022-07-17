@@ -6,28 +6,27 @@ using UnityEngine;
 
 public class EnergyRecoverySystem : IGameSystem
 {
-    PlayerData m_PlayerData;
     const int RECOVERY_MINUTE = 1;
 
     public void Init()
     {
-        m_PlayerData = GameManager.PlayerData;
+        
     }
 
     public void Tick()
     {
-        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTable.Find(info => info.Level == m_PlayerData.Level).MaxEnergy;
-        if (m_PlayerData.Energy >= maxEnergy)
+        int maxEnergy = TableManager.Instance.PlayerLevelEnergyTable.Find(info => info.Level == GameManager.PlayerData.Level).MaxEnergy;
+        if (GameManager.PlayerData.Energy >= maxEnergy)
             return;
 
-        TimeSpan interval = DateTime.Now - m_PlayerData.LastEnergyUpdateTime;
+        TimeSpan interval = DateTime.Now - GameManager.PlayerData.LastEnergyUpdateTime;
         if (interval.Minutes >= RECOVERY_MINUTE)
             AddEnergy();
     }
 
     public void AddEnergy(int addEnergy = 1)
     {
-        m_PlayerData.Energy += addEnergy;
-        m_PlayerData.LastEnergyUpdateTime = DateTime.Now;
+        GameManager.PlayerData.Energy += addEnergy;
+        GameManager.PlayerData.LastEnergyUpdateTime = DateTime.Now;
     }
 }

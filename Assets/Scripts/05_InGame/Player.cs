@@ -274,6 +274,7 @@ public class Player : MonoBehaviour
         // 기존 캐릭터에 대한 처리
         var prevCharcter = CurrentCharacter;
         prevCharcter.gameObject.SetActive(false);
+        prevCharcter.DisposeEvents();
 
         // 기존 캐릭터 버튼을 켜준다.
         var prevCharacterButton = inGameUi.CharacterButtonDisplays.Find(button => button.ConnectCharacter.Equals(prevCharcter));

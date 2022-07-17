@@ -16,11 +16,6 @@ public class MainLobbyUI : UI
     [SerializeField] RectTransform m_EquipmentBtnRectTransform;
     [SerializeField] RectTransform m_CharacterBtnRectTransform;
 
-    bool m_Init;
-    Vector3 m_OriginNickNameAnchoredPosition;
-
-    // 이 값을 수정할 경우 LevelNickName의 rectTransform도 수정해야함.
-    const int LEVELNICKNAME_TWEEN_DELTA = 50;
     const float EXPERIENCE_VALUE_TWEEN_DURATION = 2.0f;
 
     public override UIType Type => UIType.MainLobby;
@@ -77,17 +72,10 @@ public class MainLobbyUI : UI
     {
         var playerData = GameManager.PlayerData;
         // 최초 실행시에 할 것들
-        if (!m_Init)
+        if (playerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
         {
-            m_OriginNickNameAnchoredPosition = LevelNickName.rectTransform.anchoredPosition;
-
-            if (playerData.AskForNickName == false && !GameManager.Instance.AskForNickNameSkip)
-            {
-                GameManager.UISystem.OpenWindow(UIType.NickNameInput);
-                playerData.AskForNickName = true;
-            }
-
-            m_Init = true;
+            GameManager.UISystem.OpenWindow(UIType.NickNameInput);
+            playerData.AskForNickName = true;
         }
 
         // 버튼 스케일 값 복구

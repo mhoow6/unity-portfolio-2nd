@@ -28,7 +28,8 @@ public class BossSpawner : AreaSpawner, IStageClearable
         {
             timer += Time.deltaTime;
 
-            freelook.m_XAxis.Value = Mathf.Lerp(freelook.m_XAxis.Value, -2.0f, timer / 2f);
+            if (freelook.gameObject.activeSelf)
+                freelook.m_XAxis.Value = Mathf.Lerp(freelook.m_XAxis.Value, -2.0f, timer / 2f);
 
             yield return null;
         }

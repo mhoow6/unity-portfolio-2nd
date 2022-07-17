@@ -40,6 +40,7 @@ public class LoadingTitleUI : UI
         // 슬라이더 값 조정
         m_LoadingSlider.SetData(0, m_NeedToLoadDataCount);
         m_LoadingSlider.Value = 0;
+        m_LoadingSlider.gameObject.SetActive(true);
 
         // 로딩타이틀 연출시작
         LobbyManager.Instance.LoadingTitleSystem.Init(this);

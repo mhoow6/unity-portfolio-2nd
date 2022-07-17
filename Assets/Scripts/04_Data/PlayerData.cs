@@ -86,8 +86,8 @@ public class PlayerData : ISubscribable
 
     // --------------------------------------------------------------------
 
-    [JsonIgnore] static string m_FilePath;
-    [JsonProperty] DateTime LastGameConnectTime;
+    [JsonIgnore] static string m_SaveFilePath;
+    [JsonProperty] DateTime m_LastGameConnectTime;
 
     public PlayerData()
     {
@@ -104,7 +104,7 @@ public class PlayerData : ISubscribable
 
     public static PlayerData GetData(string saveFilePath)
     {
-        m_FilePath = saveFilePath;
+        m_SaveFilePath = saveFilePath;
         string result = string.Empty;
 
         result = FileHelper.GetStringFrom(saveFilePath);
@@ -116,18 +116,18 @@ public class PlayerData : ISubscribable
 
     public void Save()
     {
-        LastGameConnectTime = DateTime.Now;
+        m_LastGameConnectTime = DateTime.Now;
 
         var saveData = JsonConvert.SerializeObject(this);
-        FileHelper.WriteFile(m_FilePath, saveData);
+        FileHelper.WriteFile(m_SaveFilePath, saveData);
 
-        Debug.Log($"게임 데이터 저장완료. 저장경로 {m_FilePath}");
+        Debug.LogWarning($"게임 데이터 저장완료. 저장경로 {m_SaveFilePath}");
     }
 
     public void Delete()
     {
-        FileHelper.DeleteFile(m_FilePath);
-        Debug.Log("게임 데이터 삭제완료.");
+        FileHelper.DeleteFile(m_SaveFilePath);
+        Debug.LogWarning("게임 데이터 삭제완료.");
     }
 
     public void DisposeEvents()

@@ -162,7 +162,10 @@ public class SparcherUltimateCutscene : Cutscene
         StageManager.Instance.Player.CurrentCharacter.Invulnerable = false;
 
         var inGameUi = GameManager.UISystem.CurrentWindow as InGameUI;
-        if (!inGameUi.Joystick.IsNullOrDestroyed())
-            inGameUi.Joystick.gameObject.SetActive(true);
+        if (inGameUi)
+        {
+            if (!inGameUi.Joystick.IsNullOrDestroyed())
+                inGameUi.Joystick.gameObject.SetActive(true);
+        }
     }
 }

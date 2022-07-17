@@ -62,6 +62,7 @@ public sealed class GameManager : MonoBehaviour
     [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
     [Rename("인게임 테스트 환경")] public bool IsTestZone;
     [Rename("모바일에서 로그 보여주기")] public bool DebugLog;
+    [Rename("모바일에서 치트 활성화")] public bool EnableCheat;
 
     private void Awake()
     {
@@ -87,7 +88,8 @@ public sealed class GameManager : MonoBehaviour
         Debug.unityLogger.logEnabled = true;
 #else
         Debug.unityLogger.logEnabled = DebugLog ? true : false;
-        //m_CheatSettings = new CheatSettings();
+        if (EnableCheat == false)
+            m_CheatSettings = new CheatSettings();
 #endif
 
         // ---------------------------------------------------
@@ -195,6 +197,23 @@ public sealed class GameManager : MonoBehaviour
         onSceneLoaded?.Invoke();
     }
     #endregion
+
+    /// <summary>
+    /// 게임을 초기화합니다.
+    /// </summary>
+    public void RefreshGame()
+    {
+        Initialized = false;
+
+        // Refresh PlayerData
+        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
+
+        // Refresh Database
+
+        // Refresh System
+
+        LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
+    }
 
 #if UNITY_EDITOR
     [ContextMenu("# Get Attached System")]

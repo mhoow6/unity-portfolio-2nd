@@ -35,7 +35,18 @@ public class UISystem : MonoBehaviour, IGameSystem
 
     public readonly float SCALE_TWEENING_SPEED = 0.2f;
 
-    public UI CurrentWindow => m_WindowStack.Peek();
+    public UI CurrentWindow
+    {
+        get
+        {
+            if (m_WindowStack.Count > 0)
+                return m_WindowStack.Peek();
+            else
+                return null;
+        }
+        
+    }
+    
     [SerializeField, ReadOnly] UI m_CurrentWindow;
 
     Stack<UI> m_WindowStack = new Stack<UI>();

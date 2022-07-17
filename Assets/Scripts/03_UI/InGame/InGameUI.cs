@@ -88,15 +88,6 @@ public class InGameUI : UI
         // 캐릭터 HP,SP 표기
         SettingSliders(player.CurrentCharacter);
         
-        // 타겟 업데이트 시 HP 상단에 표기
-        m_TargetSlider.gameObject.SetActive(false);
-        m_TargetNameText.gameObject.SetActive(false);
-        player.CurrentCharacter.OnTargetUpdate +=
-            (Character target) =>
-            {
-                SettingTargetSlider(target);
-            };
-
     }
 
     /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
@@ -182,6 +173,15 @@ public class InGameUI : UI
             (sp) =>
             {
                 m_SpSlider.Value = sp;
+            };
+
+        // 타겟 업데이트 시 HP 상단에 표기
+        m_TargetSlider.gameObject.SetActive(false);
+        m_TargetNameText.gameObject.SetActive(false);
+        character.OnTargetUpdate +=
+            (Character target) =>
+            {
+                SettingTargetSlider(target);
             };
     }
 
