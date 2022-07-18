@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DatabaseSystem;
 
 public class CharacterListElement : Display, IPointerDownHandler
 {
@@ -16,6 +17,18 @@ public class CharacterListElement : Display, IPointerDownHandler
 
     [HideInInspector] public CharacterRecordData CharacterData;
 
+    private void OnEnable()
+    {
+        Toggle.onValueChanged.AddListener(delegate {
+            ChangeColor(Toggle);
+        });
+    }
+
+    private void OnDisable()
+    {
+        Toggle.onValueChanged = null;
+    }
+
     // 클릭시
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -28,11 +41,16 @@ public class CharacterListElement : Display, IPointerDownHandler
         CharacterData = record;
 
         Level.text = $"Lv.{record.Level}";
+
+        var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == record.Code);
+        Portrait.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{chaData.PortraitName}");
     }
 
     // OnValueChanged
-    public void ChangeColor(bool selected)
+    public void ChangeColor(Toggle change)
     {
-        Background.color = BackgroundColors[selected ? 1 : 0];
+        Debug.Log($"{CharacterData.Code} 토글이 켜져있나요? {change.isOn}");
+
+        Background.color = BackgroundColors[change.isOn ? 1 : 0];
     }
 }

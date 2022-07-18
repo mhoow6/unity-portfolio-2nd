@@ -207,6 +207,9 @@
         /// <summary> 스테이지에서 얻을 수 있는 전리품 </summary> ///
         LOOT_Item = 17,
 
+        /// <summary> 생물속성 기사 </summary> ///
+        CHAR_Knight = 18,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

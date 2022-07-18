@@ -89,10 +89,7 @@ public class CharacterUI : UI, IGameEventListener
                 inst.SetData(cha, toggleGroup);
 
                 if (inst.CharacterData.Code == selectedCharacter)
-                {
                     inst.Toggle.isOn = true;
-                    inst.ChangeColor(true);
-                }    
 
                 m_CharacterList.Add(inst.gameObject);
             }

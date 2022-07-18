@@ -4,7 +4,7 @@ using UnityEngine;
 using DatabaseSystem;
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class DropItem : Item, IPoolable
+public abstract class DropItem : Loot, IPoolable
 {
     #region 오브젝트 풀링
     public bool Poolable { get => m_Poolable; set => m_Poolable = value; }

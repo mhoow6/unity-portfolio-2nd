@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Newtonsoft.Json;
 
 [Serializable]
 public class Inventory : ISubscribable
@@ -9,8 +10,8 @@ public class Inventory : ISubscribable
     public delegate void InventoryDelegate(int itemIndex, int itemCount);
 
     public List<ItemData> Items = new List<ItemData>();
-    public InventoryDelegate OnItemAdd;
-    public InventoryDelegate OnItemRemove;
+    [JsonIgnore] public InventoryDelegate OnItemAdd;
+    [JsonIgnore] public InventoryDelegate OnItemRemove;
 
     public void AddItem(int itemIndex, int itemCount)
     {
