@@ -56,6 +56,12 @@ namespace DatabaseSystem
             JSONNode monstermushroomattack03dataNode = skilldatasRoot["MonsterMushroomAttack03Data(Skillable)"];
             MonsterMushroomAttack03Data monstermushroomattack03data = JsonConvert.DeserializeObject<MonsterMushroomAttack03Data>(monstermushroomattack03dataNode.ToString());
             JsonDatas.Add(monstermushroomattack03data.Index, monstermushroomattack03data);
+
+            var weapondatas = Resources.Load<TextAsset>("99_Database/Json/WeaponDatas");
+            JSONNode weapondatasRoot = JSONNode.Parse(weapondatas.text);
+            JSONNode woodenbowdataNode = weapondatasRoot["WoodenBowData(Weaponable)"];
+            WoodenBowData woodenbowdata = JsonConvert.DeserializeObject<WoodenBowData>(woodenbowdataNode.ToString());
+            JsonDatas.Add(woodenbowdata.Index, woodenbowdata);
         }
     }
 }

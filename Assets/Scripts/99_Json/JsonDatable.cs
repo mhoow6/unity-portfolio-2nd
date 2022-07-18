@@ -18,6 +18,7 @@ namespace DatabaseSystem
             "ActorCode",
             "BehaviorDecisionTime",
             "GroggyPoint",
+            "WeaponCritical",
         };
 
         public int Index;
@@ -72,6 +73,13 @@ namespace DatabaseSystem
     {
         public int ActorCode;
         public float BehaviorDecisionTime;
+    }
+    #endregion
+
+    #region ¹«±â
+    public class Weaponable : JsonDatable
+    {
+        public float WeaponCritical;
     }
     #endregion
 }

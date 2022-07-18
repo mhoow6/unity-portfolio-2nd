@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DatabaseSystem;
 
 [Serializable]
 public class StageRecordData
@@ -56,6 +57,17 @@ public struct WeaponData
     public int Level;
     public float Damage;
     public float Critical;
+
+    public WeaponData(int weaponIndex)
+    {
+        var row = TableManager.Instance.ItemTable.Find(item => item.Index == weaponIndex);
+        var json = JsonManager.Instance.JsonDatas[weaponIndex] as Weaponable;
+
+        Index = row.Index;
+        Level = 1;
+        Damage = row.Point;
+        Critical = json.WeaponCritical;
+    }
 }
 
 [Serializable]

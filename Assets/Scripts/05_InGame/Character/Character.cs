@@ -654,6 +654,8 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
     (float, bool) CalculateCriticalDamage(float damage, float criticalRate)
     {
         float convertCriticalRate = criticalRate * 0.01f;
+        convertCriticalRate += m_Data.EquipWeaponData.Critical * 0.01f;
+
         float calcuatedDamage = damage;
         bool critical = false;
 
@@ -707,11 +709,12 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
                 Damage = (int)(table.BaseDamage + (table.BaseDamage * (record.Level * table.DamageIncreaseRatioByLevelUp))),
                 Defense = (int)(table.BaseDefense + (table.BaseDefense * (record.Level * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
-                EquipWeaponData = new WeaponData(),
+                EquipWeaponData = new WeaponData(record.EquipWeaponIndex),
                 GroggyExhaustion = 0,
             };
         }
         else
+            // 몬스터가 테이블에서 데이터를 가져오는 경우
             m_Data = new CharacterData()
             {
                 Code = Code,
