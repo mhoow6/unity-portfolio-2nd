@@ -44,7 +44,7 @@ public class ReadyForBattleUI : UI
 
     public override void OnOpened()
     {
-        StatusDisplay.SetData();
+        
     }
 
     public void SetData(int worldIdx, int stageIdx)

@@ -13,28 +13,39 @@ public class CharacterUI : UI, IGameEventListener
     public Text SelectedCharacterType;
     public List<GameObject> SelectedCharacterTypeIcons = new List<GameObject>(3);
 
+    public GameObject CharacterListElementPrefab;
+    public GameObject CharacterListParent;
+    List<GameObject> m_CharacterList = new List<GameObject>();
+
     public void Listen(GameEvent gameEvent){}
 
     public void Listen(GameEvent gameEvent, params object[] args)
     {
-        if (gameEvent != GameEvent.SwapCharacter)
-            return;
+        switch (gameEvent)
+        {
+            case GameEvent.SwapCharacterInLobby:
+                if (args.Length != 1)
+                    return;
 
-        ObjectCode selectedCharacter = (ObjectCode)args[0];
+                ObjectCode selectedCharacter = (ObjectCode)args[0];
 
-        // 레벨
-        var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
-        SelectedCharacterLevel.text = $"Lv.{characterRecord.Level}";
+                // 레벨
+                var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
+                SelectedCharacterLevel.text = $"Lv.{characterRecord.Level}";
 
-        // 이름
-        var characterData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
-        SelectedCharacterName.text = characterData.Name;
+                // 이름
+                var characterData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
+                SelectedCharacterName.text = characterData.Name;
 
-        // 타입
-        string characterType = TypeToString(characterData.Type);
-        SelectedCharacterType.text = characterType;
-        SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
-        SelectedCharacterTypeIcons[(int)characterData.Type].SetActive(true);
+                // 타입
+                string characterType = TypeToString(characterData.Type);
+                SelectedCharacterType.text = characterType;
+                SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
+                SelectedCharacterTypeIcons[(int)characterData.Type].SetActive(true);
+                break;
+            default:
+                break;
+        }
 
     }
 
@@ -47,20 +58,46 @@ public class CharacterUI : UI, IGameEventListener
     }
 
     public override void OnOpened()
-    { 
+    {
+        // 옵저버에 등록
         GameEventSystem.AddListener(this);
 
+        // 카메라 위치 조정 및 활성화
         var lobbyManager = LobbyManager.Instance;
         lobbyManager.MainCam.transform.SetPositionAndRotation
             (lobbyManager.MainLobbySystem.CharacterUICameraPosition.transform.position,
             lobbyManager.MainLobbySystem.CharacterUICameraPosition.transform.rotation);
 
         lobbyManager.MainCam.gameObject.SetActive(true);
+
     }
 
     public void SetData(ObjectCode selectedCharacter)
     {
-        Listen(GameEvent.SwapCharacter, selectedCharacter);
+        Listen(GameEvent.SwapCharacterInLobby, selectedCharacter);
+
+        // 유저가 가지고 있는 캐릭터 목록 보여주기
+        if (m_CharacterList.Count == 0)
+        {
+            ToggleGroup toggleGroup = CharacterListParent.GetComponent<ToggleGroup>();
+
+            foreach (var cha in GameManager.PlayerData.CharacterDatas)
+            {
+                var _inst = Instantiate(CharacterListElementPrefab, CharacterListParent.transform);
+                var inst = _inst.GetComponent<CharacterListElement>();
+
+                inst.SetData(cha, toggleGroup);
+
+                if (inst.CharacterData.Code == selectedCharacter)
+                {
+                    inst.Toggle.isOn = true;
+                    inst.ChangeColor(true);
+                }    
+
+                m_CharacterList.Add(inst.gameObject);
+            }
+        }
+
     }
 
 }

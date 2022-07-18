@@ -101,9 +101,6 @@ public class MainLobbyUI : UI
         ExperienceSlider.Value = 0;
         StartCoroutine(ExperienceSliderDOValueCoroutine(playerData.Experience));
 
-        // 에너지, 돈
-        StatusDisplay.SetData();
-
         // 캐릭터 클릭시 애니메이션 발생 시작
         LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = true;
     }

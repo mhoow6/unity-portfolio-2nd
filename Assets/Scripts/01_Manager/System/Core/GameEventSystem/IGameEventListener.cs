@@ -7,7 +7,8 @@ public enum GameEvent
     None = 0,
     StageClear,
     StageFail,
-    SwapCharacter,
+    SwapCharacterInLobby,
+    GainCharacterInLobby
 }
 
 public interface IGameEventListener

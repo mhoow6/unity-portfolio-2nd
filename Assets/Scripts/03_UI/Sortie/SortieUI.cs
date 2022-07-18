@@ -125,7 +125,7 @@ public class SortieUI : UI
 
     public override void OnOpened()
     {
-        m_StatusDisplay.SetData();
+        
     }
 }
 public enum SelectCharacterDisplaySlot

@@ -19,8 +19,6 @@ public class AdventureUI : UI
 
     public override void OnOpened()
     {
-        StatusDisplay.SetData();
-
         if (!WorldView.Content.IsNullOrDestroyed())
         {
             Destroy(WorldView.Content.gameObject);

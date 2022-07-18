@@ -15,7 +15,7 @@ public class StatusUI : Display
     const float ENERGY_ALPHA = 0.31f;
     const float ENERGY_MAX_ALPHA = 0.5f;
 
-    public override void SetData()
+    private void OnEnable()
     {
         var playerData = GameManager.PlayerData;
 

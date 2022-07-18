@@ -13,6 +13,5 @@ public class Display : MonoBehaviour
         OnAwake();
     }
 
-    public virtual void SetData() { }
     protected virtual void OnAwake() { }
 }
