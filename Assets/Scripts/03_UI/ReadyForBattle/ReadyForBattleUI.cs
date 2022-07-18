@@ -16,8 +16,6 @@ public class ReadyForBattleUI : UI
     public MissionDisplayUI Mission2;
     public MissionDisplayUI Mission3;
 
-    // UNDONE: 몬스터 드랍템 중 상위 티어 3개
-
     public Text EnergyCost;
     public StatusUI StatusDisplay;
 

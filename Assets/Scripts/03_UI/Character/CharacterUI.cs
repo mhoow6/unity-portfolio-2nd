@@ -23,6 +23,11 @@ public class CharacterUI : UI, IGameEventListener
 
     [Header("# Right")]
     public Text SelectedCharacterWeapon;
+    public Text Hp;
+    public Text Sp;
+    public Text Damage;
+    public Text Defense;
+    public Text Critical;
 
     public void Listen(GameEvent gameEvent){}
 
@@ -48,16 +53,23 @@ public class CharacterUI : UI, IGameEventListener
                 });
                 SelectedCharacterExpSlider.Value = characterRecord.Experience;
 
-                // 이름
-                var characterData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
-                SelectedCharacterName.text = characterData.Name;
+                // 캐릭터 스텟
+                var characterData = Character.GetCharacterData(selectedCharacter, characterRecord.Level, characterRecord.EquipWeaponIndex);
+                Hp.text = characterData.Hp.ToString();
+                Sp.text = characterData.Sp.ToString();
+                Damage.text = characterData.Damage.ToString();
+                Defense.text = characterData.Defense.ToString();
+                Critical.text = characterData.Critical.ToString();
 
-                
+                // 이름
+                var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
+                SelectedCharacterName.text = characterTableData.Name;
+
                 // 타입
-                string characterType = TypeToString(characterData.Type);
+                string characterType = TypeToString(characterTableData.Type);
                 SelectedCharacterType.text = characterType;
                 SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
-                SelectedCharacterTypeIcons[(int)characterData.Type].SetActive(true);
+                SelectedCharacterTypeIcons[(int)characterTableData.Type].SetActive(true);
 
                 // 무기
                 var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
@@ -114,6 +126,11 @@ public class CharacterUI : UI, IGameEventListener
                 m_CharacterList.Add(inst.gameObject);
             }
         }
+
+    }
+
+    public void OnLevelUpButtonClick()
+    {
 
     }
 

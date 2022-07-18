@@ -26,7 +26,7 @@ public class CharacterListElement : Display, IPointerClickHandler
 
     private void OnDisable()
     {
-        Toggle.onValueChanged = null;
+        Toggle.onValueChanged.RemoveAllListeners();
     }
 
     public void SetData(CharacterRecordData record, ToggleGroup group)

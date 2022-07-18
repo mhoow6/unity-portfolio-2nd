@@ -455,6 +455,24 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         return result;
     }
 
+    public static CharacterData GetCharacterData(ObjectCode objectCode, int level, int equipWeaponIndex)
+    {
+        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == objectCode);
+        return new CharacterData()
+        {
+            Code = objectCode,
+            Level = level,
+            Hp = (int)(table.BaseHp + (table.BaseHp * (level * table.HpIncreaseRatioByLevelUp))),
+            Sp = (int)(table.BaseSp + (table.BaseSp * (level * table.SpIncreaseRatioByLevelUp))),
+            Critical = (int)(table.BaseCritical + (table.BaseCritical * (level * table.CriticalIncreaseRatioByLevelUp))),
+            Damage = (int)(table.BaseDamage + (table.BaseDamage * (level * table.DamageIncreaseRatioByLevelUp))),
+            Defense = (int)(table.BaseDefense + (table.BaseDefense * (level * table.DefenseIncreaseRatioByLevelUp))),
+            Speed = table.BaseSpeed,
+            EquipWeaponData = new WeaponData(equipWeaponIndex),
+            GroggyExhaustion = 0
+        };
+    }
+
     // -----------------------------------------------------------------------
 
     #region 캐릭터 공격/피격
@@ -524,7 +542,11 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         AnimatorBaseLayerIndex = Animator.GetLayerIndex("Base Layer");
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
 
-        SetPropertiesFromTable();
+        var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == Code);
+        if (characterRecord != null)
+            m_Data = GetCharacterData(Code, characterRecord.Level, characterRecord.EquipWeaponIndex);
+        else
+            m_Data = GetCharacterData(Code, 1, -1);
 
         // 그로기 체크
         var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
@@ -703,48 +725,6 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
             OnLive();
             yield return null;
         }
-    }
-
-    /// <summary> 테이블로부터 데이터 세팅 </summary>
-    void SetPropertiesFromTable()
-    {
-        var table = TableManager.Instance.CharacterTable.Find(c => c.Code == Code);
-        var record = GameManager.PlayerData.CharacterDatas.Find(c => c.Code == Code);
-
-        Name = table.Name;
-        Type = table.Type;
-
-        if (record != null)
-        {
-            m_Data = new CharacterData()
-            {
-                Code = Code,
-                Level = record.Level,
-                Hp = (int)(table.BaseHp + (table.BaseHp * (record.Level * table.HpIncreaseRatioByLevelUp))),
-                Sp = (int)(table.BaseSp + (table.BaseSp * (record.Level * table.SpIncreaseRatioByLevelUp))),
-                Critical = (int)(table.BaseCritical + (table.BaseCritical * (record.Level * table.CriticalIncreaseRatioByLevelUp))),
-                Damage = (int)(table.BaseDamage + (table.BaseDamage * (record.Level * table.DamageIncreaseRatioByLevelUp))),
-                Defense = (int)(table.BaseDefense + (table.BaseDefense * (record.Level * table.DefenseIncreaseRatioByLevelUp))),
-                Speed = table.BaseSpeed,
-                EquipWeaponData = new WeaponData(record.EquipWeaponIndex),
-                GroggyExhaustion = 0,
-            };
-        }
-        else
-            // 몬스터가 테이블에서 데이터를 가져오는 경우
-            m_Data = new CharacterData()
-            {
-                Code = Code,
-                Level = 1,
-                Hp = (int)(table.BaseHp + (table.BaseHp * (1 * table.HpIncreaseRatioByLevelUp))),
-                Sp = (int)(table.BaseSp + (table.BaseSp * (1 * table.SpIncreaseRatioByLevelUp))),
-                Critical = (int)(table.BaseCritical + (table.BaseCritical * (1 * table.CriticalIncreaseRatioByLevelUp))),
-                Damage = (int)(table.BaseDamage + (table.BaseDamage * (1 * table.DamageIncreaseRatioByLevelUp))),
-                Defense = (int)(table.BaseDefense + (table.BaseDefense * (1 * table.DefenseIncreaseRatioByLevelUp))),
-                Speed = table.BaseSpeed,
-                EquipWeaponData = new WeaponData(),
-                GroggyExhaustion = 0,
-            };
     }
 
     // -----------------------------------------------------------------------
