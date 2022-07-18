@@ -13,6 +13,9 @@ public class GameEventSystem
             return;
 
         listeners.Add(listener);
+
+        while (reserveRemovelisteners.Count != 0)
+            RemoveListener(reserveRemovelisteners.Dequeue());
     }
 
     public static void RemoveListener(IGameEventListener listener)
@@ -29,9 +32,17 @@ public class GameEventSystem
             listener.Listen(gameEvent);
 
         while (reserveRemovelisteners.Count != 0)
-        {
             RemoveListener(reserveRemovelisteners.Dequeue());
-        }
+    }
+
+    // params: 가변인수가 지정가능케 하는 키워드
+    public static void SendEvent(GameEvent gameEvent, params object[] args)
+    {
+        foreach (var listener in listeners)
+            listener.Listen(gameEvent, args);
+
+        while (reserveRemovelisteners.Count != 0)
+            RemoveListener(reserveRemovelisteners.Dequeue());
     }
 
     public static void ReserveRemoveListener(IGameEventListener listener)

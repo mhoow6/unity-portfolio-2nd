@@ -59,4 +59,10 @@ public class CheatUI : UI
     {
         GameManager.PlayerData.Delete();
     }
+
+    public void OnCharacterUIOpenBtnClick()
+    {
+        var ui = GameManager.UISystem.OpenWindow<CharacterUI>(type: UIType.Character);
+        ui.SetData(ObjectCode.CHAR_Sparcher);
+    }
 }

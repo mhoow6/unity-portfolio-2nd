@@ -85,7 +85,12 @@ public class MainLobbyUI : UI
         m_CharacterBtnRectTransform.localScale = Vector3.one;
 
         // 메인 카메라 키기
-        LobbyManager.Instance.MainCam.gameObject.SetActive(true);
+        var lobbyManager = LobbyManager.Instance;
+        lobbyManager.MainCam.transform.SetPositionAndRotation
+            (lobbyManager.MainLobbySystem.LobbyUICameraPosition.transform.position,
+            lobbyManager.MainLobbySystem.LobbyUICameraPosition.transform.rotation);
+
+        lobbyManager.MainCam.gameObject.SetActive(true);
 
         // 레벨과 닉네임
         LevelNickName.text = $"Lv.{playerData.Level} <size=50>{playerData.NickName}</size>";

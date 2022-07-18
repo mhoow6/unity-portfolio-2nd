@@ -44,6 +44,11 @@ public class NickNameInputUI : ConfirmUI
                     GameManager.UISystem.CloseWindow();
                 }
                     
+            },
+            () =>
+            {
+                var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                warning.SetData("닉네임을 입력하고 확인버튼을 눌러주세요.");
             });
     }
 

@@ -6,10 +6,12 @@ public enum GameEvent
 {
     None = 0,
     StageClear,
-    StageFail
+    StageFail,
+    SwapCharacter,
 }
 
 public interface IGameEventListener
 {
     public void Listen(GameEvent gameEvent);
+    public void Listen(GameEvent gameEvent, params object[] args);
 }

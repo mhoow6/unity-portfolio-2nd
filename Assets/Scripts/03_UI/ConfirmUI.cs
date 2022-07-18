@@ -14,7 +14,7 @@ public class ConfirmUI : UI
 
     public override UIType Type => UIType.Confirm;
 
-    public void SetData(string message, Action confirmCallback, Action cancelCallback = null)
+    public void SetData(string message, Action confirmCallback, Action cancelCallback)
     {
         MessageText.text = message;
         m_ConfirmCallback = confirmCallback;
@@ -29,7 +29,6 @@ public class ConfirmUI : UI
     public void OnCancelBtnClick()
     {
         m_CancelCallback?.Invoke();
-        GameManager.UISystem.CloseWindow(false);
     }
 
     public override void OnClosed()

@@ -19,7 +19,8 @@ public enum UIType
     StageClear,
     BattleResult,
     Cheat,
-    StageFail
+    StageFail,
+    Character
 }
 
 public abstract class UI : MonoBehaviour
@@ -45,5 +46,21 @@ public abstract class UI : MonoBehaviour
         }
         else
             return string.Format(quest1DescriptionData.Description, questData.PurposeCount);
+    }
+
+    /// <summary> 캐릭터 타입에 따른 문자열 </summary>
+    protected string TypeToString(CharacterType type)
+    {
+        switch (type)
+        {
+            case CharacterType.Biology:
+                return "생물";
+            case CharacterType.Machine:
+                return "기계";
+            case CharacterType.Supernatural:
+                return "이능";
+            default:
+                return string.Empty;
+        }
     }
 }

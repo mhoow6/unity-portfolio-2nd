@@ -6,8 +6,9 @@ using DatabaseSystem;
 
 public class MainLobbySystem : MonoBehaviour
 {
-    public Transform CameraPosition;
+    public Transform LobbyUICameraPosition;
     public Transform PlayerSpawnPosition;
+    public Transform CharacterUICameraPosition;
     public Camera LobbyCamera;
     public bool CheckUserClickingTheCharacter
     {
@@ -46,7 +47,7 @@ public class MainLobbySystem : MonoBehaviour
         var lm = LobbyManager.Instance;
 
         lm.MainCam = LobbyCamera;
-        lm.MainCam.transform.position = CameraPosition.transform.position;
+        lm.MainCam.transform.position = LobbyUICameraPosition.transform.position;
 
         Destroy(lm.LoadingTitleSystem.gameObject);
         GameManager.UISystem.OpenWindow(UIType.MainLobby);
@@ -57,7 +58,7 @@ public class MainLobbySystem : MonoBehaviour
         float timer = 0f;
         float sensitivity = 0f;
         Camera mainCam = LobbyManager.Instance.MainCam;
-        Vector3 goalPosition = CameraPosition.transform.position;
+        Vector3 goalPosition = LobbyUICameraPosition.transform.position;
 
         while (timer < 4f)
         {

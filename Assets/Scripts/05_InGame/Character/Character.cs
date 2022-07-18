@@ -745,4 +745,9 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
                 break;
         }
     }
+
+    public void Listen(GameEvent gameEvent, params object[] args)
+    {
+        
+    }
 }
