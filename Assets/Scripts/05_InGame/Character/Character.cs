@@ -185,6 +185,18 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         }
     }
 
+    public int Defense
+    {
+        get
+        {
+            return m_Data.Defense;
+        }
+        set
+        {
+            m_Data.Defense = value;
+        }
+    }
+
     /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
     public static int GetPassiveIndex(ObjectCode objectCode)
     {
@@ -361,6 +373,11 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
 
         // 계산된 데미지에 스케일 적용
         damage *= damageScale;
+
+        // 상대방의 방어력에 의한 감소
+        damage -= opponent.Defense;
+        if (damage < 0)
+            damage = 0;
 
         // 결과
         result.Damage = (int)damage;

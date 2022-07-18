@@ -13,6 +13,8 @@ public class CharacterUI : UI, IGameEventListener
     public Text SelectedCharacterName;
     public Text SelectedCharacterType;
     public List<GameObject> SelectedCharacterTypeIcons = new List<GameObject>(3);
+    public SplitSlider SelectedCharacterExpSlider;
+    public Text SelectedCharacterExp;
 
     [Header("# Bottom")]
     public GameObject CharacterListElementPrefab;
@@ -38,10 +40,19 @@ public class CharacterUI : UI, IGameEventListener
                 var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
                 SelectedCharacterLevel.text = $"Lv.{characterRecord.Level}";
 
+                // 캐릭터 경험치
+                var characterExpData = TableManager.Instance.CharacterLevelExperienceTable.Find(cha => cha.Level == characterRecord.Level);
+                SelectedCharacterExpSlider.SetData(0, characterExpData.MaxExperience, (exp) =>
+                {
+                    SelectedCharacterExp.text = $"{characterRecord.Experience} / {characterExpData.MaxExperience}";
+                });
+                SelectedCharacterExpSlider.Value = characterRecord.Experience;
+
                 // 이름
                 var characterData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
                 SelectedCharacterName.text = characterData.Name;
 
+                
                 // 타입
                 string characterType = TypeToString(characterData.Type);
                 SelectedCharacterType.text = characterType;
