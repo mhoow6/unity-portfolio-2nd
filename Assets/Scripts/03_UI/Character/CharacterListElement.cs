@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DatabaseSystem;
 
-public class CharacterListElement : Display, IPointerDownHandler
+public class CharacterListElement : Display, IPointerClickHandler
 {
     public Toggle Toggle;
 
@@ -29,12 +29,6 @@ public class CharacterListElement : Display, IPointerDownHandler
         Toggle.onValueChanged = null;
     }
 
-    // 클릭시
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        GameEventSystem.SendEvent(GameEvent.SwapCharacterInLobby, CharacterData.Code);
-    }
-
     public void SetData(CharacterRecordData record, ToggleGroup group)
     {
         Toggle.group = group;
@@ -49,8 +43,13 @@ public class CharacterListElement : Display, IPointerDownHandler
     // OnValueChanged
     public void ChangeColor(Toggle change)
     {
-        Debug.Log($"{CharacterData.Code} 토글이 켜져있나요? {change.isOn}");
+        //Debug.Log($"{CharacterData.Code} 토글이 켜져있나요? {change.isOn}");
 
         Background.color = BackgroundColors[change.isOn ? 1 : 0];
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        GameEventSystem.SendEvent(GameEvent.SwapCharacterInLobby, CharacterData.Code);
     }
 }

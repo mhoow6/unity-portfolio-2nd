@@ -349,7 +349,11 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         DamageResult result;
 
         // 데미지 계산 순서
-        float damage;
+        // 무기 -> 상성 -> 크리
+        float damage = 0f;
+        var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == m_Data.EquipWeaponData.Index);
+        damage += weaponData.Point;
+
         damage = CalculateTypeDamage(this, opponent);
 
         var critResult = CalculateCriticalDamage(damage, m_Data.Critical);
@@ -703,7 +707,7 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
                 Damage = (int)(table.BaseDamage + (table.BaseDamage * (record.Level * table.DamageIncreaseRatioByLevelUp))),
                 Defense = (int)(table.BaseDefense + (table.BaseDefense * (record.Level * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
-                EquipWeaponData = null,
+                EquipWeaponData = new WeaponData(),
                 GroggyExhaustion = 0,
             };
         }
@@ -718,7 +722,7 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
                 Damage = (int)(table.BaseDamage + (table.BaseDamage * (1 * table.DamageIncreaseRatioByLevelUp))),
                 Defense = (int)(table.BaseDefense + (table.BaseDefense * (1 * table.DefenseIncreaseRatioByLevelUp))),
                 Speed = table.BaseSpeed,
-                EquipWeaponData = null,
+                EquipWeaponData = new WeaponData(),
                 GroggyExhaustion = 0,
             };
     }

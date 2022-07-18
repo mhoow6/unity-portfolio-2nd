@@ -247,6 +247,12 @@
         /// <summary> 무기 레벨업 아이템 </summary> ///
         WeaponLevelUpChip = 2,
 
+        /// <summary> 활 </summary> ///
+        Bow = 3,
+
+        /// <summary> 한손검 </summary> ///
+        Broadsword = 4,
+
     }
 
 

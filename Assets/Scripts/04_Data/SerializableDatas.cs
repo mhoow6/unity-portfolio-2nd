@@ -45,22 +45,23 @@ public class CharacterRecordData
 {
     public ObjectCode Code;
     public int Level;
-    public ObjectCode EquipWeaponCode;
+    public int EquipWeaponIndex;
     public int Experience;
 }
 
 [Serializable]
-public class WeaponData
+public struct WeaponData
 {
-    public ObjectCode Code;
+    public int Index;
+    public int Level;
     public float Damage;
     public float Critical;
 }
 
 [Serializable]
-public class WeaponRecordData
+public struct WeaponRecordData
 {
-    public ObjectCode Code;
+    public int Index;
     public int Level;
 }
 

@@ -8,14 +8,19 @@ public class CharacterUI : UI, IGameEventListener
 {
     public override UIType Type => UIType.Character;
 
+    [Header("# Left")]
     public Text SelectedCharacterLevel;
     public Text SelectedCharacterName;
     public Text SelectedCharacterType;
     public List<GameObject> SelectedCharacterTypeIcons = new List<GameObject>(3);
 
+    [Header("# Bottom")]
     public GameObject CharacterListElementPrefab;
     public GameObject CharacterListParent;
     List<GameObject> m_CharacterList = new List<GameObject>();
+
+    [Header("# Right")]
+    public Text SelectedCharacterWeapon;
 
     public void Listen(GameEvent gameEvent){}
 
@@ -42,6 +47,10 @@ public class CharacterUI : UI, IGameEventListener
                 SelectedCharacterType.text = characterType;
                 SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
                 SelectedCharacterTypeIcons[(int)characterData.Type].SetActive(true);
+
+                // ¹«±â
+                var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
+                SelectedCharacterWeapon.text = weaponData.Name;
                 break;
             default:
                 break;
