@@ -542,11 +542,16 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         AnimatorBaseLayerIndex = Animator.GetLayerIndex("Base Layer");
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
 
+        // 테이블 데이터 가져오기
         var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == Code);
+        var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
         if (characterRecord != null)
             m_Data = GetCharacterData(Code, characterRecord.Level, characterRecord.EquipWeaponIndex);
         else
             m_Data = GetCharacterData(Code, 1, -1);
+
+        Name = characterTableData.Name;
+        Type = characterTableData.Type;
 
         // 그로기 체크
         var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
