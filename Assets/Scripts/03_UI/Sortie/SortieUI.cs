@@ -17,14 +17,14 @@ public class SortieUI : UI
     [SerializeField] LeaderPassiveInfoUI m_LeaderPassiveInfoDisplay;
     [SerializeField] StatusUI m_StatusDisplay;
 
-    int m_WorldIdx;
-    int m_StageIdx;
+    public int WorldIdx;
+    public int StageIdx;
     int m_EnergyCost;
 
     public void SetData(int worldIdx, int stageIdx)
     {
-        m_WorldIdx = worldIdx;
-        m_StageIdx = stageIdx;
+        WorldIdx = worldIdx;
+        StageIdx = stageIdx;
 
         // 플레이어 데이터에서 기록 찾기
         var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == worldIdx && r.StageIdx == stageIdx);
@@ -60,7 +60,7 @@ public class SortieUI : UI
         }
 
         // 에너지 소모량
-        var row = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);
+        var row = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
         m_EnergyCost = row.EnergyCost;
         m_EnergyCostText.text = row.EnergyCost.ToString();
     }
@@ -68,7 +68,7 @@ public class SortieUI : UI
     /// <summary> Display의 캐릭터들이 SetData 이후 변경되었을 때 사용 </summary>
     public void UpdatePartyPreset()
     {
-        var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == m_WorldIdx && r.StageIdx == m_StageIdx);
+        var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
         if (record == null)
             return;
         else
@@ -102,7 +102,7 @@ public class SortieUI : UI
 
         GameManager.PlayerData.Energy -= m_EnergyCost;
         
-        var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == m_WorldIdx && s.StageIdx == m_StageIdx);
+        var row = TableManager.Instance.StageTable.Find(s => s.WorldIdx == WorldIdx && s.StageIdx == StageIdx);
         GameManager.Instance.LoadScene(
             row.SceneCode,
             onPrevSceneLoad:

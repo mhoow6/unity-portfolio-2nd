@@ -5,10 +5,11 @@ using UnityEngine;
 public enum GameEvent
 {
     None = 0,
-    StageClear,
-    StageFail,
-    SwapCharacterInLobby,
-    GainCharacterInLobby
+    STAGE_Clear,
+    STAGE_Fail,
+    LOBBY_SwapCharacter,
+    LOBBY_GainCharacter,
+    LOBBY_JoinParty,
 }
 
 public interface IGameEventListener

@@ -198,7 +198,7 @@ public sealed class StageManager : GameSceneManager
     public void StageClear()
     {
         // 이벤트 알림
-        GameEventSystem.SendEvent(GameEvent.StageClear);
+        GameEventSystem.SendEvent(GameEvent.STAGE_Clear);
 
         // -------------------------------------------------------------------------------
 
@@ -317,7 +317,7 @@ public sealed class StageManager : GameSceneManager
     public void StageFail()
     {
         // 이벤트 알림
-        GameEventSystem.SendEvent(GameEvent.StageFail);
+        GameEventSystem.SendEvent(GameEvent.STAGE_Fail);
 
         // -------------------------------------------------------------------------------
 

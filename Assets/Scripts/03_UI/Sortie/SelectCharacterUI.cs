@@ -142,10 +142,11 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
                 warning.SetData("파티의 리더부터 골라주세요.");
                 return;
             }
+
+            var characterUI = GameManager.UISystem.OpenWindow<CharacterUI>(UIType.Character);
+            characterUI.SetData(DisplayedCharacter, sortie.WorldIdx, sortie.StageIdx, leaderSlot.Equals(this));
         }
         
-        //var ui = GameManager.UISystem.OpenWindow<CharacterDetailUI>(UIType.CharacterDetail);
-        //ui.SetData(m_DisplayedCharacter);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -50,6 +50,6 @@ public class CharacterListElement : Display, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        GameEventSystem.SendEvent(GameEvent.SwapCharacterInLobby, CharacterData.Code);
+        GameEventSystem.SendEvent(GameEvent.LOBBY_SwapCharacter, CharacterData.Code);
     }
 }
