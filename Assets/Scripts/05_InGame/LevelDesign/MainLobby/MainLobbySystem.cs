@@ -74,6 +74,15 @@ public class MainLobbySystem : MonoBehaviour
         character.transform.SetPositionAndRotation(CharacterUICharacterSpawnTransform.position, CharacterUICharacterSpawnTransform.rotation);
     }
 
+    public void DestroyCharacterUICharacter()
+    {
+        for (int i = 0; i < CharacterUICharacterSpawnTransform.childCount; i++)
+        {
+            var child = CharacterUICharacterSpawnTransform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+    }
+
     IEnumerator MovingCameraCoroutine()
     {
         float timer = 0f;

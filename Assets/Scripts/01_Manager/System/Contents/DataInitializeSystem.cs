@@ -29,6 +29,16 @@ public class DataInitializeSystem : IGameSystem
                 Experience = 0,
             });
         }
+        if (playerData.CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Knight) == null)
+        {
+            playerData.CharacterDatas.Add(new CharacterRecordData()
+            {
+                Code = ObjectCode.CHAR_Knight,
+                Level = 1,
+                EquipWeaponIndex = 5003,
+                Experience = 0,
+            });
+        }
 
         // 에너지 지급
         if (playerData.LastEnergyUpdateTime == System.DateTime.MinValue)
@@ -61,7 +71,7 @@ public class DataInitializeSystem : IGameSystem
                 WorldIdx = 1,
                 StageIdx = 1,
                 CharacterLeader = ObjectCode.CHAR_Sparcher,
-                CharacterSecond = ObjectCode.CHAR_Sparcher,
+                CharacterSecond = ObjectCode.CHAR_Knight,
                 CharacterThird = ObjectCode.NONE,
                 Clear = false
             });

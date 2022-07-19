@@ -136,8 +136,12 @@ public class CharacterUI : UI, IGameEventListener
     { 
         GameEventSystem.RemoveListener(this);
 
+        var lobbyManager = LobbyManager.Instance;
         // 메인 카메라 끄기
-        LobbyManager.Instance.MainCam.gameObject.SetActive(false);
+        lobbyManager.MainCam.gameObject.SetActive(false);
+
+        // 생성시킨 캐릭터 삭제시키기
+        lobbyManager.MainLobbySystem.DestroyCharacterUICharacter();
     }
 
     public override void OnOpened()
