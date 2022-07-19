@@ -102,20 +102,20 @@ public sealed class StageManager : GameSceneManager
 
         // 캐릭터 인스턴싱
         string resourcePath = GameManager.GameDevelopSettings.CharacterResourcePath;
-        var leader = Character.Get(record.CharacterLeader, player.transform, resourcePath);
+        var leader = Character.Get(record.CharacterLeader, player.transform);
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition;
         // 리더는 반드시 있어야 하는데 나머지는 반드시 없어도 됨.
         if (record.CharacterSecond != ObjectCode.NONE)
         {
-            var second = Character.Get(record.CharacterSecond, player.transform, resourcePath);
+            var second = Character.Get(record.CharacterSecond, player.transform);
             second.gameObject.SetActive(false);
             second.transform.position = PlayerSpawnPosition;
         }
 
         if (record.CharacterThird != ObjectCode.NONE)
         {
-            var third = Character.Get(record.CharacterThird, player.transform, resourcePath);
+            var third = Character.Get(record.CharacterThird, player.transform);
             third.gameObject.SetActive(false);
             third.transform.position = PlayerSpawnPosition;
         }

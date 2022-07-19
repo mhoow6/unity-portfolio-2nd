@@ -413,6 +413,24 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
 
     public void Spawn()
     {
+        // 테이블에서 데이터를 가져와 세팅하기
+        var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == Code);
+        var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+        if (characterRecord != null)
+            m_Data = GetCharacterData(Code, characterRecord.Level, characterRecord.EquipWeaponIndex);
+        else
+            m_Data = GetCharacterData(Code, 1, -1);
+
+        Name = characterTableData.Name;
+        Type = characterTableData.Type;
+
+        // 그로기 세팅
+        var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
+        if (chaData.MaxGroggyExhaustion != -1)
+            StartCoroutine(NaturalGroggyRecoveryCoroutine());
+
+        // -------------------------------------------------------------------------
+
         TryAttachToFloor();
 
         if (gameObject.activeSelf)
@@ -435,25 +453,26 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
     }
 
     /// <summary> objectCode에 맞는 캐릭터 인스턴싱 </summary>
-    public static Character Get(ObjectCode objectCode, Transform parent, string resourcePath)
+    public static Character Get(ObjectCode objectCode, Transform parent)
     {
         Character result = null;
+
+        string prefabName = string.Empty;
         switch (objectCode)
         {
             case ObjectCode.CHAR_Sparcher:
-                var tryload = Resources.Load<Sparcher>($"{resourcePath}/sparcher");
-                if (tryload)
-                    result = Instantiate(tryload, parent);
+                prefabName = "sparcher";
                 break;
-            case ObjectCode.CHAR_GreenSpider:
+            case ObjectCode.CHAR_Knight:
+                prefabName = "knight";
                 break;
-            case ObjectCode.CHAR_PurpleSpider:
-                break;
-            case ObjectCode.CHAR_Dummy:
-                break;
-            case ObjectCode.CHAR_MonsterPirate:
-                break;
+
         }
+
+        var tryload = Resources.Load<Character>($"{GameManager.GameDevelopSettings.CharacterResourcePath}/{prefabName}");
+        if (tryload)
+            result = Instantiate(tryload, parent);
+
         return result;
     }
 
@@ -548,22 +567,6 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
 
         AnimatorBaseLayerIndex = Animator.GetLayerIndex("Base Layer");
         gameObject.layer = GameManager.GameDevelopSettings.BaseObjectLayermask;
-
-        // 테이블 데이터 가져오기
-        var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == Code);
-        var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-        if (characterRecord != null)
-            m_Data = GetCharacterData(Code, characterRecord.Level, characterRecord.EquipWeaponIndex);
-        else
-            m_Data = GetCharacterData(Code, 1, -1);
-
-        Name = characterTableData.Name;
-        Type = characterTableData.Type;
-
-        // 그로기 체크
-        var chaData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == Code);
-        if (chaData.MaxGroggyExhaustion != -1)
-            StartCoroutine(NaturalGroggyRecoveryCoroutine());
     }
 
     protected void OnDestroy()

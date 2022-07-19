@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DatabaseSystem;
 
-public class MainLobbySystem : MonoBehaviour
+public class MainLobbySystem : MonoBehaviour, IGameEventListener
 {
     public Transform LobbyUICameraPosition;
     public Transform PlayerSpawnPosition;
     public Transform CharacterUICameraPosition;
+    public Transform CharacterUICharacterSpawnTransform;
     public Camera LobbyCamera;
     public bool CheckUserClickingTheCharacter
     {
@@ -27,11 +28,15 @@ public class MainLobbySystem : MonoBehaviour
     void Awake()
     {
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
+
+        GameEventSystem.AddListener(this);
     }
 
     private void OnDestroy()
     {
         LobbyManager.Instance.MainLobbySystem = null;
+
+        GameEventSystem.RemoveListener(this);
     }
 
     public void Init()
@@ -111,7 +116,7 @@ public class MainLobbySystem : MonoBehaviour
         var main = GameManager.PlayerData.MainMenuCharacter;
         var resourcePath = GameManager.GameDevelopSettings.CharacterResourcePath;
 
-        var leader = Character.Get(main, player.transform, resourcePath) as Playable;
+        var leader = Character.Get(main, player.transform) as Playable;
         leader.gameObject.SetActive(true);
         leader.transform.position = PlayerSpawnPosition.position;
         leader.transform.rotation = PlayerSpawnPosition.rotation;
@@ -120,5 +125,37 @@ public class MainLobbySystem : MonoBehaviour
         leader.SetLobbyAnimations(row.LobbyAnimatorPath);
 
         player.Init();
+    }
+    public void Listen(GameEvent gameEvent)
+    {
+        
+    }
+
+    public void Listen(GameEvent gameEvent, params object[] args)
+    {
+        switch (gameEvent)
+        {
+            case GameEvent.LOBBY_SwapCharacter:
+                if (args.Length != 1)
+                    return;
+
+                ObjectCode selectedCharacter = (ObjectCode)args[0];
+
+                if (selectedCharacter == ObjectCode.NONE)
+                    return;
+
+                // 이전에 캐릭터가 이미 생성되면 삭제처리
+                for (int i = 0; i < CharacterUICharacterSpawnTransform.childCount; i++)
+                {
+                    var child = CharacterUICharacterSpawnTransform.GetChild(i);
+                    Destroy(child.gameObject);
+                }
+
+                // 정해진 위치에서 캐릭터를 볼 수 있도록 캐릭터 생성
+                var character = Character.Get(selectedCharacter, CharacterUICharacterSpawnTransform);
+                character.Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{GameManager.GameDevelopSettings.AnimationControllerResourcePath}/Lobby_CharacterUI_Character");
+                character.transform.SetPositionAndRotation(CharacterUICharacterSpawnTransform.position, CharacterUICharacterSpawnTransform.rotation);
+                break;
+        }
     }
 }
