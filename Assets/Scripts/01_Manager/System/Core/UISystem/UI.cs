@@ -20,7 +20,8 @@ public enum UIType
     BattleResult,
     Cheat,
     StageFail,
-    Character
+    Character,
+    NavigateLevelUp
 }
 
 public abstract class UI : MonoBehaviour
