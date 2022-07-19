@@ -192,6 +192,7 @@ public class CharacterUI : UI, IGameEventListener
         {
             m_CharacterList[0].Toggle.isOn = true;
             selectedCharacter = m_CharacterList[0].CharacterData.Code;
+            LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
         }
 
         Listen(GameEvent.LOBBY_SwapCharacter, selectedCharacter);

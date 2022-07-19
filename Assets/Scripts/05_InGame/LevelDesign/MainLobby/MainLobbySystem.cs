@@ -58,6 +58,26 @@ public class MainLobbySystem : MonoBehaviour, IGameEventListener
         GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
+    public void SpawnCharacterUICharacter(ObjectCode characterCode)
+    {
+        ObjectCode selectedCharacter = characterCode;
+
+        if (selectedCharacter == ObjectCode.NONE)
+            return;
+
+        // 이전에 캐릭터가 이미 생성되면 삭제처리
+        for (int i = 0; i < CharacterUICharacterSpawnTransform.childCount; i++)
+        {
+            var child = CharacterUICharacterSpawnTransform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+
+        // 정해진 위치에서 캐릭터를 볼 수 있도록 캐릭터 생성
+        var character = Character.Get(selectedCharacter, CharacterUICharacterSpawnTransform);
+        character.Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{GameManager.GameDevelopSettings.AnimationControllerResourcePath}/Lobby_CharacterUI_Character");
+        character.transform.SetPositionAndRotation(CharacterUICharacterSpawnTransform.position, CharacterUICharacterSpawnTransform.rotation);
+    }
+
     IEnumerator MovingCameraCoroutine()
     {
         float timer = 0f;
@@ -139,22 +159,7 @@ public class MainLobbySystem : MonoBehaviour, IGameEventListener
                 if (args.Length != 1)
                     return;
 
-                ObjectCode selectedCharacter = (ObjectCode)args[0];
-
-                if (selectedCharacter == ObjectCode.NONE)
-                    return;
-
-                // 이전에 캐릭터가 이미 생성되면 삭제처리
-                for (int i = 0; i < CharacterUICharacterSpawnTransform.childCount; i++)
-                {
-                    var child = CharacterUICharacterSpawnTransform.GetChild(i);
-                    Destroy(child.gameObject);
-                }
-
-                // 정해진 위치에서 캐릭터를 볼 수 있도록 캐릭터 생성
-                var character = Character.Get(selectedCharacter, CharacterUICharacterSpawnTransform);
-                character.Animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>($"{GameManager.GameDevelopSettings.AnimationControllerResourcePath}/Lobby_CharacterUI_Character");
-                character.transform.SetPositionAndRotation(CharacterUICharacterSpawnTransform.position, CharacterUICharacterSpawnTransform.rotation);
+                SpawnCharacterUICharacter((ObjectCode)args[0]);
                 break;
         }
     }
