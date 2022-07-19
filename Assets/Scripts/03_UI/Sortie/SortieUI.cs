@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class SortieUI : UI, IGameEventListener
 {
     public override UIType Type => UIType.Sortie;
+    public HorizontalLayoutGroup SelectCharacterDisplayLayoutGroup;
     public List<SelectCharacterUI> SelectCharacterDisplays = new List<SelectCharacterUI>();
     public RectTransform SelectCharacterGroupTransform;
     public RectTransform StageBackgroundTransform;

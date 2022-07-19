@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DatabaseSystem;
 
-public class MainLobbySystem : MonoBehaviour, IGameEventListener
+public class MainLobbySystem : MonoBehaviour
 {
     public Transform LobbyUICameraPosition;
     public Transform PlayerSpawnPosition;
@@ -28,15 +28,11 @@ public class MainLobbySystem : MonoBehaviour, IGameEventListener
     void Awake()
     {
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
-
-        GameEventSystem.AddListener(this);
     }
 
     private void OnDestroy()
     {
         LobbyManager.Instance.MainLobbySystem = null;
-
-        GameEventSystem.RemoveListener(this);
     }
 
     public void Init()
@@ -145,22 +141,5 @@ public class MainLobbySystem : MonoBehaviour, IGameEventListener
         leader.SetLobbyAnimations(row.LobbyAnimatorPath);
 
         player.Init();
-    }
-    public void Listen(GameEvent gameEvent)
-    {
-        
-    }
-
-    public void Listen(GameEvent gameEvent, params object[] args)
-    {
-        switch (gameEvent)
-        {
-            case GameEvent.LOBBY_SwapCharacter:
-                if (args.Length != 1)
-                    return;
-
-                SpawnCharacterUICharacter((ObjectCode)args[0]);
-                break;
-        }
     }
 }

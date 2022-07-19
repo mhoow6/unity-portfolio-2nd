@@ -1,24 +1,45 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoroutineHelper : MonoBehaviour
+namespace MonoBehaviorHelper
 {
-    public void HelpDODisable(GameObject gameObject, float duration)
+    public class CoroutineHelper : MonoBehaviour
     {
-        StartCoroutine(AutoDisableCoroutine(gameObject, duration));
-    }
-
-    IEnumerator AutoDisableCoroutine(GameObject gameObject, float duration)
-    {
-        float timer = 0f;
-        while (timer < duration)
+        public void HelpDODisable(GameObject gameObject, float duration)
         {
-            timer += Time.deltaTime;
-
-            yield return null;
+            StartCoroutine(AutoDisableCoroutine(gameObject, duration));
         }
-        gameObject.SetActive(false);
-        Destroy(this.gameObject); 
+
+        IEnumerator AutoDisableCoroutine(GameObject gameObject, float duration)
+        {
+            float timer = 0f;
+            while (timer < duration)
+            {
+                timer += Time.deltaTime;
+
+                yield return null;
+            }
+            gameObject.SetActive(false);
+            Destroy(this.gameObject);
+        }
+
+        public void HelpLateDestroy(GameObject gameObject, float duration)
+        {
+            StartCoroutine(LateDestroyCoroutine(gameObject, duration));
+        }
+
+        IEnumerator LateDestroyCoroutine(GameObject gameObject, float duration)
+        {
+            float timer = 0f;
+            while (timer <= duration)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+            Destroy(gameObject);
+        }
     }
 }
+

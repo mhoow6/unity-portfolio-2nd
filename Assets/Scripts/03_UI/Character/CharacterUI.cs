@@ -122,6 +122,8 @@ public class CharacterUI : UI, IGameEventListener
 
                 }
 
+                // 캐릭터 생성
+                LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
                 break;
 
             default:
@@ -192,7 +194,6 @@ public class CharacterUI : UI, IGameEventListener
         {
             m_CharacterList[0].Toggle.isOn = true;
             selectedCharacter = m_CharacterList[0].CharacterData.Code;
-            LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
         }
 
         Listen(GameEvent.LOBBY_SwapCharacter, selectedCharacter);

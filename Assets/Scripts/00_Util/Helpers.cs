@@ -328,8 +328,15 @@ public static class UnityHelper
 
     public static void DODisable(this GameObject gameObject, float lifeDuration)
     {
-        var _helper = new GameObject("CoroutineHelper", typeof(CoroutineHelper));
-        var helper = _helper.GetComponent<CoroutineHelper>();
+        var _helper = new GameObject("@CoroutineHelper", typeof(MonoBehaviorHelper.CoroutineHelper));
+        var helper = _helper.GetComponent<MonoBehaviorHelper.CoroutineHelper>();
         helper.HelpDODisable(gameObject, lifeDuration);
+    }
+
+    public static void LateDestroy(this GameObject gameObject, float duration)
+    {
+        var _helper = new GameObject("@CoroutineHelper", typeof(MonoBehaviorHelper.CoroutineHelper));
+        var helper = _helper.GetComponent<MonoBehaviorHelper.CoroutineHelper>();
+        helper.HelpLateDestroy(gameObject, duration);
     }
 }
