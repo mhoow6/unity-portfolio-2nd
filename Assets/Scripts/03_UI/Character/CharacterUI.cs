@@ -36,6 +36,7 @@ public class CharacterUI : UI, IGameEventListener
     public GameObject PartyAlreadyJoinObject;
 
     bool m_UseForParty;
+    bool m_IsLeaderSlot;
     ObjectCode m_FirstSelectedCharacter;
     int m_WorldIdx;
     int m_StageIdx;
@@ -203,6 +204,7 @@ public class CharacterUI : UI, IGameEventListener
         m_WorldIdx = worldIdx;
         m_StageIdx = stageIdx;
         m_UseForParty = true;
+        m_IsLeaderSlot = leaderSlot;
 
         var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == worldIdx && stage.StageIdx == stageIdx);
 
@@ -225,7 +227,7 @@ public class CharacterUI : UI, IGameEventListener
 
         // 파티탈퇴 버튼이 뜨는 경우
         // 리더자리가 아닌 슬롯에서 selectedCharacter를 고른 경우 && 파티에 selectedCharacter가 있는 경우
-        if (!leaderSlot)
+        if (!leaderSlot && selectedCharacter != ObjectCode.NONE)
         {
             bool find = false;
             if (stageRecord.CharacterSecond == selectedCharacter || stageRecord.CharacterThird == selectedCharacter)
@@ -248,12 +250,44 @@ public class CharacterUI : UI, IGameEventListener
 
     public void OnPartyJoinButtonClick()
     {
+        // 비어있는 곳 우선으로 파티 JOIN
+        var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);
+        if (m_IsLeaderSlot)
+        {
+            stageRecord.CharacterLeader = SelectedCharacter;
+        }
+        else if (stageRecord.CharacterSecond == ObjectCode.NONE)
+        {
+            stageRecord.CharacterSecond = SelectedCharacter;
+        }
+        else if (stageRecord.CharacterThird == ObjectCode.NONE)
+        {
+            stageRecord.CharacterThird = SelectedCharacter;
+        }
 
+
+        GameEventSystem.SendEvent(GameEvent.LOBBY_ChangePartyPreset);
+        GameManager.UISystem.CloseWindow();
     }
 
     public void OnPartyOutButtonClick()
     {
+        var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);
+        if (stageRecord.CharacterSecond == SelectedCharacter)
+        {
+            stageRecord.CharacterSecond = ObjectCode.NONE;
 
+            // 세번째가 있으면 두번째로 밀어줘야한다.
+            if (stageRecord.CharacterThird != ObjectCode.NONE)
+                stageRecord.CharacterSecond = stageRecord.CharacterThird;
+        }
+        else if (stageRecord.CharacterThird == SelectedCharacter)
+        {
+            stageRecord.CharacterThird = ObjectCode.NONE;
+        }
+
+        GameEventSystem.SendEvent(GameEvent.LOBBY_ChangePartyPreset);
+        GameManager.UISystem.CloseWindow();
     }
 
     /// <summary>

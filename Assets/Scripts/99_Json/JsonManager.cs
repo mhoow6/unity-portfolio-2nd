@@ -57,6 +57,10 @@ namespace DatabaseSystem
             MonsterMushroomAttack03Data monstermushroomattack03data = JsonConvert.DeserializeObject<MonsterMushroomAttack03Data>(monstermushroomattack03dataNode.ToString());
             JsonDatas.Add(monstermushroomattack03data.Index, monstermushroomattack03data);
 
+            JSONNode knightpassiveskilldataNode = skilldatasRoot["KnightPassiveSkillData(SkillDescriptable)"];
+            KnightPassiveSkillData knightpassiveskilldata = JsonConvert.DeserializeObject<KnightPassiveSkillData>(knightpassiveskilldataNode.ToString());
+            JsonDatas.Add(knightpassiveskilldata.Index, knightpassiveskilldata);
+
             var weapondatas = Resources.Load<TextAsset>("99_Database/Json/WeaponDatas");
             JSONNode weapondatasRoot = JSONNode.Parse(weapondatas.text);
             JSONNode woodenbowdataNode = weapondatasRoot["WoodenBowData(Weaponable)"];

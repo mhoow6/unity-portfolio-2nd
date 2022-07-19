@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameEventSystem
 {
     static List<IGameEventListener> listeners = new List<IGameEventListener>();
-    static Queue<IGameEventListener> reserveRemovelisteners = new Queue<IGameEventListener>();
+    static Queue<IGameEventListener> removeListenersQueue = new Queue<IGameEventListener>();
 
     public static void AddListener(IGameEventListener listener)
     {
@@ -14,8 +14,8 @@ public class GameEventSystem
 
         listeners.Add(listener);
 
-        while (reserveRemovelisteners.Count != 0)
-            RemoveListener(reserveRemovelisteners.Dequeue());
+        while (removeListenersQueue.Count != 0)
+            RemoveListener(removeListenersQueue.Dequeue());
     }
 
     public static void RemoveListener(IGameEventListener listener)
@@ -31,8 +31,8 @@ public class GameEventSystem
         foreach (var listener in listeners)
             listener.Listen(gameEvent);
 
-        while (reserveRemovelisteners.Count != 0)
-            RemoveListener(reserveRemovelisteners.Dequeue());
+        while (removeListenersQueue.Count != 0)
+            RemoveListener(removeListenersQueue.Dequeue());
     }
 
     // params: 가변인수가 지정가능케 하는 키워드
@@ -41,12 +41,18 @@ public class GameEventSystem
         foreach (var listener in listeners)
             listener.Listen(gameEvent, args);
 
-        while (reserveRemovelisteners.Count != 0)
-            RemoveListener(reserveRemovelisteners.Dequeue());
+        while (removeListenersQueue.Count != 0)
+            RemoveListener(removeListenersQueue.Dequeue());
     }
 
-    public static void ReserveRemoveListener(IGameEventListener listener)
+    public static void LateRemoveListener(IGameEventListener listener)
     {
-        reserveRemovelisteners.Enqueue(listener);
+        removeListenersQueue.Enqueue(listener);
+    }
+
+    public static void Clear()
+    {
+        listeners.Clear();
+        removeListenersQueue.Clear();
     }
 }

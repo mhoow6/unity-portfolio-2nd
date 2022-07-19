@@ -71,6 +71,11 @@ public sealed class GameManager : MonoBehaviour
         m_Update = null;
         m_FixedUpdate = null;
 
+        SceneManager.sceneUnloaded += (Scene arg0) =>
+        {
+            GameEventSystem.Clear();
+        };
+
         // ---------------------------------------------------
 
         // Game Setting

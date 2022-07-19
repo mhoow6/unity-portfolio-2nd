@@ -9,7 +9,7 @@ public enum GameEvent
     STAGE_Fail,
     LOBBY_SwapCharacter,
     LOBBY_GainCharacter,
-    LOBBY_JoinParty,
+    LOBBY_ChangePartyPreset,
 }
 
 public interface IGameEventListener

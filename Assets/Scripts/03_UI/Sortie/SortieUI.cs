@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SortieUI : UI
+public class SortieUI : UI, IGameEventListener
 {
     public override UIType Type => UIType.Sortie;
     public List<SelectCharacterUI> SelectCharacterDisplays = new List<SelectCharacterUI>();
@@ -121,11 +121,46 @@ public class SortieUI : UI
             });
     }
 
-    public override void OnClosed(){ }
+    public override void OnClosed()
+    {
+        
+    }
 
     public override void OnOpened()
     {
+        GameEventSystem.AddListener(this);
+    }
+
+    public void Listen(GameEvent gameEvent)
+    {
+        switch (gameEvent)
+        {
+            case GameEvent.LOBBY_ChangePartyPreset:
+                var record = GameManager.PlayerData.StageRecords.Find(r => r.WorldIdx == WorldIdx && r.StageIdx == StageIdx);
+                if (record != null)
+                {
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].SetData(record.CharacterLeader);
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Leader].IsLeaderSlot = true;
+                    m_LeaderPassiveInfoDisplay.SetData(record.CharacterLeader);
+
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Second].SetData(record.CharacterSecond);
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Second].IsLeaderSlot = false;
+
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].SetData(record.CharacterThird);
+                    SelectCharacterDisplays[(int)SelectCharacterDisplaySlot.Third].IsLeaderSlot = false;
+                }
+                break;
+        }
+    }
+
+    public void Listen(GameEvent gameEvent, params object[] args)
+    {
         
+    }
+
+    public void OnRemoveListenerBtnClick()
+    {
+        GameEventSystem.RemoveListener(this);
     }
 }
 public enum SelectCharacterDisplaySlot

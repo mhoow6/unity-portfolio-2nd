@@ -204,6 +204,8 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         {
             case ObjectCode.CHAR_Sparcher:
                 return 2001;
+            case ObjectCode.CHAR_Knight:
+                return 2008;
             default:
                 return -1;
         }
@@ -458,7 +460,7 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
     public static CharacterData GetCharacterData(ObjectCode objectCode, int level, int equipWeaponIndex)
     {
         var table = TableManager.Instance.CharacterTable.Find(c => c.Code == objectCode);
-        return new CharacterData()
+        var result = new CharacterData()
         {
             Code = objectCode,
             Level = level,
@@ -471,6 +473,11 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
             EquipWeaponData = new WeaponData(equipWeaponIndex),
             GroggyExhaustion = 0
         };
+
+        result.Critical += (int)result.EquipWeaponData.Critical;
+        result.Damage += (int)result.EquipWeaponData.Damage;
+
+        return result;
     }
 
     // -----------------------------------------------------------------------
@@ -750,7 +757,7 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
             case GameEvent.STAGE_Clear:
             case GameEvent.STAGE_Fail:
                 DisposeEvents();
-                GameEventSystem.ReserveRemoveListener(this);
+                GameEventSystem.LateRemoveListener(this);
                 break;
         }
     }

@@ -70,4 +70,11 @@
     }
 
 
+    public class KnightPassiveSkillData : SkillDescriptable
+    {
+        public float IncreaseDefenseRatio;
+        
+    }
+
+
 }
