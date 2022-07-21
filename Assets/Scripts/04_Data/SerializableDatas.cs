@@ -48,6 +48,43 @@ public class CharacterRecordData
     public int Level;
     public int EquipWeaponIndex;
     public int Experience;
+
+    public int LevelUpSimulate(int gainExperience)
+    {
+        int level = Level;
+        int maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level).MaxExperience;
+        int previousExperience = Experience;
+        while (maxExperience < gainExperience)
+        {
+            // 레벨업이 되는 상황이므로 레벨업
+            level++;
+
+            gainExperience -= (maxExperience - previousExperience);
+            previousExperience = 0;
+
+            maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level).MaxExperience;
+        }
+        return level;
+    }
+
+    public void LevelUp(int gainExperience)
+    {
+        int maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == Level).MaxExperience;
+        int previousExperience = Experience;
+        while (maxExperience < gainExperience)
+        {
+            // 레벨업이 되는 상황이므로 레벨업
+            Level++;
+            Experience = 0;
+
+            gainExperience -= (maxExperience - previousExperience);
+
+            previousExperience = Experience;
+            maxExperience = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == Level).MaxExperience;
+        }
+        Experience += Mathf.Abs(gainExperience);
+        Debug.LogWarning($"[LevelUp]: {Code}는 레벨:{Level}과 {Experience}가 되었습니다.");
+    }
 }
 
 [Serializable]

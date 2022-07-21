@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using DatabaseSystem;
 
 [Serializable]
 public class PlayerData : ISubscribable
@@ -137,5 +138,24 @@ public class PlayerData : ISubscribable
         OnGoldUpdate = null;
         OnLevelUpdate = null;
         OnNickNameUpdate = null;
+    }
+
+    public void LevelUp(int gainExperience)
+    {
+        // 스테이지 결과에 따른 플레이어 레벨업
+        int maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == Level).MaxExperience; // 300
+        int previousPlayerExperience = Experience;
+        while (maxExperience < gainExperience)
+        {
+            // 레벨업이 되는 상황이므로 레벨업
+            Level++;
+            Experience = 0;
+
+            gainExperience -= (maxExperience - previousPlayerExperience);
+
+            previousPlayerExperience = Experience;
+            maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == Level).MaxExperience;
+        }
+        Experience += Mathf.Abs(gainExperience);
     }
 }

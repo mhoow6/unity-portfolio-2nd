@@ -49,83 +49,29 @@ public class CharacterUI : UI, IGameEventListener
         switch (gameEvent)
         {
             case GameEvent.LOBBY_SwapCharacter:
-                if (args.Length != 1)
-                    return;
-
-                ObjectCode selectedCharacter = (ObjectCode)args[0];
-                SelectedCharacter = selectedCharacter;
-
-                // 레벨
-                var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
-                SelectedCharacterLevel.text = $"Lv.{characterRecord.Level}";
-
-                // 캐릭터 경험치
-                var characterExpData = TableManager.Instance.CharacterLevelExperienceTable.Find(cha => cha.Level == characterRecord.Level);
-                SelectedCharacterExpSlider.SetData(0, characterExpData.MaxExperience, (exp) =>
                 {
-                    SelectedCharacterExp.text = $"{characterRecord.Experience} / {characterExpData.MaxExperience}";
-                });
-                SelectedCharacterExpSlider.Value = characterRecord.Experience;
+                    if (args.Length != 1)
+                        return;
 
-                // 캐릭터 스텟
-                var characterData = Character.GetCharacterData(selectedCharacter, characterRecord.Level, characterRecord.EquipWeaponIndex);
-                Hp.text = characterData.Hp.ToString();
-                Sp.text = characterData.Sp.ToString();
-                Damage.text = characterData.Damage.ToString();
-                Defense.text = characterData.Defense.ToString();
-                Critical.text = characterData.Critical.ToString();
+                    ObjectCode selectedCharacter = (ObjectCode)args[0];
+                    SelectedCharacter = selectedCharacter;
 
-                // 이름
-                var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
-                SelectedCharacterName.text = characterTableData.Name;
+                    ShowCharacterInfo(SelectedCharacter);
 
-                // 타입
-                string characterType = TypeToString(characterTableData.Type);
-                SelectedCharacterType.text = characterType;
-                SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
-                SelectedCharacterTypeIcons[(int)characterTableData.Type].SetActive(true);
-
-                // 무기
-                var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
-                SelectedCharacterWeapon.text = weaponData.Name;
-
-                if (m_UseForParty)
-                {
-                    var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);
-
-                    // 파티가입 버튼이 뜨는 경우
-                    // m_FirstSelectedCharacter와 다른 캐릭터를 골랐을 경우
-                    if (selectedCharacter != m_FirstSelectedCharacter)
-                        TriggerPartyButton(0);
-
-                    // 편성중 버튼이 뜨는 경우
-                    // m_FirstSelectedCharacter와 다른 캐릭터를 골랐을 경우
-                    // 파티에 이미 있는 경우
-                    if (selectedCharacter != m_FirstSelectedCharacter)
-                    {
-                        bool already = false;
-                        if (stageRecord.CharacterLeader == selectedCharacter)
-                            already = true;
-                        if (stageRecord.CharacterSecond == selectedCharacter)
-                            already = true;
-                        if (stageRecord.CharacterThird == selectedCharacter)
-                            already = true;
-
-                        if (already == true)
-                            TriggerPartyButton(2);
-                    }
-
-                    // 파티탈퇴 버튼이 뜨는 경우
-                    // 처음에 골랐던 캐릭터를 다시 고르는 경우 (리더제외)
-                    if (selectedCharacter == m_FirstSelectedCharacter && stageRecord.CharacterLeader != m_FirstSelectedCharacter)
-                        TriggerPartyButton(1);
-
+                    // 캐릭터 생성
+                    LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
+                    break;
                 }
+            case GameEvent.LOBBY_LevelUpCharacter:
+                {
+                    if (args.Length != 1)
+                        return;
 
-                // 캐릭터 생성
-                LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
-                break;
+                    ObjectCode levelUpCharacter = (ObjectCode)args[0];
 
+                    ShowCharacterInfo(levelUpCharacter);
+                    break;
+                }
             default:
                 break;
         }
@@ -251,7 +197,8 @@ public class CharacterUI : UI, IGameEventListener
 
     public void OnLevelUpButtonClick()
     {
-
+        var ui = GameManager.UISystem.OpenWindow<NavigateLevelUpUI>(UIType.NavigateLevelUp, false);
+        ui.SetData(SelectedCharacter);
     }
 
     public void OnPartyJoinButtonClick()
@@ -314,4 +261,75 @@ public class CharacterUI : UI, IGameEventListener
         }
     }
 
+    void ShowCharacterInfo(ObjectCode characterCode)
+    {
+        ObjectCode selectedCharacter = characterCode;
+
+        // 레벨
+        var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
+        SelectedCharacterLevel.text = $"Lv.{characterRecord.Level}";
+
+        // 캐릭터 경험치
+        var characterExpData = TableManager.Instance.CharacterLevelExperienceTable.Find(cha => cha.Level == characterRecord.Level);
+        SelectedCharacterExpSlider.SetData(0, characterExpData.MaxExperience, (exp) =>
+        {
+            SelectedCharacterExp.text = $"{characterRecord.Experience} / {characterExpData.MaxExperience}";
+        });
+        SelectedCharacterExpSlider.Value = characterRecord.Experience;
+
+        // 캐릭터 스텟
+        var characterData = Character.GetCharacterData(selectedCharacter, characterRecord.Level, characterRecord.EquipWeaponIndex);
+        Hp.text = characterData.Hp.ToString();
+        Sp.text = characterData.Sp.ToString();
+        Damage.text = characterData.Damage.ToString();
+        Defense.text = characterData.Defense.ToString();
+        Critical.text = characterData.Critical.ToString();
+
+        // 이름
+        var characterTableData = TableManager.Instance.CharacterTable.Find(cha => cha.Code == selectedCharacter);
+        SelectedCharacterName.text = characterTableData.Name;
+
+        // 타입
+        string characterType = TypeToString(characterTableData.Type);
+        SelectedCharacterType.text = characterType;
+        SelectedCharacterTypeIcons.ForEach(gameObj => gameObj.SetActive(false));
+        SelectedCharacterTypeIcons[(int)characterTableData.Type].SetActive(true);
+
+        // 무기
+        var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
+        SelectedCharacterWeapon.text = weaponData.Name;
+
+        if (m_UseForParty)
+        {
+            var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);
+
+            // 파티가입 버튼이 뜨는 경우
+            // m_FirstSelectedCharacter와 다른 캐릭터를 골랐을 경우
+            if (selectedCharacter != m_FirstSelectedCharacter)
+                TriggerPartyButton(0);
+
+            // 편성중 버튼이 뜨는 경우
+            // m_FirstSelectedCharacter와 다른 캐릭터를 골랐을 경우
+            // 파티에 이미 있는 경우
+            if (selectedCharacter != m_FirstSelectedCharacter)
+            {
+                bool already = false;
+                if (stageRecord.CharacterLeader == selectedCharacter)
+                    already = true;
+                if (stageRecord.CharacterSecond == selectedCharacter)
+                    already = true;
+                if (stageRecord.CharacterThird == selectedCharacter)
+                    already = true;
+
+                if (already == true)
+                    TriggerPartyButton(2);
+            }
+
+            // 파티탈퇴 버튼이 뜨는 경우
+            // 처음에 골랐던 캐릭터를 다시 고르는 경우 (리더제외)
+            if (selectedCharacter == m_FirstSelectedCharacter && stageRecord.CharacterLeader != m_FirstSelectedCharacter)
+                TriggerPartyButton(1);
+
+        }
+    }
 }

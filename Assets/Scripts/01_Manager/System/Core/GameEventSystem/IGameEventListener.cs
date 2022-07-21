@@ -10,6 +10,7 @@ public enum GameEvent
     LOBBY_SwapCharacter,
     LOBBY_GainCharacter,
     LOBBY_ChangePartyPreset,
+    LOBBY_LevelUpCharacter
 }
 
 public interface IGameEventListener

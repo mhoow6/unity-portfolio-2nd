@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DatabaseSystem;
+using System;
+using UnityEngine.EventSystems;
 
-public class ItemUI : Display
+public class ItemUI : Display, IPointerClickHandler
 {
+    public Image ItemFrame;
     public Image ItemIcon;
     public Image RarityBackground;
 
@@ -14,6 +17,8 @@ public class ItemUI : Display
     public Text ItemCount;
 
     public List<Color> RarityBackgroundColors = new List<Color>(5);
+
+    Action m_OnClickCallback;
 
     public void SetData(int itemIndex, int itemCount)
     {
@@ -36,5 +41,17 @@ public class ItemUI : Display
 
         // 배경 색상
         RarityBackground.color = RarityBackgroundColors[itemData.StarCount - 2];
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        m_OnClickCallback?.Invoke();
+    }
+
+    public void SetData(int itemIndex, int itemCount, Action onClickCallback)
+    {
+        SetData(itemIndex, itemCount);
+
+        m_OnClickCallback = onClickCallback;
     }
 }

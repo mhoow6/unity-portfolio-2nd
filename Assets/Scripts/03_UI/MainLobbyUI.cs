@@ -27,8 +27,7 @@ public class MainLobbyUI : UI
 
     public void OnEquipmentBtnClick()
     {
-        var ui = GameManager.UISystem.OpenWindow<CharacterUI>(UIType.Character);
-        ui.SetData(GameManager.PlayerData.MainMenuCharacter);
+        
     }
 
     public void OnShopBtnClick()
@@ -48,7 +47,8 @@ public class MainLobbyUI : UI
 
     public void OnCharacterBtnClick()
     {
-
+        var ui = GameManager.UISystem.OpenWindow<CharacterUI>(UIType.Character);
+        ui.SetData(GameManager.PlayerData.MainMenuCharacter);
     }
 
     public void OnNickNameBtnClick()
