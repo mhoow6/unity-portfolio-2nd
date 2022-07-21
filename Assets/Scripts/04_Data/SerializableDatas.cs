@@ -75,6 +75,7 @@ public class CharacterRecordData
         {
             // 레벨업이 되는 상황이므로 레벨업
             Level++;
+            GameEventSystem.SendEvent(GameEvent.LOBBY_LevelUpCharacter, Code);
             Experience = 0;
 
             gainExperience -= (maxExperience - previousExperience);
