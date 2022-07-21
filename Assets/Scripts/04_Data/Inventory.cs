@@ -3,18 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Newtonsoft.Json;
+using DatabaseSystem;
 
 [Serializable]
 public class Inventory : ISubscribable
 {
-    public delegate void InventoryDelegate(int itemIndex, int itemCount);
+    public delegate void InventoryDelegate(int index, int count);
 
     List<ItemData> m_Items = new List<ItemData>();
     [JsonIgnore] public InventoryDelegate OnItemAdd;
+    [JsonIgnore] public InventoryDelegate OnWeaponAdd;
     [JsonIgnore] public InventoryDelegate OnItemRemove;
+    [JsonIgnore] public InventoryDelegate OnWeaponRemove;
 
     public void AddItem(int itemIndex, int itemCount)
     {
+        var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == itemIndex);
+        if (itemData.Index == 0)
+        {
+            Debug.LogWarning($"Index:{itemIndex}는 아이템이 아니라서 인벤토리에 추가시키지 않았습니다");
+            return;
+        }
+
         var exist = m_Items.Find(item => item.Index == itemIndex);
         if (exist != null)
         {
@@ -44,6 +54,30 @@ public class Inventory : ISubscribable
                 m_Items.Remove(exist);
             }
             OnItemRemove?.Invoke(itemIndex, itemCount);
+        }
+    }
+
+    public void AddWeapon(int weaponIndex)
+    {
+        var itemData = TableManager.Instance.WeaponTable.Find(item => item.Index == weaponIndex);
+        if (itemData.Index == 0)
+        {
+            Debug.LogWarning($"Index:{weaponIndex}는 무기가 아니라서 인벤토리에 추가시키지 않았습니다");
+            return;
+        }
+
+        m_Items.Add(new ItemData()
+        {
+            Index = weaponIndex,
+            Quantity = 1
+        });
+    }
+
+    public void RemoveWeapon(ItemData data)
+    {
+        if (m_Items.Contains(data))
+        {
+            m_Items.Remove(data);
         }
     }
 

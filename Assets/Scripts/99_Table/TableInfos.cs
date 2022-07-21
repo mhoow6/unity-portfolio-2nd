@@ -86,6 +86,8 @@
 		public string IconName;
 		/// <summary> 적용 포인트 </summary> ///
 		public int Point;
+		/// <summary> 최대 아이템 소지 갯수 </summary> ///
+		public int MaxAmount;
 	}
 
 	public struct PlayerLevelEnergyTable
@@ -234,6 +236,28 @@
 		public string WorldPrefabName;
 		/// <summary> 스테이지를 클리어 할 수 있는 최대시간(sec) </summary> ///
 		public int ClearTimelimit;
+	}
+
+	public struct WeaponTable
+	{
+		/// <summary> 아이템 인덱스 </summary> ///
+		public int Index;
+		/// <summary> 아이템 타입 </summary> ///
+		public ItemType Type;
+		/// <summary> 게임에서 사용되는 이름 </summary> ///
+		public string Name;
+		/// <summary> 아이템 별의 갯수 </summary> ///
+		public int StarCount;
+		/// <summary> 아이콘 이름 </summary> ///
+		public string IconName;
+		/// <summary> 레벨 1일때 기본 공격력 </summary> ///
+		public int BaseDamage;
+		/// <summary> 레벨업시 공격력 증가율 </summary> ///
+		public float DamageIncreaseRatioByLevelUp;
+		/// <summary> 레벨 1일때 기본 치명타 확률 </summary> ///
+		public int BaseCritical;
+		/// <summary> 레벨업시 치명타확률 증가율 </summary> ///
+		public float CriticalIncreaseRatioByLevelUp;
 	}
 
 }

@@ -11,39 +11,41 @@ public class DataInitializeSystem : IGameSystem
     #region 플레이어 데이터 초기화 과정
     public void Initalize(PlayerData playerData)
     {
-        AddRewardForNewbie(playerData);
+        AddNewbieGift(playerData);
         AddDefaultStagePartyPreset(playerData);
     }
 
     /// <summary> 처음으로 게임에 들어온 플레이어에게 데이터 세팅 </summary>
-    void AddRewardForNewbie(PlayerData playerData)
+    void AddNewbieGift(PlayerData playerData)
     {
-        // 기본 캐릭터 지급
-        if (playerData.CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Sparcher) == null)
+        if (playerData.NewbieGift == false)
         {
+            // 기본 캐릭터 지급
             playerData.CharacterDatas.Add(new CharacterRecordData()
             {
                 Code = ObjectCode.CHAR_Sparcher,
                 Level = 1,
-                EquipWeaponIndex = 5002,
+                EquipWeaponIndex = 7000,
                 Experience = 0,
             });
-        }
-        if (playerData.CharacterDatas.Find(character => character.Code == ObjectCode.CHAR_Knight) == null)
-        {
             playerData.CharacterDatas.Add(new CharacterRecordData()
             {
                 Code = ObjectCode.CHAR_Knight,
                 Level = 1,
-                EquipWeaponIndex = 5003,
+                EquipWeaponIndex = 7001,
                 Experience = 0,
             });
+
+            // 기본 무기 지급
+            playerData.Inventory.AddWeapon(7000);
+            playerData.Inventory.AddWeapon(7001);
+
+            // 에너지 지급
+            if (playerData.LastEnergyUpdateTime == System.DateTime.MinValue)
+                GameManager.EnergyRecoverySystem.AddEnergy(50);
+
+            playerData.NewbieGift = true;
         }
-
-        // 에너지 지급
-        if (playerData.LastEnergyUpdateTime == System.DateTime.MinValue)
-            GameManager.EnergyRecoverySystem.AddEnergy(99);
-
     }
 
     /// <summary> 스테이지 파티 프리셋 초기 세팅 </summary>

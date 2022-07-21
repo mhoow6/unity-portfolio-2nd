@@ -28,14 +28,28 @@ public class CheatItemUI : Display
                 if (int.TryParse(InputField.text, out int addCount))
                 {
                     var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.options[Dropdown.value].text);
-                    GameManager.PlayerData.Inventory.AddItem(itemData.Index, addCount);
+                    var weaponData = TableManager.Instance.WeaponTable.Find(weapon => weapon.Name == Dropdown.options[Dropdown.value].text);
+
+                    if (itemData.Index != 0)
+                    {
+                        GameManager.PlayerData.Inventory.AddItem(itemData.Index, addCount);
+                    }
+                    else if (weaponData.Index != 0)
+                    {
+                        GameManager.PlayerData.Inventory.AddWeapon(weaponData.Index);
+                    }
+                    
                 }
                 break;
             case CheatItemType.Remove:
                 if (int.TryParse(InputField.text, out int removeCount))
                 {
                     var itemData = TableManager.Instance.ItemTable.Find(item => item.Name == Dropdown.options[Dropdown.value].text);
-                    GameManager.PlayerData.Inventory.RemoveItem(itemData.Index, removeCount);
+
+                    if (itemData.Index != 0)
+                    {
+                        GameManager.PlayerData.Inventory.RemoveItem(itemData.Index, removeCount);
+                    }
                 }
                 break;
         }

@@ -76,6 +76,7 @@ public class PlayerData : ISubscribable
     // --------------------------------------------------------------------
 
     public bool AskForNickName;
+    public bool NewbieGift;
 
     // --------------------------------------------------------------------
 

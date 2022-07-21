@@ -29,10 +29,7 @@ public class NavigateLevelUpUI : UI
     int m_ConsumeItemIndex;
     int m_ConsumeItemCount;
 
-    public override void OnClosed()
-    {
-        
-    }
+    public override void OnClosed(){}
 
     public override void OnOpened(){}
 
@@ -110,11 +107,11 @@ public class NavigateLevelUpUI : UI
                         AfterLevel.text = characterRecord.LevelUpSimulate(data.Point).ToString();
 
                         // 슬라이더
-                        ConsumeSlider.minValue = 1;
+                        ConsumeSlider.minValue = 0;
                         ConsumeSlider.maxValue = userItem.Quantity;
 
                         // 아이템 소비량 표기
-                        ConsumeSlider.value = ConsumeSlider.minValue;
+                        ConsumeSlider.value = 1;
                         ConsumeCountText.text = ConsumeSlider.value.ToString();
                     }
                     else

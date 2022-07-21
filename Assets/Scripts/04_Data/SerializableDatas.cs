@@ -130,20 +130,12 @@ public struct WeaponData
 
     public WeaponData(int weaponIndex)
     {
-        var row = TableManager.Instance.ItemTable.Find(item => item.Index == weaponIndex);
-
-        if (JsonManager.Instance.JsonDatas.TryGetValue(weaponIndex, out var json))
-        {
-            var weaponData = json as Weaponable;
-            Critical = weaponData.WeaponCritical;
-        }
-        else
-            Critical = 0;
+        var row = TableManager.Instance.WeaponTable.Find(item => item.Index == weaponIndex);
 
         Index = row.Index;
         Level = 1;
-        Damage = row.Point;
-        
+        Damage = row.BaseDamage;
+        Critical = row.BaseCritical;
     }
 }
 

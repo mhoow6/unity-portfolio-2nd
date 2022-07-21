@@ -60,12 +60,6 @@ namespace DatabaseSystem
             JSONNode knightpassiveskilldataNode = skilldatasRoot["KnightPassiveSkillData(SkillDescriptable)"];
             KnightPassiveSkillData knightpassiveskilldata = JsonConvert.DeserializeObject<KnightPassiveSkillData>(knightpassiveskilldataNode.ToString());
             JsonDatas.Add(knightpassiveskilldata.Index, knightpassiveskilldata);
-
-            var weapondatas = Resources.Load<TextAsset>("99_Database/Json/WeaponDatas");
-            JSONNode weapondatasRoot = JSONNode.Parse(weapondatas.text);
-            JSONNode woodenbowdataNode = weapondatasRoot["WoodenBowData(Weaponable)"];
-            WoodenBowData woodenbowdata = JsonConvert.DeserializeObject<WoodenBowData>(woodenbowdataNode.ToString());
-            JsonDatas.Add(woodenbowdata.Index, woodenbowdata);
         }
     }
 }

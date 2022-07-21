@@ -23,6 +23,7 @@ namespace DatabaseSystem
 		public List<StageDialogueTable> StageDialogueTable = new List<StageDialogueTable>();
 		public List<StageDropItemTable> StageDropItemTable = new List<StageDropItemTable>();
 		public List<StageTable> StageTable = new List<StageTable>();
+		public List<WeaponTable> WeaponTable = new List<WeaponTable>();
 		public void LoadTable()
 		{
 			string[] separatingStrings = { "\r\n" };
@@ -110,6 +111,7 @@ namespace DatabaseSystem
 				info.StarCount = int.Parse(datas[3]);
 				info.IconName = datas[4];
 				info.Point = int.Parse(datas[5]);
+				info.MaxAmount = int.Parse(datas[6]);
 				
                 ItemTable.Add(info);
                 LoadedData++;
@@ -285,6 +287,26 @@ namespace DatabaseSystem
 				info.ClearTimelimit = int.Parse(datas[12]);
 				
                 StageTable.Add(info);
+                LoadedData++;
+            }
+        
+            var WeaponTableTextasset = Resources.Load<TextAsset>("99_Database/Table/WeaponTable");
+            string[] WeaponTableLines = WeaponTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < WeaponTableLines.Length; i++)
+            {
+                string[] datas = WeaponTableLines[i].Split(',');
+                WeaponTable info;
+                info.Index = int.Parse(datas[0]);
+				info.Type = (ItemType)Enum.Parse(typeof(ItemType),datas[1]);
+				info.Name = datas[2];
+				info.StarCount = int.Parse(datas[3]);
+				info.IconName = datas[4];
+				info.BaseDamage = int.Parse(datas[5]);
+				info.DamageIncreaseRatioByLevelUp = float.Parse(datas[6]);
+				info.BaseCritical = int.Parse(datas[7]);
+				info.CriticalIncreaseRatioByLevelUp = float.Parse(datas[8]);
+				
+                WeaponTable.Add(info);
                 LoadedData++;
             }
         }
