@@ -144,7 +144,7 @@ public class BattleResultUI : UI
             var reward = result.Rewards[i];
             var itemSlot = Items[i];
 
-            itemSlot.SetData(reward.Index, reward.Quantity);
+            itemSlot.SetItemData(reward.Index, reward.Quantity);
         }
     }
 

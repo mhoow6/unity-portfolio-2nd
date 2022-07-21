@@ -10,11 +10,13 @@ public class Inventory : ISubscribable
 {
     public delegate void InventoryDelegate(int index, int count);
 
-    List<ItemData> m_Items = new List<ItemData>();
+    List<ItemSlotData> m_Items = new List<ItemSlotData>();
+    List<WeaponSlotData> m_Weapons = new List<WeaponSlotData>();
+
     [JsonIgnore] public InventoryDelegate OnItemAdd;
-    [JsonIgnore] public InventoryDelegate OnWeaponAdd;
+    [JsonIgnore] public Action<int> OnWeaponAdd;
     [JsonIgnore] public InventoryDelegate OnItemRemove;
-    [JsonIgnore] public InventoryDelegate OnWeaponRemove;
+    [JsonIgnore] public Action<int> OnWeaponRemove;
 
     public void AddItem(int itemIndex, int itemCount)
     {
@@ -34,10 +36,11 @@ public class Inventory : ISubscribable
         else
         {
             // 인벤토리에 아이템이 아예 없는 경우
-            m_Items.Add(new ItemData()
+            m_Items.Add(new ItemSlotData()
             {
                 Index = itemIndex,
-                Quantity = itemCount
+                Quantity = itemCount,
+                SlotIndex = m_Items.Count
             });
         }
         OnItemAdd?.Invoke(itemIndex, itemCount);
@@ -66,24 +69,33 @@ public class Inventory : ISubscribable
             return;
         }
 
-        m_Items.Add(new ItemData()
+        m_Weapons.Add(new WeaponSlotData()
         {
             Index = weaponIndex,
-            Quantity = 1
+            Level = 1,
+            SlotIndex = m_Items.Count
         });
+        OnWeaponAdd?.Invoke(weaponIndex);
     }
 
-    public void RemoveWeapon(ItemData data)
+    public void RemoveWeapon(int weaponIndex, int slotIdx)
     {
-        if (m_Items.Contains(data))
+        var exist = m_Weapons.Find(item => item.Index == weaponIndex && item.SlotIndex == slotIdx);
+        if (exist != null)
         {
-            m_Items.Remove(data);
+            m_Weapons.Remove(exist);
+            OnWeaponRemove?.Invoke(weaponIndex);
         }
     }
 
-    public ItemData FindItem(int itemIndex)
+    public ItemSlotData FindItem(int itemIndex)
     {
         return m_Items.Find(item => item.Index == itemIndex);
+    }
+
+    public WeaponSlotData FindWeapon(int weaponIndex, int slotIdx)
+    {
+        return m_Weapons.Find(item => item.Index == weaponIndex && item.SlotIndex == slotIdx);
     }
 
     /// <summary> 인벤토리에 있는 모든 아이템을 콘솔에 보여줍니다. </summary>

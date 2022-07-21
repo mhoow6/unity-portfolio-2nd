@@ -53,11 +53,11 @@ public class CheatUI : UI
 
             Debug.LogWarning($"{itemData.Name}를 {itemCount}만큼 넣었다!");
         };
-        GameManager.PlayerData.Inventory.OnWeaponAdd += (weaponIndex, weaponCount) =>
+        GameManager.PlayerData.Inventory.OnWeaponAdd += (weaponIndex) =>
         {
             var itemData = TableManager.Instance.WeaponTable.Find(item => item.Index == weaponIndex);
 
-            Debug.LogWarning($"{itemData.Name}를 {weaponCount}만큼 넣었다!");
+            Debug.LogWarning($"{itemData.Name}를 넣었다!");
         };
 
         GameManager.PlayerData.Inventory.OnItemRemove += (itemIndex, itemCount) =>
@@ -66,7 +66,7 @@ public class CheatUI : UI
 
             Debug.LogWarning($"{itemData.Name}를 {itemCount}만큼 뺐다!");
         };
-        GameManager.PlayerData.Inventory.OnWeaponRemove += (weaponIndex, weaponCount) =>
+        GameManager.PlayerData.Inventory.OnWeaponRemove += (weaponIndex) =>
         {
             var itemData = TableManager.Instance.WeaponTable.Find(item => item.Index == weaponIndex);
 

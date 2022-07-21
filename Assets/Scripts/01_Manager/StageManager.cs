@@ -26,7 +26,7 @@ public sealed class StageManager : GameSceneManager
     public ComboSystem ComboSystem;
 
     public List<int> StageDropItemIndices = new List<int>(5);
-    public StageResultData StageResult = new StageResultData(new List<ItemData>());
+    public StageResultData StageResult = new StageResultData(new List<ItemSlotData>());
 
     Queue<PreloadParam> m_PreloadQueue = new Queue<PreloadParam>();
     bool m_Init;

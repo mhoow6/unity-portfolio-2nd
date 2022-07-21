@@ -90,7 +90,7 @@ public class NavigateLevelUpUI : UI
                 var itemUI = inst.GetComponent<ItemUI>();
                 var itemUIToggle = inst.AddComponent<Toggle>();
 
-                itemUI.SetData(data.Index, userItemCount);
+                itemUI.SetItemData(data.Index, userItemCount);
                 itemUIToggle.onValueChanged.AddListener((bool isOn) =>
                 {
                     if (isOn)

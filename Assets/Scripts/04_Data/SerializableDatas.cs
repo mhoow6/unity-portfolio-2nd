@@ -140,13 +140,6 @@ public struct WeaponData
 }
 
 [Serializable]
-public struct WeaponRecordData
-{
-    public int Index;
-    public int Level;
-}
-
-[Serializable]
 public struct GameSettings
 {
     public bool AutoTargeting;
@@ -202,7 +195,7 @@ public class StageResultData
     public StagePlayerData PlayerRecord;
     public List<StageCharacterData> CharacterRecords;
 
-    public List<ItemData> Rewards;
+    public List<ItemSlotData> Rewards;
 
     public TimeSpan Duration
     {
@@ -216,7 +209,7 @@ public class StageResultData
 
     int m_Score;
 
-    public StageResultData(List<ItemData> rewardList)
+    public StageResultData(List<ItemSlotData> rewardList)
     {
         WorldIdx = 0;
         StageIdx = 0;
@@ -235,10 +228,19 @@ public class StageResultData
 }
 
 [Serializable]
-public class ItemData
+public class ItemSlotData
 {
     public int Index;
     public int Quantity;
+    public int SlotIndex;
+}
+
+[Serializable]
+public class WeaponSlotData
+{
+    public int Index;
+    public int Level;
+    public int SlotIndex;
 }
 
 public struct StagePlayerData

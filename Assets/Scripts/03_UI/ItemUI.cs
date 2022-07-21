@@ -20,9 +20,9 @@ public class ItemUI : Display, IPointerClickHandler
 
     Action m_OnClickCallback;
 
-    public void SetData(int itemIndex, int itemCount)
+    public void SetItemData(int itemIndex, int itemCount)
     {
-        if (itemIndex < 5000)
+        if (itemIndex >= 5000 && itemIndex < 6000)
         {
             gameObject.SetActive(false);
             return;
@@ -46,12 +46,5 @@ public class ItemUI : Display, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         m_OnClickCallback?.Invoke();
-    }
-
-    public void SetData(int itemIndex, int itemCount, Action onClickCallback)
-    {
-        SetData(itemIndex, itemCount);
-
-        m_OnClickCallback = onClickCallback;
     }
 }
