@@ -21,7 +21,8 @@ public enum UIType
     Cheat,
     StageFail,
     Character,
-    NavigateLevelUp
+    NavigateLevelUp,
+    Inventory
 }
 
 public abstract class UI : MonoBehaviour

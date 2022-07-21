@@ -235,12 +235,40 @@ public class ItemSlotData
     public int SlotIndex;
 }
 
+readonly public struct ReadOnlyItemSlotData
+{
+    public int Index { get; }
+    public int Quantity { get; }
+    public int SlotIndex { get; }
+
+    public ReadOnlyItemSlotData(ItemSlotData data)
+    {
+        this.Index = data.Index;
+        this.Quantity = data.Quantity;
+        this.SlotIndex = data.SlotIndex;
+    }
+}
+
 [Serializable]
 public class WeaponSlotData
 {
     public int Index;
     public int Level;
     public int SlotIndex;
+}
+
+readonly public struct ReadOnlyWeaponSlotData
+{
+    public int Index { get; }
+    public int Level { get; }
+    public int SlotIndex { get; }
+
+    public ReadOnlyWeaponSlotData(WeaponSlotData data)
+    {
+        this.Index = data.Index;
+        this.Level = data.Level;
+        this.SlotIndex = data.SlotIndex;
+    }
 }
 
 public struct StagePlayerData

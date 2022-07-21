@@ -10,6 +10,29 @@ public class Inventory : ISubscribable
 {
     public delegate void InventoryDelegate(int index, int count);
 
+    public IEnumerable<ReadOnlyItemSlotData> Items
+    {
+        get
+        {
+            List<ReadOnlyItemSlotData> result = new List<ReadOnlyItemSlotData>();
+            foreach (var item in m_Items)
+                result.Add(new ReadOnlyItemSlotData(item));
+
+            return result;
+        }
+    }
+    public IEnumerable<ReadOnlyWeaponSlotData> Weapons
+    {
+        get
+        {
+            List<ReadOnlyWeaponSlotData> result = new List<ReadOnlyWeaponSlotData>();
+            foreach (var weapom in m_Weapons)
+                result.Add(new ReadOnlyWeaponSlotData(weapom));
+
+            return result;
+        }
+    }
+
     List<ItemSlotData> m_Items = new List<ItemSlotData>();
     List<WeaponSlotData> m_Weapons = new List<WeaponSlotData>();
 
