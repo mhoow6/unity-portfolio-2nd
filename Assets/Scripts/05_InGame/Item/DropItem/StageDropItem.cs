@@ -25,7 +25,7 @@ public class StageDropItem : DropItem
         }
         else
         {
-            sm.StageResult.Rewards.Add(new ItemSlotData()
+            sm.StageResult.Rewards.Add(new RewardData()
             {
                 Index = dropItemIndex,
                 Quantity = 1

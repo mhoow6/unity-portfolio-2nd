@@ -195,7 +195,7 @@ public class StageResultData
     public StagePlayerData PlayerRecord;
     public List<StageCharacterData> CharacterRecords;
 
-    public List<ItemSlotData> Rewards;
+    public List<RewardData> Rewards;
 
     public TimeSpan Duration
     {
@@ -209,7 +209,7 @@ public class StageResultData
 
     int m_Score;
 
-    public StageResultData(List<ItemSlotData> rewardList)
+    public StageResultData(List<RewardData> rewardList)
     {
         WorldIdx = 0;
         StageIdx = 0;
@@ -233,6 +233,13 @@ public class ItemSlotData
     public int Index;
     public int Quantity;
     public int SlotIndex;
+}
+
+[Serializable]
+public class RewardData
+{
+    public int Index;
+    public int Quantity;
 }
 
 readonly public struct ReadOnlyItemSlotData

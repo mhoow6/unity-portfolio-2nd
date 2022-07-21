@@ -18,6 +18,8 @@ public class ItemUI : Display, IPointerClickHandler
 
     public List<Color> RarityBackgroundColors = new List<Color>(5);
 
+    protected int m_SlotIdx;
+
     Action m_OnClickCallback;
 
     public void SetItemData(int itemIndex, int itemCount)
@@ -41,6 +43,13 @@ public class ItemUI : Display, IPointerClickHandler
 
         // 배경 색상
         RarityBackground.color = RarityBackgroundColors[itemData.StarCount - 2];
+    }
+
+    public void SetItemData(int itemIndex, int itemCount, int slotIdx)
+    {
+        SetItemData(itemIndex, itemCount);
+
+        m_SlotIdx = slotIdx;
     }
 
     public void OnPointerClick(PointerEventData eventData)

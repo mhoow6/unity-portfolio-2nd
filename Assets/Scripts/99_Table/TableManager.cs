@@ -107,11 +107,12 @@ namespace DatabaseSystem
                 ItemTable info;
                 info.Index = int.Parse(datas[0]);
 				info.Type = (ItemType)Enum.Parse(typeof(ItemType),datas[1]);
-				info.Name = datas[2];
-				info.StarCount = int.Parse(datas[3]);
-				info.IconName = datas[4];
-				info.Point = int.Parse(datas[5]);
-				info.MaxAmount = int.Parse(datas[6]);
+				info.GroupType = (ItemGroupType)Enum.Parse(typeof(ItemGroupType),datas[2]);
+				info.Name = datas[3];
+				info.StarCount = int.Parse(datas[4]);
+				info.IconName = datas[5];
+				info.Point = int.Parse(datas[6]);
+				info.MaxAmount = int.Parse(datas[7]);
 				
                 ItemTable.Add(info);
                 LoadedData++;

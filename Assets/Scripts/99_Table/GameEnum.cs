@@ -255,4 +255,24 @@
 
     }
 
+    public enum ItemGroupType
+    {
+        
+        /// <summary> 더미 </summary> ///
+        None = 0,
+
+        /// <summary> 소모품 </summary> ///
+        Consume = 1,
+
+        /// <summary> 기초재료 </summary> ///
+        BasicMaterial = 2,
+
+        /// <summary> 합성재료 </summary> ///
+        SyntheticMaterial = 3,
+
+        /// <summary> 이벤트 재료 </summary> ///
+        Event = 4,
+
+    }
+
 

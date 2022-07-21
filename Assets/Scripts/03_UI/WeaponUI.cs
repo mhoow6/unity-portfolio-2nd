@@ -11,6 +11,8 @@ public class WeaponUI : ItemUI
 
     public void SetWeaponData(int weaponIndex, int slotIdx)
     {
+        m_SlotIdx = slotIdx;
+
         if (weaponIndex >= 7000 && weaponIndex < 8000)
         {
             gameObject.SetActive(false);

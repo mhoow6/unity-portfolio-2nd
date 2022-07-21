@@ -78,6 +78,8 @@
 		public int Index;
 		/// <summary> 아이템 타입 </summary> ///
 		public ItemType Type;
+		/// <summary> 아이템 카테고리 </summary> ///
+		public ItemGroupType GroupType;
 		/// <summary> 게임에서 사용되는 이름 </summary> ///
 		public string Name;
 		/// <summary> 아이템 별의 갯수 </summary> ///
