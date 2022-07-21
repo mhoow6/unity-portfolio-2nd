@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DatabaseSystem;
 
-public class CharacterListElement : Display, IPointerClickHandler
+public class CharacterListElement : Display, IPointerClickHandler, IGameEventListener
 {
     public Toggle Toggle;
 
@@ -22,11 +22,13 @@ public class CharacterListElement : Display, IPointerClickHandler
         Toggle.onValueChanged.AddListener(delegate {
             ChangeColor(Toggle);
         });
+        GameEventSystem.AddListener(this);
     }
 
     private void OnDisable()
     {
         Toggle.onValueChanged.RemoveAllListeners();
+        GameEventSystem.RemoveListener(this);
     }
 
     public void SetData(CharacterRecordData record, ToggleGroup group)
@@ -50,6 +52,26 @@ public class CharacterListElement : Display, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        GameEventSystem.SendEvent(GameEvent.LOBBY_SwapCharacter, CharacterData.Code);
+        GameEventSystem.SendEvent(GameEvent.LOBBY_ShowCharacter, CharacterData.Code);
+    }
+
+    public void Listen(GameEvent gameEvent){}
+
+    public void Listen(GameEvent gameEvent, params object[] args)
+    {
+        switch (gameEvent)
+        {
+            case GameEvent.LOBBY_ShowCharacter:
+                {
+                    ObjectCode character = (ObjectCode)args[0];
+                    if (CharacterData.Code != character)
+                        return;
+
+                    Level.text = $"Lv.{CharacterData.Level}";
+                    break;
+                }
+            default:
+                break;
+        }
     }
 }

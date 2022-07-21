@@ -7,10 +7,11 @@ public enum GameEvent
     None = 0,
     STAGE_Clear,
     STAGE_Fail,
-    LOBBY_SwapCharacter,
+    LOBBY_ShowCharacter,
     LOBBY_GainCharacter,
     LOBBY_ChangePartyPreset,
-    LOBBY_LevelUpCharacter
+    LOBBY_LevelUpCharacter,
+    GLOBAL_ReachMaxLevelCharacter
 }
 
 public interface IGameEventListener

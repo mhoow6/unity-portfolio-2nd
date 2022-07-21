@@ -48,11 +48,8 @@ public class CharacterUI : UI, IGameEventListener
     {
         switch (gameEvent)
         {
-            case GameEvent.LOBBY_SwapCharacter:
+            case GameEvent.LOBBY_ShowCharacter:
                 {
-                    if (args.Length != 1)
-                        return;
-
                     ObjectCode selectedCharacter = (ObjectCode)args[0];
                     SelectedCharacter = selectedCharacter;
 
@@ -60,16 +57,6 @@ public class CharacterUI : UI, IGameEventListener
 
                     // 캐릭터 생성
                     LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
-                    break;
-                }
-            case GameEvent.LOBBY_LevelUpCharacter:
-                {
-                    if (args.Length != 1)
-                        return;
-
-                    ObjectCode levelUpCharacter = (ObjectCode)args[0];
-
-                    ShowCharacterInfo(levelUpCharacter);
                     break;
                 }
             default:
@@ -146,7 +133,7 @@ public class CharacterUI : UI, IGameEventListener
             selectedCharacter = m_CharacterList[0].CharacterData.Code;
         }
 
-        Listen(GameEvent.LOBBY_SwapCharacter, selectedCharacter);
+        Listen(GameEvent.LOBBY_ShowCharacter, selectedCharacter);
     }
 
     public void SetData(ObjectCode selectedCharacter, int worldIdx, int stageIdx, bool leaderSlot)
@@ -273,7 +260,9 @@ public class CharacterUI : UI, IGameEventListener
         var characterExpData = TableManager.Instance.CharacterLevelExperienceTable.Find(cha => cha.Level == characterRecord.Level);
         SelectedCharacterExpSlider.SetData(0, characterExpData.MaxExperience, (exp) =>
         {
-            SelectedCharacterExp.text = $"{characterRecord.Experience} / {characterExpData.MaxExperience}";
+            var playerCharacter = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == selectedCharacter);
+
+            SelectedCharacterExp.text = $"{playerCharacter.Experience} / {characterExpData.MaxExperience}";
         });
         SelectedCharacterExpSlider.Value = characterRecord.Experience;
 

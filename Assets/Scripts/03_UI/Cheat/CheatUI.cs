@@ -36,12 +36,16 @@ public class CheatUI : UI
 
         GameManager.PlayerData.Inventory.OnItemAdd += (itemIndex, itemCount) =>
         {
-            Debug.Log($"{itemIndex}를 {itemCount}만큼 넣었다!");
+            var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == itemIndex);
+
+            Debug.LogWarning($"{itemData.Name}를 {itemCount}만큼 넣었다!");
         };
 
         GameManager.PlayerData.Inventory.OnItemRemove += (itemIndex, itemCount) =>
         {
-            Debug.Log($"{itemIndex}를 {itemCount}만큼 뺐다!");
+            var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == itemIndex);
+
+            Debug.LogWarning($"{itemData.Name}를 {itemCount}만큼 뺐다!");
         };
     }
 

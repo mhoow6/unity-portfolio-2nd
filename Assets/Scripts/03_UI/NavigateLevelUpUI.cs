@@ -179,6 +179,7 @@ public class NavigateLevelUpUI : UI
             var record = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == m_SelectedCharacter);
 
             record.LevelUp(itemData.Point * m_ConsumeItemCount);
+            GameEventSystem.SendEvent(GameEvent.LOBBY_ShowCharacter, m_SelectedCharacter);
             GameManager.PlayerData.Inventory.RemoveItem(m_ConsumeItemIndex, m_ConsumeItemCount);
 
         }
