@@ -53,11 +53,29 @@ public class Inventory : ISubscribable
         var exist = m_Items.Find(item => item.Index == itemIndex);
         if (exist != null)
         {
-            // 인벤토리에 아이템이 있는 경우
-            exist.Quantity += itemCount;
+            if (exist.Quantity + itemCount > itemData.MaxAmount)
+            {
+                int delta = exist.Quantity + itemCount - itemData.MaxAmount;
+
+                Debug.LogWarning($"Index:{itemIndex}를 최대로 보유할 수 있는 양보다 {delta}만큼 더 얻을려고 하고 있습니다.");
+                exist.Quantity = itemData.MaxAmount;
+            }
+            else
+            {
+                // 인벤토리에 아이템이 있는 경우
+                exist.Quantity += itemCount;
+            }
         }
         else
         {
+            if (itemCount > itemData.MaxAmount)
+            {
+                int delta = itemCount - itemData.MaxAmount;
+
+                Debug.LogWarning($"Index:{itemIndex}를 최대로 보유할 수 있는 양보다 {delta}만큼 더 얻을려고 하고 있습니다.");
+                itemCount = itemData.MaxAmount;
+            }
+
             // 인벤토리에 아이템이 아예 없는 경우
             m_Items.Add(new ItemSlotData()
             {

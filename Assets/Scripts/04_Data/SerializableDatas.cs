@@ -290,3 +290,9 @@ public struct StageCharacterData
     public int Level;
     public int Experience;
 }
+
+public struct InventoryUIStoredData
+{
+    public GameObject GameObject;
+    public int SlotIdx;
+}

@@ -13,7 +13,7 @@ public class WeaponUI : ItemUI
     {
         m_SlotIdx = slotIdx;
 
-        if (weaponIndex >= 7000 && weaponIndex < 8000)
+        if (weaponIndex < 7000 && weaponIndex > 8000)
         {
             gameObject.SetActive(false);
             return;

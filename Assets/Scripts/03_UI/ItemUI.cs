@@ -6,7 +6,7 @@ using DatabaseSystem;
 using System;
 using UnityEngine.EventSystems;
 
-public class ItemUI : Display, IPointerClickHandler
+public class ItemUI : Display
 {
     public Image ItemFrame;
     public Image ItemIcon;
@@ -20,11 +20,9 @@ public class ItemUI : Display, IPointerClickHandler
 
     protected int m_SlotIdx;
 
-    Action m_OnClickCallback;
-
     public void SetItemData(int itemIndex, int itemCount)
     {
-        if (itemIndex >= 5000 && itemIndex < 6000)
+        if (itemIndex < 5000 && itemIndex > 6000)
         {
             gameObject.SetActive(false);
             return;
@@ -50,10 +48,5 @@ public class ItemUI : Display, IPointerClickHandler
         SetItemData(itemIndex, itemCount);
 
         m_SlotIdx = slotIdx;
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        m_OnClickCallback?.Invoke();
     }
 }

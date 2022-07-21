@@ -76,7 +76,7 @@ public class CheatUI : UI
 
     public void OnShowInventoryBtnClick()
     {
-        GameManager.PlayerData.Inventory.ShowInventoryToString();
+        var ui = GameManager.UISystem.OpenWindow<InventoryUI>(type: UIType.Inventory);
     }
 
     public void OnRefreshGameBtnClick()
