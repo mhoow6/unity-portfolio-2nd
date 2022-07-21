@@ -52,6 +52,7 @@ public class CharacterRecordData
     public int LevelUpSimulate(int gainExperience)
     {
         int maxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+        int playerLevel = GameManager.PlayerData.Level;
 
         int level = Level;
         var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level);
@@ -66,7 +67,7 @@ public class CharacterRecordData
             previousExperience = 0;
 
             // 만약 만렙에서 레벨업이 되려는 상황이면
-            if (level >= maxLevel)
+            if (level > maxLevel || level > playerLevel)
             {
                 level = maxLevel;
                 return level;
@@ -81,6 +82,7 @@ public class CharacterRecordData
     public void LevelUp(int gainExperience)
     {
         int maxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+        int playerLevel = GameManager.PlayerData.Level;
 
         var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == Level);
         int maxExperience = levelData.MaxExperience;
@@ -92,8 +94,8 @@ public class CharacterRecordData
             GameEventSystem.SendEvent(GameEvent.LOBBY_LevelUpCharacter, Code);
             Experience = 0;
 
-            // 만약 만렙에서 레벨업이 되려는 상황이면
-            if (Level >= maxLevel)
+            // 만약 만렙에서 레벨업이 되려는 상황이면 or 플레이어 레벨보다 캐릭터 레벨이 높아질려고 하면
+            if (Level > maxLevel || Level > playerLevel)
             {
                 // 레벨은 그대로 경험치만 최대로
                 Level = maxLevel;
