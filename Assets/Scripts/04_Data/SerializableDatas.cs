@@ -301,3 +301,10 @@ public struct InventoryUIStoredData
     public int ItemIndex;
     public int SlotIdx;
 }
+
+public struct ItemExplainUIStoredData
+{
+    public int ItemIndex;
+    public int UseQuantity;
+    public int MaxUseQuantity;
+}

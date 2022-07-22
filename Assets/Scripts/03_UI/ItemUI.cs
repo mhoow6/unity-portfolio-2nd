@@ -16,8 +16,6 @@ public class ItemUI : Display
     public List<GameObject> Stars = new List<GameObject>();
     public Text ItemCount;
 
-    public List<Color> RarityBackgroundColors = new List<Color>(5);
-
     protected int m_SlotIdx;
 
     public void SetItemData(int itemIndex, int itemCount)
@@ -40,7 +38,7 @@ public class ItemUI : Display
         Stars[itemData.StarCount - 2].gameObject.SetActive(true);
 
         // 배경 색상
-        RarityBackground.color = RarityBackgroundColors[itemData.StarCount - 2];
+        RarityBackground.color = GameManager.GlobalData.RarityBackgroundColors[itemData.StarCount - 2];
     }
 
     public void SetItemData(int itemIndex, int itemCount, int slotIdx)

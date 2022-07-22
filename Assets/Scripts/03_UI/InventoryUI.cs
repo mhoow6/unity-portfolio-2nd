@@ -63,6 +63,13 @@ public class InventoryUI : UI
             var inst = _inst.GetComponent<ItemUI>();
             inst.SetItemData(item.Index, item.Quantity, item.SlotIndex);
 
+            var gButton = inst.gameObject.AddComponent<GenericButton>();
+            gButton.onButtonClick.AddListener(() =>
+            {
+                var explainUI = GameManager.UISystem.OpenWindow<ItemExplainUI>(UIType.ItemExplain, false);
+                explainUI.SetData(item.Index);
+            });
+
             m_InventorySlots.Add(new InventoryUIStoredData()
             {
                 ItemIndex = item.Index,

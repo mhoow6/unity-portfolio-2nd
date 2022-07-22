@@ -50,6 +50,10 @@ public sealed class GameManager : MonoBehaviour
     [Header("# 게임 설정")]
     [SerializeField] GameDevelopSettings m_GameDevelopSettings;
     public static GameDevelopSettings GameDevelopSettings => Instance.m_GameDevelopSettings;
+
+    public static GameGlobalData GlobalData => Instance.m_GameGlobalData;
+    [SerializeField] GameGlobalData m_GameGlobalData;
+
     [SerializeField] GameSettings m_GameSettings;
     public static GameSettings GameSettings => Instance.m_GameSettings;
 

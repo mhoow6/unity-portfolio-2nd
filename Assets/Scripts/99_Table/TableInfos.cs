@@ -72,6 +72,16 @@
 		public int HpRecoveryPoint;
 	}
 
+	public struct ItemExplainTable
+	{
+		/// <summary> 아이템 인덱스 </summary> ///
+		public int Index;
+		/// <summary> 주 설명 </summary> ///
+		public string MainExplain;
+		/// <summary> 부 설명 </summary> ///
+		public string SubExplain;
+	}
+
 	public struct ItemTable
 	{
 		/// <summary> 아이템 인덱스 </summary> ///
@@ -242,10 +252,10 @@
 
 	public struct WeaponTable
 	{
-		/// <summary> 아이템 인덱스 </summary> ///
+		/// <summary> 무기 인덱스 </summary> ///
 		public int Index;
-		/// <summary> 아이템 타입 </summary> ///
-		public ItemType Type;
+		/// <summary> 무기 타입 </summary> ///
+		public WeaponType Type;
 		/// <summary> 게임에서 사용되는 이름 </summary> ///
 		public string Name;
 		/// <summary> 아이템 별의 갯수 </summary> ///

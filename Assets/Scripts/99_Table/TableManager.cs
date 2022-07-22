@@ -11,6 +11,7 @@ namespace DatabaseSystem
 		public List<CharacterLevelExperienceTable> CharacterLevelExperienceTable = new List<CharacterLevelExperienceTable>();
 		public List<CharacterTable> CharacterTable = new List<CharacterTable>();
 		public List<HpRecoveryItemTable> HpRecoveryItemTable = new List<HpRecoveryItemTable>();
+		public List<ItemExplainTable> ItemExplainTable = new List<ItemExplainTable>();
 		public List<ItemTable> ItemTable = new List<ItemTable>();
 		public List<PlayerLevelEnergyTable> PlayerLevelEnergyTable = new List<PlayerLevelEnergyTable>();
 		public List<PlayerLevelExperienceTable> PlayerLevelExperienceTable = new List<PlayerLevelExperienceTable>();
@@ -96,6 +97,20 @@ namespace DatabaseSystem
 				info.HpRecoveryPoint = int.Parse(datas[3]);
 				
                 HpRecoveryItemTable.Add(info);
+                LoadedData++;
+            }
+        
+            var ItemExplainTableTextasset = Resources.Load<TextAsset>("99_Database/Table/ItemExplainTable");
+            string[] ItemExplainTableLines = ItemExplainTableTextasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 4; i < ItemExplainTableLines.Length; i++)
+            {
+                string[] datas = ItemExplainTableLines[i].Split(',');
+                ItemExplainTable info;
+                info.Index = int.Parse(datas[0]);
+				info.MainExplain = datas[1];
+				info.SubExplain = datas[2];
+				
+                ItemExplainTable.Add(info);
                 LoadedData++;
             }
         
@@ -298,7 +313,7 @@ namespace DatabaseSystem
                 string[] datas = WeaponTableLines[i].Split(',');
                 WeaponTable info;
                 info.Index = int.Parse(datas[0]);
-				info.Type = (ItemType)Enum.Parse(typeof(ItemType),datas[1]);
+				info.Type = (WeaponType)Enum.Parse(typeof(WeaponType),datas[1]);
 				info.Name = datas[2];
 				info.StarCount = int.Parse(datas[3]);
 				info.IconName = datas[4];

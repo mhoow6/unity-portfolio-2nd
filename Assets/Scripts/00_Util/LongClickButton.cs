@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     bool _pointerDown;
     float _pointerDownTimer;
@@ -15,7 +15,7 @@ public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public float holdCycleTime;
 
     public UnityEvent onLongClick;
-    
+
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -31,8 +31,15 @@ public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         OnButtonUp(eventData);
     }
 
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnButtonClick(eventData);
+    }
+
     protected virtual void OnButtonDown(PointerEventData eventData) { }
     protected virtual void OnButtonUp(PointerEventData eventData) { }
+    protected virtual void OnButtonClick(PointerEventData eventData) { }
 
     void Update()
     {
@@ -63,4 +70,5 @@ public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         _pointerDownTimer = 0f;
         _holdCycleTimer = 0f;
     }
+
 }

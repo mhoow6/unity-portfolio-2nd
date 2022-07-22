@@ -48,6 +48,6 @@ public class WeaponUI : ItemUI
         Stars[weaponData.StarCount - 2].gameObject.SetActive(true);
 
         // 배경 색상
-        RarityBackground.color = RarityBackgroundColors[weaponData.StarCount - 2];
+        RarityBackground.color = GameManager.GlobalData.RarityBackgroundColors[weaponData.StarCount - 2];
     }
 }

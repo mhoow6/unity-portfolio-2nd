@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class GenericButton : LongClickButton
 {
-    public UnityEvent onButtonDown;
-    public UnityEvent onButtonUp;
+    public UnityEvent onButtonDown = new UnityEvent();
+    public UnityEvent onButtonUp = new UnityEvent();
+    public UnityEvent onButtonClick = new UnityEvent();
 
     protected override void OnButtonDown(PointerEventData eventData)
     {
@@ -18,5 +19,10 @@ public class GenericButton : LongClickButton
     protected override void OnButtonUp(PointerEventData eventData)
     {
         onButtonUp?.Invoke();
+    }
+
+    protected override void OnButtonClick(PointerEventData eventData)
+    {
+        onButtonClick?.Invoke();
     }
 }

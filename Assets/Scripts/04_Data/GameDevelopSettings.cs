@@ -43,10 +43,7 @@ public sealed class GameDevelopSettings : ScriptableObject
     [SerializeField] string m_SoundPath;
 
     // ----------------------------------------------------------------------
-    public float SceneTransitionWaitingTime => m_SceneTransitionWaitingTime;
-    [SerializeField] float m_SceneTransitionWaitingTime;
 
-    // ----------------------------------------------------------------------
     public int UILayermask => m_UILayermask;
     [SerializeField] int m_UILayermask;
     public int TerrainLayermask => m_TerrainLayermask;
