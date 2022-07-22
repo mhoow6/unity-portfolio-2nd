@@ -18,6 +18,31 @@ public class ItemUI : Display
 
     protected int m_SlotIdx;
 
+    private void OnEnable()
+    {
+        GameManager.PlayerData.Inventory.OnItemRemove += (index, removeCount) =>
+        {
+            var record = GameManager.PlayerData.Inventory.FindItemByIndex(index);
+            int representCount = 0;
+            
+            if (record != null)
+            {
+                // 자신이 보여주는 아이템이 아닌 경우
+                if (record.SlotIndex != m_SlotIdx)
+                    return;
+                else
+                    representCount = record.Quantity;
+            }
+
+            ItemCount.text = $"x<size=24>{representCount}</size>";
+        };
+    }
+
+    private void OnDisable()
+    {
+        GameManager.PlayerData.Inventory.DisposeEvents();
+    }
+
     public void SetItemData(int itemIndex, int itemCount)
     {
         if (itemIndex < 5000 && itemIndex > 6000)

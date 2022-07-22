@@ -21,6 +21,10 @@ public class StatusUI : Display
 
         // 이벤트 등록 
         playerData.OnEnergyUpdate += EnergyTextUpdate;
+        playerData.OnGoldUpdate += (gold) =>
+        {
+            Gold.text = $"{gold}";
+        };
 
         Gold.text = $"{playerData.Gold}";
 

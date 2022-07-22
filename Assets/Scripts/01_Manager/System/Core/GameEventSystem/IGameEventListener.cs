@@ -11,7 +11,8 @@ public enum GameEvent
     LOBBY_GainCharacter,
     LOBBY_ChangePartyPreset,
     LOBBY_LevelUpCharacter,
-    GLOBAL_ReachMaxLevelCharacter
+    GLOBAL_ReachMaxLevelCharacter,
+    LOBBY_DestroyItem,
 }
 
 public interface IGameEventListener

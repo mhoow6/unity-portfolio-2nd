@@ -1,6 +1,6 @@
 public abstract class InventoryItem
 {
-    public abstract void Use(int itemIndex);
+    public abstract void Use(int itemIndex, int count);
 
     public static InventoryItem Get(ItemType type)
     {

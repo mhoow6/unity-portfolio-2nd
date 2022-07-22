@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class EnergyRefillItem : InventoryItem
 {
-    public override void Use(int itemIndex)
+    public override void Use(int itemIndex, int count)
     {
         var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == itemIndex);
 
-        GameManager.PlayerData.Energy += itemData.Point;
+        GameManager.PlayerData.Energy += (itemData.Point * count);
     }
 }

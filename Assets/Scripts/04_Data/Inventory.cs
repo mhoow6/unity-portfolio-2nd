@@ -101,6 +101,7 @@ public class Inventory : ISubscribable
             if (exist.Quantity <= 0)
             {
                 m_Items.Remove(exist);
+                GameEventSystem.SendEvent(GameEvent.LOBBY_DestroyItem, itemIndex);
             }
             OnItemRemove?.Invoke(itemIndex, itemCount);
         }
@@ -162,6 +163,12 @@ public class Inventory : ISubscribable
         {
             Debug.Log($"{count++}번째 아이템 슬롯: [Index: {item.Index}, Quantity: {item.Quantity}]");
         }
+    }
+
+    public void Clear()
+    {
+        m_Items.Clear();
+        m_Weapons.Clear();
     }
 
     public void DisposeEvents()

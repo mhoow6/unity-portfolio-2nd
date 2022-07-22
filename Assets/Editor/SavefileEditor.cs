@@ -135,6 +135,36 @@ public class SavefileEditor : EditorWindow
 
         #endregion
 
+        GUILayout.Space(10);
+
+        #region 인벤토리
+        GUILayout.Label("인벤토리", EditorStyles.boldLabel);
+        GUILayout.Space(2);
+
+        if (GUILayout.Button("인벤토리 비우기", new GUILayoutOption[] { GUILayout.Height(30) }))
+        {
+            m_PlayerData.Inventory.Clear();
+            UpdatePlayerData();
+        }
+        #endregion
+
+        GUILayout.Space(10);
+
+        #region 초기화
+        GUILayout.Label("초기화", EditorStyles.boldLabel);
+        GUILayout.Space(2);
+
+        if (GUILayout.Button("초기화(캐릭터 전체삭제/인벤토리 비우기/뉴비지원 다시받기)", new GUILayoutOption[] { GUILayout.Height(30) }))
+        {
+            m_PlayerData.NewbieGift = false;
+
+            m_PlayerData.CharacterDatas.Clear();
+            m_PlayerData.Inventory.Clear();
+
+            UpdatePlayerData();
+        }
+        #endregion
+
     }
 
     private void OnDestroy()

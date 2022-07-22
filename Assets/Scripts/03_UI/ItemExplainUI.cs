@@ -25,9 +25,15 @@ public class ItemExplainUI : UI
 
     ItemExplainUIStoredData m_SelectedItemData;
 
-    public override void OnClosed(){}
+    public override void OnClosed()
+    {
+        
+    }
 
-    public override void OnOpened(){}
+    public override void OnOpened()
+    {
+        
+    }
 
     public void SetData(int itemIndex)
     {
@@ -57,6 +63,7 @@ public class ItemExplainUI : UI
 
         // 데이터 보관
         m_SelectedItemData.ItemIndex = itemIndex;
+        m_SelectedItemData.UseQuantity = 1;
         m_SelectedItemData.MaxUseQuantity = userItem.Quantity;
 
         // 유저 보유수량 표기
@@ -81,7 +88,16 @@ public class ItemExplainUI : UI
 
     public void OnUseButtonClick()
     {
-        
+        var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == m_SelectedItemData.ItemIndex);
+
+        // 실제 아이템 사용
+        var invenItem = InventoryItem.Get(itemData.Type);
+        invenItem.Use(m_SelectedItemData.ItemIndex, m_SelectedItemData.UseQuantity);
+
+        // 인벤토리에서 그만큼 차감
+        GameManager.PlayerData.Inventory.RemoveItem(m_SelectedItemData.ItemIndex, m_SelectedItemData.UseQuantity);
+
+        GameManager.UISystem.CloseWindow(false);
     }
 
     public void OnMinusButtonClick()

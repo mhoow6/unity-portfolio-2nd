@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : UI
+public class InventoryUI : UI, IGameEventListener
 {
     public override UIType Type => UIType.Inventory;
 
@@ -29,6 +29,8 @@ public class InventoryUI : UI
 
     public override void OnClosed()
     {
+        GameEventSystem.RemoveListener(this);
+
         foreach (var slot in m_InventorySlots)
             Destroy(slot.GameObject);
         m_InventorySlots.Clear();
@@ -39,6 +41,8 @@ public class InventoryUI : UI
 
     public override void OnOpened()
     {
+        GameEventSystem.AddListener(this);
+
         // 무기 인벤토리에 맞춰서 Content 생성
         var userWeapons = GameManager.PlayerData.Inventory.Weapons;
         foreach (var weapon in userWeapons)
@@ -224,4 +228,26 @@ public class InventoryUI : UI
         }
     }
 
+    public void Listen(GameEvent gameEvent)
+    {
+        
+    }
+
+    public void Listen(GameEvent gameEvent, params object[] args)
+    {
+        switch (gameEvent)
+        {
+            case GameEvent.LOBBY_DestroyItem:
+                {
+                    int itemIndex = (int)args[0];
+
+                    var slot = m_InventorySlots.Find(slot => slot.ItemIndex == itemIndex);
+                    Destroy(slot.GameObject);
+                    m_InventorySlots.Remove(slot);
+
+                    break;
+                }
+                
+        }
+    }
 }
