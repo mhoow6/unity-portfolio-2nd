@@ -61,7 +61,7 @@ public class NavigateLevelUpUI : UI
         bool levelupItemExist = false;
         foreach (var data in levelupItemDatas)
         {
-            var userItem = GameManager.PlayerData.Inventory.FindItem(data.Index);
+            var userItem = GameManager.PlayerData.Inventory.FindItemByIndex(data.Index);
             if (userItem == null)
                 levelupItemExist |= false;
             else
@@ -81,7 +81,7 @@ public class NavigateLevelUpUI : UI
         int count = 0;
         foreach (var data in levelupItemDatas)
         {
-            var userItem = GameManager.PlayerData.Inventory.FindItem(data.Index);
+            var userItem = GameManager.PlayerData.Inventory.FindItemByIndex(data.Index);
             if (userItem != null)
             {
                 var inst = Instantiate(ItemPrefab, ItemsParent.transform);

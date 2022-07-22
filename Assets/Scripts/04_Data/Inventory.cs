@@ -26,8 +26,8 @@ public class Inventory : ISubscribable
         get
         {
             List<ReadOnlyWeaponSlotData> result = new List<ReadOnlyWeaponSlotData>();
-            foreach (var weapom in m_Weapons)
-                result.Add(new ReadOnlyWeaponSlotData(weapom));
+            foreach (var weapon in m_Weapons)
+                result.Add(new ReadOnlyWeaponSlotData(weapon));
 
             return result;
         }
@@ -119,24 +119,29 @@ public class Inventory : ISubscribable
         OnWeaponAdd?.Invoke(weaponIndex);
     }
 
-    public void RemoveWeapon(int weaponIndex, int slotIdx)
+    public void RemoveWeapon(int slotIdx)
     {
-        var exist = m_Weapons.Find(item => item.Index == weaponIndex && item.SlotIndex == slotIdx);
+        var exist = m_Weapons.Find(item => item.SlotIndex == slotIdx);
         if (exist != null)
         {
             m_Weapons.Remove(exist);
-            OnWeaponRemove?.Invoke(weaponIndex);
+            OnWeaponRemove?.Invoke(slotIdx);
         }
     }
 
-    public ItemSlotData FindItem(int itemIndex)
+    public ItemSlotData FindItemByIndex(int itemIndex)
     {
         return m_Items.Find(item => item.Index == itemIndex);
     }
 
-    public WeaponSlotData FindWeapon(int weaponIndex, int slotIdx)
+    public ItemSlotData FindItemBySlotIndex(int slotIndex)
     {
-        return m_Weapons.Find(item => item.Index == weaponIndex && item.SlotIndex == slotIdx);
+        return m_Items.Find(item => item.SlotIndex == slotIndex);
+    }
+
+    public WeaponSlotData FindWeaponBySlotIndex(int slotIdx)
+    {
+        return m_Weapons.Find(item => item.SlotIndex == slotIdx);
     }
 
     /// <summary> 인벤토리에 있는 모든 아이템을 콘솔에 보여줍니다. </summary>

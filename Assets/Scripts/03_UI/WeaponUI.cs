@@ -24,7 +24,7 @@ public class WeaponUI : ItemUI
         var weaponData = TableManager.Instance.WeaponTable.Find(weapon => weapon.Index == weaponIndex);
 
         // 유저
-        var weaponRecord = GameManager.PlayerData.Inventory.FindWeapon(weaponIndex, slotIdx);
+        var weaponRecord = GameManager.PlayerData.Inventory.FindWeaponBySlotIndex(slotIdx);
 
         // 아이콘
         ItemIcon.sprite = Resources.Load<Sprite>($"{GameManager.GameDevelopSettings.TextureResourcePath}/{weaponData.IconName}");

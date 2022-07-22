@@ -261,6 +261,7 @@ public class WeaponSlotData
 {
     public int Index;
     public int Level;
+    public int Experience;
     public int SlotIndex;
 }
 
@@ -269,12 +270,14 @@ readonly public struct ReadOnlyWeaponSlotData
     public int Index { get; }
     public int Level { get; }
     public int SlotIndex { get; }
+    public int Experience { get; }
 
     public ReadOnlyWeaponSlotData(WeaponSlotData data)
     {
         this.Index = data.Index;
         this.Level = data.Level;
         this.SlotIndex = data.SlotIndex;
+        this.Experience = data.Experience;
     }
 }
 
