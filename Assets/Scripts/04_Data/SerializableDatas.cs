@@ -47,6 +47,7 @@ public class CharacterRecordData
     public ObjectCode Code;
     public int Level;
     public int EquipWeaponIndex;
+    public int EquipWeaponSlotIndex;
     public int Experience;
 
     public int LevelUpSimulate(int gainExperience)
@@ -297,5 +298,6 @@ public struct StageCharacterData
 public struct InventoryUIStoredData
 {
     public GameObject GameObject;
+    public int ItemIndex;
     public int SlotIdx;
 }

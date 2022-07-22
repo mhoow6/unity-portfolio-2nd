@@ -247,11 +247,11 @@
         /// <summary> 무기 레벨업 아이템 </summary> ///
         WeaponLevelUpChip = 2,
 
-        /// <summary> 활 </summary> ///
-        Bow = 3,
+        /// <summary> 에너지 충전 아이템 </summary> ///
+        EnergyRefill = 5,
 
-        /// <summary> 한손검 </summary> ///
-        Broadsword = 4,
+        /// <summary> 골드 충전 아이템 </summary> ///
+        GoldRefill = 6,
 
     }
 
@@ -272,6 +272,20 @@
 
         /// <summary> 이벤트 재료 </summary> ///
         Event = 4,
+
+    }
+
+    public enum WeaponType
+    {
+        
+        /// <summary> 더미 </summary> ///
+        None = 0,
+
+        /// <summary> 활 </summary> ///
+        Bow = 1,
+
+        /// <summary> 한손검 </summary> ///
+        Broadsword = 2,
 
     }
 

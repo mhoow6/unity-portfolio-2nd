@@ -20,12 +20,17 @@ public class DataInitializeSystem : IGameSystem
     {
         if (playerData.NewbieGift == false)
         {
+            // 기본 무기 지급
+            playerData.Inventory.AddWeapon(7000);
+            playerData.Inventory.AddWeapon(7001);
+
             // 기본 캐릭터 지급
             playerData.CharacterDatas.Add(new CharacterRecordData()
             {
                 Code = ObjectCode.CHAR_Sparcher,
                 Level = 1,
                 EquipWeaponIndex = 7000,
+                EquipWeaponSlotIndex = playerData.Inventory.FindWeapons(7000)[0].SlotIndex,
                 Experience = 0,
             });
             playerData.CharacterDatas.Add(new CharacterRecordData()
@@ -33,12 +38,10 @@ public class DataInitializeSystem : IGameSystem
                 Code = ObjectCode.CHAR_Knight,
                 Level = 1,
                 EquipWeaponIndex = 7001,
+                EquipWeaponSlotIndex = playerData.Inventory.FindWeapons(7001)[0].SlotIndex,
                 Experience = 0,
             });
 
-            // 기본 무기 지급
-            playerData.Inventory.AddWeapon(7000);
-            playerData.Inventory.AddWeapon(7001);
 
             // 에너지 지급
             if (playerData.LastEnergyUpdateTime == System.DateTime.MinValue)

@@ -10,6 +10,7 @@ public class Inventory : ISubscribable
 {
     public delegate void InventoryDelegate(int index, int count);
 
+    [JsonIgnore]
     public IEnumerable<ReadOnlyItemSlotData> Items
     {
         get
@@ -21,6 +22,8 @@ public class Inventory : ISubscribable
             return result;
         }
     }
+
+    [JsonIgnore]
     public IEnumerable<ReadOnlyWeaponSlotData> Weapons
     {
         get
@@ -33,13 +36,14 @@ public class Inventory : ISubscribable
         }
     }
 
-    List<ItemSlotData> m_Items = new List<ItemSlotData>();
-    List<WeaponSlotData> m_Weapons = new List<WeaponSlotData>();
-
+    [JsonIgnore] public int SlotCount => m_Items.Count + m_Weapons.Count;
     [JsonIgnore] public InventoryDelegate OnItemAdd;
     [JsonIgnore] public Action<int> OnWeaponAdd;
     [JsonIgnore] public InventoryDelegate OnItemRemove;
     [JsonIgnore] public Action<int> OnWeaponRemove;
+
+    [JsonProperty] List<ItemSlotData> m_Items = new List<ItemSlotData>();
+    [JsonProperty] List<WeaponSlotData> m_Weapons = new List<WeaponSlotData>();
 
     public void AddItem(int itemIndex, int itemCount)
     {
@@ -59,6 +63,7 @@ public class Inventory : ISubscribable
 
                 Debug.LogWarning($"Index:{itemIndex}를 최대로 보유할 수 있는 양보다 {delta}만큼 더 얻을려고 하고 있습니다.");
                 exist.Quantity = itemData.MaxAmount;
+                return;
             }
             else
             {
@@ -66,6 +71,7 @@ public class Inventory : ISubscribable
                 exist.Quantity += itemCount;
             }
         }
+        // 인벤토리에 아이템이 아예 없는 경우
         else
         {
             if (itemCount > itemData.MaxAmount)
@@ -75,13 +81,12 @@ public class Inventory : ISubscribable
                 Debug.LogWarning($"Index:{itemIndex}를 최대로 보유할 수 있는 양보다 {delta}만큼 더 얻을려고 하고 있습니다.");
                 itemCount = itemData.MaxAmount;
             }
-
-            // 인벤토리에 아이템이 아예 없는 경우
+            
             m_Items.Add(new ItemSlotData()
             {
                 Index = itemIndex,
                 Quantity = itemCount,
-                SlotIndex = m_Items.Count
+                SlotIndex = SlotCount
             });
         }
         OnItemAdd?.Invoke(itemIndex, itemCount);
@@ -114,7 +119,7 @@ public class Inventory : ISubscribable
         {
             Index = weaponIndex,
             Level = 1,
-            SlotIndex = m_Items.Count
+            SlotIndex = SlotCount
         });
         OnWeaponAdd?.Invoke(weaponIndex);
     }
@@ -142,6 +147,11 @@ public class Inventory : ISubscribable
     public WeaponSlotData FindWeaponBySlotIndex(int slotIdx)
     {
         return m_Weapons.Find(item => item.SlotIndex == slotIdx);
+    }
+
+    public List<WeaponSlotData> FindWeapons(int weaponIndex)
+    {
+        return m_Weapons.FindAll(item => item.Index == weaponIndex);
     }
 
     /// <summary> 인벤토리에 있는 모든 아이템을 콘솔에 보여줍니다. </summary>

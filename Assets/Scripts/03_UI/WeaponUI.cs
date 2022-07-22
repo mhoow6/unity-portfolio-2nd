@@ -36,7 +36,7 @@ public class WeaponUI : ItemUI
         EquippedObject.SetActive(false);
         foreach (var cha in GameManager.PlayerData.CharacterDatas)
         {
-            if (cha.EquipWeaponIndex == weaponIndex)
+            if (cha.EquipWeaponIndex == weaponIndex && cha.EquipWeaponSlotIndex == slotIdx)
             {
                 EquippedObject.SetActive(true);
                 break;

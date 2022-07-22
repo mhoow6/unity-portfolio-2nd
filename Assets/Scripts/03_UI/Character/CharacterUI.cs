@@ -285,7 +285,7 @@ public class CharacterUI : UI, IGameEventListener
         SelectedCharacterTypeIcons[(int)characterTableData.Type].SetActive(true);
 
         // ¹«±â
-        var weaponData = TableManager.Instance.ItemTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
+        var weaponData = TableManager.Instance.WeaponTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
         SelectedCharacterWeapon.text = weaponData.Name;
 
         if (m_UseForParty)

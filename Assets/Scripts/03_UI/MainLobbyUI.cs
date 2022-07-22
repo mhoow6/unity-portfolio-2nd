@@ -22,12 +22,12 @@ public class MainLobbyUI : UI
 
     public void OnAdventureBtnClick()
     {
-        GameManager.UISystem.OpenWindow<AdventureUI>(UIType.Adventure);
+        GameManager.UISystem.OpenWindow(UIType.Adventure);
     }
 
     public void OnEquipmentBtnClick()
     {
-        
+        GameManager.UISystem.OpenWindow(UIType.Inventory);
     }
 
     public void OnShopBtnClick()

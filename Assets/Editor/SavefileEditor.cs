@@ -96,6 +96,7 @@ public class SavefileEditor : EditorWindow
                         Code = m_SelectedCharacter,
                         Level = 1,
                         EquipWeaponIndex = 0,
+                        EquipWeaponSlotIndex = 0,
                         Experience = 0,
                     });
                     UpdatePlayerData();

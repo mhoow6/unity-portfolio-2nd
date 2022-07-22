@@ -1,3 +1,4 @@
+using DatabaseSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,7 @@ public class InventoryUI : UI
 
             m_InventorySlots.Add(new InventoryUIStoredData()
             {
+                ItemIndex = weapon.Index,
                 SlotIdx = weapon.SlotIndex,
                 GameObject = inst.gameObject
             });
@@ -63,6 +65,7 @@ public class InventoryUI : UI
 
             m_InventorySlots.Add(new InventoryUIStoredData()
             {
+                ItemIndex = item.Index,
                 SlotIdx = item.SlotIndex,
                 GameObject = inst.gameObject
             });
@@ -78,6 +81,30 @@ public class InventoryUI : UI
         ItemToggle.onValueChanged.AddListener(delegate
         {
             ItemToggleOnValueChanged(ItemToggle);
+        });
+
+        // 소재 - 소모품 토글 세팅
+        ItemCatergoy1Toggle.onValueChanged.AddListener(delegate
+        {
+            ItemCategory1ToggleOnValueChanged(ItemCatergoy1Toggle);
+        });
+
+        // 소재 - 기초재료 토글 세팅
+        ItemCatergoy2Toggle.onValueChanged.AddListener(delegate
+        {
+            ItemCategory2ToggleOnValueChanged(ItemCatergoy2Toggle);
+        });
+
+        // 소재 - 합성소재 토글 세팅
+        ItemCatergoy3Toggle.onValueChanged.AddListener(delegate
+        {
+            ItemCategory3ToggleOnValueChanged(ItemCatergoy3Toggle);
+        });
+
+        // 소재 - 이벤트 토글 세팅
+        ItemCatergoy4Toggle.onValueChanged.AddListener(delegate
+        {
+            ItemCategory4ToggleOnValueChanged(ItemCatergoy4Toggle);
         });
 
         // 처음 열렸을때 보여줄 화면 구성하기
@@ -109,7 +136,6 @@ public class InventoryUI : UI
     {
         if (toggle.isOn)
         {
-            m_InventorySlots.ForEach(slot => slot.GameObject.SetActive(false));
             ItemCatergoy1Toggle.gameObject.SetActive(true);
             ItemCatergoy2Toggle.gameObject.SetActive(true);
             ItemCatergoy3Toggle.gameObject.SetActive(true);
@@ -118,8 +144,75 @@ public class InventoryUI : UI
             WeaponToggle.GetComponent<Image>().color = ToggleColors[0];
             ItemToggle.GetComponent<Image>().color = ToggleColors[1];
 
-            var items = m_InventorySlots.Where(slot => GameManager.PlayerData.Inventory.FindItemBySlotIndex(slot.SlotIdx) != null);
-            foreach (var item in items)
+            ItemCatergoy1Toggle.isOn = true;
+            ItemCatergoy1Toggle.onValueChanged?.Invoke(true);
+        }
+    }
+
+    void ItemCategory1ToggleOnValueChanged(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            m_InventorySlots.ForEach(slot => slot.GameObject.SetActive(false));
+            ItemCatergoy1Toggle.GetComponent<Image>().color = InnerToggleColors[1];
+            ItemCatergoy2Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy3Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy4Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+
+            var group = TableManager.Instance.ItemTable.FindAll(item => item.GroupType == ItemGroupType.Consume);
+            var userGroupItems = m_InventorySlots.Where(slot => group.Find(item => item.Index == slot.ItemIndex).Index != 0);
+            foreach (var item in userGroupItems)
+                item.GameObject.SetActive(true);
+        }
+    }
+
+    void ItemCategory2ToggleOnValueChanged(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            m_InventorySlots.ForEach(slot => slot.GameObject.SetActive(false));
+            ItemCatergoy1Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy2Toggle.GetComponent<Image>().color = InnerToggleColors[1];
+            ItemCatergoy3Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy4Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+
+            var groups = TableManager.Instance.ItemTable.FindAll(item => item.GroupType == ItemGroupType.BasicMaterial);
+            var userGroupItems = m_InventorySlots.Where(slot => groups.Find(item => item.Index == slot.ItemIndex).Index != 0);
+            foreach (var item in userGroupItems)
+                item.GameObject.SetActive(true);
+        }
+    }
+
+    void ItemCategory3ToggleOnValueChanged(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            m_InventorySlots.ForEach(slot => slot.GameObject.SetActive(false));
+            ItemCatergoy1Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy2Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy3Toggle.GetComponent<Image>().color = InnerToggleColors[1];
+            ItemCatergoy4Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+
+            var groups = TableManager.Instance.ItemTable.FindAll(item => item.GroupType == ItemGroupType.SyntheticMaterial);
+            var userGroupItems = m_InventorySlots.Where(slot => groups.Find(item => item.Index == slot.ItemIndex).Index != 0);
+            foreach (var item in userGroupItems)
+                item.GameObject.SetActive(true);
+        }
+    }
+
+    void ItemCategory4ToggleOnValueChanged(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            m_InventorySlots.ForEach(slot => slot.GameObject.SetActive(false));
+            ItemCatergoy1Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy2Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy3Toggle.GetComponent<Image>().color = InnerToggleColors[0];
+            ItemCatergoy4Toggle.GetComponent<Image>().color = InnerToggleColors[1];
+
+            var groups = TableManager.Instance.ItemTable.FindAll(item => item.GroupType == ItemGroupType.Event);
+            var userGroupItems = m_InventorySlots.Where(slot => groups.Find(item => item.Index == slot.ItemIndex).Index != 0);
+            foreach (var item in userGroupItems)
                 item.GameObject.SetActive(true);
         }
     }
