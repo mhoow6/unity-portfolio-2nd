@@ -52,4 +52,9 @@ public sealed class GameDevelopSettings : ScriptableObject
     [SerializeField] int m_BaseObjectLayermask;
     public int PostProcessLayermask => m_PostProcessLayermask;
     [SerializeField] int m_PostProcessLayermask;
+
+    // ----------------------------------------------------------------------
+
+    public List<ObjectCode> NotImplementedCharacters => m_NotImplementedCharacters;
+    [SerializeField] List<ObjectCode> m_NotImplementedCharacters;
 }

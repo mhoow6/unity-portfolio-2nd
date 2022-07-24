@@ -288,6 +288,8 @@ public class CharacterUI : UI, IGameEventListener
         var weaponData = TableManager.Instance.WeaponTable.Find(item => item.Index == characterRecord.EquipWeaponIndex);
         SelectedCharacterWeapon.text = weaponData.Name;
 
+        // 파티용도로 쓰이는지에 따른 설정
+        TriggerPartyButton(3);
         if (m_UseForParty)
         {
             var stageRecord = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == m_WorldIdx && stage.StageIdx == m_StageIdx);

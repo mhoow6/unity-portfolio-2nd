@@ -2,6 +2,7 @@ using DatabaseSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -98,6 +99,35 @@ public class SortieUI : UI, IGameEventListener
         {
             var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
             warning.SetData("에너지가 부족하여 출전할 수 없습니다.");
+            return;
+        }
+
+        // 미구현 캐릭터는 참전시킬 수 없음
+        var stagePreset = GameManager.PlayerData.StageRecords.Find(stage => stage.WorldIdx == WorldIdx && stage.StageIdx == StageIdx);
+        bool isLeaderNotImplement = GameManager.GameDevelopSettings.NotImplementedCharacters.Contains(stagePreset.CharacterLeader);
+        bool isSecondNotImplement = GameManager.GameDevelopSettings.NotImplementedCharacters.Contains(stagePreset.CharacterSecond);
+        bool isThirdNotImplement = GameManager.GameDevelopSettings.NotImplementedCharacters.Contains(stagePreset.CharacterThird);
+
+        if (isLeaderNotImplement || isSecondNotImplement || isThirdNotImplement)
+        {
+            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+
+            string leaderName = TableManager.Instance.CharacterTable.Find(cha => cha.Code == stagePreset.CharacterLeader).Name;
+            string secondName = TableManager.Instance.CharacterTable.Find(cha => cha.Code == stagePreset.CharacterSecond).Name;
+            string thirdName = TableManager.Instance.CharacterTable.Find(cha => cha.Code == stagePreset.CharacterThird).Name;
+
+            StringBuilder messageSB = new StringBuilder();
+
+            if (isLeaderNotImplement)
+                messageSB.Append($"{leaderName},");
+            if (isSecondNotImplement)
+                messageSB.Append($"{secondName},");
+            if (isThirdNotImplement)
+                messageSB.Append($"{thirdName},");
+
+            messageSB.Remove(messageSB.Length - 1, 1);
+
+            warning.SetData($"{messageSB}는 미구현 캐릭터입니다.");
             return;
         }
 
