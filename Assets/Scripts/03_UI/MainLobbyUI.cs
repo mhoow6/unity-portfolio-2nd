@@ -65,7 +65,7 @@ public class MainLobbyUI : UI
             lobbyManager.MainCam.gameObject.SetActive(false);
 
             // 캐릭터 클릭시 애니메이션 발생 시작
-            lobbyManager.MainLobbySystem.CheckUserClickingTheCharacter = false;
+            lobbyManager.LobbySystem.CheckUserClickingTheCharacter = false;
         }
     }
 
@@ -88,8 +88,8 @@ public class MainLobbyUI : UI
         // 메인 카메라 키기
         var lobbyManager = LobbyManager.Instance;
         lobbyManager.MainCam.transform.SetPositionAndRotation
-            (lobbyManager.MainLobbySystem.LobbyUICameraPosition.transform.position,
-            lobbyManager.MainLobbySystem.LobbyUICameraPosition.transform.rotation);
+            (lobbyManager.LobbySystem.LobbyUICameraPosition.transform.position,
+            lobbyManager.LobbySystem.LobbyUICameraPosition.transform.rotation);
 
         lobbyManager.MainCam.gameObject.SetActive(true);
 
@@ -103,7 +103,7 @@ public class MainLobbyUI : UI
         StartCoroutine(ExperienceSliderDOValueCoroutine(playerData.Experience));
 
         // 캐릭터 클릭시 애니메이션 발생 시작
-        LobbyManager.Instance.MainLobbySystem.CheckUserClickingTheCharacter = true;
+        LobbyManager.Instance.LobbySystem.CheckUserClickingTheCharacter = true;
     }
 
     IEnumerator ExperienceSliderDOValueCoroutine(float endValue)

@@ -17,9 +17,16 @@ public class LoadingTitleUI : UI
     [SerializeField] GameObject m_LoadingCompleteObject;
     [SerializeField] Animator m_LoadingCompleteAnimator;
 
-    [ReadOnly] public bool IsLoadingComplete;
     public override UIType Type { get => UIType.LoadingTitle; }
 
+    Action m_OnGameStartCallback;
+    Action m_OnQuarterLoadCallback;
+    Action m_OnHalfLoadCallback;
+    Action m_OnThreeQuarterLoadCallback;
+    Action m_OnAlmostLoadCallback;
+
+
+    [SerializeField, ReadOnly] bool m_IsLoadingComplete;
     int m_DownloadDataPerSecond;
     int m_NeedToLoadDataCount;
     int m_TotalDownloadDataCount;
@@ -29,7 +36,7 @@ public class LoadingTitleUI : UI
 
     public override void OnOpened()
     {
-        IsLoadingComplete = false;
+        m_IsLoadingComplete = false;
 
         m_LoadingObject.SetActive(true);
         m_LoadingCompleteObject.SetActive(false);
@@ -43,7 +50,16 @@ public class LoadingTitleUI : UI
         m_LoadingSlider.gameObject.SetActive(true);
 
         // 로딩타이틀 연출시작
-        LobbyManager.Instance.LoadingTitleSystem.Init(this);
+        LobbyManager.Instance.MovingRoad.Move(() => { return m_IsLoadingComplete; });
+    }
+
+    public void SetData(Action onGameStartCallback, Action onQuarterLoadCallback = null, Action onHalfLoadCallback = null, Action onThreeQuarterLoadCallback = null, Action onAlmostLoadCallback = null)
+    {
+        m_OnGameStartCallback = onGameStartCallback;
+        m_OnQuarterLoadCallback = onQuarterLoadCallback;
+        m_OnHalfLoadCallback = onHalfLoadCallback;
+        m_OnThreeQuarterLoadCallback = onThreeQuarterLoadCallback;
+        m_OnAlmostLoadCallback = onAlmostLoadCallback;
 
         StartCoroutine(FakeLoadingWithProgress());
         StartCoroutine(FakeLoadingWithTime());
@@ -58,7 +74,7 @@ public class LoadingTitleUI : UI
         m_LoadingPercent.text = string.Format("{0:00.00}", 0);
         m_RestTime.text = "00:00";
         m_LoadingSlider.Value = 0;
-        IsLoadingComplete = false;
+        m_IsLoadingComplete = false;
     }
 
     IEnumerator FakeLoadingWithProgress()
@@ -77,11 +93,40 @@ public class LoadingTitleUI : UI
             m_TotalDownloadDataCount += m_DownloadDataPerSecond;
             m_LoadingSlider.Value = m_TotalDownloadDataCount;
 
-            // 백분율
+            // 백분율 계산
             float ratio = (float)m_TotalDownloadDataCount / m_NeedToLoadDataCount;
             float percentage = ratio * 100;
 
-            // 00.00%
+            // 콜백 실행
+            if (percentage > 25 && m_OnQuarterLoadCallback != null)
+            {
+                m_OnQuarterLoadCallback.Invoke();
+                m_OnQuarterLoadCallback = null;
+                Debug.Log($"25% 때 실행할 것들 실행완료");
+            }
+
+            if (percentage > 50 && m_OnHalfLoadCallback != null)
+            {
+                m_OnHalfLoadCallback.Invoke();
+                m_OnHalfLoadCallback = null;
+                Debug.Log($"50% 때 실행할 것들 실행완료");
+            }
+
+            if (percentage > 75 && m_OnThreeQuarterLoadCallback != null)
+            {
+                m_OnThreeQuarterLoadCallback.Invoke();
+                m_OnThreeQuarterLoadCallback = null;
+                Debug.Log($"75% 때 실행할 것들 실행완료");
+            }
+
+            if (percentage > 95 && m_OnAlmostLoadCallback != null)
+            {
+                m_OnAlmostLoadCallback.Invoke();
+                m_OnAlmostLoadCallback = null;
+                Debug.Log($"95% 때 실행할 것들 실행완료");
+            }
+
+            // 다운로드 량 표기 (00.00%)
             string totalDownloadByteText = string.Format("{0:00.00}", percentage);
             m_LoadingPercent.text = totalDownloadByteText;
 
@@ -116,7 +161,7 @@ public class LoadingTitleUI : UI
 
     IEnumerator LoadComplete()
     {
-        IsLoadingComplete = true;
+        m_IsLoadingComplete = true;
 
         // 로딩 완료했으니 텍스트 수정
         m_LoadingPercent.text = string.Format("{0:00.00}", 100);
@@ -154,7 +199,6 @@ public class LoadingTitleUI : UI
         GameManager.UISystem.CloseWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
-        LobbyManager.Instance.MainLobbySystem.Init();
-
+        m_OnGameStartCallback?.Invoke();
     }
 }

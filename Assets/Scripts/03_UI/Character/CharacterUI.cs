@@ -56,7 +56,7 @@ public class CharacterUI : UI, IGameEventListener
                     ShowCharacterInfo(SelectedCharacter);
 
                     // 캐릭터 생성
-                    LobbyManager.Instance.MainLobbySystem.SpawnCharacterUICharacter(selectedCharacter);
+                    LobbyManager.Instance.LobbySystem.SpawnCharacterUICharacter(selectedCharacter);
                     break;
                 }
             default:
@@ -74,7 +74,7 @@ public class CharacterUI : UI, IGameEventListener
         lobbyManager.MainCam.gameObject.SetActive(false);
 
         // 생성시킨 캐릭터 삭제시키기
-        lobbyManager.MainLobbySystem.DestroyCharacterUICharacter();
+        lobbyManager.LobbySystem.DestroyCharacterUICharacter();
     }
 
     public override void OnOpened()
@@ -85,8 +85,8 @@ public class CharacterUI : UI, IGameEventListener
         // 카메라 위치 조정 및 활성화
         var lobbyManager = LobbyManager.Instance;
         lobbyManager.MainCam.transform.SetPositionAndRotation
-            (lobbyManager.MainLobbySystem.CharacterUICameraPosition.transform.position,
-            lobbyManager.MainLobbySystem.CharacterUICameraPosition.transform.rotation);
+            (lobbyManager.LobbySystem.CharacterUICameraPosition.transform.position,
+            lobbyManager.LobbySystem.CharacterUICameraPosition.transform.rotation);
 
         lobbyManager.MainCam.gameObject.SetActive(true);
 

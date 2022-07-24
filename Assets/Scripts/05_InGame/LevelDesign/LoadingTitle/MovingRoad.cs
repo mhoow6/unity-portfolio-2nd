@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
-public class LoadingTitleSystem : MonoBehaviour
+public class MovingRoad : MonoBehaviour
 {
     public List<LoadingTitleRoad> Roads = new List<LoadingTitleRoad>();
     public LoadingTitleRoad LastRoad
@@ -19,17 +20,17 @@ public class LoadingTitleSystem : MonoBehaviour
 
     private void OnDestroy()
     {
-        LobbyManager.Instance.LoadingTitleSystem = null;
+        LobbyManager.Instance.MovingRoad = null;
     }
 
-    public void Init(LoadingTitleUI ui)
+    public void Move(Func<bool> loadingCompletePredicate)
     {
-        StartCoroutine(KeepRoadsMovingToCamera(ui));
+        StartCoroutine(KeepRoadsMovingToCamera(loadingCompletePredicate));
     }
 
-    IEnumerator KeepRoadsMovingToCamera(LoadingTitleUI ui)
+    IEnumerator KeepRoadsMovingToCamera(Func<bool> loadingCompletePredicate)
     {
-        while (!ui.IsLoadingComplete)
+        while (loadingCompletePredicate?.Invoke() == false)
         {
             if (Roads.Count > 0)
             {

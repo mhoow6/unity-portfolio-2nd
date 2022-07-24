@@ -103,7 +103,7 @@ public sealed class GameManager : MonoBehaviour
 
         // ---------------------------------------------------
 
-        // Load Database
+        // Scriptable Object
         if (!m_GameDevelopSettings)
             m_GameDevelopSettings = Resources.Load<GameDevelopSettings>("GameDevelopSettings");
         m_GameDevelopSettings.SaveFilePath = $"{Application.persistentDataPath}/PlayerData.json";
@@ -111,28 +111,11 @@ public sealed class GameManager : MonoBehaviour
 
         // ---------------------------------------------------
 
-        // PlayerData
-        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
-
-        // ---------------------------------------------------
-
-        // System Init
-        TableManager.Instance.LoadTable();
-        JsonManager.Instance.LoadJson();
-
         if (m_UISystem != null)
             m_UISystem.Init();
 
-        m_EnergyRecoverySystem = new EnergyRecoverySystem();
-        m_EnergyRecoverySystem.Init();
-
-        m_AchievementSystem = new AchievementSystem();
-
         if (InputSystem != null)
             InputSystem.Init();
-
-        m_DataInitializeSystem = new DataInitializeSystem();
-        m_DataInitializeSystem.Init();
 
         // ---------------------------------------------------
 
@@ -144,13 +127,6 @@ public sealed class GameManager : MonoBehaviour
 
         // ---------------------------------------------------
 
-        // FixedUpdate
-        m_FixedUpdate += m_EnergyRecoverySystem.Tick;
-
-        // ---------------------------------------------------
-
-        // PlayerData Initialize
-        m_DataInitializeSystem.Initalize(m_PlayerData);
     }
 
     private void Start()
@@ -219,9 +195,38 @@ public sealed class GameManager : MonoBehaviour
 
         // Refresh Database
 
-        // Refresh System
-
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
+    }
+
+    public void InitContents()
+    {
+        m_EnergyRecoverySystem = new EnergyRecoverySystem();
+        m_EnergyRecoverySystem.Init();
+
+        m_DataInitializeSystem = new DataInitializeSystem();
+        m_DataInitializeSystem.Init();
+
+        m_AchievementSystem = new AchievementSystem();
+        m_AchievementSystem.Init();
+
+        // ---------------------------------------------------
+
+        m_FixedUpdate += m_EnergyRecoverySystem.Tick;
+
+        // PlayerData Initialize
+        m_DataInitializeSystem.Initalize(m_PlayerData);
+    }
+
+    public void InitDatabase()
+    {
+        TableManager.Instance.LoadTable();
+        JsonManager.Instance.LoadJson();
+    }
+
+    public void InitPlayerData()
+    {
+        m_PlayerData = null;
+        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
     }
 
 #if UNITY_EDITOR

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DatabaseSystem;
 
-public class MainLobbySystem : MonoBehaviour
+public class LobbySystem : MonoBehaviour
 {
     public Transform LobbyUICameraPosition;
     public Transform PlayerSpawnPosition;
@@ -32,7 +32,7 @@ public class MainLobbySystem : MonoBehaviour
 
     private void OnDestroy()
     {
-        LobbyManager.Instance.MainLobbySystem = null;
+        LobbyManager.Instance.LobbySystem = null;
     }
 
     public void Init()
@@ -41,7 +41,7 @@ public class MainLobbySystem : MonoBehaviour
         StartCoroutine(MovingCameraCoroutine());
     }
 
-    public void FastInit()
+    public void InitInstantly()
     {
         SpawnMainCharacter();
 
@@ -50,7 +50,7 @@ public class MainLobbySystem : MonoBehaviour
         lm.MainCam = LobbyCamera;
         lm.MainCam.transform.position = LobbyUICameraPosition.transform.position;
 
-        Destroy(lm.LoadingTitleSystem.gameObject);
+        Destroy(lm.MovingRoad.gameObject);
         GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
@@ -99,7 +99,7 @@ public class MainLobbySystem : MonoBehaviour
         }
 
         LobbyManager.Instance.MainCam = LobbyCamera;
-        Destroy(LobbyManager.Instance.LoadingTitleSystem.gameObject);
+        Destroy(LobbyManager.Instance.MovingRoad.gameObject);
         GameManager.UISystem.OpenWindow(UIType.MainLobby);
     }
 
