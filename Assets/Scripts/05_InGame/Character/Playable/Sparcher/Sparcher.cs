@@ -49,7 +49,23 @@ public class Sparcher : Playable
         return true;
     }
 
-    public override bool CanUltimate()
+    public override bool CanAttack()
+    {
+        // 애니메이션이 전환중일 경우 정상동작이 안 됨
+        if (Animator.IsInTransition(AnimatorBaseLayerIndex))
+            return false;
+
+        AniType currentAni = AniType;
+        if (currentAni >= AniType.JUMP_0 && currentAni <= AniType.JUMP_4)
+            return false;
+
+        if (currentAni >= AniType.ATTACK_0 && currentAni <= AniType.ATTACK_4 || currentAni >= AniType.ATTACK_5 && currentAni <= AniType.ATTACK_9)
+            return false;
+
+        return true;
+    }
+
+    public override bool CanUlti()
     {
         // 애니메이션이 전환중일 경우 정상동작이 안 됨
         if (Animator.IsInTransition(AnimatorBaseLayerIndex))
@@ -67,23 +83,7 @@ public class Sparcher : Playable
         if (Sp < skillData.SpCost)
             return false;
 
-        if (m_CurrentUltiCoolTime > 0f)
-            return false;
-
-        return true;
-    }
-
-    public override bool CanAttack()
-    {
-        // 애니메이션이 전환중일 경우 정상동작이 안 됨
-        if (Animator.IsInTransition(AnimatorBaseLayerIndex))
-            return false;
-
-        AniType currentAni = AniType;
-        if (currentAni >= AniType.JUMP_0 && currentAni <= AniType.JUMP_4)
-            return false;
-
-        if (currentAni >= AniType.ATTACK_0 && currentAni <= AniType.ATTACK_4 || currentAni >= AniType.ATTACK_5 && currentAni <= AniType.ATTACK_9)
+        if (UltiCoolTime > 0f)
             return false;
 
         return true;

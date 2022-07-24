@@ -93,13 +93,14 @@ public class InGameUI : UI
     /// <summary> 캐릭터의 따라 스킬버튼을 세팅합니다. </summary>
     public void SettingSkillButtons(Character character)
     {
+        var sm = StageManager.Instance;
+
         int attackIndex = Character.GetAttackIndex(character.Code);
 
         SkillButtonParam attackButtonParam;
         attackButtonParam.OnClick = () =>
         {
-            var character = StageManager.Instance.Player.CurrentCharacter;
-            character.Attack(m_AttackButton);
+            sm.Player.Attack(m_AttackButton);
         };
         attackButtonParam.OnExit = () =>
         {
@@ -115,8 +116,7 @@ public class InGameUI : UI
         dashButtonParam.OnClick =
             () =>
             {
-                var character = StageManager.Instance.Player.CurrentCharacter;
-                character.Dash(m_DashButton);
+                sm.Player.Dash(m_DashButton);
             };
         dashButtonParam.OnExit =
             () =>
@@ -132,8 +132,7 @@ public class InGameUI : UI
         ultiButtonParam.OnClick =
             () =>
             {
-                var character = StageManager.Instance.Player.CurrentCharacter;
-                character.Ultimate(m_UltiButton);
+                sm.Player.Ultimate(m_UltiButton);
             };
         ultiButtonParam.OnExit =
             () =>
@@ -169,7 +168,7 @@ public class InGameUI : UI
             {
                 m_SpText.text = $"{sp} / {character.MaxSp}";
             });
-        m_SpSlider.Value = character.Hp;
+        m_SpSlider.Value = character.Sp;
         m_SpText.text = $"{character.Sp} / {character.MaxSp}";
         character.OnSpUpdate +=
             (sp) =>
