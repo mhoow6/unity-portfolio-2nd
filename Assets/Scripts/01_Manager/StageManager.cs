@@ -271,10 +271,12 @@ public sealed class StageManager : GameSceneManager
         leaderRecord.LevelUp(StageResult.CharacterGetExperience);
 
         // 두번째 레벨업
-        secondRecord.LevelUp(StageResult.CharacterGetExperience);
+        if (secondRecord != null)
+            secondRecord.LevelUp(StageResult.CharacterGetExperience);
 
         // 세번째 레벨업
-        thirdRecord.LevelUp(StageResult.CharacterGetExperience);
+        if (thirdRecord != null)
+            thirdRecord.LevelUp(StageResult.CharacterGetExperience);
 
         // 인벤토리에 전리품 넣어주기
         foreach (var reward in StageResult.Rewards)

@@ -34,8 +34,8 @@ public class AreaSpawner : AreaComponent
             FirstSpawnCount = TotalSpawnCount;
     }
 
-    /// <summary> 스폰 지점들에서 몬스터들이 소환됩니다. </summary> ///
-    public void SpawnMonsters()
+    /// <summary> 스폰 지점들에서 몬스터가 소환됩니다. </summary> ///
+    public void SpawnMonster()
     {
         if (m_CurrentSpawnCount == TotalSpawnCount)
             return;
@@ -58,6 +58,11 @@ public class AreaSpawner : AreaComponent
             Transform pos = m_SpawnPositions[posIndex];
 
             var mob = Instantiate(SpawnPrefab, pos);
+
+            // 살짝 위치를 틀어서 겹치는 현상을 막아준다.
+            float randomValue = UnityEngine.Random.Range(-0.1f, 0.1f);
+            mob.transform.position = new Vector3(mob.transform.position.x + randomValue, 0, mob.transform.position.z + randomValue);
+
             var comp = mob.GetComponent<Character>();
             if (comp != null)
             {

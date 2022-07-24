@@ -11,8 +11,6 @@ public class StageManagerButton : Editor
         base.OnInspectorGUI();
         StageManager generator = (StageManager)target;
 
-        GameManager.UISystem.HUD = true;
-
         if (GUILayout.Button("Stage Clear", new GUILayoutOption[] { GUILayout.Height(30) }))
             generator.StageClear();
 

@@ -129,7 +129,7 @@ public class CharacterRecordData
             maxExperience = levelData.MaxExperience;
         }
         Experience += Mathf.Abs(gainExperience);
-        Debug.LogWarning($"[LevelUp]: {Code}는 레벨:{Level}과 {Experience}가 되었습니다.");
+        Debug.LogWarning($"[LevelUp]: {Code}는 레벨:{Level}과 경험치: {Experience}가 되었습니다.");
         return Level;
     }
 }

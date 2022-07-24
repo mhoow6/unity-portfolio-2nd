@@ -105,7 +105,7 @@ public class Area : MonoBehaviour, IAlarmReactable, IComparable<Area>
     {
         if (m_CurrentSpawnerCount < m_Spawners.Count)
         {
-            m_Spawners[m_CurrentSpawnerCount].SpawnMonsters();
+            m_Spawners[m_CurrentSpawnerCount].SpawnMonster();
             m_CurrentSpawnerCount++;
         }
         else
