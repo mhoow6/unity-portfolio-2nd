@@ -23,6 +23,10 @@ public class NavigateLevelUpUI : UI
 
     public List<GameObject> Groups = new List<GameObject>();
 
+    public Button ConsumePlusButton;
+    public Button ConsumeMinusButton;
+    public GameObject MaxObject;
+
     ObjectCode m_SelectedCharacter;
     int m_SelectedWeaponIndex;
 
@@ -104,7 +108,13 @@ public class NavigateLevelUpUI : UI
                         // 현재 UI 요소들 변경
                         GainExperience.text = data.Point.ToString();
                         CurrentLevel.text = characterRecord.Level.ToString();
-                        AfterLevel.text = characterRecord.LevelUpSimulate(data.Point).ToString();
+
+                        int afterLevel = characterRecord.LevelUpSimulate(data.Point);
+
+                        if (afterLevel == -1)
+                            afterLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+
+                        AfterLevel.text = afterLevel.ToString();
 
                         // 슬라이더
                         ConsumeSlider.minValue = 0;
@@ -139,33 +149,60 @@ public class NavigateLevelUpUI : UI
 
     public void ConsumeSliderOnValueChanged()
     {
-        m_ConsumeItemCount = (int)Mathf.Floor(ConsumeSlider.value);
+        ConsumePlusButton.interactable = true;
+        ConsumeSlider.interactable = true;
+        MaxObject.SetActive(false);
 
-        ConsumeCountText.text = $"{m_ConsumeItemCount}";
+        m_ConsumeItemCount = (int)Mathf.Floor(ConsumeSlider.value);
 
         var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == m_ConsumeItemIndex);
         var record = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == m_SelectedCharacter);
-        AfterLevel.text = record.LevelUpSimulate(itemData.Point * m_ConsumeItemCount).ToString();
+        int afterLevel = record.LevelUpSimulate(itemData.Point * m_ConsumeItemCount);
+        int afterafterLevel = record.LevelUpSimulate(itemData.Point * (m_ConsumeItemCount + 1));
+
+        // 다음에 경험치 칩을 1개 더 쓰면 더 이상 레벨업을 하지 못하는 경우가 발생한다.
+        if (afterafterLevel == -1)
+        {
+            ConsumePlusButton.interactable = false;
+            ConsumeSlider.interactable = false;
+
+            MaxObject.SetActive(true);
+        }
+
+        ConsumeCountText.text = $"{m_ConsumeItemCount}";
+        AfterLevel.text = afterLevel.ToString();
     }
 
     public void OnConsumePlusBtnDown()
     {
-        ConsumeSlider.value++;
+        if (ConsumePlusButton.interactable)
+            ConsumeSlider.value++;
     }
 
     public void OnConsumePlusBtnHold()
     {
-        ConsumeSlider.value += 10;
+        if (ConsumePlusButton.interactable)
+        {
+            for (int i = 0; i < 10; i++)
+                ConsumeSlider.value++;
+        }
+        
     }
 
     public void OnConsumeMinusBtnDown()
     {
-        ConsumeSlider.value--;
+        if (ConsumeMinusButton.interactable)
+            ConsumeSlider.value--;
     }
 
     public void OnConsumeMinusBtnHold()
     {
-        ConsumeSlider.value -= 10;
+        if (ConsumeMinusButton.interactable)
+        {
+            for (int i = 0; i < 10; i++)
+                ConsumeSlider.value--;
+        }
+        
     }
 
     public void OnConfirmButtonClick()

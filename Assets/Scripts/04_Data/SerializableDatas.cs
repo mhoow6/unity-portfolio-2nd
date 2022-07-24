@@ -50,6 +50,7 @@ public class CharacterRecordData
     public int EquipWeaponSlotIndex;
     public int Experience;
 
+    /// <returns>value: 레벨업 시 달성하는 레벨, -1: 캐릭터가 더 이상 레벨을 못 올리는 경우</returns>
     public int LevelUpSimulate(int gainExperience)
     {
         int maxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
@@ -64,15 +65,14 @@ public class CharacterRecordData
             // 레벨업이 되는 상황이므로 레벨업
             level++;
 
+            if (level > playerLevel)
+                return -1;
+
+            if (level > maxLevel)
+                return maxLevel;
+
             gainExperience -= (maxExperience - previousExperience);
             previousExperience = 0;
-
-            // 만약 만렙에서 레벨업이 되려는 상황이면
-            if (level > maxLevel || level > playerLevel)
-            {
-                level = maxLevel;
-                return level;
-            }
 
             levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level);
             maxExperience = levelData.MaxExperience;
@@ -80,7 +80,8 @@ public class CharacterRecordData
         return level;
     }
 
-    public void LevelUp(int gainExperience)
+    /// <returns>value: 레벨업 시 달성하는 레벨, -1: 캐릭터가 더 이상 레벨을 못 올리는 경우</returns>
+    public int LevelUp(int gainExperience)
     {
         int maxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
         int playerLevel = GameManager.PlayerData.Level;
@@ -95,16 +96,27 @@ public class CharacterRecordData
             GameEventSystem.SendEvent(GameEvent.LOBBY_LevelUpCharacter, Code);
             Experience = 0;
 
-            // 만약 만렙에서 레벨업이 되려는 상황이면 or 플레이어 레벨보다 캐릭터 레벨이 높아질려고 하면
-            if (Level > maxLevel || Level > playerLevel)
+            // 만약 만렙에서 레벨업이 되려는 상황이면
+            if (Level > maxLevel)
             {
                 // 레벨은 그대로 경험치만 최대로
                 Level = maxLevel;
                 Experience = maxExperience;
                 Debug.LogWarning($"[LevelUp]: {Code}가 만렙이여도 레벨업을 시도하고 있습니다.");
-                return;
+                return -1;
             }
-            else if (Level == maxLevel)
+
+            // 플레이어 레벨보다 캐릭터 레벨이 높아질려고 하면
+            if (Level > playerLevel)
+            {
+                // 이전 레벨과 경험치로 복구
+                Level = playerLevel;
+                Experience = previousExperience;
+                Debug.LogWarning($"[LevelUp]: {Code}가 플레이어보다 레벨이 높아질려고 합니다");
+                return -1;
+            }
+
+            if (Level == maxLevel)
             {
                 GameEventSystem.SendEvent(GameEvent.GLOBAL_ReachMaxLevelCharacter, Code);
                 Debug.LogWarning($"[LevelUp]: {Code}가 만렙이 되었습니다!");
@@ -118,6 +130,7 @@ public class CharacterRecordData
         }
         Experience += Mathf.Abs(gainExperience);
         Debug.LogWarning($"[LevelUp]: {Code}는 레벨:{Level}과 {Experience}가 되었습니다.");
+        return Level;
     }
 }
 
