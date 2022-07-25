@@ -18,6 +18,8 @@ Assets/Fonts
 Assets/Unmanaged
 Assets/MeshCombineResult
 Assets/Cutscene
+Assets/ExternalDependencyManager
+Assets/GooglePlayGames
 
 # Ignore File
 *.dll
