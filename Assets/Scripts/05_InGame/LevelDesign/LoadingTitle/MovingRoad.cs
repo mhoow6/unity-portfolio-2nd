@@ -18,11 +18,6 @@ public class MovingRoad : MonoBehaviour
 
     const float ROAD_MOVE_SPEED = 2.0f;
 
-    private void OnDestroy()
-    {
-        LobbyManager.Instance.MovingRoad = null;
-    }
-
     public void Move(Func<bool> loadingCompletePredicate)
     {
         StartCoroutine(KeepRoadsMovingToCamera(loadingCompletePredicate));

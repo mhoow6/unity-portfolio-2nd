@@ -17,6 +17,12 @@ public sealed class LobbyManager : GameSceneManager
 
     public void Init()
     {
+        // Lobby씬에서 Lobby씬을 다시 로드하는 경우 
+        // LobbySystem과 MovingRoad가 이전 Lobby씬에 존재했던 것을 사용하여
+        // 파괴된 것을 참조하게 되는 현상이 발생한다.
+        LobbySystem = GameObject.FindObjectOfType(typeof(LobbySystem)) as LobbySystem;
+        MovingRoad = GameObject.FindObjectOfType(typeof(MovingRoad)) as MovingRoad;
+
         // 타이틀 로딩 연출 결정
         if (!GameManager.Initialized)
         {

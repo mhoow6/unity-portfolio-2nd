@@ -68,6 +68,12 @@ public sealed class StageManager : GameSceneManager
         m_Update?.Invoke();
     }
 
+
+    private void OnDestroy()
+    {
+        Instance = null;
+    }
+
     #region √ ±‚»≠
     public void Init(Action onInitalized = null)
     {

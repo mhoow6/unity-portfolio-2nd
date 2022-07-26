@@ -14,7 +14,9 @@ public class CheatUI : UI
     public override void OnClosed()
     {
         CheatItemUIs.ForEach(cheat => cheat.ClearData());
-        GameManager.PlayerData.Inventory.DisposeEvents();
+
+        if (GameManager.PlayerData != null)
+            GameManager.PlayerData.Inventory.DisposeEvents();
     }
 
     public override void OnOpened()

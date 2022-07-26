@@ -190,9 +190,13 @@ public sealed class GameManager : MonoBehaviour
 
         m_PlayerData = null;
 
-        // Clear Database
+        // 데이터베이스 클리어
         TableManager.Instance.Clear();
         JsonManager.Instance.ClearJson();
+
+        // 콘텐츠 관련 시스템 중단
+        m_FixedUpdate = null;
+        m_Update = null;
 
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }

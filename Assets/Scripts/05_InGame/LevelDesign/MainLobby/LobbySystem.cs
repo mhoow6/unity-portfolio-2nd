@@ -30,11 +30,6 @@ public class LobbySystem : MonoBehaviour
         m_CheckUserClickingTheCharacterCoroutine = CheckingUserClickCharacterCoroutine();
     }
 
-    private void OnDestroy()
-    {
-        LobbyManager.Instance.LobbySystem = null;
-    }
-
     public void Init()
     {
         SpawnMainCharacter();
