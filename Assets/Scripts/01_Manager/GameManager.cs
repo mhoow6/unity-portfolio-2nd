@@ -147,7 +147,7 @@ public sealed class GameManager : MonoBehaviour
     void OnApplicationQuit()
     {
         if (!NoAutoSavePlayerData)
-            PlayerData.Save();
+            SavePlayerData();
     }
 
     #region 씬 로드
@@ -183,17 +183,10 @@ public sealed class GameManager : MonoBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// 게임을 초기화합니다.
-    /// </summary>
+    /// <summary> 게임을 초기화합니다. </summary>
     public void RefreshGame()
     {
         Initialized = false;
-
-        // Refresh PlayerData
-        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
-
-        // Refresh Database
 
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }
@@ -223,11 +216,42 @@ public sealed class GameManager : MonoBehaviour
         JsonManager.Instance.LoadJson();
     }
 
-    public void InitPlayerData()
+    public void GetPlayerDataFromLocal()
     {
         m_PlayerData = null;
         m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
     }
+
+    public void GetPlayerDataFromCloud(string data)
+    {
+        m_PlayerData = null;
+        m_PlayerData = PlayerData.Deserialize(data);
+    }
+
+    public void SavePlayerData()
+    {
+        m_PlayerData.Save();
+        GPGSBinder.Inst.SaveCloud("PlayerData", PlayerData.Serialize(m_PlayerData), (success) =>
+        {
+            if (success)
+                Debug.LogWarning("클라우드에 유저 데이터 저장 성공");
+            else
+                Debug.LogWarning("클라우드에 유저 데이터 저장 실패");
+        });
+    }
+
+    public void DeletePlayerData()
+    {
+        m_PlayerData.Delete();
+        GPGSBinder.Inst.DeleteCloud("PlayerData", (success) =>
+        {
+            if (success)
+                Debug.LogWarning("클라우드에 유저 데이터 삭제 성공");
+            else
+                Debug.LogWarning("클라우드에 유저 데이터 삭제 실패");
+        });
+    }
+
 
 #if UNITY_EDITOR
     [ContextMenu("# Get Attached System")]

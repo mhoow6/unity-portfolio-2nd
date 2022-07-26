@@ -134,7 +134,11 @@ public class NavigateLevelUpUI : UI
                 itemUIToggle.group = ItemsParent;
 
                 if (count == 0)
+                {
                     itemUIToggle.isOn = true;
+                    itemUIToggle.onValueChanged?.Invoke(true);
+                }
+                    
 
                 count++;
             }

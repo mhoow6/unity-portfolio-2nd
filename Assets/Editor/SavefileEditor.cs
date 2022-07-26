@@ -1,7 +1,7 @@
 using DatabaseSystem;
-using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 

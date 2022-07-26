@@ -197,6 +197,18 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         }
     }
 
+    public int Critical
+    {
+        get
+        {
+            return m_Data.Critical;
+        }
+        set
+        {
+            m_Data.Critical = value;
+        }
+    }
+
     /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
     public static int GetPassiveIndex(ObjectCode objectCode)
     {

@@ -116,6 +116,16 @@ public class PlayerData : ISubscribable
         return new PlayerData();
     }
 
+    public static PlayerData Deserialize(string data)
+    {
+        return JsonConvert.DeserializeObject<PlayerData>(data);
+    }
+
+    public static string Serialize(PlayerData playerData)
+    {
+        return JsonConvert.SerializeObject(playerData);
+    }
+
     public void Save()
     {
         m_LastGameConnectTime = DateTime.Now;
@@ -128,6 +138,9 @@ public class PlayerData : ISubscribable
 
     public void Delete()
     {
+        if (string.IsNullOrEmpty(m_SaveFilePath))
+            m_SaveFilePath = GameManager.GameDevelopSettings.SaveFilePath;
+
         FileHelper.DeleteFile(m_SaveFilePath);
         Debug.LogWarning("게임 데이터 삭제완료.");
     }

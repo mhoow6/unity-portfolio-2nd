@@ -102,28 +102,28 @@ public class LoadingTitleUI : UI
             {
                 m_OnQuarterLoadCallback.Invoke();
                 m_OnQuarterLoadCallback = null;
-                Debug.Log($"25% 때 실행할 것들 실행완료");
+                //Debug.Log($"25% 때 실행할 것들 실행완료");
             }
 
             if (percentage > 50 && m_OnHalfLoadCallback != null)
             {
                 m_OnHalfLoadCallback.Invoke();
                 m_OnHalfLoadCallback = null;
-                Debug.Log($"50% 때 실행할 것들 실행완료");
+                //Debug.Log($"50% 때 실행할 것들 실행완료");
             }
 
             if (percentage > 75 && m_OnThreeQuarterLoadCallback != null)
             {
                 m_OnThreeQuarterLoadCallback.Invoke();
                 m_OnThreeQuarterLoadCallback = null;
-                Debug.Log($"75% 때 실행할 것들 실행완료");
+                //Debug.Log($"75% 때 실행할 것들 실행완료");
             }
 
             if (percentage > 95 && m_OnAlmostLoadCallback != null)
             {
                 m_OnAlmostLoadCallback.Invoke();
                 m_OnAlmostLoadCallback = null;
-                Debug.Log($"95% 때 실행할 것들 실행완료");
+                //Debug.Log($"95% 때 실행할 것들 실행완료");
             }
 
             // 다운로드 량 표기 (00.00%)

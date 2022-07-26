@@ -76,7 +76,7 @@ public class CheatUI : UI
 
     public void OnShowInventoryBtnClick()
     {
-        var ui = GameManager.UISystem.OpenWindow<InventoryUI>(type: UIType.Inventory);
+        GameManager.UISystem.OpenWindow(type: UIType.Inventory);
     }
 
     public void OnRefreshGameBtnClick()
@@ -84,9 +84,14 @@ public class CheatUI : UI
         GameManager.Instance.RefreshGame();
     }
 
-    public void OnSavefileDeleteBtnClick()
+    public void OnLocalSavefileDeleteBtnClick()
     {
         GameManager.PlayerData.Delete();
+    }
+
+    public void OnSavePlayerDataBtnClick()
+    {
+        GameManager.Instance.SavePlayerData();
     }
 
     public void OnCharacterUIOpenBtnClick()

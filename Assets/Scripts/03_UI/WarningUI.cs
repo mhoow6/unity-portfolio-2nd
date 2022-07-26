@@ -19,7 +19,7 @@ public class WarningUI : UI
 
     public void OnBackgroundClick()
     {
-        GameManager.UISystem.CloseWindow();
+        GameManager.UISystem.CloseWindow(false);
     }
 
     public override void OnClosed()
@@ -49,7 +49,7 @@ public class WarningUI : UI
         {
             RectTransform.DOScaleY(0f, sys.SCALE_TWEENING_SPEED).OnComplete(() =>
             {
-                sys.CloseWindow();
+                sys.CloseWindow(false);
             });
         }
     }

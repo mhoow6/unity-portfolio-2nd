@@ -15,6 +15,14 @@ public class SparcherPassiveSkill : PassiveSkill
 
     public override void Apply(int skillIndex)
     {
-        
+        var sm = StageManager.Instance;
+        if (sm == null)
+            return;
+
+        foreach (var cha in sm.Player.Characters)
+        {
+            if (cha.Type == CharacterType.Biology)
+                cha.Critical += 20;
+        }
     }
 }

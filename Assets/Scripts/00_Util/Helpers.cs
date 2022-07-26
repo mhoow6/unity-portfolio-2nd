@@ -192,7 +192,7 @@ public static class FileHelper
 
     public static string BeautifyJson(this string jsonString)
     {
-        string beautifiedJson = JValue.Parse(jsonString).ToString(Formatting.Indented);
+        string beautifiedJson = JToken.Parse(jsonString).ToString(Formatting.Indented);
         return beautifiedJson;
     }
     #endregion

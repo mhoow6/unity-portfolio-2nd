@@ -24,8 +24,47 @@ public sealed class LobbyManager : GameSceneManager
             loadingtTitle.SetData(
                 onGameStartCallback: LobbySystem.Init,
                 onQuarterLoadCallback: GameManager.Instance.InitDatabase,
-                onHalfLoadCallback: GameManager.Instance.InitPlayerData,
-                onThreeQuarterLoadCallback: GameManager.Instance.InitContents);
+                onHalfLoadCallback: () =>
+                {
+                    GPGSBinder.Inst.Login((success, user) =>
+                    {
+                        // 로그인 성공시
+                        if (success)
+                        {
+                            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                            warning.SetData("로그인 성공");
+
+                            GPGSBinder.Inst.LoadCloud("PlayerData", (success, cloudData) =>
+                            {
+                                // 클라우드 로드 성공시
+                                if (success)
+                                {
+                                    Debug.LogWarning($"클라우드 데이터 로드 성공: {cloudData}");
+                                    if (!string.IsNullOrEmpty(cloudData))
+                                        GameManager.Instance.GetPlayerDataFromCloud(cloudData);
+                                    else
+                                        GameManager.Instance.GetPlayerDataFromLocal();
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"클라우드 데이터 로드 실패");
+                                    GameManager.Instance.GetPlayerDataFromLocal();
+                                }
+
+                                GameManager.Instance.InitContents();
+                            });
+                        }
+                        else
+                        {
+                            var warning = GameManager.UISystem.OpenWindow<WarningUI>(UIType.Warning, false);
+                            warning.SetData("구글 플레이 서비스 로그인에 실패했습니다. 로컬 데이터로 게임을 진행합니다.");
+
+                            GameManager.Instance.GetPlayerDataFromLocal();
+                            GameManager.Instance.InitContents();
+                        }
+                    });
+
+                });
                 
         }
         else
