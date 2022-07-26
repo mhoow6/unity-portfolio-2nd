@@ -315,7 +315,6 @@ public static class Automation
         if (scriptableObj != null)
             scriptableObj.JsonDataCount = 0;
 
-        #region JsonManager String Format
         // {0} jsonManagerLoadJsonFormat
         string jsonManagerFormat =
 @"using System.Collections;
@@ -331,13 +330,18 @@ namespace DatabaseSystem
         public static JsonManager Instance {{ get; private set; }} = new JsonManager();
         public Dictionary<int, JsonDatable> JsonDatas {{ get; private set; }} = new Dictionary<int, JsonDatable>();
 
+        {0}
+    }}
+}}";
+
+        string loadJson =
+@"
         public void LoadJson()
         {{
             {0}
         }}
-    }}
-}}";
-        StringBuilder jsonManagerBuilder = new StringBuilder();
+";
+        StringBuilder loadJsonBuilder = new StringBuilder();
 
         // {0} 파일명
         // {1} 파일명 전부 소문자
@@ -356,7 +360,6 @@ namespace DatabaseSystem
 @"JSONNode {2}Node = {0}Root[""{1}""];
             {3} {2} = JsonConvert.DeserializeObject<{3}>({2}Node.ToString());
             JsonDatas.Add({2}.Index, {2});";
-        #endregion
 
         // 필드명 제외 리스트
         string[] exceptFields = DatabaseSystem.JsonDatable.AutomationExcepts;
@@ -525,16 +528,32 @@ namespace DatabaseSystem
             // ---------------------------------------------------------------------------------------------------
 
             // JsonManager.LoadJson() 구현
-            string loadJson = string.Empty;
-            loadJson = string.Format(jsonManagerLoadJsonFormat, fileName, fileName.ToLower(), iterableFormatBuilder.ToString());
-            jsonManagerBuilder.Append(loadJson);
+            string s = string.Format(jsonManagerLoadJsonFormat, fileName, fileName.ToLower(), iterableFormatBuilder.ToString());
+            loadJsonBuilder.Append(s);
 
             // 다음 파일을 위해 초기화
             iterableFormatBuilder.Clear();
         }
 
+        // ClearJson() 완성
+        string clearJson =
+@"
+        public void ClearJson()
+        {
+            JsonDatas.Clear();
+        }
+";
+
+        // LoadJson() 완성
+        loadJson = string.Format(loadJson, loadJsonBuilder.ToString().Trim());
+
+        // JsonManager 안에 들어가는 스트링
+        string jsonManagerString = string.Empty;
+        jsonManagerString += loadJson;
+        jsonManagerString += clearJson;
+
         // JsonManager 구현
-        jsonManagerFormat = string.Format(jsonManagerFormat, jsonManagerBuilder.ToString().Trim());
+        jsonManagerFormat = string.Format(jsonManagerFormat, jsonManagerString);
 
         // JsonManager.cs 저장
         if (!FileHelper.DirectoryCheck($"{Application.dataPath}/Scripts/99_Json"))

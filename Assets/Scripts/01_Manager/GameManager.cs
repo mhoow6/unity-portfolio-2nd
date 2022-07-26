@@ -192,6 +192,7 @@ public sealed class GameManager : MonoBehaviour
 
         // Clear Database
         TableManager.Instance.Clear();
+        JsonManager.Instance.ClearJson();
 
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }

@@ -11,6 +11,7 @@ namespace DatabaseSystem
         public static JsonManager Instance { get; private set; } = new JsonManager();
         public Dictionary<int, JsonDatable> JsonDatas { get; private set; } = new Dictionary<int, JsonDatable>();
 
+        
         public void LoadJson()
         {
             var behaviordatas = Resources.Load<TextAsset>("99_Database/Json/BehaviorDatas");
@@ -61,5 +62,11 @@ namespace DatabaseSystem
             KnightPassiveSkillData knightpassiveskilldata = JsonConvert.DeserializeObject<KnightPassiveSkillData>(knightpassiveskilldataNode.ToString());
             JsonDatas.Add(knightpassiveskilldata.Index, knightpassiveskilldata);
         }
+
+        public void ClearJson()
+        {
+            JsonDatas.Clear();
+        }
+
     }
 }
