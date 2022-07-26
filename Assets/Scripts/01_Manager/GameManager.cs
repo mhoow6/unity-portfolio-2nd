@@ -188,6 +188,11 @@ public sealed class GameManager : MonoBehaviour
     {
         Initialized = false;
 
+        m_PlayerData = null;
+
+        // Clear Database
+        TableManager.Instance.Clear();
+
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }
 

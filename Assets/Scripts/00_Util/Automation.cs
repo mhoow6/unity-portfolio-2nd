@@ -212,7 +212,7 @@ public static class Automation
             // LoadTable() 구현
             string loadTable = string.Empty;
             loadTable =
-         @"
+        @"
             var {0}Textasset = Resources.Load<TextAsset>(""99_Database/Table/{0}"");
             string[] {0}Lines = {0}Textasset.text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
             for (int i = 4; i < {0}Lines.Length; i++)
@@ -267,6 +267,31 @@ public static class Automation
             }
             managerData += loadTableInline;
             managerData += $"}}\n";
+
+            // Clear() 구현
+            string clearTable = string.Empty;
+            clearTable =
+@"
+            public void Clear()
+            {{
+                {0}
+            }}
+";
+            string clearTableInline = string.Empty;
+            for (int i = 0; i < textassets.Length; i++)
+            {
+                string clear =
+@"              
+                {0}.Clear();
+";
+                clear = string.Format(clear, textassets[i].name);
+
+                clearTableInline += clear;
+            }
+
+            clearTable = string.Format(clearTable, clearTableInline);
+            managerData += clearTable;
+
             managerData += $"\t}}\n";
             managerData += $"}}";
 

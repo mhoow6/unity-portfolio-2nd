@@ -94,6 +94,11 @@ public class CheatUI : UI
         GameManager.Instance.SavePlayerData();
     }
 
+    public void OnDeletePlayerDataBtnClick()
+    {
+        GameManager.Instance.DeletePlayerData();
+    }
+
     public void OnCharacterUIOpenBtnClick()
     {
         var ui = GameManager.UISystem.OpenWindow<CharacterUI>(type: UIType.Character);

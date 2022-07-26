@@ -326,5 +326,46 @@ namespace DatabaseSystem
                 LoadedData++;
             }
         }
+
+            public void Clear()
+            {
+                              
+                AniTypeDialogueTable.Clear();
+              
+                CharacterLevelExperienceTable.Clear();
+              
+                CharacterTable.Clear();
+              
+                HpRecoveryItemTable.Clear();
+              
+                ItemExplainTable.Clear();
+              
+                ItemTable.Clear();
+              
+                PlayerLevelEnergyTable.Clear();
+              
+                PlayerLevelExperienceTable.Clear();
+              
+                QuestDescriptionTable.Clear();
+              
+                QuestTable.Clear();
+              
+                RandomNicknameTable.Clear();
+              
+                SlangTable.Clear();
+              
+                SpRecoveryItemTable.Clear();
+              
+                StageClearGuideTextTable.Clear();
+              
+                StageDialogueTable.Clear();
+              
+                StageDropItemTable.Clear();
+              
+                StageTable.Clear();
+              
+                WeaponTable.Clear();
+
+            }
 	}
 }
