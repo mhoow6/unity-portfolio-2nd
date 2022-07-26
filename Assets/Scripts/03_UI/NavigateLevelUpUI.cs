@@ -99,6 +99,8 @@ public class NavigateLevelUpUI : UI
                 {
                     if (isOn)
                     {
+                        OnLevelUpSimulatePossible();
+
                         var characterRecord = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == levelUpCharacter);
                         m_ConsumeItemIndex = data.Index;
 
@@ -111,8 +113,12 @@ public class NavigateLevelUpUI : UI
 
                         int afterLevel = characterRecord.LevelUpSimulate(data.Point);
 
-                        if (afterLevel == -1)
-                            afterLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+                        // 캐릭터 레벨을 더 이상 못 올리는 경우
+                        if (afterLevel > GameManager.PlayerData.Level || afterLevel > TableManager.Instance.CharacterLevelExperienceTable.Count)
+                        {
+                            OnLevelUpSimulateImpossible();
+                            afterLevel = GameManager.PlayerData.Level;
+                        }
 
                         AfterLevel.text = afterLevel.ToString();
 
@@ -153,9 +159,7 @@ public class NavigateLevelUpUI : UI
 
     public void ConsumeSliderOnValueChanged()
     {
-        ConsumePlusButton.interactable = true;
-        ConsumeSlider.interactable = true;
-        MaxObject.SetActive(false);
+        OnLevelUpSimulatePossible();
 
         m_ConsumeItemCount = (int)Mathf.Floor(ConsumeSlider.value);
 
@@ -165,13 +169,8 @@ public class NavigateLevelUpUI : UI
         int afterafterLevel = record.LevelUpSimulate(itemData.Point * (m_ConsumeItemCount + 1));
 
         // 다음에 경험치 칩을 1개 더 쓰면 더 이상 레벨업을 하지 못하는 경우가 발생한다.
-        if (afterafterLevel == -1)
-        {
-            ConsumePlusButton.interactable = false;
-            ConsumeSlider.interactable = false;
-
-            MaxObject.SetActive(true);
-        }
+        if (afterafterLevel > GameManager.PlayerData.Level || afterafterLevel > TableManager.Instance.CharacterLevelExperienceTable.Count)
+            OnLevelUpSimulateImpossible();
 
         ConsumeCountText.text = $"{m_ConsumeItemCount}";
         AfterLevel.text = afterLevel.ToString();
@@ -226,5 +225,20 @@ public class NavigateLevelUpUI : UI
 
         }
         
+    }
+
+    void OnLevelUpSimulateImpossible()
+    {
+        ConsumePlusButton.interactable = false;
+        ConsumeSlider.interactable = false;
+
+        MaxObject.SetActive(true);
+    }
+
+    void OnLevelUpSimulatePossible()
+    {
+        ConsumePlusButton.interactable = true;
+        ConsumeSlider.interactable = true;
+        MaxObject.SetActive(false);
     }
 }
