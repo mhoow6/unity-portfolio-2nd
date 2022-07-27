@@ -195,7 +195,7 @@ public class StageResultData
     public int BossKillCount;
 
     public int Gold;
-    public int Combo;
+    public int MaxCombo;
 
     public int PlayerGetExperience { get; private set; }
     public int CharacterGetExperience { get; private set; }
@@ -225,7 +225,7 @@ public class StageResultData
         Rewards = rewardList;
         Gold = 0;
         Score = 0;
-        Combo = 0;
+        MaxCombo = 0;
         StageStartTime = DateTime.Now;
         StageEndTime = default(DateTime);
         MonsterKillCount = 0;

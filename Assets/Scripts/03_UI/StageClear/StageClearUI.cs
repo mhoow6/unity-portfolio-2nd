@@ -31,7 +31,7 @@ public class StageClearUI : UI
         StageName.text = stageData.StageName;
 
         // 결과 보여주기
-        Displays[0].SetData($"{result.Combo}");
+        Displays[0].SetData($"{result.MaxCombo}");
         Displays[1].SetData($"{result.Duration.Minutes:00}:{result.Duration.Seconds:00}");
         Displays[2].SetData($"{result.Score}");
 
@@ -57,13 +57,15 @@ public class StageClearUI : UI
             return;
         }
 
+        var result = StageManager.Instance.StageResult;
+
         GameManager.Instance.LoadScene(SceneCode.Lobby, 
             onSceneLoaded: () =>
             {
                 LobbyManager.Instance.Init();
 
                 var battleResult = GameManager.UISystem.OpenWindow<BattleResultUI>(UIType.BattleResult);
-                battleResult.SetData(StageManager.Instance.StageResult);
+                battleResult.SetData(result);
             });
     }
 }

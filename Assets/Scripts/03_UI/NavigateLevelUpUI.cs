@@ -123,7 +123,7 @@ public class NavigateLevelUpUI : UI
                         AfterLevel.text = afterLevel.ToString();
 
                         // 슬라이더
-                        ConsumeSlider.minValue = 0;
+                        ConsumeSlider.minValue = 1;
                         ConsumeSlider.maxValue = userItem.Quantity;
 
                         // 아이템 소비량 표기
@@ -157,29 +157,10 @@ public class NavigateLevelUpUI : UI
         m_SelectedWeaponIndex = levelupWeaponIndex;
     }
 
-    public void ConsumeSliderOnValueChanged()
-    {
-        OnLevelUpSimulatePossible();
-
-        m_ConsumeItemCount = (int)Mathf.Floor(ConsumeSlider.value);
-
-        var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == m_ConsumeItemIndex);
-        var record = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == m_SelectedCharacter);
-        int afterLevel = record.LevelUpSimulate(itemData.Point * m_ConsumeItemCount);
-        int afterafterLevel = record.LevelUpSimulate(itemData.Point * (m_ConsumeItemCount + 1));
-
-        // 다음에 경험치 칩을 1개 더 쓰면 더 이상 레벨업을 하지 못하는 경우가 발생한다.
-        if (afterafterLevel > GameManager.PlayerData.Level || afterafterLevel > TableManager.Instance.CharacterLevelExperienceTable.Count)
-            OnLevelUpSimulateImpossible();
-
-        ConsumeCountText.text = $"{m_ConsumeItemCount}";
-        AfterLevel.text = afterLevel.ToString();
-    }
-
     public void OnConsumePlusBtnDown()
     {
         if (ConsumePlusButton.interactable)
-            ConsumeSlider.value++;
+            ConsumeCountChange((int)Mathf.Floor(ConsumeSlider.value + 1));
     }
 
     public void OnConsumePlusBtnHold()
@@ -187,7 +168,10 @@ public class NavigateLevelUpUI : UI
         if (ConsumePlusButton.interactable)
         {
             for (int i = 0; i < 10; i++)
-                ConsumeSlider.value++;
+            {
+                if (ConsumeCountChange((int)Mathf.Floor(ConsumeSlider.value + 1)) == false)
+                    break;
+            }
         }
         
     }
@@ -195,7 +179,7 @@ public class NavigateLevelUpUI : UI
     public void OnConsumeMinusBtnDown()
     {
         if (ConsumeMinusButton.interactable)
-            ConsumeSlider.value--;
+            ConsumeCountChange((int)Mathf.Floor(ConsumeSlider.value - 1));
     }
 
     public void OnConsumeMinusBtnHold()
@@ -203,7 +187,10 @@ public class NavigateLevelUpUI : UI
         if (ConsumeMinusButton.interactable)
         {
             for (int i = 0; i < 10; i++)
-                ConsumeSlider.value--;
+            {
+                if (ConsumeCountChange((int)Mathf.Floor(ConsumeSlider.value - 1)) == false)
+                    break;
+            }
         }
         
     }
@@ -240,5 +227,34 @@ public class NavigateLevelUpUI : UI
         ConsumePlusButton.interactable = true;
         ConsumeSlider.interactable = true;
         MaxObject.SetActive(false);
+    }
+
+    bool ConsumeCountChange(int afterValue)
+    {
+        OnLevelUpSimulatePossible();
+
+        var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == m_ConsumeItemIndex);
+        var record = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == m_SelectedCharacter);
+        int afterLevel = record.LevelUpSimulate(afterValue * itemData.Point);
+
+        if (afterLevel > GameManager.PlayerData.Level || afterLevel > TableManager.Instance.CharacterLevelExperienceTable.Count)
+        {
+            OnLevelUpSimulateImpossible();
+            return false;
+        }
+
+        // 1 밑으로 내려가는거 방지
+        afterValue = Mathf.Max(1, afterValue);
+
+        // Data
+        ConsumeSlider.value = afterValue;
+        m_ConsumeItemCount = (int)Mathf.Floor(afterValue);
+
+        // UI
+        ConsumeCountText.text = $"{m_ConsumeItemCount}";
+        AfterLevel.text = afterLevel.ToString();
+        GainExperience.text = (afterValue * itemData.Point).ToString();
+
+        return true;
     }
 }

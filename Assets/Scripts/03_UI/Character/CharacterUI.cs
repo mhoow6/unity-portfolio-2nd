@@ -75,6 +75,9 @@ public class CharacterUI : UI, IGameEventListener
 
         // 생성시킨 캐릭터 삭제시키기
         lobbyManager.LobbySystem.DestroyCharacterUICharacter();
+
+        m_CharacterList.ForEach(element => Destroy(element.gameObject));
+        m_CharacterList.Clear();
     }
 
     public override void OnOpened()

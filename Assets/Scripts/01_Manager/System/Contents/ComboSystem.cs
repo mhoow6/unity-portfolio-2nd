@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class ComboSystem : IGameSystem
 {
-    public int Combo { get; private set; }
+    public int MaxCombo { get; private set; }
     public Action OnComboDelete;
 
+    int m_Combo;
     float m_ComboMaintainTimer;
     bool m_ComboMaintainTimerClear;
     bool m_ComboStart;
@@ -33,8 +34,9 @@ public class ComboSystem : IGameSystem
             m_ComboMaintainTimer += Time.deltaTime;
             if (m_ComboMaintainTimer > COMBO_MAINTAIN_TIME)
             {
+                MaxCombo = Mathf.Max(m_Combo, MaxCombo);
                 m_ComboMaintainTimer = 0f;
-                Combo = 0;
+                m_Combo = 0;
                 m_ComboStart = false;
 
                 OnComboDelete?.Invoke();
@@ -45,7 +47,7 @@ public class ComboSystem : IGameSystem
 
     public void Report(int comboCount)
     {
-        Combo += comboCount;
+        m_Combo += comboCount;
 
         m_ComboMaintainTimerClear = true;
     }
