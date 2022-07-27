@@ -13,6 +13,8 @@ public class GPGSBinder
     static GPGSBinder inst = new GPGSBinder();
     public static GPGSBinder Inst => inst;
 
+    public bool DoLogin { get; private set; }
+
     ISavedGameClient SavedGame =>
         PlayGamesPlatform.Instance.SavedGame;
 
@@ -35,11 +37,17 @@ public class GPGSBinder
         PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (success) =>
         {
             onLoginSuccess?.Invoke(success == SignInStatus.Success, Social.localUser);
+
+            if (success == SignInStatus.Success)
+                DoLogin = true;
+            else
+                DoLogin = false;
         });
     }
 
     public void Logout()
     {
+        DoLogin = false;
         PlayGamesPlatform.Instance.SignOut();
     }
 

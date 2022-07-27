@@ -34,8 +34,16 @@ public class LoadingTitleUI : UI
     int m_FakeDataDownloadPerSecond;
     const int DATA_MAXIMUM_DOWNLOAD_PER_SECOND = 5;
 
-    public override void OnOpened()
+    public override void OnOpened(){}
+
+    public void SetData(Action onGameStartCallback, Action onQuarterLoadCallback = null, Action onHalfLoadCallback = null, Action onThreeQuarterLoadCallback = null, Action onAlmostLoadCallback = null)
     {
+        m_OnGameStartCallback = onGameStartCallback;
+        m_OnQuarterLoadCallback = onQuarterLoadCallback;
+        m_OnHalfLoadCallback = onHalfLoadCallback;
+        m_OnThreeQuarterLoadCallback = onThreeQuarterLoadCallback;
+        m_OnAlmostLoadCallback = onAlmostLoadCallback;
+
         m_IsLoadingComplete = false;
 
         m_LoadingObject.SetActive(true);
@@ -51,15 +59,6 @@ public class LoadingTitleUI : UI
 
         // 로딩타이틀 연출시작
         LobbyManager.Instance.MovingRoad.Move(() => { return m_IsLoadingComplete; });
-    }
-
-    public void SetData(Action onGameStartCallback, Action onQuarterLoadCallback = null, Action onHalfLoadCallback = null, Action onThreeQuarterLoadCallback = null, Action onAlmostLoadCallback = null)
-    {
-        m_OnGameStartCallback = onGameStartCallback;
-        m_OnQuarterLoadCallback = onQuarterLoadCallback;
-        m_OnHalfLoadCallback = onHalfLoadCallback;
-        m_OnThreeQuarterLoadCallback = onThreeQuarterLoadCallback;
-        m_OnAlmostLoadCallback = onAlmostLoadCallback;
 
         StartCoroutine(FakeLoadingWithProgress());
         StartCoroutine(FakeLoadingWithTime());
@@ -196,7 +195,7 @@ public class LoadingTitleUI : UI
         }
 
         m_LoadingCompleteObject.SetActive(false);
-        GameManager.UISystem.CloseWindow();
+        GameManager.UISystem.CloseAllWindow();
 
         // 섬 근처로 카메라가 이동하는 연출 시작
         m_OnGameStartCallback?.Invoke();

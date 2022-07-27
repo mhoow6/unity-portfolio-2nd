@@ -44,8 +44,8 @@ public sealed class GameManager : MonoBehaviour
     DataInitializeSystem m_DataInitializeSystem;
 
     // Update Handler
-    Action m_Update;
-    Action m_FixedUpdate;
+    Action m_CoreSystemUpdate;
+    Action m_ContentSystemUpdate;
 
     [Header("# 게임 설정")]
     [SerializeField] GameDevelopSettings m_GameDevelopSettings;
@@ -72,8 +72,8 @@ public sealed class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Instance = this;
-        m_Update = null;
-        m_FixedUpdate = null;
+        m_CoreSystemUpdate = null;
+        m_ContentSystemUpdate = null;
 
         SceneManager.sceneUnloaded += (Scene arg0) =>
         {
@@ -121,9 +121,9 @@ public sealed class GameManager : MonoBehaviour
 
         // Update
         if (m_UISystem != null)
-            m_Update += m_UISystem.Tick;
+            m_CoreSystemUpdate += m_UISystem.Tick;
         if (InputSystem != null)
-            m_Update += InputSystem.Tick;
+            m_CoreSystemUpdate += InputSystem.Tick;
 
         // ---------------------------------------------------
 
@@ -136,12 +136,12 @@ public sealed class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_FixedUpdate?.Invoke();
+        m_ContentSystemUpdate?.Invoke();
     }
 
     private void Update()
     {
-        m_Update?.Invoke();
+        m_CoreSystemUpdate?.Invoke();
     }
 
     void OnApplicationQuit()
@@ -195,8 +195,7 @@ public sealed class GameManager : MonoBehaviour
         JsonManager.Instance.ClearJson();
 
         // 콘텐츠 관련 시스템 중단
-        m_FixedUpdate = null;
-        m_Update = null;
+        m_ContentSystemUpdate = null;
 
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }
@@ -214,7 +213,7 @@ public sealed class GameManager : MonoBehaviour
 
         // ---------------------------------------------------
 
-        m_FixedUpdate += m_EnergyRecoverySystem.Tick;
+        m_ContentSystemUpdate += m_EnergyRecoverySystem.Tick;
 
         // PlayerData Initialize
         m_DataInitializeSystem.Initalize(m_PlayerData);
@@ -241,25 +240,31 @@ public sealed class GameManager : MonoBehaviour
     public void SavePlayerData()
     {
         m_PlayerData.Save();
-        GPGSBinder.Inst.SaveCloud("PlayerData", PlayerData.Serialize(m_PlayerData), (success) =>
+        if (GPGSBinder.Inst.DoLogin)
         {
-            if (success)
-                Debug.LogWarning("클라우드에 유저 데이터 저장 성공");
-            else
-                Debug.LogWarning("클라우드에 유저 데이터 저장 실패");
-        });
+            GPGSBinder.Inst.SaveCloud("PlayerData", PlayerData.Serialize(m_PlayerData), (success) =>
+            {
+                if (success)
+                    Debug.LogWarning("클라우드에 유저 데이터 저장 성공");
+                else
+                    Debug.LogWarning("클라우드에 유저 데이터 저장 실패");
+            });
+        }
     }
 
     public void DeletePlayerData()
     {
         m_PlayerData.Delete();
-        GPGSBinder.Inst.DeleteCloud("PlayerData", (success) =>
+        if (GPGSBinder.Inst.DoLogin)
         {
-            if (success)
-                Debug.LogWarning("클라우드에 유저 데이터 삭제 성공");
-            else
-                Debug.LogWarning("클라우드에 유저 데이터 삭제 실패");
-        });
+            GPGSBinder.Inst.DeleteCloud("PlayerData", (success) =>
+            {
+                if (success)
+                    Debug.LogWarning("클라우드에 유저 데이터 삭제 성공");
+                else
+                    Debug.LogWarning("클라우드에 유저 데이터 삭제 실패");
+            });
+        }
     }
 
 
