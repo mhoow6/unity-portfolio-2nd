@@ -66,7 +66,7 @@ public class ReadyForBattleUI : UI
         var mission3Record = playerData.QuestRecords.Find(r => r.QuestIdx == stageData.Quest3Idx);
         bool mission3Clear = false;
         if (mission3Record != null)
-            mission1Clear = mission3Record.Clear;
+            mission3Clear = mission3Record.Clear;
 
         // 스테이지 설명
         StageName.text = $"Act.{stageIdx} {stageData.StageName}";
