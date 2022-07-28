@@ -9,7 +9,7 @@ public class Sparcher : Playable
 
     public void ShootArrow()
     {
-        var origin = JsonManager.Instance.JsonDatas[GetAttackIndex(Code)];
+        var origin = JsonManager.Instance.JsonDatas[GetAInputDataIndex(Code)];
         SparcherBasicAttackData data = origin as SparcherBasicAttackData;
         var config = GameManager.GameDevelopSettings;
 
@@ -25,7 +25,7 @@ public class Sparcher : Playable
         proj.ShootStraight(transform.forward, data.ArrowMoveSpeed, data.ArrowLifeTime);
     }
 
-    public override bool CanDash()
+    public override bool CanXInput()
     {
         // 애니메이션이 전환중일 경우 정상동작이 안 됨
         if (Animator.IsInTransition(AnimatorBaseLayerIndex))
@@ -49,7 +49,7 @@ public class Sparcher : Playable
         return true;
     }
 
-    public override bool CanAttack()
+    public override bool CanAInput()
     {
         // 애니메이션이 전환중일 경우 정상동작이 안 됨
         if (Animator.IsInTransition(AnimatorBaseLayerIndex))
@@ -65,13 +65,13 @@ public class Sparcher : Playable
         return true;
     }
 
-    public override bool CanUlti()
+    public override bool CanBInput()
     {
         // 애니메이션이 전환중일 경우 정상동작이 안 됨
         if (Animator.IsInTransition(AnimatorBaseLayerIndex))
             return false;
 
-        var skillData = GetSkillData(GetUltimateIndex(Code));
+        var skillData = GetSkillData(GetBInputDataIndex(Code));
         AniType currentAni = AniType;
 
         if (currentAni >= AniType.JUMP_0 && currentAni <= AniType.JUMP_4)
@@ -83,7 +83,7 @@ public class Sparcher : Playable
         if (Sp < skillData.SpCost)
             return false;
 
-        if (UltiCoolTime > 0f)
+        if (BCoolTime > 0f)
             return false;
 
         return true;

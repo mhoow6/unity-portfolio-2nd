@@ -7,9 +7,9 @@ public class HpRecoveryItem : RecoveryItem
 {
     public override ObjectCode Code => ObjectCode.LOOT_HPRecovery;
 
-    public override void Use()
+    public override void Pickup()
     {
-        base.Use();
+        base.Pickup();
 
         var sm = StageManager.Instance;
         if (sm == null)

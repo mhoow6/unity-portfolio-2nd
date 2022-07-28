@@ -24,7 +24,7 @@ public class JumpTrigger : AreaTrigger
             player.CurrentCharacter.transform.forward = transform.forward;
 
             // 점프
-            player.Jump();
+            player.InputY();
             player.CurrentCharacter.AniSpeed = 1 / m_JumpTime;
 
             // 컨트롤 불가능

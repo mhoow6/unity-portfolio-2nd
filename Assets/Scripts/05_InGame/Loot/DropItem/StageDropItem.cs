@@ -6,7 +6,7 @@ public class StageDropItem : DropItem
 {
     public override ObjectCode Code => ObjectCode.LOOT_Item;
 
-    public override void Use()
+    public override void Pickup()
     {
         var sm = StageManager.Instance;
         if (sm == null)

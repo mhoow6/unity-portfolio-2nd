@@ -77,4 +77,29 @@
     }
 
 
+    public class KnightAInputData : Skillable
+    {
+        public int HitAngle;
+        public float HitRange;
+        public float HitGainSp;
+        
+    }
+
+
+    public class KnightXInputData : Skillable
+    {
+        public float BuffDuration;
+        public float BuffSetSpeed;
+        
+    }
+
+
+    public class KnightBInputData : Skillable
+    {
+        public float BuffDuration;
+        public float BuffIncreaseDef;
+        
+    }
+
+
 }

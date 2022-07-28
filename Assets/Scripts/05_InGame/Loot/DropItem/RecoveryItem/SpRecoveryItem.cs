@@ -7,9 +7,9 @@ public class SpRecoveryItem : RecoveryItem
 {
     public override ObjectCode Code => ObjectCode.LOOT_SPRecovery;
 
-    public override void Use()
+    public override void Pickup()
     {
-        base.Use();
+        base.Pickup();
 
         var sm = StageManager.Instance;
         if (sm == null)

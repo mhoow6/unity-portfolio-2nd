@@ -11,7 +11,7 @@ public class SparcherUltimateHitbox : MonoBehaviour
 
     private void Awake()
     {
-        if (JsonManager.Instance.JsonDatas.TryGetValue(Character.GetUltimateIndex(ObjectCode.CHAR_Sparcher), out JsonDatable data))
+        if (JsonManager.Instance.JsonDatas.TryGetValue(Character.GetBInputDataIndex(ObjectCode.CHAR_Sparcher), out JsonDatable data))
             m_Data = data as SparcherUltiData;
 
         if (StageManager.Instance)

@@ -95,12 +95,12 @@ public class InGameUI : UI
     {
         var sm = StageManager.Instance;
 
-        int attackIndex = Character.GetAttackIndex(character.Code);
+        int attackIndex = Character.GetAInputDataIndex(character.Code);
 
         SkillButtonParam attackButtonParam;
         attackButtonParam.OnClick = () =>
         {
-            sm.Player.Attack(m_AttackButton);
+            sm.Player.InputA(m_AttackButton);
         };
         attackButtonParam.OnExit = () =>
         {
@@ -110,13 +110,13 @@ public class InGameUI : UI
         m_AttackButton.SetData(attackButtonParam);
 
 
-        int dashIndex = Character.GetDashIndex(character.Code);
+        int dashIndex = Character.GetXInputDataIndex(character.Code);
         SkillButtonParam dashButtonParam;
         dashButtonParam.SkillData = Character.GetSkillData(dashIndex);
         dashButtonParam.OnClick =
             () =>
             {
-                sm.Player.Dash(m_DashButton);
+                sm.Player.InputX(m_DashButton);
             };
         dashButtonParam.OnExit =
             () =>
@@ -126,13 +126,13 @@ public class InGameUI : UI
         m_DashButton.SetData(dashButtonParam);
 
 
-        int ultiIndex = Character.GetUltimateIndex(character.Code);
+        int ultiIndex = Character.GetBInputDataIndex(character.Code);
         SkillButtonParam ultiButtonParam;
         ultiButtonParam.SkillData = Character.GetSkillData(ultiIndex);
         ultiButtonParam.OnClick =
             () =>
             {
-                sm.Player.Ultimate(m_UltiButton);
+                sm.Player.InputB(m_UltiButton);
             };
         ultiButtonParam.OnExit =
             () =>

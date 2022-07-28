@@ -99,7 +99,7 @@ public class SparcherUltimateCutscene : Cutscene
         });
 
         // 히트박스 조정
-        var skillData = Character.GetSkillData(Character.GetUltimateIndex(ObjectCode.CHAR_Sparcher));
+        var skillData = Character.GetSkillData(Character.GetBInputDataIndex(ObjectCode.CHAR_Sparcher));
         if (skillData)
         {
             var sparcherUltiData = skillData as DatabaseSystem.SparcherUltiData;

@@ -223,8 +223,8 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         }
     }
 
-    /// <summary> objectCode에 맞는 기본공격 인덱스 </summary>
-    public static int GetAttackIndex(ObjectCode objectCode)
+    /// <summary> A버튼을 누를 때 나올 인덱스 추출 </summary>
+    public static int GetAInputDataIndex(ObjectCode objectCode)
     {
         switch (objectCode)
         {
@@ -234,30 +234,36 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
                 return 2004;
             case ObjectCode.CHAR_MonsterMushroom:
                 return 2005;
+            case ObjectCode.CHAR_Knight:
+                return 2009;
             default:
                 return -1;
         }
     }
 
-    /// <summary> objectCode에 맞는 대쉬 인덱스 </summary>
-    public static int GetDashIndex(ObjectCode objectCode)
+    /// <summary> X버튼을 누를 때 나올 인덱스 추출 </summary>
+    public static int GetXInputDataIndex(ObjectCode objectCode)
     {
         switch (objectCode)
         {
             case ObjectCode.CHAR_Sparcher:
                 return 2002;
+            case ObjectCode.CHAR_Knight:
+                return 2010;
             default:
                 return -1;
         }
     }
 
-    /// <summary> objectCode에 맞는 궁극기 인덱스 </summary>
-    public static int GetUltimateIndex(ObjectCode objectCode)
+    /// <summary> B버튼을 누를 때 나올 인덱스 추출 </summary>
+    public static int GetBInputDataIndex(ObjectCode objectCode)
     {
         switch (objectCode)
         {
             case ObjectCode.CHAR_Sparcher:
                 return 2003;
+            case ObjectCode.CHAR_Knight:
+                return 2011;
             default:
                 return -1;
         }

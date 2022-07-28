@@ -61,6 +61,18 @@ namespace DatabaseSystem
             JSONNode knightpassiveskilldataNode = skilldatasRoot["KnightPassiveSkillData(SkillDescriptable)"];
             KnightPassiveSkillData knightpassiveskilldata = JsonConvert.DeserializeObject<KnightPassiveSkillData>(knightpassiveskilldataNode.ToString());
             JsonDatas.Add(knightpassiveskilldata.Index, knightpassiveskilldata);
+
+            JSONNode knightainputdataNode = skilldatasRoot["KnightAInputData(Skillable)"];
+            KnightAInputData knightainputdata = JsonConvert.DeserializeObject<KnightAInputData>(knightainputdataNode.ToString());
+            JsonDatas.Add(knightainputdata.Index, knightainputdata);
+
+            JSONNode knightxinputdataNode = skilldatasRoot["KnightXInputData(Skillable)"];
+            KnightXInputData knightxinputdata = JsonConvert.DeserializeObject<KnightXInputData>(knightxinputdataNode.ToString());
+            JsonDatas.Add(knightxinputdata.Index, knightxinputdata);
+
+            JSONNode knightbinputdataNode = skilldatasRoot["KnightBInputData(Skillable)"];
+            KnightBInputData knightbinputdata = JsonConvert.DeserializeObject<KnightBInputData>(knightbinputdataNode.ToString());
+            JsonDatas.Add(knightbinputdata.Index, knightbinputdata);
         }
 
         public void ClearJson()

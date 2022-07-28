@@ -21,7 +21,7 @@ public abstract class DropItem : Loot, IPoolable
     }
     #endregion
 
-    public override void Use()
+    public override void Pickup()
     {
         
     }
@@ -38,7 +38,7 @@ public abstract class DropItem : Loot, IPoolable
         if (!other.CompareTag(sm.Player.CurrentCharacter.tag))
             return;
         
-        Use();
+        Pickup();
         sm.PoolSystem.Release(this);
     }
 }

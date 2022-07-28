@@ -18,7 +18,7 @@ public class MonsterPirateBehavior : CharacterBehavior
         {
             m_Pirate = animator.GetComponent<MonsterPirate>();
             m_BehaviorData = m_Pirate.BehaviorData as MonsterPirateBehaviorData;
-            m_AttackData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Pirate.Code)] as MonsterPirateAttackData;
+            m_AttackData = JsonManager.Instance.JsonDatas[Character.GetAInputDataIndex(m_Pirate.Code)] as MonsterPirateAttackData;
         }
 
         m_DecisionTimer = 0f;

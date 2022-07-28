@@ -21,7 +21,7 @@ public sealed class MonsterPirate : Monster
         var bullet = StageManager.Instance.PoolSystem.Load<MonsterPirateBullet>(preload.Prefab_Bullet);
         bullet.transform.SetPositionAndRotation(BulletFiredPosition.position, transform.rotation);
 
-        var attackData = GetSkillData(GetAttackIndex(ObjectCode.CHAR_MonsterPirate)) as MonsterPirateAttackData;
+        var attackData = GetSkillData(GetAInputDataIndex(ObjectCode.CHAR_MonsterPirate)) as MonsterPirateAttackData;
         bullet.SetData(this, attackData.DamageScale);
 
         // 포물선 시작지점

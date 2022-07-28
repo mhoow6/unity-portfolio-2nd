@@ -21,9 +21,9 @@ public class MonsterMushroomBehavior : CharacterBehavior
         {
             m_Mushroom = animator.GetComponent<MonsterMushroom>();
             m_BehaviorData = m_Mushroom.BehaviorData as MonsterMushroomBehaviorData;
-            m_Attack01Data = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Mushroom.Code)] as MonsterMushroomAttack01Data;
-            m_Attack02Data = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Mushroom.Code) + 1] as MonsterMushroomAttack02Data;
-            m_Attack03Data = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Mushroom.Code) + 2] as MonsterMushroomAttack03Data;
+            m_Attack01Data = JsonManager.Instance.JsonDatas[Character.GetAInputDataIndex(m_Mushroom.Code)] as MonsterMushroomAttack01Data;
+            m_Attack02Data = JsonManager.Instance.JsonDatas[Character.GetAInputDataIndex(m_Mushroom.Code) + 1] as MonsterMushroomAttack02Data;
+            m_Attack03Data = JsonManager.Instance.JsonDatas[Character.GetAInputDataIndex(m_Mushroom.Code) + 2] as MonsterMushroomAttack03Data;
         }
 
         m_DecisionTimer = 0f;

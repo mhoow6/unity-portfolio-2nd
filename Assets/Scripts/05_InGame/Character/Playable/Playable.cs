@@ -30,14 +30,19 @@ public abstract class Playable : Character
     }
     #endregion
 
-    public int DashStack;
-    public int UltiStack;
-    public float UltiCoolTime;
+    public int XStack;
+    public int BStack;
+    public float BCoolTime;
     
-    public virtual bool CanAttack() { return true; }
-    public virtual bool CanDash() { return true; }
-    public virtual bool CanUlti() { return true; }
-    public virtual bool CanJump() { return true; }
+    public virtual bool CanAInput() { return true; }
+    public virtual void OnAInput() { }
+
+    public virtual bool CanXInput() { return true; }
+    public virtual void OnXInput() { }
+    public virtual bool CanBInput() { return true; }
+    public virtual void OnBInput() { }
+    public virtual bool CanYInput() { return true; }
+    public virtual void OnYInput() { }
 
     // -----------------------------------------------------------------------
 
@@ -58,11 +63,11 @@ public abstract class Playable : Character
     {
         gameObject.tag = "Player";
 
-        var dashData = GetSkillData(GetDashIndex(Code));
-        DashStack = dashData.Stack;
+        var dashData = GetSkillData(GetXInputDataIndex(Code));
+        XStack = dashData.Stack;
 
-        var ultiData = GetSkillData(GetUltimateIndex(Code));
-        UltiStack = ultiData.Stack;
+        var ultiData = GetSkillData(GetBInputDataIndex(Code));
+        BStack = ultiData.Stack;
     }
 
     protected override void OnDamaged(DamagedParam param)

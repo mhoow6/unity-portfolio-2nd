@@ -46,7 +46,7 @@ public sealed class MonsterMushroom : Boss
 
     public void Attack02()
     {
-        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
+        var attackdata = JsonManager.Instance.JsonDatas[GetAInputDataIndex(Code) + 1] as MonsterMushroomAttack02Data;
 
         Attack02Hitbox.ResetHitbox();
         Attack02Hitbox.gameObject.SetActive(true);
@@ -55,7 +55,7 @@ public sealed class MonsterMushroom : Boss
 
     public void Attack03()
     {
-        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 2] as MonsterMushroomAttack03Data;
+        var attackdata = JsonManager.Instance.JsonDatas[GetAInputDataIndex(Code) + 2] as MonsterMushroomAttack03Data;
         var param = new IsTargetInParam()
         {
             Target = Target,
@@ -104,7 +104,7 @@ public sealed class MonsterMushroom : Boss
         base.OnSpawn();
 
         // 히트박스 세팅
-        var attackdata = JsonManager.Instance.JsonDatas[GetAttackIndex(Code) + 1] as MonsterMushroomAttack02Data;
+        var attackdata = JsonManager.Instance.JsonDatas[GetAInputDataIndex(Code) + 1] as MonsterMushroomAttack02Data;
         Attack02Hitbox.gameObject.SetActive(false);
         Attack02Hitbox.SetData(this, attackdata.MaximumHits, attackdata.DamageScale);
     }

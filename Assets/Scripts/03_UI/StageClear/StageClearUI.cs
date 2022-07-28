@@ -24,6 +24,8 @@ public class StageClearUI : UI
         if (sm == null)
             return;
 
+        GameManager.InputSystem.CameraRotatable = false;
+
         var result = sm.StageResult;
         var stageData = TableManager.Instance.StageTable.Find(stage => stage.WorldIdx == sm.WorldIdx && stage.StageIdx == sm.StageIdx);
 
@@ -43,9 +45,30 @@ public class StageClearUI : UI
         }
 
         // 도전 목표 결과
-        MissionClearDetails[0].SetData(sm.MissionSystem.QuestRecords[stageData.Quest1Idx].Clear, QuestDescription(stageData.Quest1Idx));
-        MissionClearDetails[1].SetData(sm.MissionSystem.QuestRecords[stageData.Quest2Idx].Clear, QuestDescription(stageData.Quest2Idx));
-        MissionClearDetails[2].SetData(sm.MissionSystem.QuestRecords[stageData.Quest3Idx].Clear, QuestDescription(stageData.Quest3Idx));
+        // 미션 시스템에 없는 건 플레이어가 이미 깨서 미션 등록이 없기 때문
+        if (sm.MissionSystem.QuestRecords.TryGetValue(stageData.Quest1Idx, out var quest1Record))
+            MissionClearDetails[0].SetData(quest1Record.Clear, QuestDescription(stageData.Quest1Idx));
+        else
+        {
+            var userQuest1Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest1Idx);
+            MissionClearDetails[0].SetData(userQuest1Record.Clear, QuestDescription(stageData.Quest1Idx));
+        }
+
+        if (sm.MissionSystem.QuestRecords.TryGetValue(stageData.Quest2Idx, out var quest2Record))
+            MissionClearDetails[1].SetData(quest2Record.Clear, QuestDescription(stageData.Quest2Idx));
+        else
+        {
+            var userQuest2Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest2Idx);
+            MissionClearDetails[1].SetData(userQuest2Record.Clear, QuestDescription(stageData.Quest2Idx));
+        }
+
+        if (sm.MissionSystem.QuestRecords.TryGetValue(stageData.Quest3Idx, out var quest3Record))
+            MissionClearDetails[2].SetData(quest3Record.Clear, QuestDescription(stageData.Quest3Idx));
+        else
+        {
+            var userQuest3Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest3Idx);
+            MissionClearDetails[2].SetData(userQuest3Record.Clear, QuestDescription(stageData.Quest3Idx));
+        }
     }
 
     public void OnStageOutBtnClick()

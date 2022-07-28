@@ -38,6 +38,11 @@ public class LogoUI : Toast
                 gameObject.SetActive(false);
                 GameManager.UISystem.CurrentToast = null;
                 GameManager.UISystem.PushToast(ToastType.SceneTransition);
+
+                // 시스템 로드
+                GameManager.Instance.InitDatabase();
+                GameManager.Instance.GetPlayerDataFromLocal();
+                GameManager.Instance.InitContents();
             },
             null,
             () =>

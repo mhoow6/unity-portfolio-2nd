@@ -347,18 +347,18 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region 캐릭터 대쉬
+    #region X버튼 입력시
     /// <summary> 대쉬버튼(X) 대신 이걸 호출하여 대쉬를 한다. </summary>
-    public void Dash(SkillButtonUI skillButtonUI)
+    public void InputX(SkillButtonUI skillButtonUI)
     {
-        if (CurrentCharacter.CanDash() == false)
+        if (CurrentCharacter.CanXInput() == false)
             return;
 
-        var skillData = Character.GetSkillData(Character.GetDashIndex(CurrentCharacter.Code));
+        var skillData = Character.GetSkillData(Character.GetXInputDataIndex(CurrentCharacter.Code));
         if (skillData.Stack != 0)
         {
             // 스택을 다 쓰면 스킬을 사용할 수 없다.
-            if (CurrentCharacter.DashStack == 0)
+            if (CurrentCharacter.XStack == 0)
                 return;
 
             // 이 버튼을 눌러야 대쉬가 나가도록 되어있음
@@ -367,27 +367,29 @@ public class Player : MonoBehaviour
             // Sp 소비
             CurrentCharacter.Sp -= skillData.SpCost;
 
-            CurrentCharacter.DashStack--;
+            CurrentCharacter.XStack--;
+            CurrentCharacter.OnXInput();
 
             if (skillButtonUI)
                 skillButtonUI.OnStackConsume();
 
-            if (CurrentCharacter.DashStack < skillData.Stack)
-                StartCoroutine(ChargeDashStackCoroutine(CurrentCharacter, skillButtonUI));
+            if (CurrentCharacter.XStack < skillData.Stack)
+                StartCoroutine(ChargeXStackCoroutine(CurrentCharacter, skillButtonUI));
         }
         else
         {
             GameManager.InputSystem.PressXButton = true;
+            CurrentCharacter.OnXInput();
 
             CurrentCharacter.Sp -= skillData.SpCost;
         }
 
     }
 
-    IEnumerator ChargeDashStackCoroutine(Playable character, SkillButtonUI skillButtonUI)
+    IEnumerator ChargeXStackCoroutine(Playable character, SkillButtonUI skillButtonUI)
     {
         float timer = 0f;
-        var skillData = Character.GetSkillData(Character.GetDashIndex(character.Code));
+        var skillData = Character.GetSkillData(Character.GetXInputDataIndex(character.Code));
         float duration = skillData.CoolTime;
         float maxStack = skillData.Stack;
 
@@ -398,81 +400,88 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        if (character.DashStack < maxStack)
+        if (character.XStack < maxStack)
         {
-            character.DashStack++;
+            character.XStack++;
             if (skillButtonUI != null && CurrentCharacter.Equals(character))
-                skillButtonUI.OnStackCharge(character.DashStack);
+                skillButtonUI.OnStackCharge(character.XStack);
         }
     }
     #endregion
 
-    #region 캐릭터 공격
+    #region A버튼 입력시
     /// <summary> 공격버튼(A) 대신 이걸 호출하여 대쉬를 한다. </summary>
-    public void Attack(SkillButtonUI skillButtonUI)
+    public void InputA(SkillButtonUI skillButtonUI)
     {
-        if (CurrentCharacter.CanAttack() == false)
+        if (CurrentCharacter.CanAInput() == false)
             return;
 
         GameManager.InputSystem.PressAButton = true;
+        CurrentCharacter.OnAInput();
     }
     #endregion
 
-    #region 캐릭터 궁극기
+    #region B버튼 입력시
     /// <summary> 궁극기버튼(B) 대신 이걸 호출하여 궁극기를 한다. </summary>
-    public void Ultimate(SkillButtonUI skillButtonUI)
+    public void InputB(SkillButtonUI skillButtonUI)
     {
-        if (CurrentCharacter.CanUlti() == false)
+        if (CurrentCharacter.CanBInput() == false)
             return;
 
         // 치트
         if (GameManager.CheatSettings.FreeSkill)
         {
             GameManager.InputSystem.PressBButton = true;
+            CurrentCharacter.OnBInput();
+
             return;
         }
 
         // --------------------------------------------------
 
         var currentCharacter = CurrentCharacter;
-        var skillData = Character.GetSkillData(Character.GetUltimateIndex(currentCharacter.Code));
+        var skillData = Character.GetSkillData(Character.GetBInputDataIndex(currentCharacter.Code));
         
         if (skillData.Stack != 0)
         {
             // 스택을 다 쓰면 스킬을 사용할 수 없다.
-            if (CurrentCharacter.UltiStack == 0)
+            if (CurrentCharacter.BStack == 0)
                 return;
 
             GameManager.InputSystem.PressBButton = true;
 
             currentCharacter.Sp -= skillData.SpCost;
 
-            currentCharacter.UltiStack--;
+            currentCharacter.BStack--;
+            CurrentCharacter.OnBInput();
+
             skillButtonUI.OnStackConsume();
 
-            StartCoroutine(UltimateCooldownCoroutine(currentCharacter, skillButtonUI, () =>
+            StartCoroutine(ChargeInputBCooldownCoroutine(currentCharacter, skillButtonUI, () =>
             {
                 float maxStack = skillData.Stack;
-                currentCharacter.UltiStack++;
-                skillButtonUI.OnStackCharge(currentCharacter.UltiStack);
+                currentCharacter.BStack++;
+                skillButtonUI.OnStackCharge(currentCharacter.BStack);
             }));
         }
         else
         {
             GameManager.InputSystem.PressBButton = true;
+            CurrentCharacter.OnBInput();
+
             currentCharacter.Sp -= skillData.SpCost;
 
-            StartCoroutine(UltimateCooldownCoroutine(currentCharacter, skillButtonUI));
+            StartCoroutine(ChargeInputBCooldownCoroutine(currentCharacter, skillButtonUI));
         }
 
         
     }
 
-    IEnumerator UltimateCooldownCoroutine(Playable character, SkillButtonUI skillButtonUI, Action onCooldownEndCallback = null)
+    IEnumerator ChargeInputBCooldownCoroutine(Playable character, SkillButtonUI skillButtonUI, Action onCooldownEndCallback = null)
     {
         float timer = 0f;
         float progress = 0f;
-        var skillData = Character.GetSkillData(Character.GetUltimateIndex(CurrentCharacter.Code));
+        var skillData = Character.GetSkillData(Character.GetBInputDataIndex(CurrentCharacter.Code));
         float duration = skillData.CoolTime;
         
         while (timer < duration)
@@ -485,25 +494,26 @@ public class Player : MonoBehaviour
                 skillButtonUI.CoolTimeBackground.fillAmount = 1 - progress;
 
             // 쿨타임 데이터
-            character.UltiCoolTime = duration - timer;
+            character.BCoolTime = duration - timer;
 
             yield return null;
         }
-        character.UltiCoolTime = 0f;
+        character.BCoolTime = 0f;
 
         onCooldownEndCallback?.Invoke(); 
     }
     #endregion
 
-    #region 캐릭터 점프
+    #region Y버튼 입력시
     /// <summary> 점프버튼(Y) 대신 이걸 호출하여 궁극기를 한다. </summary>
-    public void Jump(SkillButtonUI skillButtonUI = null)
+    public void InputY(SkillButtonUI skillButtonUI = null)
     {
-        if (CurrentCharacter.CanJump() == false)
+        if (CurrentCharacter.CanYInput() == false)
             return;
 
         // 이 버튼을 눌러야 점프가 나가도록 되어있음
         GameManager.InputSystem.PressYButton = true;
+        CurrentCharacter.OnYInput();
     }
     #endregion
 }

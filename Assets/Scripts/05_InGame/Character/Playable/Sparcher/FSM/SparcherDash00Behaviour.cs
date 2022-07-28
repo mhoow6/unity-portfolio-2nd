@@ -17,7 +17,7 @@ public class SparcherDash00Behaviour : SparcherBehaviour
         // JSON 가져오기
         if (m_Data == null)
         {
-            if (JsonManager.Instance.JsonDatas.TryGetValue(Character.GetDashIndex(ObjectCode.CHAR_Sparcher), out JsonDatable json))
+            if (JsonManager.Instance.JsonDatas.TryGetValue(Character.GetXInputDataIndex(ObjectCode.CHAR_Sparcher), out JsonDatable json))
             {
                 SparcherDashData dashData = json as SparcherDashData;
                 m_Data = dashData;

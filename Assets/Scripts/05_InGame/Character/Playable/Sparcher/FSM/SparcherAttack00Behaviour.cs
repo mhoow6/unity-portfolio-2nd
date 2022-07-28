@@ -18,7 +18,7 @@ public class SparcherAttack00Behaviour : SparcherBehaviour
         m_Shoot = false;
         m_GoIdle = false;
 
-        var skillData = JsonManager.Instance.JsonDatas[Character.GetAttackIndex(m_Sparcher.Code)] as SparcherBasicAttackData;
+        var skillData = JsonManager.Instance.JsonDatas[Character.GetAInputDataIndex(m_Sparcher.Code)] as SparcherBasicAttackData;
         // 오토 타겟팅이 켜져있으면 공격거리내의 몬스터에게 몸이 회전한다.
         if (GameManager.GameSettings.AutoTargeting)
         {

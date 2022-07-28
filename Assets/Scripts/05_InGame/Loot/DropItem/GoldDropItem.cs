@@ -7,7 +7,7 @@ public class GoldDropItem : DropItem
 {
     public override ObjectCode Code => ObjectCode.LOOT_Gold;
 
-    public override void Use()
+    public override void Pickup()
     {
         var sm = StageManager.Instance;
         if (sm == null)
