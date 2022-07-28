@@ -59,7 +59,7 @@ public class BattleResultUI : UI
 
         // 함장 얻는 경험치 표시
         ExperienceGain.text = $"+{playerGetExperience}<color=#02C3FE>Exp</color>";
-        ExperienceGain.gameObject.DODisable(2f);
+        ExperienceGain.gameObject.RunLateDisable(2f);
 
         // 파티 프리셋 보여주기
         SelectCharacterUIs[0].SetData(result.CharacterRecords[0].Code, result.CharacterRecords[0].Level);
@@ -83,7 +83,7 @@ public class BattleResultUI : UI
 
         // 리더 캐릭터 얻는 경험치 표시
         CharacterExperienceGains[0].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
-        CharacterExperienceGains[0].gameObject.DODisable(2f);
+        CharacterExperienceGains[0].gameObject.RunLateDisable(2f);
 
         // 두번째 캐릭터 경험치
         if (SelectCharacterUIs[1].DisplayedCharacter != ObjectCode.NONE)
@@ -100,7 +100,7 @@ public class BattleResultUI : UI
             // 두번째 캐릭터 얻는 경험치 표시
             CharacterExperienceGains[1].gameObject.SetActive(true);
             CharacterExperienceGains[1].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
-            CharacterExperienceGains[1].gameObject.DODisable(2f);
+            CharacterExperienceGains[1].gameObject.RunLateDisable(2f);
         }
         else
         {
@@ -124,7 +124,7 @@ public class BattleResultUI : UI
             // 두번째 캐릭터 얻는 경험치 표시
             CharacterExperienceGains[2].gameObject.SetActive(true);
             CharacterExperienceGains[2].text = $"+{characterGetExperience}<color=#02C3FE>Exp</color>";
-            CharacterExperienceGains[2].gameObject.DODisable(2f);
+            CharacterExperienceGains[2].gameObject.RunLateDisable(2f);
         }
         else
         {

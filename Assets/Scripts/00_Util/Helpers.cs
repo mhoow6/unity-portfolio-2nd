@@ -326,14 +326,14 @@ public static class UnityHelper
         return Vector3.SqrMagnitude(a - b) < 0.01f;
     }
 
-    public static void DODisable(this GameObject gameObject, float lifeDuration)
+    public static void RunLateDisable(this GameObject gameObject, float lifeDuration)
     {
         var _helper = new GameObject("@CoroutineHelper", typeof(MonoBehaviorHelper.CoroutineHelper));
         var helper = _helper.GetComponent<MonoBehaviorHelper.CoroutineHelper>();
-        helper.HelpDODisable(gameObject, lifeDuration);
+        helper.HelpLateDisable(gameObject, lifeDuration);
     }
 
-    public static void LateDestroy(this GameObject gameObject, float duration)
+    public static void RunLateDestroy(this GameObject gameObject, float duration)
     {
         var _helper = new GameObject("@CoroutineHelper", typeof(MonoBehaviorHelper.CoroutineHelper));
         var helper = _helper.GetComponent<MonoBehaviorHelper.CoroutineHelper>();

@@ -81,7 +81,8 @@
     {
         public int HitAngle;
         public float HitRange;
-        public float HitGainSp;
+        public int HitGainSp;
+        public int MaximumHits;
         
     }
 

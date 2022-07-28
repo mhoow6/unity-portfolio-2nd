@@ -7,7 +7,7 @@ namespace MonoBehaviorHelper
 {
     public class CoroutineHelper : MonoBehaviour
     {
-        public void HelpDODisable(GameObject gameObject, float duration)
+        public void HelpLateDisable(GameObject gameObject, float duration)
         {
             StartCoroutine(AutoDisableCoroutine(gameObject, duration));
         }

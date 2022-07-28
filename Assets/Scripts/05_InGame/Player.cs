@@ -49,12 +49,9 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 패시브 스킬이 있으면 적용
-        foreach (var cha in Characters)
-        {
-            if (cha.PassiveSkill != null)
-                cha.PassiveSkill.Apply(Character.GetPassiveIndex(cha.Code));
-        }
+        // 리더의 패시브 스킬이 있으면 적용
+        if (Characters[0].PassiveSkill != null)
+            Characters[0].PassiveSkill.Apply(Character.GetPassiveIndex(Characters[0].Code));
 
         // 프리로드 할 꺼 있으면 해주기
         Characters.ForEach(cha =>
