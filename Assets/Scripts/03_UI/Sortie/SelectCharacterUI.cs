@@ -107,9 +107,9 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
 
         // 캐릭터 스왑도중 나갈 경우 처리
         if (m_Copied != null)
-            Destroy(m_Copied);
+            Destroy(m_Copied.gameObject);
         if (m_Moved != null)
-            Destroy(m_Moved);
+            Destroy(m_Moved.gameObject);
     }
 
 
@@ -257,18 +257,21 @@ public class SelectCharacterUI : Display, IPointerClickHandler, IPointerDownHand
                             })
                             .OnComplete(() =>
                             {
-                                // 이동 완료시 실제 자리에 있는 캐릭터 스왑
-                                ObjectCode displayCharacter = display.DisplayedCharacter;
-                                display.SetData(DisplayedCharacter);
-                                this.SetData(displayCharacter);
+                                if (instanitate.IsNullOrDestroyed() == false)
+                                {
+                                    // 이동 완료시 실제 자리에 있는 캐릭터 스왑
+                                    ObjectCode displayCharacter = display.DisplayedCharacter;
+                                    display.SetData(DisplayedCharacter);
+                                    this.SetData(displayCharacter);
 
-                                // 실제 파티 프리셋 데이터 갱신
-                                sortie.UpdatePartyPreset();
+                                    // 실제 파티 프리셋 데이터 갱신
+                                    sortie.UpdatePartyPreset();
 
-                                sortie.SelectCharacterDisplayLayoutGroup.enabled = true;
+                                    sortie.SelectCharacterDisplayLayoutGroup.enabled = true;
 
-                                // 바로 없어지면 OnComplete가 실행안됨.
-                                Destroy(instanitate.gameObject);
+                                    // 이동용도로 쓰인 건 없애주기
+                                    Destroy(instanitate.gameObject);
+                                }
                             });
                     }
                     break;

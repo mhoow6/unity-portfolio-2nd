@@ -89,7 +89,7 @@
 
     public class KnightXInputData : Skillable
     {
-        public float BuffDuration;
+        public int BuffDuration;
         public float BuffSetSpeed;
         
     }
@@ -97,7 +97,7 @@
 
     public class KnightBInputData : Skillable
     {
-        public float BuffDuration;
+        public int BuffDuration;
         public int BuffIncreaseDef;
         
     }

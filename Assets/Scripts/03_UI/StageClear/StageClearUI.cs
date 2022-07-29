@@ -52,6 +52,7 @@ public class StageClearUI : UI
         {
             var userQuest1Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest1Idx);
             MissionClearDetails[0].SetData(userQuest1Record.Clear, QuestDescription(stageData.Quest1Idx));
+            MissionClearDetails[0].ClearRewards.SetActive(false);
         }
 
         if (sm.MissionSystem.QuestRecords.TryGetValue(stageData.Quest2Idx, out var quest2Record))
@@ -60,6 +61,7 @@ public class StageClearUI : UI
         {
             var userQuest2Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest2Idx);
             MissionClearDetails[1].SetData(userQuest2Record.Clear, QuestDescription(stageData.Quest2Idx));
+            MissionClearDetails[1].ClearRewards.SetActive(false);
         }
 
         if (sm.MissionSystem.QuestRecords.TryGetValue(stageData.Quest3Idx, out var quest3Record))
@@ -68,6 +70,7 @@ public class StageClearUI : UI
         {
             var userQuest3Record = GameManager.PlayerData.QuestRecords.Find(quest => quest.QuestIdx == stageData.Quest3Idx);
             MissionClearDetails[2].SetData(userQuest3Record.Clear, QuestDescription(stageData.Quest3Idx));
+            MissionClearDetails[2].ClearRewards.SetActive(false);
         }
     }
 

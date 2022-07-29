@@ -267,8 +267,12 @@ public sealed class GameManager : MonoBehaviour
         }
     }
 
+    public void DoCoroutine(IEnumerator coroutine)
+    {
+        StartCoroutine(coroutine);
+    }
 
-#if UNITY_EDITOR
+
     [ContextMenu("# Get Attached System")]
     void GetAttachedSystem()
     {
@@ -286,5 +290,4 @@ public sealed class GameManager : MonoBehaviour
             m_InputSystem = inputsys;
         }
     }
-#endif
 }

@@ -24,6 +24,7 @@ public sealed class StageManager : GameSceneManager
     public PoolSystem PoolSystem;
     public MissionSystem MissionSystem;
     public ComboSystem ComboSystem;
+    public BuffSystem BuffSystem;
 
     public List<int> StageDropItemIndices = new List<int>(5);
     public StageResultData StageResult = new StageResultData(new List<RewardData>());
@@ -49,6 +50,9 @@ public sealed class StageManager : GameSceneManager
 
         ComboSystem = new ComboSystem();
         ComboSystem.Init();
+
+        BuffSystem = new BuffSystem();
+        BuffSystem.Init();
 
         // 인게임에 사용되는 것들 Init
         foreach (var area in Areas)
@@ -205,6 +209,12 @@ public sealed class StageManager : GameSceneManager
     {
         // 이벤트 알림
         GameEventSystem.SendEvent(GameEvent.STAGE_Clear);
+
+        // -------------------------------------------------------------------------------
+
+        // 스테이지 클리어했을때 가만히 있도록 하기
+        Player.Moveable = false;
+        Player.AnimationJobs.Enqueue(AniType.IDLE_0);
 
         // -------------------------------------------------------------------------------
 

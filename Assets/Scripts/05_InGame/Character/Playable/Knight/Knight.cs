@@ -17,7 +17,7 @@ public class Knight : Playable
         effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
 
         // 이동속도 증가 버프 (자기 자신만)
-        StartCoroutine(KnightSpeedBoostCoroutine());
+        sm.BuffSystem.DoBuff(new KnightSpeedBoost(this));
     }
 
     public override void OnBInput()
@@ -29,7 +29,7 @@ public class Knight : Playable
         effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
 
         // 방어력 증가 버프 (파티 전체)
-        StartCoroutine(KnightDefenseBoostCoroutine());
+        sm.BuffSystem.DoBuff(new KnightShieldBoost(sm.Player.Characters));
     }
 
     public void SlashSword()
@@ -101,40 +101,4 @@ public class Knight : Playable
 
     // -----------------------------------------------------------------------
 
-    IEnumerator KnightSpeedBoostCoroutine()
-    {
-        var _skillData = GetSkillData(GetXInputDataIndex(Code));
-        var skillData = _skillData as KnightXInputData;
-
-        float minSpeed = GetCharacterData(Code, Level, EquipWeaponIndex).Speed;
-
-        // 이동속도 세팅
-        MoveSpeed = skillData.BuffSetSpeed;
-
-        yield return new WaitForSeconds(skillData.BuffDuration);
-
-        // 버프된 속도만 빼준다.
-        MoveSpeed = Mathf.Max(minSpeed, MoveSpeed - skillData.BuffSetSpeed);
-    }
-
-    IEnumerator KnightDefenseBoostCoroutine()
-    {
-        var _skillData = GetSkillData(GetBInputDataIndex(Code));
-        var skillData = _skillData as KnightBInputData;
-        var characters = StageManager.Instance.Player.Characters;
-        List<int> minDefense = new List<int>();
-
-        // 파티전체 방어력 증가
-        foreach (var character in characters)
-        {
-            character.Defense += skillData.BuffIncreaseDef;
-            minDefense.Add(GetCharacterData(character.Code, character.Level, character.EquipWeaponIndex).Defense);
-        }
-
-        yield return new WaitForSeconds(skillData.BuffDuration);
-
-        // 버프된 방어력만 빼준다.
-        for (int i = 0; i < minDefense.Count; i++)
-            characters[i].Defense = Mathf.Max(minDefense[i], characters[i].Defense - skillData.BuffIncreaseDef);
-    }
 }

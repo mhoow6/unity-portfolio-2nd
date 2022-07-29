@@ -42,4 +42,9 @@ public abstract class GameSceneManager : MonoBehaviour
 
     public CinemachineFreeLook FreeLookCam { get; private set; }
     #endregion
+
+    public void DoCoroutine(IEnumerator coroutine)
+    {
+        StartCoroutine(coroutine);
+    }
 }
