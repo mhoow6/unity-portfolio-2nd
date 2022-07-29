@@ -171,5 +171,6 @@ public class PlayerData : ISubscribable
             maxExperience = TableManager.Instance.PlayerLevelExperienceTable.Find(row => row.Level == Level).MaxExperience;
         }
         Experience += Mathf.Abs(gainExperience);
+        Debug.LogWarning($"[PlayerData.LevelUp]: 플레이어는 레벨:{Level}과 경험치: {Experience}가 되었습니다.");
     }
 }

@@ -288,16 +288,16 @@ public sealed class StageManager : GameSceneManager
         foreach (var reward in StageResult.Rewards)
             GameManager.PlayerData.Inventory.AddItem(reward.Index, reward.Quantity);
 
-        // 인벤토리에 골드 넣어주기
-        GameManager.PlayerData.Gold += StageResult.Gold;
-
         // 퀘스트 결과에 따른 골드
         foreach (var record in MissionSystem.QuestRecords.Values)
         {
             if (record.Clear)
-                GameManager.PlayerData.Gold += GameManager.GlobalData.QuestClearGold;
+                StageResult.Gold += GameManager.GlobalData.QuestClearGold;
         }
-        
+
+        // 인벤토리에 골드 넣어주기
+        GameManager.PlayerData.Gold += StageResult.Gold;
+
         // -------------------------------------------------------------------------------
 
         // 하얗게 Fade In, Fade Out할때는 스테이지 클리어 UI 보여주기
