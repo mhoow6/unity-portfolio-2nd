@@ -60,7 +60,7 @@ public class CharacterRecordData
         var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == level);
         int maxExperience = levelData.MaxExperience;
         int previousExperience = Experience;
-        while (maxExperience < gainExperience && levelData.Level != 0)
+        while (maxExperience < (previousExperience + gainExperience) && levelData.Level != 0)
         {
             // 레벨업이 되는 상황이므로 레벨업
             level++;
@@ -74,8 +74,7 @@ public class CharacterRecordData
         return level;
     }
 
-    /// <returns>value: 레벨업 시 달성하는 레벨</returns>
-    public int LevelUp(int gainExperience)
+    public void LevelUp(int gainExperience)
     {
         int maxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
         int playerLevel = GameManager.PlayerData.Level;
@@ -83,7 +82,7 @@ public class CharacterRecordData
         var levelData = TableManager.Instance.CharacterLevelExperienceTable.Find(row => row.Level == Level);
         int maxExperience = levelData.MaxExperience;
         int previousExperience = Experience;
-        while (maxExperience < gainExperience && levelData.Level != 0)
+        while (maxExperience < (previousExperience + gainExperience) && levelData.Level != 0)
         {
             // 레벨업이 되는 상황이므로 레벨업
             Level++;
@@ -97,7 +96,7 @@ public class CharacterRecordData
                 Level = maxLevel;
                 Experience = maxExperience;
                 Debug.LogWarning($"[LevelUp]: {Code}가 만렙이여도 레벨업을 시도하고 있습니다.");
-                return Level;
+                return;
             }
 
             // 플레이어 레벨보다 캐릭터 레벨이 높아질려고 하면
@@ -107,7 +106,7 @@ public class CharacterRecordData
                 Level = playerLevel;
                 Experience = maxExperience;
                 Debug.LogWarning($"[LevelUp]: {Code}가 플레이어보다 레벨이 높아질려고 합니다");
-                return Level;
+                return;
             }
 
             if (Level == maxLevel)
@@ -124,7 +123,44 @@ public class CharacterRecordData
         }
         Experience += Mathf.Abs(gainExperience);
         Debug.LogWarning($"[CharacterRecordData.LevelUp]: {Code}는 레벨:{Level}과 경험치: {Experience}가 되었습니다.");
-        return Level;
+    }
+
+    /// <returns>value: 현재 캐릭터가 최대 캐릭터 레벨까지 얻을 수 있는 최대 경험치</returns>
+    public int MaxGainExperienceUntilMaxCharacterLevel()
+    {
+        int result = 0;
+        int characterMaxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+
+        for (int i = Level; i <= characterMaxLevel; i++)
+        {
+            int maxExperience = TableManager.Instance.CharacterLevelExperienceTable[i - 1].MaxExperience;
+
+            if (i == Level)
+                result += (maxExperience - Experience);
+            else
+                result += maxExperience;
+        }
+
+        return result;
+    }
+
+    /// <returns>value: 현재 캐릭터가 플레이어 레벨까지 얻을 수 있는 최대 경험치</returns>
+    public int MaxGainExperienceUntilPlayerLevel()
+    {
+        int result = 0;
+        int playerLevel = GameManager.PlayerData.Level;
+
+        for (int i = Level; i <= playerLevel; i++)
+        {
+            int maxExperience = TableManager.Instance.CharacterLevelExperienceTable[i - 1].MaxExperience;
+
+            if (i == Level)
+                result += (maxExperience - Experience);
+            else
+                result += maxExperience;
+        }
+
+        return result;
     }
 }
 

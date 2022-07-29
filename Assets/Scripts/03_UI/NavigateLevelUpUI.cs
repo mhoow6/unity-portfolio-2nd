@@ -118,6 +118,10 @@ public class NavigateLevelUpUI : UI
                         // 아이템 소비량 표기
                         ConsumeSlider.value = 1;
                         ConsumeCountText.text = ConsumeSlider.value.ToString();
+                        if (ConsumeCountChange((int)Mathf.Floor(ConsumeSlider.value)) == false)
+                            ConsumeMinusButton.interactable = false;
+                        else
+                            ConsumeMinusButton.interactable = true;
                     }
                     else
                     {
@@ -249,11 +253,41 @@ public class NavigateLevelUpUI : UI
 
         var itemData = TableManager.Instance.ItemTable.Find(item => item.Index == m_ConsumeItemIndex);
         var record = GameManager.PlayerData.CharacterDatas.Find(cha => cha.Code == m_SelectedCharacter);
-        int afterLevel = record.LevelUpSimulate(value * itemData.Point);
 
-        if (afterLevel > GameManager.PlayerData.Level || afterLevel > TableManager.Instance.CharacterLevelExperienceTable.Count)
+        int afterLevel = record.LevelUpSimulate(value * itemData.Point);
+        int playerLevel = GameManager.PlayerData.Level;
+
+        int characterMaxLevel = TableManager.Instance.CharacterLevelExperienceTable.Count;
+
+        // 캐릭터가 플레이어 레벨까지 얻을 수 있는 최대 경험치
+        int characterGetMaxExperienceWhenPlayerLevel = record.MaxGainExperienceUntilPlayerLevel();
+
+        // 캐릭터가 캐릭터 최대 레벨까지 얻을 수 있는 최대 경험치
+        int characterGetMaxExperienceWhenChaMaxLevel = record.MaxGainExperienceUntilMaxCharacterLevel();
+
+        if (afterLevel > playerLevel)
         {
             OnLevelUpSimulateImpossible();
+
+            // UI
+            ConsumeCountText.text = $"{m_ConsumeItemCount}";
+            AfterLevel.text = playerLevel.ToString();
+
+            GainExperience.text = characterGetMaxExperienceWhenPlayerLevel.ToString();
+
+            return false;
+        }
+
+        if (afterLevel > characterMaxLevel)
+        {
+            OnLevelUpSimulateImpossible();
+
+            // UI
+            ConsumeCountText.text = $"{m_ConsumeItemCount}";
+            AfterLevel.text = characterMaxLevel.ToString();
+
+            GainExperience.text = characterGetMaxExperienceWhenChaMaxLevel.ToString();
+
             return false;
         }
 
@@ -269,7 +303,25 @@ public class NavigateLevelUpUI : UI
         // UI
         ConsumeCountText.text = $"{m_ConsumeItemCount}";
         AfterLevel.text = afterLevel.ToString();
-        GainExperience.text = (value * itemData.Point).ToString();
+
+        // 얻을 수 있는 경험치 UI 처리
+        int gainExperience = value * itemData.Point;
+        if (gainExperience >= characterGetMaxExperienceWhenPlayerLevel)
+        {
+            OnLevelUpSimulateImpossible();
+
+            GainExperience.text = characterGetMaxExperienceWhenPlayerLevel.ToString();
+        }
+        else if (gainExperience >= characterGetMaxExperienceWhenChaMaxLevel)
+        {
+            OnLevelUpSimulateImpossible();
+
+            GainExperience.text = characterGetMaxExperienceWhenChaMaxLevel.ToString();
+        }
+        else
+        {
+            GainExperience.text = gainExperience.ToString();
+        }
 
         return true;
     }
