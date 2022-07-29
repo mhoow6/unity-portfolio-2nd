@@ -66,7 +66,7 @@ public sealed class GameManager : MonoBehaviour
     [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
     [Rename("인게임 테스트 환경")] public bool IsTestZone;
     [Rename("모바일에서 로그 보여주기")] public bool DebugLog;
-    [Rename("모바일에서 치트 활성화")] public bool EnableCheat;
+    [Rename("치트 활성화")] public bool EnableCheat;
 
     private void Awake()
     {

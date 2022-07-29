@@ -38,6 +38,8 @@ public class Knight : Playable
         var skillData = _skillData as KnightAInputData;
 
         int hitCount = 0;
+        bool setTarget = false;
+
         var _monsters = StageManager.Instance.Monsters;
         var monsters = _monsters.OrderBy(mob => Vector3.SqrMagnitude(mob.transform.position - transform.position));
         foreach (var mob in monsters)
@@ -68,6 +70,14 @@ public class Knight : Playable
                             GroggyPoint = 0,
                         };
                         mob.Damaged(param);
+
+                        // 타겟 설정
+                        if( setTarget == false)
+                        {
+                            setTarget = true;
+                            Target = mob;
+                        }
+                            
 
                         // Sp 회복
                         Sp += skillData.HitGainSp;

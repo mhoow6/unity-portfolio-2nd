@@ -195,6 +195,8 @@ public class Player : MonoBehaviour
             CurrentCharacter.Rigidbody.MoveRotation(CurrentCharacter.Rigidbody.rotation * Quaternion.Euler(RotateVector));
 
             bool movePositionSkip = false;
+            CurrentCharacter.Rigidbody.velocity = Vector3.zero;
+            CurrentCharacter.Rigidbody.angularVelocity = Vector3.zero;
 
             #region 예외처리
             if (MoveVector.magnitude == 0)
@@ -308,7 +310,7 @@ public class Player : MonoBehaviour
         StageManager.Instance.Monsters.ForEach(mob => mob.Target = changeCharacter);
 
         // 캐릭터 스왑 이펙트
-        var effect = StageManager.Instance.PoolSystem.Load<CharacterSwapEffect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/FX_LevelUp_01");
+        var effect = StageManager.Instance.PoolSystem.Load<CharacterSwapEffect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/Common_CharacterSwap");
         effect.transform.position = changeCharacter.transform.position;
 
 

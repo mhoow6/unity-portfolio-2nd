@@ -60,7 +60,7 @@ public class PoolSystem : IGameSystem
     public T Load<T>(string prefabPath) where T : Component, IPoolable
     {
         var splited = prefabPath.Split('/');
-        string objectName = splited[1].EraseBracketInName();
+        string objectName = splited[splited.Length - 1].EraseBracketInName();
 
         if (m_PoolMap.TryGetValue(objectName, out var list))
         {
@@ -128,7 +128,7 @@ public class PoolSystem : IGameSystem
             instantiate.Poolable = false;
 
             var splited = prefabPath.Split('/');
-            string objectName = splited[1].EraseBracketInName();
+            string objectName = splited[splited.Length - 1].EraseBracketInName();
 
             if (pool != null)
                 pool.Add(instantiate);

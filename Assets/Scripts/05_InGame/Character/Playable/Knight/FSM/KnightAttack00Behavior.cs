@@ -15,6 +15,7 @@ public class KnightAttack00Behavior : KnightBehavior
 
         m_GoIdle = false;
         m_Attack = false;
+        StageManager.Instance.Player.Moveable = false;
     }
 
     protected override void OnAnimationUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

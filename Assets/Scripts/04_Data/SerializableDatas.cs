@@ -168,9 +168,6 @@ public struct CheatSettings
 
     [Tooltip("SP나 쿨타임 궁극기를 쓸 수 있습니다.")]
     public bool FreeUlti;
-
-    [Tooltip("치트 창을 열 수 있습니다.")]
-    public bool CheatUI;
 }
 
 [Serializable]

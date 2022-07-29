@@ -7,7 +7,7 @@ public class CheatButton : Display, IPointerDownHandler
 {
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (GameManager.CheatSettings.CheatUI)
+        if (GameManager.Instance.EnableCheat)
             GameManager.UISystem.OpenWindow(UIType.Cheat);
     }
 }
