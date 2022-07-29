@@ -166,8 +166,8 @@ public struct CheatSettings
     [Tooltip("100% 확률로 HP, SP 회복 아이템을 얻습니다.")]
     public bool DropRecovery100;
 
-    [Tooltip("SP나 쿨타임 소비 없이 스킬을 쓸 수 있습니다.")]
-    public bool FreeSkill;
+    [Tooltip("SP나 쿨타임 궁극기를 쓸 수 있습니다.")]
+    public bool FreeUlti;
 
     [Tooltip("치트 창을 열 수 있습니다.")]
     public bool CheatUI;

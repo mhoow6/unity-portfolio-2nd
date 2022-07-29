@@ -59,7 +59,10 @@ public class PoolSystem : IGameSystem
     #region 프리팹 오브젝트 풀링
     public T Load<T>(string prefabPath) where T : Component, IPoolable
     {
-        if (m_PoolMap.TryGetValue(prefabPath, out var list))
+        var splited = prefabPath.Split('/');
+        string objectName = splited[1].EraseBracketInName();
+
+        if (m_PoolMap.TryGetValue(objectName, out var list))
         {
             var find = list.Find(obj => obj.Poolable);
             if (find != null)
@@ -124,13 +127,16 @@ public class PoolSystem : IGameSystem
             instantiate.OnLoad();
             instantiate.Poolable = false;
 
+            var splited = prefabPath.Split('/');
+            string objectName = splited[1].EraseBracketInName();
+
             if (pool != null)
                 pool.Add(instantiate);
             else
             {
                 pool = new List<IPoolable>();
                 pool.Add(instantiate);
-                m_PoolMap.Add(prefabPath, pool);
+                m_PoolMap.Add(objectName, pool);
             }
 
             return instantiate;

@@ -210,6 +210,9 @@
         /// <summary> 생물속성 기사 </summary> ///
         CHAR_Knight = 18,
 
+        /// <summary> 기사 스피드업 이펙트 </summary> ///
+        EFFECT_KnightSpeedBoost = 19,
+
         /// <summary> 더미 코드 </summary> ///
         NONE = -1,
 

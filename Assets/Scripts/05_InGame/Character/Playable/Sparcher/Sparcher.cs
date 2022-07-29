@@ -80,12 +80,6 @@ public class Sparcher : Playable
         if (currentAni >= AniType.ATTACK_0 && currentAni <= AniType.ATTACK_4 || currentAni >= AniType.ATTACK_5 && currentAni <= AniType.ATTACK_9)
             return false;
 
-        if (Sp < skillData.SpCost)
-            return false;
-
-        if (BCoolTime > 0f)
-            return false;
-
         return true;
     }
 

@@ -209,6 +209,18 @@ public abstract class Character : BaseObject, ISubscribable, IGameEventListener
         }
     }
 
+    public int EquipWeaponIndex
+    {
+        get
+        {
+            return m_Data.EquipWeaponData.Index;
+        }
+        set
+        {
+            m_Data.EquipWeaponData.Index = value;
+        }
+    }
+
     /// <summary> objectCode에 맞는 패시브 스킬 인덱스 </summary>
     public static int GetPassiveIndex(ObjectCode objectCode)
     {

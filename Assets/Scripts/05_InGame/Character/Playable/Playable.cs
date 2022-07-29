@@ -31,6 +31,8 @@ public abstract class Playable : Character
     #endregion
 
     public int XStack;
+    public float XCoolTime;
+
     public int BStack;
     public float BCoolTime;
     

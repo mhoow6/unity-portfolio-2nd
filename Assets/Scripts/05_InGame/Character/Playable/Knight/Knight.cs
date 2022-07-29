@@ -10,12 +10,26 @@ public class Knight : Playable
 
     public override void OnXInput()
     {
+        var sm = StageManager.Instance;
+
+        // 이펙트
+        var effect = sm.PoolSystem.Load<KnightSpeedBoostEffect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/Knight_SpeedBoost");
+        effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
+
         // 이동속도 증가 버프 (자기 자신만)
+        StartCoroutine(KnightSpeedBoostCoroutine());
     }
 
     public override void OnBInput()
     {
-        // 쉴드 이펙트와 함께 방어력 증가 버프 (캐릭터 교체시에도 적용)
+        var sm = StageManager.Instance;
+
+        // 이펙트
+        var effect = sm.PoolSystem.Load<KnightShieldEffect>($"{GameManager.GameDevelopSettings.EffectResourcePath}/Knight_Shield");
+        effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
+
+        // 방어력 증가 버프 (파티 전체)
+        StartCoroutine(KnightDefenseBoostCoroutine());
     }
 
     public void SlashSword()
@@ -36,8 +50,8 @@ public class Knight : Playable
                 {
                     Vector3 normalized = (mob.transform.position - transform.position).normalized;
 
-                    Debug.DrawRay(transform.position, normalized, Color.red, 2f);
-                    Debug.DrawRay(transform.position, transform.forward, Color.blue, 2f);
+                    //Debug.DrawRay(transform.position, normalized, Color.red, 2f);
+                    //Debug.DrawRay(transform.position, transform.forward, Color.blue, 2f);
 
                     // 각도안에 몹이 있다면
                     if (Vector3.Dot(transform.forward, normalized) >= Mathf.Cos(skillData.HitAngle * 0.5f * Mathf.Deg2Rad))
@@ -73,5 +87,44 @@ public class Knight : Playable
 
         // SkillDatas.json
         PassiveSkill = new KnightPassiveSkill(GetPassiveIndex(Code));
+    }
+
+    // -----------------------------------------------------------------------
+
+    IEnumerator KnightSpeedBoostCoroutine()
+    {
+        var _skillData = GetSkillData(GetXInputDataIndex(Code));
+        var skillData = _skillData as KnightXInputData;
+
+        float minSpeed = GetCharacterData(Code, Level, EquipWeaponIndex).Speed;
+
+        // 이동속도 세팅
+        MoveSpeed = skillData.BuffSetSpeed;
+
+        yield return new WaitForSeconds(skillData.BuffDuration);
+
+        // 버프된 속도만 빼준다.
+        MoveSpeed = Mathf.Max(minSpeed, MoveSpeed - skillData.BuffSetSpeed);
+    }
+
+    IEnumerator KnightDefenseBoostCoroutine()
+    {
+        var _skillData = GetSkillData(GetBInputDataIndex(Code));
+        var skillData = _skillData as KnightBInputData;
+        var characters = StageManager.Instance.Player.Characters;
+        List<int> minDefense = new List<int>();
+
+        // 파티전체 방어력 증가
+        foreach (var character in characters)
+        {
+            character.Defense += skillData.BuffIncreaseDef;
+            minDefense.Add(GetCharacterData(character.Code, character.Level, character.EquipWeaponIndex).Defense);
+        }
+
+        yield return new WaitForSeconds(skillData.BuffDuration);
+
+        // 버프된 방어력만 빼준다.
+        for (int i = 0; i < minDefense.Count; i++)
+            characters[i].Defense = Mathf.Max(minDefense[i], characters[i].Defense - skillData.BuffIncreaseDef);
     }
 }

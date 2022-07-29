@@ -345,3 +345,15 @@ public class InputSystem : MonoBehaviour, IGameSystem, ISubscribable
         return result;
     }
 }
+
+public enum InputButton
+{
+    /// <summary> 5시방향 버튼 </summary>
+    A,
+    /// <summary> 2시방향 버튼 </summary>
+    B,
+    /// <summary> 7시방향 버튼 </summary>
+    X,
+    /// <summary> 11시방향 버튼 </summary>
+    Y,
+}
