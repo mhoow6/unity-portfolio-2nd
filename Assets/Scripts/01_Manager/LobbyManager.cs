@@ -45,11 +45,17 @@ public sealed class LobbyManager : GameSceneManager
                                 // 클라우드 로드 성공시
                                 if (success)
                                 {
-                                    Debug.LogWarning($"클라우드 데이터 로드 성공: {cloudData}");
                                     if (!string.IsNullOrEmpty(cloudData))
+                                    {
+                                        Debug.LogWarning($"클라우드 데이터 로드 성공: {cloudData}");
                                         GameManager.Instance.GetPlayerDataFromCloud(cloudData);
+                                    }
                                     else
+                                    {
+                                        Debug.LogWarning($"클라우드에 데이터가 없음.");
                                         GameManager.Instance.GetPlayerDataFromLocal();
+                                    }
+                                        
                                 }
                                 else
                                 {

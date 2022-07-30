@@ -144,12 +144,6 @@ public sealed class GameManager : MonoBehaviour
         m_CoreSystemUpdate?.Invoke();
     }
 
-    void OnApplicationQuit()
-    {
-        if (!NoAutoSavePlayerData)
-            SavePlayerData();
-    }
-
     #region 씬 로드
     public void LoadScene(SceneCode scene, Action onPrevSceneLoad = null, Action onSceneLoading = null, Action onSceneLoaded = null)
     {
@@ -200,6 +194,33 @@ public sealed class GameManager : MonoBehaviour
         LoadScene(SceneCode.Lobby, onSceneLoaded: LobbyManager.Instance.Init);
     }
 
+    /// <summary> 게임을 종료합니다. </summary>
+    public void QuitGame()
+    {
+        if (!NoAutoSavePlayerData)
+        {
+            m_PlayerData.Save();
+
+            if (GPGSBinder.Inst.DoLogin)
+            {
+                // 비동기 코드
+                GPGSBinder.Inst.SaveCloud("PlayerData", PlayerData.Serialize(m_PlayerData), (success) =>
+                {
+                    if (success)
+                    {
+                        Debug.LogWarning("클라우드에 데이터 저장완료");
+                        Application.Quit();
+                    }
+                });
+                return;
+            }
+
+            Application.Quit();
+        }
+        
+     
+    }
+
     public void InitContents()
     {
         m_EnergyRecoverySystem = new EnergyRecoverySystem();
@@ -242,6 +263,7 @@ public sealed class GameManager : MonoBehaviour
         m_PlayerData.Save();
         if (GPGSBinder.Inst.DoLogin)
         {
+            Debug.LogWarning("클라우드에 데이터 저장 시도 중..");
             GPGSBinder.Inst.SaveCloud("PlayerData", PlayerData.Serialize(m_PlayerData), (success) =>
             {
                 if (success)
@@ -249,6 +271,7 @@ public sealed class GameManager : MonoBehaviour
                 else
                     Debug.LogWarning("클라우드에 유저 데이터 저장 실패");
             });
+
         }
     }
 

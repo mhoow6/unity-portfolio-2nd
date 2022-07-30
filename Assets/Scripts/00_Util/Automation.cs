@@ -274,6 +274,7 @@ public static class Automation
 @"
             public void Clear()
             {{
+                LoadedData = 0;
                 {0}
             }}
 ";

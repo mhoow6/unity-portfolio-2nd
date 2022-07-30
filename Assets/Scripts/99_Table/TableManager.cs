@@ -329,6 +329,7 @@ namespace DatabaseSystem
 
             public void Clear()
             {
+                LoadedData = 0;
                               
                 AniTypeDialogueTable.Clear();
               

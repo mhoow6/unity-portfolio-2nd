@@ -99,7 +99,7 @@ public class UISystem : MonoBehaviour, IGameSystem
                 else
                 {
                     var confirm = OpenWindow<ConfirmUI>(UIType.Confirm, false);
-                    confirm.SetData("게임을 종료하시겠습니까?", Application.Quit, () => { CloseWindow(false); });
+                    confirm.SetData("게임을 종료하시겠습니까?", GameManager.Instance.QuitGame, () => { CloseWindow(false); });
                 }
             }
         }
