@@ -1,0 +1,101 @@
+{
+  "SparcherBasicAttackData(Skillable)": {
+    "Index": "2000",
+    "AniType": "15",
+    "Name": "기본공격",
+    "SpCost" : "0",
+    "IconPath": "icon_sparcher_attack",
+    "DamageScale": "1.0",
+    "ArrowObjectCode": "4",
+    "ArrowLifeTime": "3",
+    "ArrowMoveSpeed": "6",
+    "ArrowPrefabPath": "Sparcher_WoodenArrow",
+    "AutoTargetDetectRange": "8.0"
+  },
+  "SparcherPassiveSkillData(SkillDescriptable)": {
+    "Index": "2001",
+    "Name": "호크아이",
+    "Description": "생물속성의 캐릭터들의 치명타 확률을 20% 증가시킵니다.",
+    "IncreaseCriticalRatio": "0.2",
+    "CharacterType": "Biology"
+  },
+  "SparcherDashData(Skillable)": {
+    "Index": "2002",
+    "SpCost": "0",
+    "IconPath": "icon_sparcher_run",
+    "DashDistance": "3.0",
+    "CoolTime": "1.5",
+    "Stack": "2",
+    "ArriveTime": "0.5"
+  },
+  "SparcherUltiData(Skillable)": {
+    "Index": "2003",
+    "SpCost": "60",
+    "IconPath": "icon_sparcher_ulti",
+    "Stack": "0",
+    "CoolTime": "15.0",
+    "DamageScale": "10.0",
+    "HitBoxRange": "6.0",
+    "MaximumHits": "8",
+    "GroggyPoint": "50"
+  },
+  "MonsterPirateAttackData(Skillable)": {
+    "Index": "2004",
+    "SpCost": "0",
+    "DamageScale": "1.0",
+    "BulletObjectCode": "9",
+    "BulletSpeed": "2",
+    "BulletLifeTime": "4",
+    "BulletShootHeight": "2.0"
+  },
+  "MonsterMushroomAttack01Data(Skillable)": {
+    "Index": "2005"
+  },
+  "MonsterMushroomAttack02Data(Skillable)": {
+    "Index": "2006",
+    "SpCost": "0",
+    "AttackDistance": "2.8",
+    "DamageScale": "2.5",
+    "HitboxLifeTime": "0.3",
+    "MaximumHits": "2"
+  },
+  "MonsterMushroomAttack03Data(Skillable)": {
+    "Index": "2007",
+    "SpCost": "0",
+    "AttackDistance": "2.5",
+    "AttackAngle": "100.0",
+    "DamageScale": "1.0"
+  },
+  "KnightPassiveSkillData(SkillDescriptable)": {
+    "Index": "2008",
+    "Name": "금강불괴",
+    "Description": "파티원 캐릭터들의 방어력을 10% 증가시킵니다.",
+    "IncreaseDefenseRatio": "0.1",
+  },
+  "KnightAInputData(Skillable)": {
+    "Index": "2009",
+    "SpCost": "0",
+    "IconPath": "icon_knight_attack",
+    "DamageScale": "1.0",
+    "HitAngle": "140",
+    "HitRange": "2.0",
+    "HitGainSp": "1",
+    "MaximumHits": "2"
+  },
+  "KnightXInputData(Skillable)": {
+    "Index": "2010",
+    "SpCost": "5",
+    "IconPath": "icon_knight_buffspeed",
+    "CoolTime": "20.0",
+    "BuffDuration": "5",
+    "BuffSetSpeed": "2.5"
+  },
+  "KnightBInputData(Skillable)": {
+    "Index": "2011",
+    "SpCost": "120",
+    "IconPath": "icon_knight_ulti",
+    "CoolTime": "45.0",
+    "BuffDuration": "10",
+    "BuffIncreaseDef": "999999999"
+  }
+}

@@ -1,0 +1,12 @@
+int,ItemType,ItemGroupType,string,int,string,int,int
+Index,Type,GroupType,Name,StarCount,IconName,Point,MaxAmount
+아이템 인덱스,아이템 타입,아이템 카테고리,게임에서 사용되는 이름,아이템 별의 갯수,아이콘 이름,적용 포인트,최대 아이템 소지 갯수
+@,,,,,,,
+5000,1,2,캐릭터 레벨업 칩 IV,4,icon_characterlevelupchip_01,100,999
+5001,2,2,무기 레벨업 칩 IV,4,icon_weaponlevelupchip_01,100,999
+5002,1,2,캐릭터 레벨업 칩 III,3,icon_characterlevelupchip_02,50,999
+5003,1,4,GM 캐릭터 레벨업 칩,5,icon_characterlevelupchip_01,999999999,1
+5004,2,4,GM 무기 레벨업 칩,5,icon_weaponlevelupchip_01,999999999,1
+5005,5,1,120 에너지 회복제,4,icon_energyrefill_01,120,99
+5006,6,1,호무의 보물창고 II,2,icon_goldrefill_01,10000,99
+5007,2,2,무기 레벨업 칩 III,3,icon_weaponlevelupchip_02,50,999

@@ -1,0 +1,19 @@
+{
+  "MonsterPirateBehaviorData(Behaviorable)": {
+    "Index": "4000",
+    "ActorCode": "6",
+    "BehaviorDecisionTime": "3.0",
+    "EnemyDetectRange": "6.0",
+    "EnemyDetectAngle": "140.0",
+    "EnemyLookAtSpeed": "0.5"
+  },
+  "MonsterMushroomBehaviorData(Behaviorable)": {
+    "Index": "4001",
+    "ActorCode": "16",
+    "BehaviorDecisionTime": "2.5",
+    "EnemyDetectRange": "10.0",
+    "EnemyDetectAngle": "80.0",
+    "EnemyLookAtSpeed": "2.5",
+    "TargetKeepDistance": "2.0"
+  }
+}

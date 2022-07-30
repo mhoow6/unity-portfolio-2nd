@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9476bfd05858c1c478c1b0b679f9a3e8, type: 3}
+  m_Name: MonsterPirate_PreloadSettings
+  m_EditorClassIdentifier: 
+  Prefab_BulletFired: {fileID: 1833268098726028, guid: f72f0eb4a0fb5934fab797add8da8711, type: 3}
+  Prefab_Bullet: {fileID: 7385093720207386892, guid: 7f8f25f1dfea6604392e0207d6f7ea94, type: 3}

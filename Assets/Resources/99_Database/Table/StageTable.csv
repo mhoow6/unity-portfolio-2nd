@@ -1,0 +1,12 @@
+int,int,string,string,int,int,int,int,bool,string,SceneCode,string,int
+WorldIdx,StageIdx,StageName,StageDescription,Quest1Idx,Quest2Idx,Quest3Idx,EnergyCost,LockContent,StageImage,SceneCode,WorldPrefabName,ClearTimelimit
+월드 IDX,스테이지 IDX,스테이지 이름,스테이지 설명,첫번째 목표 IDX,두번째 목표 IDX,세번째 목표 IDX,스테이지 진입 시 드는 에너지 비용,컨텐츠 잠금여부,스테이지 썸네일 이름,GameEnum.csv 참고,스테이지 프리팹 이름,스테이지를 클리어 할 수 있는 최대시간(sec)
+@,,,,,,,,,,,,
+1,1,도둑이야!,해적들이 왕의 보물을 가져가버렸다. 새로운 무기를 얻고 싶은 나는 해적들을 소탕하기로 결심하는데..,1000,1001,1003,6,FALSE,background_Stage0101,3,World01_UI,180
+1,2,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,3,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,4,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,5,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,6,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,7,미공개,미공개,0,0,0,0,TRUE,,-1,,-1
+1,8,미공개,미공개,0,0,0,0,TRUE,,-1,,-1

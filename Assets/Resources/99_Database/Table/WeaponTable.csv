@@ -1,0 +1,8 @@
+int,WeaponType,string,int,string,int,float,int,float
+Index,Type,Name,StarCount,IconName,BaseDamage,DamageIncreaseRatioByLevelUp,BaseCritical,CriticalIncreaseRatioByLevelUp
+무기 인덱스,무기 타입,게임에서 사용되는 이름,아이템 별의 갯수,아이콘 이름,레벨 1일때 기본 공격력,레벨업시 공격력 증가율,레벨 1일때 기본 치명타 확률,레벨업시 치명타확률 증가율
+@,,,,,,,,
+7000,1,나무 활,2,icon_bow_01,20,0.03,10,0.01
+7001,2,철 검,2,icon_sword_01,30,0.03,5,0.01
+7002,1,GM 활,5,icon_bow_02,999999999,0,100,0
+7003,2,GM 검,5,icon_sword_02,999999999,0,100,0

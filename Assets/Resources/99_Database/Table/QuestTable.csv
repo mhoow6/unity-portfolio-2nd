@@ -1,0 +1,8 @@
+int,bool,QuestType,int,int
+Index,Positive,Type,Target,PurposeCount
+퀘스트 인덱스,카운트 도달 시 퀘스트 성공여부,퀘스트 종류,퀘스트 타겟 코드,목표 카운트
+@,,,,
+1000,TRUE,KILL_ENEMY,6,3
+1001,FALSE,GET_DAMAGED,-1,10
+1002,FALSE,INCAPCITATED,-1,1
+1003,TRUE,KILL_ENEMY,16,1

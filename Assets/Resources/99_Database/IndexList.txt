@@ -1,0 +1,9 @@
+1000 ~ 1999 : Quest
+2000 ~ 2999 : Skill
+3000 ~ 3999 : Stage Dialogue
+4000 ~ 4999 : AI Behavior
+5000 ~ 5999 : Item
+6000 ~ 6999 : Stage Guide Text
+7000 ~ 7999 : Weapon
+
+keytool -keystore D:\Keystore\honkai3rdcopy.keystore -list -v

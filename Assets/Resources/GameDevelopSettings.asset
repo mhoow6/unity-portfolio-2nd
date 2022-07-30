@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53c0d4511b55d914cb3b80debae4ebf4, type: 3}
+  m_Name: GameDevelopSettings
+  m_EditorClassIdentifier: 
+  CSVDataCount: 946
+  JsonDataCount: 14
+  SaveFilePath: C:/Users/Jang/AppData/LocalLow/JCompany/Honkai3rdCopy/PlayerData.json
+  m_GameVerison: 1.0
+  m_MaterialResourcePath: 01_Material
+  m_TextureResourcePath: 02_Texture
+  m_TerrainResourcePath: 03_Terrain
+  m_CharacterResourcePath: 04_Character
+  m_InteractableResourcePath: 05_Interactable
+  m_UIResourcePath: 06_UI
+  m_ProjectileResourcePath: 07_Projectile
+  m_EffectResourcePath: 08_Effect
+  m_AnimationControllerResourcePath: 09_AnimationController
+  m_DatabasePath: 99_Database
+  m_CinemachineBlendSettingsPath: 10_CinemachineBlenderSettings
+  m_SoundPath: 14_Sounds
+  m_UILayermask: 5
+  m_TerrainLayermask: 3
+  m_BaseObjectLayermask: 6
+  m_PostProcessLayermask: 7
+  m_NotImplementedCharacters: 03000000010000000200000007000000

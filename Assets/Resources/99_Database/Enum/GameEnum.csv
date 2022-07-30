@@ -1,0 +1,116 @@
+Enum::AniType,,
+@,,
+IDLE_0,0,가만히 있을 때 애니메이션
+IDLE_1,1,가만히 있을 때 애니메이션
+IDLE_2,2,가만히 있을 때 애니메이션
+IDLE_3,3,가만히 있을 때 애니메이션
+IDLE_4,4,가만히 있을 때 애니메이션
+RUN_0,5,달리는 애니메이션
+RUN_1,6,달리는 애니메이션
+RUN_2,7,달리는 애니메이션
+RUN_3,8,달리는 애니메이션
+RUN_4,9,달리는 애니메이션
+DEAD_0,10,죽을 때 애니메이션
+DEAD_1,11,죽을 때 애니메이션
+DEAD_2,12,죽을 때 애니메이션
+DEAD_3,13,죽을 때 애니메이션
+DEAD_4,14,죽을 때 애니메이션
+ATTACK_0,15,공격할 때 애니메이션
+ATTACK_1,16,공격할 때 애니메이션
+ATTACK_2,17,공격할 때 애니메이션
+ATTACK_3,18,공격할 때 애니메이션
+ATTACK_4,19,공격할 때 애니메이션
+ATTACK_5,30,공격할 때 애니메이션
+ATTACK_6,31,공격할 때 애니메이션
+ATTACK_7,32,공격할 때 애니메이션
+ATTACK_8,33,공격할 때 애니메이션
+ATTACK_9,34,공격할 때 애니메이션
+JUMP_0,20,점프할 때 애니메이션
+JUMP_1,21,점프할 때 애니메이션
+JUMP_2,22,점프할 때 애니메이션
+JUMP_3,23,점프할 때 애니메이션
+JUMP_4,24,점프할 때 애니메이션
+DASH_0,25,가속(회피)할 때 애니메이션
+DASH_1,26,가속(회피)할 때 애니메이션
+DASH_2,27,가속(회피)할 때 애니메이션
+DASH_3,28,가속(회피)할 때 애니메이션
+DASH_4,29,가속(회피)할 때 애니메이션
+SIT_0,35,앉을 때 애니메이션
+RISE_0,36,일어날 때 애니메이션
+NONE,-1,
+@,,
+,,
+Enum::QuestType,,
+@,,
+KILL_ENEMY,0,적 처치 횟수
+GET_DAMAGED,1,피격 횟수 n회 이하
+INCAPCITATED,2,전투 불능 횟수 n회 이하
+CONSUME_GOLDS,3,골드 소모시 카운트 증가
+CONSUME_ENERGY,4,에너지 소모시 카운트 증가
+GET_SPECIFIC_CHARACTER,5,특정 캐릭터 흭득시 카운트 증가
+@,,
+,,
+Enum::CharacterType,,
+@,,
+Biology,0,생물
+Machine,1,기계
+Supernatural,2,이능
+@,,
+,,
+Enum::ObjectCode,,
+@,,
+CHAR_Sparcher,0,생물속성 궁수
+CHAR_GreenSpider,1,생물속성 거미
+CHAR_PurpleSpider,2,이능속성 거미
+CHAR_Dummy,3,기계속성 더미 캐릭터
+PROJ_WoodenArrow,4,발사용 나무 화살
+EFFECT_CharacterHitWall,5,Area 벽에 캐릭터가 닿았을 때 나오는 이펙트
+CHAR_MonsterPirate,6,생물속성 해적(몬스터)
+CHAR_Pirate,7,생물속성 해적(플레이어블)
+EFFECT_CharacterSwap,8,캐릭터가 교체되었을 때 나오는 이펙트
+PROJ_CanonBullet,9,대포알
+Effect_CanonBulletFired,10,대포발사 이펙트
+LOOT_SPRecovery,11,Sp를 회복하게 하는 아이템
+LOOT_HPRecovery,12,Hp를 회복하게 하는 아이템
+LOOT_Gold,13,스테이지에서 얻을 수 있는 골드
+CHAR_MonsterMushroom,16,이능속성 보스 버섯
+LOOT_Item,17,스테이지에서 얻을 수 있는 전리품
+CHAR_Knight,18,생물속성 기사
+EFFECT_KnightSpeedBoost,19,기사 스피드업 이펙트
+NONE,-1,더미 코드
+@,,
+,,
+Enum::SceneCode,,
+@,,
+Logo,0,로고
+Lobby,1,로비
+Stage0000,2,테스트
+Stage0101,3,1-1
+None,-1,에러
+@,,
+,,
+Enum::ItemType,,
+@,,
+None,0,더미
+CharacterLevelUpChip,1,캐릭터 레벨업 아이템
+WeaponLevelUpChip,2,무기 레벨업 아이템
+EnergyRefill,5,에너지 충전 아이템
+GoldRefill,6,골드 충전 아이템
+@,,
+,,
+Enum::ItemGroupType,,
+@,,
+None,0,더미
+Consume,1,소모품
+BasicMaterial,2,기초재료
+SyntheticMaterial,3,합성재료
+Event,4,이벤트 재료
+@,,
+,,
+Enum::WeaponType,,
+@,,
+None,0,더미
+Bow,1,활
+Broadsword,2,한손검
+@,,
+,,

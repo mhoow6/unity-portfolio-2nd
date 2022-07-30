@@ -1,0 +1,8 @@
+int,int,int,int
+ItemIdx,MinUseLevel,MaxUseLevel,SpRecoveryPoint
+아이템 IDX,아이템을 쓸 수 있는 최소 캐릭터 레벨,아이템이 쓸 수 있는 최대 캐릭터 레벨,SP 회복량
+@,,,
+5000,1,19,10
+5001,20,39,12
+5002,40,59,14
+5003,60,80,16

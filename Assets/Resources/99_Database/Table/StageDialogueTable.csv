@@ -1,0 +1,11 @@
+int,int,int,int,bool,bool,string,string,string
+Index,WorldIdx,StageIdx,AreaIdx,IsLeft,NpcTalk,NpcName,NpcImage,Dialogue
+,,,,,,,,
+@,,,,,,,,
+3000,1,1,1,TRUE,TRUE,왕,portrait_king,누가 도와주세요! 해적들이 저희 보물을 가져갔습니다!!
+3001,1,1,1,FALSE,FALSE,,,걱정마세요. 제가 도와드릴께요!
+3002,1,1,1,FALSE,FALSE,,,그런데 무슨 보물을 가져갔나요? 해적들을 소탕하고 가져올께요.
+3003,1,1,1,TRUE,TRUE,왕,portrait_king,<color=#0000ffff>골드가 들어있는 상자</color>입니다. 타국과의 교류를 위해 배에 싣고 있는데 해적놈들이 가져버렸죠..
+3004,1,1,1,TRUE,TRUE,왕,portrait_king,보물을 가져오시면 2할 정도의 골드를 드리겠습니다. 부탁드립니다!
+3005,1,1,1,FALSE,FALSE,,,3할은 안될까요? 새로운 무기를 사고싶은데..
+3006,1,1,1,TRUE,TRUE,왕,portrait_king,(표정을 찡그리며) 3할까진 괜찮습니다 허허..
