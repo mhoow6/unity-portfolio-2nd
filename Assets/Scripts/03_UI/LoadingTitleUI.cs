@@ -23,7 +23,7 @@ public class LoadingTitleUI : UI
     Action m_OnQuarterLoadCallback;
     Action m_OnHalfLoadCallback;
     Action m_OnThreeQuarterLoadCallback;
-    Action m_OnAlmostLoadCallback;
+    Func<bool> m_WaitingForPredicate;
 
 
     [SerializeField, ReadOnly] bool m_IsLoadingComplete;
@@ -36,13 +36,13 @@ public class LoadingTitleUI : UI
 
     public override void OnOpened(){}
 
-    public void SetData(Action onGameStartCallback, Action onQuarterLoadCallback = null, Action onHalfLoadCallback = null, Action onThreeQuarterLoadCallback = null, Action onAlmostLoadCallback = null)
+    public void SetData(Action onGameStartCallback, Action onQuarterLoadCallback = null, Action onHalfLoadCallback = null, Action onThreeQuarterLoadCallback = null, Func<bool> waitingForPredicate = null)
     {
         m_OnGameStartCallback = onGameStartCallback;
         m_OnQuarterLoadCallback = onQuarterLoadCallback;
         m_OnHalfLoadCallback = onHalfLoadCallback;
         m_OnThreeQuarterLoadCallback = onThreeQuarterLoadCallback;
-        m_OnAlmostLoadCallback = onAlmostLoadCallback;
+        m_WaitingForPredicate = waitingForPredicate;
 
         m_IsLoadingComplete = false;
 
@@ -118,11 +118,11 @@ public class LoadingTitleUI : UI
                 //Debug.Log($"75% 때 실행할 것들 실행완료");
             }
 
-            if (percentage > 95 && m_OnAlmostLoadCallback != null)
+            if (percentage > 95 && m_WaitingForPredicate != null)
             {
-                m_OnAlmostLoadCallback.Invoke();
-                m_OnAlmostLoadCallback = null;
-                //Debug.Log($"95% 때 실행할 것들 실행완료");
+                Debug.LogWarning($"95%에서 뭔가를 기다리는 중..");
+                yield return new WaitUntil(m_WaitingForPredicate);
+                m_WaitingForPredicate = null;
             }
 
             // 다운로드 량 표기 (00.00%)
@@ -131,6 +131,7 @@ public class LoadingTitleUI : UI
 
             yield return tick;
         }
+        Debug.LogWarning($"로딩 완료");
         StartCoroutine(LoadComplete());
     }
 

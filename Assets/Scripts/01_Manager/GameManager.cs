@@ -62,6 +62,7 @@ public sealed class GameManager : MonoBehaviour
 
     [Header("# 개발자 옵션")]
     [Rename("게임 버젼")] public string GameVerison;
+    [Rename("로그인 시도하지 않고 게임시작")] public bool DontTryCloudLogin;
     [Rename("닉네임 묻기 스킵")] public bool AskForNickNameSkip;
     [Rename("종료 시 세이브 저장 끄기")] public bool NoAutoSavePlayerData;
     [Rename("인게임 테스트 환경")] public bool IsTestZone;
