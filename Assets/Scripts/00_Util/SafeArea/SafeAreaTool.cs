@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace Mhoow6.SafeArea
 {
@@ -10,14 +11,13 @@ namespace Mhoow6.SafeArea
         public bool WarningMessage;
 
         protected RectTransform rectTransform;
-        protected Canvas canavs;
+        protected Canvas canvas;
 
         protected void Awake()
         {
-            // PC에서 작동하지 않도록 처리
-            // ps. 스크린 사이즈보다 safeArea가 큰 경우는 PC밖에 없음
+            // 스크린 사이즈보다 safeArea가 큰 경우 제외
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-            if (screenSize.x <= Screen.safeArea.size.x && screenSize.y <= Screen.safeArea.size.y)
+            if (screenSize.x < Screen.safeArea.size.x && screenSize.y < Screen.safeArea.size.y)
             {
                 if (WarningMessage)
                     Debug.LogWarning($"스크린 사이즈보다 SafeArea가 큰 경우, SafeArea Tool을 종료합니다.");
@@ -28,17 +28,18 @@ namespace Mhoow6.SafeArea
             rectTransform = GetComponent<RectTransform>();
 
             if (TryGetCanvas(out var canvas))
-                canavs = canvas;
+                this.canvas = canvas;
             else
             {
                 Canvas[] canvaslist = FindObjectsOfType<Canvas>();
-                canavs = canvaslist.First(canvas =>
+                canvas = canvaslist.First(canvas =>
                 {
                     if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
                         return true;
                     return false;
                 });
             }
+
         }
 
         bool TryGetCanvas(out Canvas result)

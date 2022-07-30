@@ -14,7 +14,7 @@ public class AdventureUI : UI
 
     public override void OnClosed()
     {
-        
+
     }
 
     public override void OnOpened()
