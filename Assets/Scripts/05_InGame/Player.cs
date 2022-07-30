@@ -73,28 +73,30 @@ public class Player : MonoBehaviour
 
     void RegisterToManager()
     {
-        //switch (GameManager.SceneCode)
-        //{
-        //    case SceneCode.Lobby:
-        //        LobbyManager.Instance.Player = this;
-        //        break;
-        //    default:
-        //        StageManager.Instance.Player = this;
-        //        break;
-        //}
+        switch (GameManager.SceneCode)
+        {
+            case SceneCode.Lobby:
+                LobbyManager.Instance.Player = this;
+                break;
+            default:
+                StageManager.Instance.Player = this;
+                break;
+        }
     }
 
     void ReleaseFromManager()
     {
-        //switch (GameManager.SceneCode)
-        //{
-        //    case SceneCode.Lobby:
-        //        LobbyManager.Instance.Player = null;
-        //        break;
-        //    default:
-        //        StageManager.Instance.Player = null;
-        //        break;
-        //}
+        switch (GameManager.SceneCode)
+        {
+            case SceneCode.Lobby:
+                if (!LobbyManager.Instance.IsNullOrDestroyed())
+                    LobbyManager.Instance.Player = null;
+                break;
+            default:
+                if (!StageManager.Instance.IsNullOrDestroyed())
+                    StageManager.Instance.Player = null;
+                break;
+        }
     }
     #endregion
 

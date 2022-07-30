@@ -26,10 +26,11 @@ namespace Mhoow6.SafeArea
                 float safeAreaWidth = fullscreen_width * safeArea_width_ratio;
                 float safeAreaHeight = fullscreen_height * safeArea_height_ratio;
 
-                // Rect는 pivot이 (0,0)인데 반면 rectTransfom은 (0.5f, 0.5f)이라 기저벡터가 다르다.
-                // 따라서 _rectTransform.pivot.x을 곱해줘야 올바른 x좌표를 구할 수 있다.
+                // Rect는 pivot이 (0,0)인데 반면 rectTransfrom은 (0.5f, 0.5f)이라 기저벡터가 다르다.
+                // 따라서 rectTransform.pivot.x을 곱해줘야 올바른 x좌표를 구할 수 있다.
                 float safeAreaXCoordinate = fullscreen_width * safeArea_screen_diff_ratio * rectTransform.pivot.x;
 
+                // safeArea의 비율만큼 rectTransform을 조정하자.
                 rectTransform.anchoredPosition = new Vector2(safeAreaXCoordinate, 0);
                 rectTransform.sizeDelta = new Vector2(safeAreaWidth, safeAreaHeight);
             }
