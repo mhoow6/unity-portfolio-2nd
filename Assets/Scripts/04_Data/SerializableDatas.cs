@@ -220,7 +220,7 @@ public class StageResultData
         {
             m_Score = value;
             PlayerGetExperience = (int)Mathf.Floor(Score * 0.1f);
-            CharacterGetExperience = (int)Mathf.Floor(Score * 0.5f);
+            CharacterGetExperience = (int)Mathf.Floor(Score * 0.05f);
         }
     }
 

@@ -6,8 +6,7 @@ public class MonsterspawnTrigger : AreaTrigger
 {
     protected override void OnAwake()
     {
-        m_AutoDisable = true;
-        m_AutoWall = true;
+        m_AutoDisable = false;
     }
 
     protected override void OnAreaEnter(Collider other)
@@ -16,7 +15,14 @@ public class MonsterspawnTrigger : AreaTrigger
         {
             var parent = StageManager.Instance.Areas.Find(a => a.Index == m_AreaIdx);
             if (parent != null)
+            {
+                // Area¸¦ °¨½Î´Â º® ON
+                parent.Wall = true;
+                gameObject.SetActive(false);
+
                 parent.SpawnMonsterFromNewSpawner();
+            }
+                
         }
     }
 }

@@ -10,14 +10,12 @@ public class JumpTrigger : AreaTrigger
     protected override void OnAwake()
     {
         m_AutoDisable = false;
-        m_AutoWall = false;
     }
 
     protected override void OnAreaEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            
             var player = StageManager.Instance.Player;
 
             // 트리거의 forward 방향으로 캐릭터 회전

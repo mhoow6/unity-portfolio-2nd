@@ -9,7 +9,6 @@ public class AlarmTrigger : AreaTrigger
     protected override void OnAwake()
     {
         m_AutoDisable = true;
-        m_AutoWall = true;
     }
 
     protected override void OnAreaEnter(Collider other)
@@ -30,7 +29,11 @@ public class AlarmTrigger : AreaTrigger
                 {
                     var area = sm.Areas.Find(a => a.Index == m_AreaIdx);
                     if (area != null)
+                    {
+                        area.Wall = true;
                         area.React(AlarmEvent);
+                    }
+                        
                 });
                 break;
             default:

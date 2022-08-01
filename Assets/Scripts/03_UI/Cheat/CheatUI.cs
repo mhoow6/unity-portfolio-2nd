@@ -88,7 +88,7 @@ public class CheatUI : UI
 
     public void OnLocalSavefileDeleteBtnClick()
     {
-        GameManager.PlayerData.Delete();
+        GameManager.PlayerData.Delete(GameManager.GameDevelopSettings.SaveFilePath);
     }
 
     public void OnSavePlayerDataBtnClick()

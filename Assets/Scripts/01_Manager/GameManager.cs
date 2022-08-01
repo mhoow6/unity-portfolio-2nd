@@ -200,7 +200,7 @@ public sealed class GameManager : MonoBehaviour
     {
         if (!NoAutoSavePlayerData)
         {
-            m_PlayerData.Save();
+            m_PlayerData.Save(m_GameDevelopSettings.SaveFilePath);
 
             if (GPGSBinder.Inst.DoLogin)
             {
@@ -210,16 +210,14 @@ public sealed class GameManager : MonoBehaviour
                     if (success)
                     {
                         Debug.LogWarning("클라우드에 데이터 저장완료");
-                        Application.Quit();
                     }
+                    Application.Quit();
                 });
                 return;
             }
-
-            Application.Quit();
         }
-        
-     
+        Application.Quit();
+
     }
 
     public void InitContents()
@@ -250,7 +248,7 @@ public sealed class GameManager : MonoBehaviour
     public void GetPlayerDataFromLocal()
     {
         m_PlayerData = null;
-        m_PlayerData = PlayerData.GetData(GameDevelopSettings.SaveFilePath);
+        m_PlayerData = PlayerData.GetData(m_GameDevelopSettings.SaveFilePath);
     }
 
     public void GetPlayerDataFromCloud(string data)
@@ -261,7 +259,7 @@ public sealed class GameManager : MonoBehaviour
 
     public void SavePlayerData()
     {
-        m_PlayerData.Save();
+        m_PlayerData.Save(m_GameDevelopSettings.SaveFilePath);
         if (GPGSBinder.Inst.DoLogin)
         {
             Debug.LogWarning("클라우드에 데이터 저장 시도 중..");
@@ -278,9 +276,10 @@ public sealed class GameManager : MonoBehaviour
 
     public void DeletePlayerData()
     {
-        m_PlayerData.Delete();
+        m_PlayerData.Delete(m_GameDevelopSettings.SaveFilePath);
         if (GPGSBinder.Inst.DoLogin)
         {
+            Debug.LogWarning("클라우드에 데이터 삭제 시도 중..");
             GPGSBinder.Inst.DeleteCloud("PlayerData", (success) =>
             {
                 if (success)

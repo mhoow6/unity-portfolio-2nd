@@ -175,7 +175,7 @@ public class SavefileEditor : EditorWindow
             Debug.Log($"{m_textAreaString}");
 
             m_PlayerData = deserialized;
-            m_PlayerData.Save();
+            m_PlayerData.Save($"{Application.persistentDataPath}/PlayerData.json");
         }
             
     }

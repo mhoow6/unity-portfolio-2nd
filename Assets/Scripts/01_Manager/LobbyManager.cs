@@ -63,8 +63,8 @@ public sealed class LobbyManager : GameSceneManager
 
                                 GPGSBinder.Inst.LoadCloud("PlayerData", (success, cloudData) =>
                                 {
-                                // 클라우드 로드 성공시
-                                if (success)
+                                    // 클라우드 로드 성공시
+                                    if (success)
                                     {
                                         if (!string.IsNullOrEmpty(cloudData))
                                         {
